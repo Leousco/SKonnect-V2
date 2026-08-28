@@ -1,0 +1,181 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+
+:root {
+  /*  Brand: teal  */
+  --off-primary: #2d7d9a;
+  --off-primary-mid: #3d93b2;
+  --off-primary-lt: #7bbdd1;
+
+  --off-dark: #1a2e3b;
+  --off-dark-mid: #2a4558;
+
+  --off-accent: #d6edf5;
+  --off-accent-lt: #edf6fa;
+
+  --off-danger: #d94f4f;
+
+  --off-surface: #ffffff;
+  --off-bg: #f4f8fa;
+  --off-surface-2: #eef5f8;
+
+  --off-border: #c8dfe8;
+  --off-border-mid: #a8c8d8;
+
+  --off-text-head: #1a2e3b;
+  --off-text-body: #3d5262;
+  --off-text-muted: #7a96a6;
+
+  --off-green: #16a34a;
+  --off-green-bg: #dcfce7;
+  --off-green-text: #14532d;
+
+  --off-violet: #7c3aed;
+  --off-violet-bg: #ede9fe;
+  --off-violet-text: #4c1d95;
+
+  --off-coral: #c2410c;
+  --off-coral-bg: #ffedd5;
+  --off-coral-text: #7c2d12;
+
+  --off-slate: #4f6eb4;
+  --off-slate-bg: #e0e9f8;
+  --off-slate-text: #1e3a6e;
+
+  --off-shadow: 0 2px 12px rgba(45, 125, 154, 0.1);
+  --off-shadow-md: 0 4px 24px rgba(45, 125, 154, 0.18);
+
+  --off-radius: 10px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--off-bg);
+  color: var(--off-text-body);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+
+.off-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.off-content {
+  margin-left: 250px;
+  flex: 1;
+  padding: 36px 40px 60px;
+  max-width: 1300px;
+}
+
+/* ── SECTION LABEL ──────────────────────────────────────── */
+
+.section-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--off-text-head);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.section-label::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--off-slate);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* ── PANEL HEADER ───────────────────────────────────────── */
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+/* ── SMALL BUTTON ───────────────────────────────────────── */
+
+.btn-off-sm {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--off-primary);
+  background: transparent;
+  border: 1.5px solid var(--off-border-mid);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-off-sm:hover {
+  background: var(--off-primary);
+  color: white;
+  border-color: var(--off-primary);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .off-content {
+    margin-left: 0;
+    padding: 24px 20px 48px;
+  }
+}
+
+
+/* CONTROLS DROPDOWN */
+
+.svc-select {
+  padding: 8px 30px 8px 11px;
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  color: var(--off-text-body);
+  background: var(--off-surface);
+  border: 1.5px solid var(--off-border);
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%237a96a6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 13px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}

@@ -1,0 +1,747 @@
+/* ============================================================
+   public_thread_view.css — SKonnect Public Thread View
+   ============================================================ */
+
+/* PAGE LAYOUT */
+
+.pub-thread-page {
+    background: var(--bg);
+    min-height: 100vh;
+    padding: 48px 8% 80px;
+}
+
+.pub-thread-container {
+    max-width: 780px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* BACK LINK */
+
+.pub-thread-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    transition: gap 0.15s, color 0.15s;
+}
+
+.pub-thread-back-link svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.15s;
+}
+
+.pub-thread-back-link:hover {
+    color: var(--text-primary);
+}
+
+.pub-thread-back-link:hover svg {
+    transform: translateX(-3px);
+}
+
+/* MAIN THREAD CARD */
+
+.pub-thread-main-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* BADGES */
+
+.pub-thread-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.pub-pin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    background: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #c4b5fd;
+}
+
+/* TITLE */
+
+.pub-thread-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+/* META ROW */
+
+.pub-thread-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.pub-thread-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+}
+
+.pub-thread-author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pub-thread-author-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+
+.pub-thread-date {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.pub-thread-meta-counts {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.pub-meta-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    opacity: 0.55;
+    vertical-align: middle;
+    margin-right: 2px;
+}
+
+/* BODY */
+
+.pub-thread-body {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-primary);
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* ============================================================
+   IMAGE CAROUSEL
+   Identical classes to thread_view.css so both pages render
+   the same carousel from the same JS logic.
+   ============================================================ */
+
+/* Hidden data grid — JS reads this and builds the carousel */
+.thread-images-grid {
+    display: none;
+}
+
+/* Outer wrapper */
+.thread-carousel {
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* Side fade edges */
+.thread-carousel::before,
+.thread-carousel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.thread-carousel::before {
+    left: 0;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 1)   0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0)   100%
+    );
+}
+
+.thread-carousel::after {
+    right: 0;
+    background: linear-gradient(
+        to left,
+        rgba(255, 255, 255, 1)   0%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0)   100%
+    );
+}
+
+/* No fades on single-image mode */
+.thread-carousel.single-image-mode::before,
+.thread-carousel.single-image-mode::after {
+    display: none;
+}
+
+/* Track wrapper — clips overflow */
+.carousel-track-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Track — slides sit side by side */
+.carousel-track {
+    display: flex;
+    will-change: transform;
+}
+
+/* Individual slide — 60 % wide, fixed height */
+.carousel-slide {
+    flex: 0 0 60%;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    opacity: 0.45;
+    transform: scale(0.92);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    border-radius: var(--radius);
+}
+
+.carousel-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    cursor: zoom-in;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+}
+
+/* Single-image mode overrides */
+.thread-carousel.single-image-mode .carousel-track {
+    margin: 12px 0;
+    justify-content: center;
+    padding: 0;
+}
+
+.thread-carousel.single-image-mode .carousel-slide {
+    flex: 0 0 100%;
+    max-width: 500px;
+    opacity: 1;
+    transform: scale(1);
+    cursor: zoom-in;
+    height: 240px;
+    background: #000;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.thread-carousel.single-image-mode .carousel-slide img {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: var(--radius);
+}
+
+/* Prev / Next arrow buttons */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    background: rgba(219, 216, 216, 0.342);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.carousel-btn:hover {
+    background: rgba(109, 104, 104, 0.815);
+}
+
+.carousel-btn:active {
+    transform: translateY(-50%) scale(0.9);
+}
+
+.carousel-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.carousel-btn-prev { left: 10px; }
+.carousel-btn-next { right: 10px; }
+
+/* Dot strip */
+.carousel-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 12px;
+    background: var(--surface);
+}
+
+.carousel-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--border);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s ease, width 0.2s ease;
+    flex-shrink: 0;
+}
+
+.carousel-dot.active {
+    background: var(--navy);
+    width: 20px;
+    border-radius: 4px;
+}
+
+.carousel-dot:hover:not(.active) {
+    background: #94a3b8;
+}
+
+/* ============================================================
+   LIGHTBOX
+   Same classes as thread_view.css — shared JS can call
+   openLightbox() on both pages.
+   ============================================================ */
+
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 40, 0.88);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: pub-lightbox-in 0.18s ease;
+}
+
+@keyframes pub-lightbox-in {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.lightbox-img {
+    max-width: 90vw;
+    max-height: 88vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox-close {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.15s;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* READ-ONLY NOTICE */
+
+.pub-readonly-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: #0369a1;
+    line-height: 1.55;
+}
+
+.pub-readonly-notice svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: #0284c7;
+}
+
+.pub-readonly-notice a {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.pub-readonly-notice a:hover {
+    text-decoration: underline;
+}
+
+/* COMMENTS SECTION */
+
+.pub-comments-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pub-comments-heading {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Poppins", sans-serif;
+}
+
+.pub-comments-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 20px;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* COMMENT LIST */
+
+.pub-comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.pub-no-comments {
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 24px 0 8px;
+}
+
+/* COMMENT ITEM */
+
+.pub-comment-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.pub-comment-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pub-comment-body {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pub-comment-item--mod > .pub-comment-body {
+    border-left: 3px solid #0d9488;
+    background: #f0fdfa;
+}
+
+/* COMMENT HEADER */
+
+.pub-comment-header {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pub-comment-author {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.pub-comment-date {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.pub-comment-support-count {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.pub-comment-text {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+/* MOD BADGE */
+
+.pub-mod-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    background: #ecfdf5;
+    color: #0d9488;
+    border: 1px solid #99f6e4;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+
+/* REPLIES */
+
+.pub-reply-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    padding-left: 16px;
+    border-left: 2px solid var(--border);
+}
+
+.pub-reply-list:empty {
+    display: none;
+}
+
+.pub-reply-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.pub-reply-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #64748b;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pub-reply-body {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pub-reply-item--mod > .pub-reply-body {
+    border-left: 3px solid #0d9488;
+    background: #f0fdfa;
+}
+
+/* LOGIN CTA */
+
+.pub-comment-cta {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 18px;
+    background: #fefce8;
+    border: 1px solid #fde047;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: #854d0e;
+    line-height: 1.55;
+    margin-top: 4px;
+}
+
+.pub-comment-cta svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: #ca8a04;
+}
+
+.pub-comment-cta a {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.pub-comment-cta a:hover {
+    text-decoration: underline;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .pub-thread-page {
+        padding: 32px 5% 60px;
+    }
+
+    .pub-thread-main-card,
+    .pub-comments-section {
+        padding: 20px 18px;
+    }
+
+    .pub-thread-title {
+        font-size: 18px;
+    }
+
+    .pub-thread-meta-counts {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .carousel-slide {
+        height: 180px;
+    }
+
+    .pub-reply-list {
+        padding-left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pub-thread-page {
+        padding: 24px 4% 48px;
+    }
+}
+/* ============================================================
+   MOD-REMOVED TOMBSTONE
+   Shown in place of comments/replies removed via a Level 2/3 sanction.
+   ============================================================ */
+
+.pub-comment-item--removed,
+.pub-reply-item--removed {
+    opacity: 1;
+}
+
+.comment-tombstone {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    padding: 11px 16px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 10px;
+    font-size: 13px;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+.comment-tombstone svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: #8d939b;
+}
+
+/* Slightly smaller for inline replies */
+.comment-tombstone--reply {
+    font-size: 12px;
+    padding: 9px 13px;
+    border-radius: 8px;
+}

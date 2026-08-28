@@ -1,0 +1,192 @@
+/* bookmarks_page.css — Specific styles for the My Bookmarks module */
+
+/* 1. CONTROLS & NAVIGATION */
+/* .bookmarks-controls {
+
+} */
+
+.btn-back-portal {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  background: transparent;
+  border: 1.5px solid var(--blue);
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.btn-back-portal:hover {
+  background: var(--blue);
+  color: white;
+}
+
+.btn-back-portal svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s;
+}
+
+.btn-back-portal:hover svg {
+  transform: translateX(-3px);
+}
+
+.bookmarks-total-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+
+  background: var(--navy-mid);
+  color: white;
+
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  
+  margin-left: 8px;
+
+}
+
+/* 2. CARD LAYOUT REFINEMENTS */
+.bm-card {
+  border-left: 4px solid var(--gold); /* default / pending */
+}
+
+.bm-card[data-status="pending"] {
+  border-left-color: var(--gold);
+}
+.bm-card[data-status="responded"] {
+  border-left-color: var(--blue);
+}
+.bm-card[data-status="resolved"] {
+  border-left-color: var(--green);
+}
+
+.bm-saved-on {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.support-icon {
+  font-size: 14px;
+}
+.support-count {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* Remove Bookmark Button */
+.bm-remove-btn {
+  color: var(--gold);
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.bm-remove-btn:hover {
+  background: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+/* 3. EMPTY STATE STYLES */
+.bookmarks-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 40px;
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  margin-top: 20px;
+}
+
+.bookmarks-empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.bookmarks-empty h3 {
+  font-size: 20px;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.bookmarks-empty p {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 24px;
+  max-width: 300px;
+}
+
+/* 4. FEED TOAST (Notifications) */
+.feed-toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--navy);
+  color: white;
+  padding: 9px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.feed-toast.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.toast-success {
+  border-left: 3px solid var(--green);
+}
+.toast-error {
+  border-left: 3px solid var(--red);
+}
+
+/* BM ICON */
+
+.bmp-icon {
+  color: var(--gold);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bookmarks-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .controls-right {
+    grid-template-columns: 1fr 1fr;
+    display: grid;
+  }
+}

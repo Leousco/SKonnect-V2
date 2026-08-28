@@ -1,0 +1,713 @@
+/* ── DESIGN TOKENS ───────────────────────────────────────── */
+
+/* ── CONTROLS BAR ────────────────────────────────────────── */
+
+.svc-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.svc-controls-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.svc-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Search */
+.svc-search-wrap {
+  position: relative;
+  min-width: 220px;
+  max-width: 340px;
+  flex: 1;
+}
+
+.svc-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--ap-text-muted);
+  pointer-events: none;
+}
+
+.svc-search-input {
+  width: 100%;
+  padding: 10px 14px 10px 36px;
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-text-body);
+  background: var(--ap-surface);
+  border: 1px solid var(--ap-border);
+  border-radius: var(--ap-radius);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.svc-search-input:focus {
+  border-color: var(--ap-lt);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* Select */
+.svc-select {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-text-body);
+  background: var(--ap-surface);
+  border: 1px solid var(--ap-border);
+  border-radius: var(--ap-radius);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.svc-select:focus {
+  border-color: var(--ap-lt);
+}
+
+/* Add Button — manage services only */
+.btn-svc-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: white;
+  background: var(--ap);
+  border: none;
+  border-radius: var(--ap-radius);
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.btn-svc-add:hover {
+  background: var(--ap-mid);
+  box-shadow: 0 4px 14px rgba(91, 33, 182, 0.3);
+}
+
+/* ── STATS STRIP ─────────────────────────────────────────── */
+
+.svc-stats-strip {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.svc-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--ap-surface);
+  border: 1px solid var(--ap-border);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--ap-text-muted);
+  font-family: "Poppins", sans-serif;
+}
+
+.svc-stat-num {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ap-text-head);
+}
+
+/* Manage Services stat colors */
+.svc-stat-pill.stat-active .svc-stat-num {
+  color: var(--ap-green);
+}
+.svc-stat-pill.stat-inactive .svc-stat-num {
+  color: var(--ap-text-muted);
+}
+
+/* ── SECTION LABEL ───────────────────────────────────────── */
+
+.svc-section-label {
+  font-size: 13px;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 16px;
+}
+
+/* ── SERVICES GRID ───────────────────────────────────────── */
+
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+/* ── SERVICE CARD ────────────────────────────────────────── */
+
+.svc-card {
+  background: var(--ap-surface);
+  border: 1px solid var(--ap-border);
+  border-radius: var(--ap-radius);
+  box-shadow: var(--ap-shadow);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.svc-card:hover {
+  box-shadow: var(--ap-shadow-md);
+  transform: translateY(-2px);
+}
+
+.svc-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 12px;
+}
+
+.svc-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.svc-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.svc-icon-medical {
+  background: #fee2e2;
+}
+.svc-icon-education {
+  background: #dbeafe;
+}
+.svc-icon-scholarship {
+  background: #ede9fe;
+}
+.svc-icon-livelihood {
+  background: #d1fae5;
+}
+.svc-icon-dental {
+  background: #fef3c7;
+}
+.svc-icon-default {
+  background: var(--ap-surface-2);
+}
+
+.svc-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-text-head);
+  line-height: 1.3;
+}
+
+.svc-card-excerpt {
+  font-size: 12.5px;
+  color: var(--ap-text-muted);
+  font-family: "Poppins", sans-serif;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.svc-details {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.svc-details li {
+  font-size: 12px;
+  color: var(--ap-text-body);
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+  overflow: hidden;
+}
+
+.svc-detail-value {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.svc-detail-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ap-text-muted);
+  background: var(--ap-surface-2);
+  border: 1px solid var(--ap-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.svc-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ap-border);
+  flex-wrap: wrap;
+}
+
+/* ── CATEGORY TAG ────────────────────────────────────────── */
+
+.svc-cat-tag {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.tag-medical {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.tag-education {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.tag-scholarship {
+  background: #ede9fe;
+  color: var(--ap);
+}
+.tag-livelihood {
+  background: #d1fae5;
+  color: #065f46;
+}
+.tag-dental {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* ── STATUS BADGES ───────────────────────────────────────── */
+
+.svc-badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Manage Services badge colors */
+.badge-active {
+  background: #d1fae5;
+  color: #065f46;
+}
+.badge-inactive {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+/* ── ACTION BUTTONS ──────────────────────────────────────── */
+
+.btn-svc-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: white;
+  background: var(--ap);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.btn-svc-primary:hover {
+  background: var(--ap-mid);
+  box-shadow: 0 4px 14px rgba(91, 33, 182, 0.25);
+}
+
+.btn-svc-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-text-muted);
+  background: var(--ap-surface);
+  border: 1.5px solid var(--ap-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-svc-secondary:hover {
+  background: var(--ap-surface-2);
+  color: var(--ap-text-head);
+  border-color: var(--ap-border-mid);
+}
+
+/* Delete button — manage services only */
+.btn-svc-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-danger);
+  background: var(--ap-surface);
+  border: 1.5px solid #fca5a5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-svc-danger:hover {
+  background: #fee2e2;
+  border-color: var(--ap-danger);
+}
+
+/* ── NO RESULTS ──────────────────────────────────────────── */
+
+.svc-no-results {
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--ap-text-muted);
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+}
+
+/* ── MODAL OVERLAY ───────────────────────────────────────── */
+
+.svc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 27, 74, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.svc-modal-overlay.is-open {
+  display: flex;
+}
+
+.svc-modal-box {
+  background: var(--ap-surface);
+  border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(91, 33, 182, 0.2);
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: svc-modal-in 0.2s ease;
+}
+
+@keyframes svc-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.svc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--ap-border);
+  background: var(--ap-surface-2);
+  gap: 12px;
+}
+
+.svc-modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.svc-modal-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #ede9fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.svc-modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-text-head);
+  margin-bottom: 2px;
+}
+
+.svc-modal-subtitle {
+  font-size: 12px;
+  color: var(--ap-text-muted);
+  font-family: "Poppins", sans-serif;
+}
+
+.svc-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--ap-border);
+  background: var(--ap-surface);
+  color: var(--ap-text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.svc-modal-close:hover {
+  background: #fee2e2;
+  color: var(--ap-danger);
+  border-color: #fca5a5;
+}
+
+.svc-modal-body {
+  padding: 22px 24px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.svc-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.svc-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.svc-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ap-text-head);
+  font-family: "Poppins", sans-serif;
+}
+
+.svc-required {
+  color: var(--ap-danger);
+  margin-left: 2px;
+}
+
+.svc-input,
+.svc-select-input {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-text-body);
+  background: var(--ap-surface);
+  border: 1.5px solid var(--ap-border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.svc-input:focus,
+.svc-select-input:focus {
+  border-color: var(--ap-lt);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.svc-input.is-error {
+  border-color: var(--ap-danger);
+}
+
+.svc-textarea {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  color: var(--ap-text-body);
+  background: var(--ap-surface);
+  border: 1.5px solid var(--ap-border);
+  border-radius: 8px;
+  outline: none;
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.55;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+
+.svc-textarea:focus {
+  border-color: var(--ap-lt);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.svc-field-error {
+  font-size: 11px;
+  color: var(--ap-danger);
+  font-family: "Poppins", sans-serif;
+}
+
+.svc-field-hint {
+  font-size: 11px;
+  color: var(--ap-text-muted);
+  font-family: "Poppins", sans-serif;
+}
+
+.svc-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--ap-border);
+  background: var(--ap-surface-2);
+  flex-wrap: wrap;
+}
+
+/* ── TOAST NOTIFICATION ──────────────────────────────────── */
+
+.svc-toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: white;
+  z-index: 2000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: svc-toast-in 0.3s ease;
+  max-width: 360px;
+}
+
+@keyframes svc-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.svc-toast.toast-success {
+  background: var(--ap-green);
+}
+.svc-toast.toast-error {
+  background: var(--ap-danger);
+}
+.svc-toast.toast-info {
+  background: var(--ap);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .svc-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .svc-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .svc-search-wrap {
+    max-width: 100%;
+  }
+  .svc-form-row {
+    grid-template-columns: 1fr;
+  }
+  .svc-modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .svc-modal-footer button {
+    width: 100%;
+    justify-content: center;
+  }
+}

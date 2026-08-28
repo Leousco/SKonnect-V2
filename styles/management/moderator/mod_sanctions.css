@@ -1,0 +1,1638 @@
+/* ============================================================
+   mod_sanctions.css — SKonnect Moderator · User Sanctions
+   ============================================================ */
+
+/* ── STAT WIDGETS ────────────────────────────────────────── */
+
+.mod-widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.mod-widget-card {
+  background: var(--mod-surface);
+  padding: 20px 22px;
+  border-radius: var(--mod-radius);
+  border: 1px solid var(--mod-border);
+  box-shadow: var(--mod-shadow);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.mod-widget-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: var(--mod-radius) var(--mod-radius) 0 0;
+}
+
+.mod-widget-card:hover {
+  box-shadow: var(--mod-shadow-md);
+  transform: translateY(-2px);
+}
+
+.widget-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.widget-icon-wrap svg {
+  width: 22px;
+  height: 22px;
+}
+
+.widget-red .widget-icon-wrap {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.widget-teal .widget-icon-wrap {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+.widget-amber .widget-icon-wrap {
+  background: #fef3c7;
+  color: #92400e;
+}
+.widget-indigo.widget-icon-wrap {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+.widget-indigo .widget-icon-wrap {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.widget-red::after {
+  background: #dc2626;
+}
+.widget-teal::after {
+  background: var(--mod-primary);
+}
+.widget-amber::after {
+  background: var(--mod-accent);
+}
+.widget-indigo::after {
+  background: #6366f1;
+}
+
+.widget-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.widget-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--mod-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+
+.widget-number {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--mod-dark);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.widget-trend {
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+.widget-trend.up {
+  background: #d1fae5;
+  color: #065f46;
+}
+.widget-trend.warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+.widget-trend.neutral {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+.widget-trend.danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ── PANEL SHARED ────────────────────────────────────────── */
+
+.ms-form-panel,
+.ms-list-panel {
+  background: var(--mod-surface);
+  border: 1px solid var(--mod-border);
+  border-radius: var(--mod-radius);
+  box-shadow: var(--mod-shadow);
+  padding: 22px 24px;
+  margin-bottom: 22px;
+}
+
+.ms-form-panel {
+  border-left: 4px solid var(--mod-accent);
+}
+
+.ms-list-panel {
+  border-left: 4px solid var(--mod-primary);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.panel-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.panel-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--mod-primary);
+  flex-shrink: 0;
+}
+
+.section-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--mod-dark);
+  margin: 0;
+}
+
+.ms-form-hint {
+  font-size: 12.5px;
+  color: var(--mod-text-muted);
+  background: var(--mod-surface-2);
+  border: 1px solid var(--mod-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+/* ── DIRECT SANCTION FORM ────────────────────────────────── */
+
+.ms-form-body {
+  transition: opacity 0.2s;
+}
+
+.ms-form-body.collapsed {
+  display: none;
+}
+
+.ms-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.ms-field-full {
+  grid-column: 1 / -1;
+}
+
+.ms-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ms-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--mod-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ms-input,
+.ms-select {
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  color: var(--mod-text-body);
+  background: var(--mod-surface-2);
+  border: 1.5px solid var(--mod-border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ms-input:focus,
+.ms-select:focus {
+  border-color: var(--mod-primary-lt);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+.ms-textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.6;
+}
+
+.ms-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ms-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: white;
+  background: var(--mod-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.ms-submit-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+.ms-submit-btn:hover {
+  background: var(--mod-primary-mid);
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+}
+
+.ms-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ms-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: var(--mod-text-muted);
+  background: transparent;
+  border: 1.5px solid var(--mod-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.ms-cancel-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ms-cancel-btn:hover {
+  background: var(--mod-surface-2);
+  color: var(--mod-dark);
+}
+
+/* ── TABS ────────────────────────────────────────────────── */
+
+.ms-tab-nav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--mod-border);
+  padding-bottom: 0;
+}
+
+.ms-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: var(--mod-text-muted);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.ms-tab-btn:hover {
+  color: var(--mod-dark);
+}
+
+.ms-tab-btn.active {
+  color: var(--mod-primary);
+  border-bottom-color: var(--mod-primary);
+}
+
+.ms-tab-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: #dc2626;
+  color: white;
+  padding: 1px 7px;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.ms-tab-badge--reviewed {
+  background: #2563eb;
+}
+.ms-tab-badge--dismissed {
+  background: #64748b;
+}
+
+/* ── FILTER BAR ──────────────────────────────────────────── */
+
+.ms-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--mod-border);
+}
+
+.ms-filters-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ms-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  color: var(--mod-text-muted);
+  background: var(--mod-surface-2);
+  border: 1.5px solid var(--mod-border);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.ms-filter-btn:hover {
+  background: var(--mod-border);
+  color: var(--mod-dark);
+}
+
+.ms-filter-btn.active {
+  background: var(--mod-primary);
+  color: white;
+  border-color: var(--mod-primary);
+}
+
+.ms-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ms-search-wrap svg {
+  position: absolute;
+  left: 11px;
+  width: 15px;
+  height: 15px;
+  color: var(--mod-text-muted);
+  pointer-events: none;
+}
+
+.ms-search-input {
+  padding: 8px 14px 8px 34px;
+  font-size: 13px;
+  font-family: "Poppins", sans-serif;
+  color: var(--mod-text-body);
+  background: var(--mod-surface-2);
+  border: 1.5px solid var(--mod-border);
+  border-radius: 7px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 220px;
+}
+
+.ms-search-input:focus {
+  border-color: var(--mod-primary-lt);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+}
+
+/* ── REPORT LIST ITEMS ───────────────────────────────────── */
+
+.ms-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ms-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--mod-border);
+  transition: background 0.15s;
+}
+
+.ms-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.ms-item:first-child {
+  padding-top: 0;
+}
+
+.ms-item--reviewed {
+  opacity: 0.8;
+}
+.ms-item--dismissed {
+  opacity: 0.5;
+}
+
+.ms-item-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 58px;
+}
+
+/* ── SANCTION LEVEL BADGE ────────────────────────────────── */
+
+.ms-sanction-level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-radius: 6px;
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.level-0 {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+.level-1 {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+.level-2 {
+  background: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fdba74;
+}
+.level-3 {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+.level-dismissed {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1px solid #cbd5e1;
+}
+
+/* ── AVATARS ─────────────────────────────────────────────── */
+
+.ms-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--mod-primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ms-avatar--muted {
+  background: #94a3b8;
+}
+
+/* ── ITEM BODY ───────────────────────────────────────────── */
+
+.ms-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ms-item-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.ms-item-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ms-username {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mod-dark);
+}
+
+.ms-username--muted {
+  color: var(--mod-text-muted);
+}
+
+.ms-item-time {
+  font-size: 11px;
+  color: var(--mod-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── CATEGORY TAGS ───────────────────────────────────────── */
+
+.ms-report-cat {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-radius: 20px;
+  border: 1px solid;
+}
+
+.cat-harassment {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+.cat-spam {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fcd34d;
+}
+.cat-inappropriate {
+  background: #ffedd5;
+  color: #c2410c;
+  border-color: #fdba74;
+}
+.cat-misinformation {
+  background: #ede9fe;
+  color: #5b21b6;
+  border-color: #c4b5fd;
+}
+
+.ms-content-type {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--mod-text-muted);
+  background: var(--mod-surface-2);
+  border: 1px solid var(--mod-border);
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.ms-status-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: 20px;
+}
+
+.status-reviewed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.status-dismissed {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* ── REPORTED CONTENT BLOCK ──────────────────────────────── */
+
+.ms-reported-content {
+  background: var(--mod-surface-2);
+  border: 1px solid var(--mod-border);
+  border-left: 3px solid var(--mod-accent);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+
+.ms-reported-content--muted {
+  border-left-color: #cbd5e1;
+  opacity: 0.75;
+}
+
+.ms-reported-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--mod-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ms-reported-text {
+  font-size: 13px;
+  color: var(--mod-text-body);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ── THREAD CONTEXT ──────────────────────────────────────── */
+
+.ms-thread-context {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--mod-text-muted);
+  margin-bottom: 10px;
+}
+
+.ms-thread-context svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--mod-primary-lt);
+}
+
+.ms-thread-context strong {
+  color: var(--mod-text-body);
+}
+
+/* ── REPORTER NOTE ───────────────────────────────────────── */
+
+.ms-reporter-note {
+  font-size: 12px;
+  color: var(--mod-text-muted);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.ms-reporter-note .ms-reported-label {
+  display: inline;
+  font-style: normal;
+  margin-right: 5px;
+}
+
+/* ── ACTION BUTTONS ──────────────────────────────────────── */
+
+.ms-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ms-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 13px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
+  border-radius: 6px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s,
+    box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.ms-action-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.ms-btn-view {
+  color: var(--mod-primary-lt);
+  border-color: var(--mod-border-mid);
+  background: transparent;
+}
+.ms-btn-view:hover {
+  background: var(--mod-primary);
+  border-color: var(--mod-primary);
+  color: white;
+}
+
+.ms-btn-dismiss {
+  color: #065f46;
+  border-color: #6ee7b7;
+  background: #d1fae5;
+}
+.ms-btn-dismiss:hover {
+  background: #059669;
+  border-color: #059669;
+  color: white;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+}
+
+.ms-btn-sanction {
+  color: #b91c1c;
+  border-color: #fca5a5;
+  background: #fee2e2;
+  position: relative;
+}
+.ms-btn-sanction:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: white;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.25);
+}
+
+.ms-next-level-hint {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.12);
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-left: 2px;
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────── */
+
+.ms-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 24px;
+  color: var(--mod-text-muted);
+}
+
+.ms-empty svg {
+  width: 40px;
+  height: 40px;
+  color: var(--mod-primary-lt);
+  opacity: 0.6;
+}
+
+.ms-empty p {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ── SANCTION MODAL ──────────────────────────────────────── */
+
+.ms-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 30, 60, 0.55);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ms-modal-box {
+  background: var(--mod-surface);
+  border: 1px solid var(--mod-border);
+  border-radius: 14px;
+  box-shadow: 0 24px 64px rgba(10, 30, 60, 0.3);
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modal-slide-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ms-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--mod-border);
+  flex-shrink: 0;
+}
+
+.ms-modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.ms-modal-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #fee2e2;
+  color: #b91c1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ms-modal-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.ms-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--mod-dark);
+  margin: 0 0 2px;
+}
+
+.ms-modal-subtitle {
+  font-size: 12px;
+  color: var(--mod-text-muted);
+  margin: 0;
+}
+
+.ms-modal-close {
+  background: none;
+  border: 1px solid var(--mod-border);
+  font-size: 20px;
+  color: var(--mod-text-muted);
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+
+.ms-modal-close:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.ms-modal-body {
+  padding: 22px 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.ms-modal-level-row {
+  margin-bottom: 6px;
+}
+
+.ms-level-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ms-level-option {
+  cursor: pointer;
+}
+.ms-level-option input[type="radio"] {
+  display: none;
+}
+
+.ms-level-card {
+  border: 2px solid var(--mod-border);
+  border-radius: 10px;
+  padding: 12px 10px;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ms-level-card strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mod-dark);
+  display: block;
+}
+.ms-level-card span {
+  font-size: 12px;
+  font-weight: 600;
+  display: block;
+}
+.ms-level-card small {
+  font-size: 10.5px;
+  color: var(--mod-text-muted);
+  display: block;
+}
+
+.ms-level-option input:checked + .level-card-1 {
+  border-color: #fcd34d;
+  background: #fefce8;
+  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.2);
+}
+.ms-level-option input:checked + .level-card-1 span {
+  color: #92400e;
+}
+
+.ms-level-option input:checked + .level-card-2 {
+  border-color: #fdba74;
+  background: #fff7ed;
+  box-shadow: 0 0 0 3px rgba(253, 186, 116, 0.2);
+}
+.ms-level-option input:checked + .level-card-2 span {
+  color: #c2410c;
+}
+
+.ms-level-option input:checked + .level-card-3 {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  box-shadow: 0 0 0 3px rgba(252, 165, 165, 0.2);
+}
+.ms-level-option input:checked + .level-card-3 span {
+  color: #b91c1c;
+}
+
+.ms-recommended-level {
+  font-size: 12px;
+  color: var(--mod-primary-lt);
+  font-weight: 600;
+  margin-top: 8px;
+  min-height: 18px;
+}
+
+.ms-field-error {
+  font-size: 11px;
+  color: #e11d48;
+  margin-top: 4px;
+  display: block;
+  min-height: 16px;
+}
+
+.ms-modal-warn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  font-size: 12.5px;
+  color: #b91c1c;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.ms-modal-warn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.ms-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--mod-border);
+  flex-shrink: 0;
+}
+
+/* ── TOAST ───────────────────────────────────────────────── */
+
+.ms-toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  background: var(--mod-dark);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(10, 30, 60, 0.25);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  max-width: 320px;
+}
+
+.ms-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.ms-toast.toast-success {
+  background: #065f46;
+}
+.ms-toast.toast-error {
+  background: #991b1b;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .ms-form-grid {
+    grid-template-columns: 1fr;
+  }
+  .ms-filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .ms-search-input {
+    width: 100%;
+  }
+  .ms-level-picker {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .ms-item {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .ms-item-left {
+    flex-direction: row;
+    width: auto;
+  }
+  .ms-item-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .ms-tab-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+  .ms-modal-box {
+    max-height: 95vh;
+  }
+}
+
+/* ── OPTIONAL LABEL ──────────────────────────────────────── */
+
+.ms-label-optional {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--mod-text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  margin-left: 4px;
+}
+
+/* ── PANEL BACKDROP ──────────────────────────────────────── */
+
+.ms-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 30, 60, 0.45);
+  z-index: 300;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.ms-panel-backdrop.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── SLIDE-IN PANEL ──────────────────────────────────────── */
+
+.ms-comment-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 480px;
+  max-width: 95vw;
+  height: 100vh;
+  background: var(--mod-surface);
+  border-left: 1px solid var(--mod-border);
+  box-shadow: -8px 0 40px rgba(10, 30, 60, 0.18);
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ms-comment-panel.open {
+  transform: translateX(0);
+}
+
+/* Prevent main content scroll when panel is open */
+body.ms-panel-open {
+  overflow: hidden;
+}
+
+/* ── PANEL HEADER ────────────────────────────────────────── */
+
+.ms-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 16px;
+  border-bottom: 1px solid var(--mod-border);
+  flex-shrink: 0;
+  background: var(--mod-surface);
+}
+
+.ms-panel-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.ms-panel-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.ms-panel-cat-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 20px;
+  border: 1px solid;
+}
+
+/* reuse existing cat-* colour classes already in the file */
+
+.ms-panel-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 20px;
+}
+
+.ms-panel-status-badge.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+.ms-panel-status-badge.status-responded {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+.ms-panel-status-badge.status-resolved {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.ms-panel-report-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  border-radius: 20px;
+}
+
+.ms-panel-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: none;
+  border: 1.5px solid var(--mod-border);
+  color: var(--mod-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.ms-panel-close:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.ms-panel-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── PANEL BODY ──────────────────────────────────────────── */
+
+.ms-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  scroll-behavior: smooth;
+}
+
+/* ── LOADING SPINNER ─────────────────────────────────────── */
+
+.ms-panel-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 60px 24px;
+  color: var(--mod-text-muted);
+  font-size: 13px;
+}
+
+.ms-panel-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--mod-border);
+  border-top-color: var(--mod-primary);
+  border-radius: 50%;
+  animation: ms-spin 0.75s linear infinite;
+}
+
+@keyframes ms-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── PANEL CONTENT ───────────────────────────────────────── */
+
+.ms-panel-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--mod-dark);
+  line-height: 1.35;
+  margin: 0 0 14px;
+}
+
+.ms-panel-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.ms-panel-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ms-panel-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--mod-primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ms-panel-author-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--mod-dark);
+  display: block;
+  line-height: 1.3;
+}
+
+.ms-panel-date {
+  font-size: 11px;
+  color: var(--mod-text-muted);
+  display: block;
+}
+
+.ms-panel-counts {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--mod-text-muted);
+}
+
+.ms-panel-divider {
+  height: 1px;
+  background: var(--mod-border);
+  margin: 16px 0;
+  flex-shrink: 0;
+}
+
+.ms-panel-body-text {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--mod-text-body);
+  word-break: break-word;
+}
+
+.ms-panel-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.ms-panel-image-item {
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--mod-border);
+}
+
+.ms-panel-image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── PANEL COMMENTS ──────────────────────────────────────── */
+
+.ms-panel-comments-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ms-panel-comments-heading {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mod-dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ms-panel-comments-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--mod-primary);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ms-panel-scroll-hint {
+  font-size: 11.5px;
+  color: var(--mod-text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.ms-panel-comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ms-panel-no-comments {
+  font-size: 13px;
+  color: var(--mod-text-muted);
+  text-align: center;
+  padding: 20px 0 8px;
+}
+
+/* Comment items — mirrors mod_feed panel style */
+
+.ms-panel-comment-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.ms-panel-comment-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--mod-primary);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ms-panel-reply-avatar {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 9px !important;
+  background: var(--mod-primary-lt) !important;
+}
+
+.ms-panel-comment-body {
+  flex: 1;
+  background: var(--mod-surface-2);
+  border: 1px solid var(--mod-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.ms-panel-comment-header {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.ms-panel-comment-author {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mod-dark);
+}
+
+.ms-panel-comment-date {
+  font-size: 10px;
+  color: var(--mod-text-muted);
+}
+
+.ms-panel-comment-text {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--mod-text-body);
+  word-break: break-word;
+}
+
+.ms-comment-mod-badge {
+  font-size: 9px;
+  font-weight: 700;
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 1px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Reply thread indent */
+
+.ms-panel-replies {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding-left: 14px;
+  border-left: 2px solid var(--mod-border);
+}
+
+.ms-panel-reply-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+/* ── REPORTED HIGHLIGHT ───────────────────────────────────── */
+
+/* The comment/reply that was reported gets this class */
+.ms-reported-highlight > .ms-panel-comment-body {
+  border-color: #fbbf24;
+  background: #fffbeb;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
+}
+
+/* For replies, the highlight wraps the whole reply item */
+.ms-panel-reply-item.ms-reported-highlight > .ms-panel-comment-body {
+  border-color: #fbbf24;
+  background: #fffbeb;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
+}
+
+/* "Reported Comment / Reply" inline tag */
+.ms-reported-tag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* AUTO SCROLL STYLE */
+@keyframes ms-highlight-glow {
+  0% {
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.4);
+    background-color: #fffbeb;
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(251, 191, 36, 0.6);
+    background-color: #fef3c7; 
+  }
+  100% {
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
+    background-color: #fffbeb;
+  }
+}
+
+.ms-reported-highlight.ms-highlight-pulse > .ms-panel-comment-body {
+  animation: ms-highlight-glow 1.2s ease-out; 
+}
+
+.ms-panel-reply-item.ms-reported-highlight.ms-highlight-pulse
+  > .ms-panel-comment-body {
+  animation: ms-highlight-glow 1.2s ease-out;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .ms-comment-panel {
+    width: 100vw;
+  }
+}

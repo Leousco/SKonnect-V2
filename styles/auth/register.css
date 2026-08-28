@@ -1,0 +1,367 @@
+.register-card {
+  max-width: 660px;
+  padding: 18px 32px 24px;
+}
+
+/* Shrink logo */
+.register-card .card-logo {
+  margin-bottom: 4px;
+}
+
+.register-card .card-logo img {
+  width: 48px;
+  height: 48px;
+}
+
+/* Tighter title */
+.register-card .card-title {
+  font-size: 1.25rem;
+  margin-bottom: 1px;
+}
+
+.register-card .card-subtitle {
+  font-size: 0.72rem;
+  margin-bottom: 10px;
+}
+
+.register-card .select-field {
+  padding: 15px 30px 15px 12px;
+  height: 37px;
+  min-height: 14px;
+}
+
+/* ── GRID ROWS ───────────────────────────── */
+
+.form-row {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.form-row:last-of-type {
+  margin-bottom: 0px;
+}
+
+.one-col {
+  grid-template-columns: 1fr;
+}
+.three-col {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.two-col {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ── COMPACT INPUT GROUPS ────────────────── */
+
+.register-card .input-group {
+  margin-bottom: 0;
+}
+
+.register-card .input-group label {
+  font-size: 0.72rem;
+  margin-bottom: 3px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.register-card .input-field {
+  padding: 7px 12px;
+  font-size: 0.8rem;
+  border-radius: 7px;
+}
+
+.register-card .input-field::placeholder {
+  font-size: 0.75rem;
+}
+
+/* ── LABEL HELPERS ───────────────────────── */
+
+.req {
+  color: #f5c518;
+  font-size: 0.7rem;
+}
+
+.opt {
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 0.65rem;
+  font-weight: 400;
+}
+
+/* ── SELECT ──────────────────────────────── */
+
+.select-field {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%235b7a99' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 30px;
+  cursor: pointer;
+}
+
+.select-field option {
+  color: #1a1a2e;
+  background: #fff;
+}
+
+/* ── AGE DISPLAY ─────────────────────────── */
+
+.age-display {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 7px 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(255, 255, 255, 0.13);
+  border-radius: 7px;
+  box-sizing: border-box;
+  min-height: 36px;
+}
+
+#ageValue {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f5c518;
+  line-height: 1;
+}
+
+.age-unit {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ── PASSWORD TOGGLE ─────────────────────── */
+
+.register-card .toggle-pw {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4a5568;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.register-card .toggle-pw:hover {
+  color: #1a202c;
+}
+
+/* ── PASSWORD MATCH MSG ──────────────────── */
+
+.pw-match-msg {
+  display: block;
+  font-size: 0.68rem;
+  margin-top: 4px;
+  font-weight: 500;
+  min-height: 12px;
+}
+
+.pw-match-msg.match {
+  color: #4ade80;
+}
+.pw-match-msg.no-match {
+  color: #f87171;
+}
+
+/* ── BUTTON ──────────────────────────────── */
+
+.register-card .login-btn {
+  margin-top: 6px;
+  padding: 9px;
+  font-size: 0.9rem;
+}
+
+/* ── BOTTOM LINK ─────────────────────────── */
+
+.register-block {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.register-link {
+  color: #f5c518;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+  transition: color 0.2s;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+  color: #ffe066;
+}
+
+/* Privacy Policy Checkbox Styles */
+
+.privacy-policy-checkbox {
+  margin: 4px 0 8px;
+  width: 100%;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 26px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  user-select: none;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+  min-height: 18px;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  left: 0;
+  top: 1px;
+  height: 16px;
+  width: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  border-color: rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #f5c518;
+  border-color: #f5c518;
+}
+
+.checkbox-container input:focus ~ .checkmark {
+  box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.3);
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid #1a1a2e;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-text {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.4;
+}
+
+.policy-link {
+  color: #f5c518;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  border-bottom: 1px dotted rgba(245, 197, 24, 0.3);
+}
+
+.policy-link:hover {
+  color: #ffe066;
+  border-bottom-color: #ffe066;
+}
+
+.checkbox-container input:invalid ~ .checkmark {
+  border-color: #f5c518;
+  background-color: rgba(248, 113, 113, 0.1);
+}
+
+.privacy-policy-checkbox .checkbox-text .required-indicator {
+  color: #f5c518;
+  margin-left: 2px;
+  font-size: 0.7rem;
+}
+
+@media (max-width: 600px) {
+  .checkbox-container {
+    font-size: 0.75rem;
+    padding-left: 24px;
+  }
+
+  .checkbox-text {
+    font-size: 0.75rem;
+  }
+
+  .checkmark {
+    height: 15px;
+    width: 15px;
+  }
+
+  .checkbox-container .checkmark:after {
+    left: 4.5px;
+    top: 2px;
+    width: 3.5px;
+    height: 7px;
+  }
+}
+
+/* ── RESPONSIVE ──────────────────────────── */
+
+@media (max-width: 600px) {
+  .three-col,
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+
+  .register-card {
+    max-width: 100%;
+    padding: 14px 16px 12px;
+  }
+}
+
+/* ── DISABLED SUBMIT BUTTON ──────────────────────────────────────────────────
+   Applied automatically by JS until all required fields are valid.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.register-card .login-btn:disabled {
+  background: rgba(245, 197, 24, 0.35);
+  color: rgba(15, 46, 86, 0.5);
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.register-card .login-btn:disabled:hover {
+  background: rgba(245, 197, 24, 0.35);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── TOAST NOTIFICATIONS (register page supplement) ─────────────────────────
+   login.css is also loaded on this page so the full toast block lives there.
+   This ensures the toast message element from register context is hidden.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.form-message { display: none !important; }

@@ -1,0 +1,315 @@
+/* ============================================================
+   ADMIN USERS & ROLES — Stylesheet
+   Extends admin_services.css
+   ============================================================ */
+
+/* ── USER TABLE ──────────────────────────────────────────── */
+
+.user-table-wrap {
+    background: var(--ap-surface);
+    border: 1px solid var(--ap-border);
+    border-radius: var(--ap-radius);
+    box-shadow: var(--ap-shadow);
+    overflow-x: auto;
+    margin-bottom: 24px;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: "Poppins", sans-serif;
+}
+
+.user-table thead th {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ap-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--ap-surface-2);
+    border-bottom: 2px solid var(--ap-border);
+    white-space: nowrap;
+}
+
+.user-row td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--ap-border);
+    vertical-align: middle;
+    color: var(--ap-text-body);
+}
+
+.user-row:last-child td { border-bottom: none; }
+.user-row:hover td      { background: #faf8ff; }
+
+/* ── USER NAME CELL ──────────────────────────────────────── */
+
+.user-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+}
+
+.role-avatar-admin      { background: var(--ap); }
+.role-avatar-moderator  { background: #0891b2; }
+.role-avatar-sk_officer { background: #d97706; }
+.role-avatar-resident   { background: #059669; }
+
+.user-fullname {
+    font-weight: 600;
+    color: var(--ap-text-head);
+    font-size: 13px;
+}
+
+.user-id {
+    font-size: 11px;
+    color: var(--ap-text-muted);
+}
+
+.user-email {
+    font-size: 12px;
+    color: var(--ap-text-muted);
+}
+
+.user-date {
+    font-size: 12px;
+    color: var(--ap-text-muted);
+    white-space: nowrap;
+}
+
+/* ── ROLE BADGES ─────────────────────────────────────────── */
+
+.user-role-badge {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.role-admin     { background: #ede9fe; color: var(--ap); border: 1px solid var(--ap-border-mid); }
+.role-moderator { background: #e0f2fe; color: #0369a1;  border: 1px solid #bae6fd; }
+.role-officer   { background: #fef3c7; color: #92400e;  border: 1px solid #fcd34d; }
+.role-resident  { background: #d1fae5; color: #065f46;  border: 1px solid #6ee7b7; }
+
+/* ── VERIFIED BADGES ─────────────────────────────────────── */
+
+.user-verified-badge {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.verified-yes { background: #d1fae5; color: #065f46; }
+.verified-no  { background: #fee2e2; color: #b91c1c; }
+
+/* ── USER ACTION BUTTONS ─────────────────────────────────── */
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.btn-user-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: "Poppins", sans-serif;
+    border-radius: 7px;
+    cursor: pointer;
+    border: 1.5px solid var(--ap-border);
+    background: var(--ap-surface);
+    color: var(--ap-text-body);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+
+.btn-view:hover   { background: #ede9fe; border-color: var(--ap-border-mid); color: var(--ap); }
+.btn-toggle:hover { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
+.btn-delete:hover { background: #fee2e2; border-color: #fca5a5; color: var(--ap-danger); }
+
+/* ── USER MODAL AVATAR ───────────────────────────────────── */
+
+.user-modal-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    background: var(--ap);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-detail-val {
+    font-size: 13px;
+    color: var(--ap-text-body);
+    font-family: "Poppins", sans-serif;
+    padding: 8px 12px;
+    background: var(--ap-surface-2);
+    border: 1px solid var(--ap-border);
+    border-radius: 8px;
+}
+
+/* ── SELECT INPUT (modal & assign table) ─────────────────── */
+
+.svc-select-input {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: "Poppins", sans-serif;
+    border: 1px solid var(--ap-border);
+    border-radius: 8px;
+    background: var(--ap-surface);
+    color: var(--ap-text-body);
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: border-color 0.15s;
+}
+
+.svc-select-input:focus {
+    outline: none;
+    border-color: var(--ap);
+}
+
+/* ── FIELD HINT ──────────────────────────────────────────── */
+
+.svc-field-hint {
+    display: block;
+    font-size: 11px;
+    color: var(--ap-text-muted);
+    font-family: "Poppins", sans-serif;
+    margin-top: 5px;
+    line-height: 1.5;
+}
+
+/* ── ROLES GRID ──────────────────────────────────────────── */
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    margin-bottom: 32px;
+}
+
+.role-card {
+    background: var(--ap-surface);
+    border: 1px solid var(--ap-border);
+    border-radius: var(--ap-radius);
+    box-shadow: var(--ap-shadow);
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.role-card:hover {
+    box-shadow: var(--ap-shadow-md);
+    transform: translateY(-2px);
+}
+
+.role-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--ap-border);
+}
+
+.role-admin-header     { background: #f5f3ff; }
+.role-moderator-header { background: #f0f9ff; }
+.role-officer-header   { background: #fffbeb; }
+.role-resident-header  { background: #f0fdf4; }
+
+.role-card-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.role-user-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ap-text-muted);
+    font-family: "Poppins", sans-serif;
+}
+
+.role-description {
+    font-size: 12px;
+    color: var(--ap-text-muted);
+    font-family: "Poppins", sans-serif;
+    line-height: 1.55;
+}
+
+.role-card-body {
+    padding: 16px 20px;
+}
+
+.role-perms-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--ap-text-muted);
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 10px;
+}
+
+.role-perms-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.role-perm-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-family: "Poppins", sans-serif;
+    color: var(--ap-text-body);
+}
+
+.perm-allowed { color: var(--ap-text-body); }
+.perm-denied  { color: var(--ap-text-muted); opacity: 0.6; }
+
+.perm-icon { font-size: 12px; flex-shrink: 0; }
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+    .roles-grid { grid-template-columns: 1fr 1fr; }
+    .user-table thead th:nth-child(4),
+    .user-table tbody td:nth-child(4) { display: none; }
+}
+
+@media (max-width: 680px) {
+    .roles-grid { grid-template-columns: 1fr; }
+    .user-actions { flex-direction: column; align-items: flex-start; }
+}

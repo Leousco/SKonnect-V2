@@ -47,7 +47,13 @@ MILESTONE #3
 - User Management Module (system admin side) ✔  
 - Public view improvements ✔  
   
+
+Database Migration - Incomplete ⏳ 
+  
+Completed:  
+
+
 Current Task:  
-- Sanity Check/QA Testing ⏳  
+- Authentication Module ⏳  
   
  

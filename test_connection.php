@@ -12,16 +12,16 @@ try {
 
     $checks = [];
 
-    $stmt = $conn->query("SELECT VERSION() AS version");
+    $stmt = $conn->query("SELECT version()");
     $checks['mysql_version'] = $stmt->fetchColumn();
 
-    $stmt = $conn->query("SELECT DATABASE() AS db");
+    $stmt = $conn->query("SELECT current_database()");
     $checks['active_database'] = $stmt->fetchColumn();
 
-    $stmt = $conn->query("SELECT @@character_set_connection AS charset");
+    $stmt = $conn->query("SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = current_database()");
     $checks['charset'] = $stmt->fetchColumn();
 
-    $stmt = $conn->query("SHOW TABLES");
+    $stmt = $conn->query("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
     $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
     $checks['tables_found'] = count($tables);
     $checks['tables'] = $tables;

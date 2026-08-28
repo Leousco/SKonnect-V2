@@ -1,21 +1,19 @@
 <?php
 class Database {
-    private $host = "localhost";
-    private $db_name = "skonnect";
-    private $username = "root";
-    private $password = "";
+    private $dsn = "pgsql:host=aws-0-ap-southeast-1.pooler.supabase.com;port=5432;dbname=postgres";
+    private $username = "postgres.qexsehfkcwkvhijovhvn";
+    private $password = "sbit3f3rdyrstudents"; 
     public $conn;
 
     public function getConnection() {
         $this->conn = null;
         try {
             $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
+                $this->dsn,
                 $this->username,
                 $this->password
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->exec("set names utf8mb4");
         } catch(PDOException $exception) {
             header('Content-Type: application/json');
             echo json_encode([
@@ -27,5 +25,4 @@ class Database {
         return $this->conn;
     }
 }
-
 ?>

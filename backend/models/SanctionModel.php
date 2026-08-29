@@ -16,7 +16,7 @@ class SanctionModel
 
         $stmt = $this->conn->prepare(
             "SELECT MAX(level) FROM user_sanctions
-             WHERE user_id = :uid AND is_active = 1"
+             WHERE user_id = :uid AND is_active = TRUE"
         );
         $stmt->execute([':uid' => $user_id]);
         return (int)$stmt->fetchColumn();
@@ -49,7 +49,7 @@ class SanctionModel
             "INSERT INTO user_sanctions
                 (user_id, issued_by, level, reason, report_id, expires_at, is_active)
              VALUES
-                (:user_id, :issued_by, :level, :reason, :report_id, :expires_at, 1)"
+                (:user_id, :issued_by, :level, :reason, :report_id, :expires_at, TRUE)"
         );
         $stmt->execute([
             ':user_id'    => $user_id,
@@ -74,7 +74,7 @@ class SanctionModel
     public function clearSanctions(int $user_id): bool
     {
         $stmt = $this->conn->prepare(
-            "UPDATE user_sanctions SET is_active = 0 WHERE user_id = :uid AND is_active = 1"
+            "UPDATE user_sanctions SET is_active = FALSE WHERE user_id = :uid AND is_active = TRUE"
         );
         $ok = $stmt->execute([':uid' => $user_id]);
         if ($ok) {
@@ -87,11 +87,11 @@ class SanctionModel
     {
         $row = $this->conn->query(
             "SELECT
-                COUNT(*)                                      AS total_active,
-                SUM(level = 1 AND is_active = 1)             AS level1,
-                SUM(level = 2 AND is_active = 1)             AS level2,
-                SUM(level = 3 AND is_active = 1)             AS level3,
-                SUM(DATE(created_at) = CURDATE())            AS today
+                COUNT(*)                                                              AS total_active,
+                SUM(CASE WHEN level = 1 AND is_active = TRUE THEN 1 ELSE 0 END)        AS level1,
+                SUM(CASE WHEN level = 2 AND is_active = TRUE THEN 1 ELSE 0 END)        AS level2,
+                SUM(CASE WHEN level = 3 AND is_active = TRUE THEN 1 ELSE 0 END)        AS level3,
+                SUM(CASE WHEN created_at::date = CURRENT_DATE THEN 1 ELSE 0 END)       AS today
              FROM user_sanctions"
         )->fetch(PDO::FETCH_ASSOC);
 
@@ -104,24 +104,24 @@ class SanctionModel
     {
         $this->conn->prepare(
             "UPDATE user_sanctions
-             SET is_active = 0
+             SET is_active = FALSE
              WHERE user_id = :uid
                AND level = 2
-               AND is_active = 1
+               AND is_active = TRUE
                AND expires_at IS NOT NULL
                AND expires_at < NOW()"
         )->execute([':uid' => $user_id]);
 
         $remaining = $this->conn->prepare(
             "SELECT COUNT(*) FROM user_sanctions
-             WHERE user_id = :uid AND is_active = 1 AND level >= 2"
+             WHERE user_id = :uid AND is_active = TRUE AND level >= 2"
         );
         $remaining->execute([':uid' => $user_id]);
 
         if ((int)$remaining->fetchColumn() === 0) {
             $perm = $this->conn->prepare(
                 "SELECT COUNT(*) FROM user_sanctions
-                 WHERE user_id = :uid AND is_active = 1 AND level = 3"
+                 WHERE user_id = :uid AND is_active = TRUE AND level = 3"
             );
             $perm->execute([':uid' => $user_id]);
             if ((int)$perm->fetchColumn() === 0) {

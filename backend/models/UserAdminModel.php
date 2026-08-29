@@ -20,11 +20,18 @@ class UserAdminModel
             FROM users u
             JOIN user_status us ON us.user_id = u.id
             LEFT JOIN user_profiles up ON up.user_id = u.id
-            WHERE us.is_deleted = 0
+            WHERE us.is_deleted = FALSE
             ORDER BY u.created_at DESC
         ");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as &$row) {
+            $row['is_verified'] = $row['is_verified'] === 't';
+            $row['is_active']   = $row['is_active']   === 't';
+            $row['is_banned']   = $row['is_banned']   === 't';
+        }
+        unset($row);
+        return $rows;
     }
 
     public function findById(int $id): array|false
@@ -35,10 +42,17 @@ class UserAdminModel
             FROM users u
             JOIN user_status us ON us.user_id = u.id
             LEFT JOIN user_profiles up ON up.user_id = u.id
-            WHERE u.id = ? AND us.is_deleted = 0
+            WHERE u.id = ? AND us.is_deleted = FALSE
         ");
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $row['is_verified'] = $row['is_verified'] === 't';
+            $row['is_active']   = $row['is_active']   === 't';
+            $row['is_banned']   = $row['is_banned']   === 't';
+            $row['is_deleted']  = $row['is_deleted']  === 't';
+        }
+        return $row;
     }
 
     public function emailExists(string $email, int $excludeId = 0): bool
@@ -46,7 +60,7 @@ class UserAdminModel
         $stmt = $this->db->prepare("
             SELECT u.id FROM users u
             JOIN user_status us ON us.user_id = u.id
-            WHERE u.email = ? AND u.id != ? AND us.is_deleted = 0
+            WHERE u.email = ? AND u.id != ? AND us.is_deleted = FALSE
         ");
         $stmt->execute([$email, $excludeId]);
         return (bool) $stmt->fetch();
@@ -58,7 +72,7 @@ class UserAdminModel
             INSERT INTO users
                 (first_name, last_name, middle_name, gender, birth_date, age,
                  email, password, role, is_verified, verify_token, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, NOW())
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, FALSE, ?, NOW())
         ");
         $stmt->execute([
             $d['first_name'], $d['last_name'], $d['middle_name'],
@@ -105,13 +119,13 @@ class UserAdminModel
     {
         $this->db->prepare("
             UPDATE user_status
-            SET is_deleted = 1, is_active = 0, deleted_at = NOW()
+            SET is_deleted = TRUE, is_active = FALSE, deleted_at = NOW()
             WHERE user_id = ?
         ")->execute([$id]);
 
         $this->db->prepare("
             UPDATE users
-            SET email = CONCAT(email, '_deleted_', UNIX_TIMESTAMP()),
+            SET email = CONCAT(email, '_deleted_', EXTRACT(EPOCH FROM NOW())::bigint),
                 otp_code = NULL, otp_expires = NULL
             WHERE id = ?
         ")->execute([$id]);
@@ -121,7 +135,7 @@ class UserAdminModel
     {
         $stmt = $this->db->prepare("
             SELECT id FROM users
-            WHERE verify_token = ? AND is_verified = 0
+            WHERE verify_token = ? AND is_verified = FALSE
             LIMIT 1
         ");
         $stmt->execute([$token]);
@@ -130,7 +144,7 @@ class UserAdminModel
 
         $this->db->prepare("
             UPDATE users
-            SET is_verified = 1, verified_at = NOW(), verify_token = NULL
+            SET is_verified = TRUE, verified_at = NOW(), verify_token = NULL
             WHERE id = ?
         ")->execute([$row['id']]);
 

@@ -59,7 +59,7 @@ class CommentReportModel
                     (SELECT MAX(us.level)
                      FROM user_sanctions us
                      WHERE us.user_id = COALESCE(au_c.id, au_r.id)
-                       AND us.is_active = 1),
+                       AND us.is_active = TRUE),
                     0
                 )                                          AS author_sanction_level
 

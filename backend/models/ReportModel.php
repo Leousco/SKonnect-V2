@@ -113,7 +113,11 @@ class ReportModel
              JOIN users   ta ON ta.id = t.author_id
              JOIN users   rp ON rp.id = tr.reporter_id
              ORDER BY
-                FIELD(tr.status, 'pending', 'reviewed', 'dismissed'),
+                CASE tr.status
+                    WHEN 'pending'   THEN 0
+                    WHEN 'reviewed'  THEN 1
+                    WHEN 'dismissed' THEN 2
+                END,
                 tr.created_at DESC"
         );
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -140,14 +144,14 @@ class ReportModel
     {
         $stmt = $this->conn->query(
             "SELECT
-                COUNT(*)                          AS total,
-                SUM(status = 'pending')           AS pending,
-                SUM(status = 'reviewed')          AS reviewed,
-                SUM(status = 'dismissed')         AS dismissed,
-                SUM(category = 'harassment')      AS harassment,
-                SUM(category = 'spam')            AS spam,
-                SUM(category = 'inappropriate')   AS inappropriate,
-                SUM(category = 'misinformation')  AS misinformation
+                COUNT(*)                                                            AS total,
+                SUM(CASE WHEN status = 'pending'          THEN 1 ELSE 0 END)        AS pending,
+                SUM(CASE WHEN status = 'reviewed'         THEN 1 ELSE 0 END)        AS reviewed,
+                SUM(CASE WHEN status = 'dismissed'        THEN 1 ELSE 0 END)        AS dismissed,
+                SUM(CASE WHEN category = 'harassment'     THEN 1 ELSE 0 END)        AS harassment,
+                SUM(CASE WHEN category = 'spam'           THEN 1 ELSE 0 END)        AS spam,
+                SUM(CASE WHEN category = 'inappropriate'  THEN 1 ELSE 0 END)        AS inappropriate,
+                SUM(CASE WHEN category = 'misinformation' THEN 1 ELSE 0 END)        AS misinformation
              FROM thread_reports"
         );
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

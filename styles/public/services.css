@@ -2,8 +2,11 @@
    services.css — Public Services Page
    Uses global.css variables. Mirrors portal card design.
    ============================================================ */
+body::-webkit-scrollbar {
+    display: none;
+}
 
-   .services-page {
+.services-page {
     padding: 0 0 80px;
     background: var(--bg, #f0f4f8);
     min-height: 100vh;

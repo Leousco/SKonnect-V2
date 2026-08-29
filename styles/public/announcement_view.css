@@ -1,6 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
    announcement_view.css  —  Public single-announcement view
    ══════════════════════════════════════════════════════════ */
+body::-webkit-scrollbar {
+    display: none;
+}
 
 .pub-av-page {
   padding: 32px 8% 60px;

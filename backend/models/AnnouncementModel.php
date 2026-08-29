@@ -25,7 +25,7 @@ class AnnouncementModel {
             ':title'        => $data['title'],
             ':content'      => $data['content'],
             ':category'     => $data['category'],
-            ':featured'     => $data['featured'] ? 1 : 0,
+            ':featured'     => (bool) $data['featured'],
             ':featured_at'  => $data['featured'] ? date('Y-m-d H:i:s') : null,
             ':banner_img'   => $data['banner_img'] ?? null,
             ':author_id'    => $data['author_id'],
@@ -63,7 +63,7 @@ class AnnouncementModel {
         }
 
         if (!empty($filters['search'])) {
-            $where[]            = '(a.title LIKE :search OR a.content LIKE :search)';
+            $where[]            = '(a.title ILIKE :search OR a.content ILIKE :search)';
             $params[':search']  = '%' . $filters['search'] . '%';
         }
 
@@ -87,7 +87,7 @@ class AnnouncementModel {
         $params = [];
 
         // Auto-expire: exclude past expiry
-        $where[] = "(a.expired_at IS NULL OR a.expired_at >= CURDATE())";
+        $where[] = "(a.expired_at IS NULL OR a.expired_at >= CURRENT_DATE)";
 
         if (!empty($filters['category'])) {
             $where[]             = 'a.category = :category';
@@ -95,7 +95,7 @@ class AnnouncementModel {
         }
 
         if (!empty($filters['search'])) {
-            $where[]            = '(a.title LIKE :search OR a.content LIKE :search)';
+            $where[]            = '(a.title ILIKE :search OR a.content ILIKE :search)';
             $params[':search']  = '%' . $filters['search'] . '%';
         }
 
@@ -124,8 +124,8 @@ class AnnouncementModel {
             "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) AS author_name
              FROM announcements a
              JOIN users u ON u.id = a.author_id
-             WHERE a.featured = 1 AND a.status = 'active'
-               AND (a.expired_at IS NULL OR a.expired_at >= CURDATE())
+             WHERE a.featured = TRUE AND a.status = 'active'
+               AND (a.expired_at IS NULL OR a.expired_at >= CURRENT_DATE)
              ORDER BY a.featured_at DESC
              LIMIT 1"
         );
@@ -167,7 +167,7 @@ class AnnouncementModel {
         foreach ($allowed as $field) {
             if (array_key_exists($field, $data)) {
                 $sets[]          = "{$field} = :{$field}";
-                $params[":{$field}"] = $data[$field];
+                $params[":{$field}"] = $field === 'featured' ? (bool) $data[$field] : $data[$field];
             }
         }
 
@@ -247,11 +247,11 @@ class AnnouncementModel {
         $stmt = $this->conn->query(
             "SELECT
                 COUNT(*) AS total,
-                SUM(status = 'active')   AS published,
-                SUM(status = 'draft')    AS drafts,
-                SUM(status = 'archived') AS archived,
-                SUM(featured = 1 AND status = 'active') AS featured,
-                SUM(category = 'urgent' AND status = 'active') AS urgent
+                SUM(CASE WHEN status = 'active'   THEN 1 ELSE 0 END) AS published,
+                SUM(CASE WHEN status = 'draft'    THEN 1 ELSE 0 END) AS drafts,
+                SUM(CASE WHEN status = 'archived' THEN 1 ELSE 0 END) AS archived,
+                SUM(CASE WHEN featured = TRUE AND status = 'active' THEN 1 ELSE 0 END) AS featured,
+                SUM(CASE WHEN category = 'urgent' AND status = 'active' THEN 1 ELSE 0 END) AS urgent
              FROM announcements"
         );
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -265,7 +265,7 @@ class AnnouncementModel {
              SET status = 'archived', archived_at = NOW()
              WHERE status = 'active'
                AND expired_at IS NOT NULL
-               AND expired_at < CURDATE()
+               AND expired_at < CURRENT_DATE
                AND archived_at IS NULL"
         );
         $stmt->execute();

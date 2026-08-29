@@ -53,7 +53,7 @@ class BookmarkModel
              JOIN users         u ON u.id = a.author_id
              WHERE b.user_id   = :uid
                AND a.status   != 'archived'
-               AND (a.expired_at IS NULL OR a.expired_at >= CURDATE())
+               AND (a.expired_at IS NULL OR a.expired_at >= CURRENT_DATE)
              ORDER BY b.created_at DESC"
         );
         $stmt->execute([':uid' => $userId]);

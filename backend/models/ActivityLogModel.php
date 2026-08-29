@@ -87,10 +87,10 @@ class ActivityLogModel
         $ph   = $this->ph(self::MOD_ACTIONS);
         $stmt = $this->conn->prepare(
             "SELECT
-                COUNT(*)                                                    AS total,
-                SUM(action IN ('report_resolved','report_dismissed'))       AS reports_handled,
-                SUM(action IN ('warning_issued','mute_issued','ban_issued')) AS sanctions_issued,
-                SUM(action = 'thread_removed')                              AS threads_hidden
+                COUNT(*)                                                                          AS total,
+                SUM(CASE WHEN action IN ('report_resolved','report_dismissed')       THEN 1 ELSE 0 END) AS reports_handled,
+                SUM(CASE WHEN action IN ('warning_issued','mute_issued','ban_issued') THEN 1 ELSE 0 END) AS sanctions_issued,
+                SUM(CASE WHEN action = 'thread_removed'                              THEN 1 ELSE 0 END) AS threads_hidden
              FROM activity_logs
              WHERE action IN ($ph)"
         );
@@ -132,11 +132,11 @@ class ActivityLogModel
             $params[]     = (int)$filters['moderator_id'];
         }
         if (!empty($filters['date_from'])) {
-            $conditions[] = 'DATE(al.created_at) >= ?';
+            $conditions[] = 'al.created_at::date >= ?';
             $params[]     = $filters['date_from'];
         }
         if (!empty($filters['date_to'])) {
-            $conditions[] = 'DATE(al.created_at) <= ?';
+            $conditions[] = 'al.created_at::date <= ?';
             $params[]     = $filters['date_to'];
         }
 

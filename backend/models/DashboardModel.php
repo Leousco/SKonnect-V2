@@ -20,19 +20,19 @@ class DashboardModel
 
         $communityPosts = $this->db->prepare("
             SELECT COUNT(*) FROM threads
-            WHERE author_id = :uid AND is_removed = 0
+            WHERE author_id = :uid AND is_removed = FALSE
         ");
         $communityPosts->execute([':uid' => $userId]);
 
         $upcomingEvents = $this->db->prepare("
             SELECT COUNT(*) FROM events
-            WHERE event_date >= CURDATE()
+            WHERE event_date >= CURRENT_DATE
         ");
         $upcomingEvents->execute();
 
         $unreadNotifs = $this->db->prepare("
             SELECT COUNT(*) FROM notifications
-            WHERE user_id = :uid AND is_read = 0
+            WHERE user_id = :uid AND is_read = FALSE
         ");
         $unreadNotifs->execute([':uid' => $userId]);
 
@@ -56,7 +56,7 @@ class DashboardModel
                 created_at AS activity_at,
                 id AS ref_id
             FROM threads
-            WHERE author_id = :uid AND is_removed = 0
+            WHERE author_id = :uid AND is_removed = FALSE
             ORDER BY created_at DESC
             LIMIT 5
         ");
@@ -88,7 +88,7 @@ class DashboardModel
                 tc.thread_id AS ref_id
             FROM thread_comments tc
             INNER JOIN threads t ON t.id = tc.thread_id
-            WHERE tc.author_id = :uid AND tc.is_removed = 0
+            WHERE tc.author_id = :uid AND tc.is_removed = FALSE
             ORDER BY tc.created_at DESC
             LIMIT 5
         ");
@@ -103,7 +103,7 @@ class DashboardModel
                 cr.created_at AS activity_at,
                 cr.id AS ref_id
             FROM comment_replies cr
-            WHERE cr.author_id = :uid AND cr.is_removed = 0
+            WHERE cr.author_id = :uid AND cr.is_removed = FALSE
             ORDER BY cr.created_at DESC
             LIMIT 5
         ");
@@ -121,7 +121,7 @@ class DashboardModel
             SELECT id, title, category, published_at
             FROM announcements
             WHERE status = 'active'
-              AND (expired_at IS NULL OR expired_at >= CURDATE())
+              AND (expired_at IS NULL OR expired_at >= CURRENT_DATE)
             ORDER BY published_at DESC
             LIMIT :lim
         ");

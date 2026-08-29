@@ -26,7 +26,7 @@ $where  = ['1=1'];
 $params = [];
 
 if ($search !== '') {
-    $where[]          = '(a.title LIKE :search OR a.content LIKE :search2)';
+    $where[]          = '(a.title ILIKE :search OR a.content ILIKE :search2)';
     $params[':search']  = "%$search%";
     $params[':search2'] = "%$search%";
 }
@@ -53,7 +53,7 @@ $stmt = $conn->prepare("
         a.title,
         a.category,
         a.status,
-        a.featured,
+        a.featured::int AS featured,
         a.banner_img,
         a.published_at,
         a.expired_at,
@@ -63,7 +63,7 @@ $stmt = $conn->prepare("
     JOIN users u ON a.author_id = u.id
     WHERE $whereSQL
     ORDER BY
-        FIELD(a.status, 'active', 'draft', 'archived'),
+        CASE a.status WHEN 'active' THEN 1 WHEN 'draft' THEN 2 WHEN 'archived' THEN 3 ELSE 4 END,
         a.featured DESC,
         a.published_at DESC
     LIMIT :limit OFFSET :offset
@@ -77,12 +77,12 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Stats
 $statsStmt = $conn->query("
     SELECT
-        COUNT(*) AS total,
-        SUM(status = 'active')   AS active,
-        SUM(status = 'draft')    AS draft,
-        SUM(status = 'archived') AS archived,
-        SUM(featured = 1)        AS featured,
-        SUM(category = 'urgent') AS urgent
+        COUNT(*)                                          AS total,
+        COUNT(*) FILTER (WHERE status = 'active')         AS active,
+        COUNT(*) FILTER (WHERE status = 'draft')          AS draft,
+        COUNT(*) FILTER (WHERE status = 'archived')       AS archived,
+        COUNT(*) FILTER (WHERE featured = TRUE)           AS featured,
+        COUNT(*) FILTER (WHERE category = 'urgent')       AS urgent
     FROM announcements
 ");
 $stats = $statsStmt->fetch(PDO::FETCH_ASSOC);

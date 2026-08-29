@@ -1,3 +1,5 @@
+Last Update: 8/29/26  
+
 System Users:  
 
 Residents - Standard users, can view announcements, interact with community posts  
@@ -51,9 +53,71 @@ MILESTONE #3
 Database Migration - Incomplete ⏳ 
   
 Completed:  
-
+- Authentication  
+- Announcements Module  
+- Community Feed Module  
+- Services Module  
+- Profile Page (resident)  
+- Notifications Module (resident)  
+- Dashboard (resident, officer, moderator, admin)  
+  
 
 Current Task:  
-- Authentication Module ⏳  
+- Admin pages ⏳  
+  
+
+Known Issues:  
+  
+General  
+- Design inconsistencies for buttons, dropdowns, etc.  
+- Topbars on each user views are not sticky  
+- After logging in, clicking the 'back' button of a browser returns the user to  
+  the login page.  
+- Empty fields like threads, reports, etc. shows either two message saying  
+  "no record yet" or misaligned (not centered) text.  
+- Inconsistent toast design across all user views.  
+  
+Public side  
+ - Login page  
+   - No loading visualization when clicking the "Login" button  
+ - Registration  
+   - No password restrictions  
+ - Services  
+   - Bug with modal appearing and the navbar
+  
+Portal side  
+ - Dashboard  
+   - Event in calendar shows "Tomorrow" even though the event is still 2 days  
+     from now  
+ - Notifications  
+   - Color and icon of "action require" service requests.  
+   - Viewing a notification doesn't auto "mark as read" it.  
+ - Profile  
+   - User info improvements  
+ - Services  
+   - Clicking outside the modal closes the modal resulting in loss of progress  
+ - Notif Badge  
+   - Counter appears without any new notifications when opening "view" pages  
+     (thread_view.php, announcement_view.php)  
+  
+Officer side  
+ - Events Page  
+   - Clicking outside the add event modal closes the modal resulting in  
+     loss of progress  
+   - Past events doesn't auto delete (to be evaluated)  
+   - New events appear at the bottom of the list  
+ - Notification badge non functional  
+  
+Moderator side  
+ - Dashboard  
+   - Styles for containers  
+ - Community Feed  
+   - Commenting or replying auto updates the status of the thread to 'responded'  
+    but it is not shown immediately because the page needs to refresh first.  
+ - Notifications non functional  
+  
+Admin side  
+ - Mostly non functional, styles are inconsistent with other related modules  
+   on different users  
   
  

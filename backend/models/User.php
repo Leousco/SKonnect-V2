@@ -38,19 +38,11 @@ class User {
 
     public function create() {
         $query = "INSERT INTO " . $this->table_name . "
-                SET
-                    first_name    = :first_name,
-                    last_name     = :last_name,
-                    middle_name   = :middle_name,
-                    gender        = :gender,
-                    birth_date    = :birth_date,
-                    age           = :age,
-                    email         = :email,
-                    password      = :password,
-                    role          = 'resident',
-                    otp_code      = :otp_code,
-                    otp_expires   = :otp_expires,
-                    is_verified   = 0";
+                    (first_name, last_name, middle_name, gender, birth_date,
+                     age, email, password, role, otp_code, otp_expires, is_verified)
+                  VALUES
+                    (:first_name, :last_name, :middle_name, :gender, :birth_date,
+                     :age, :email, :password, 'resident', :otp_code, :otp_expires, FALSE)";
 
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":first_name",  $this->first_name);
@@ -65,6 +57,8 @@ class User {
         $stmt->bindParam(":otp_expires", $this->otp_expires);
 
         if ($stmt->execute()) {
+            // user_status and user_profiles rows are auto-created by
+            // trg_user_status_init / trg_user_profile_init on the users table.
             $this->id = $this->conn->lastInsertId();
             return true;
         }
@@ -73,7 +67,7 @@ class User {
 
     public function verifyUser() {
         $query = "SELECT otp_code, otp_expires FROM " . $this->table_name . "
-                  WHERE email = :email AND is_verified = 0 LIMIT 1";
+                  WHERE email = :email AND is_verified = FALSE LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $this->email);
         $stmt->execute();
@@ -84,7 +78,7 @@ class User {
         if (strtotime($row['otp_expires']) < time()) return false;
 
         $update = "UPDATE " . $this->table_name . "
-                   SET is_verified = 1,
+                   SET is_verified = TRUE,
                        verified_at = NOW(),
                        otp_code    = NULL,
                        otp_expires = NULL
@@ -145,7 +139,7 @@ class User {
 
         if ($stmt->rowCount() > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return ['exists' => true, 'is_verified' => $row['is_verified']];
+            return ['exists' => true, 'is_verified' => $this->_toBool($row['is_verified'])];
         }
         return ['exists' => false];
     }
@@ -154,7 +148,7 @@ class User {
         $query = "UPDATE " . $this->table_name . "
                   SET otp_code    = :otp_code,
                       otp_expires = :otp_expires
-                  WHERE email = :email AND is_verified = 0";
+                  WHERE email = :email AND is_verified = FALSE";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":otp_code",    $this->otp_code);
         $stmt->bindParam(":otp_expires", $this->otp_expires);
@@ -175,7 +169,7 @@ class User {
 
     public function deleteUnverified() {
         $query = "DELETE FROM " . $this->table_name . "
-                  WHERE email = :email AND is_verified = 0";
+                  WHERE email = :email AND is_verified = FALSE";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $this->email);
         return $stmt->execute();
@@ -201,24 +195,33 @@ class User {
         $this->first_name       = $row['first_name'];
         $this->last_name        = $row['last_name'];
         $this->middle_name      = $row['middle_name'];
-        $this->gender           = $row['gender'];
-        $this->birth_date       = $row['birth_date'];
+        $this->gender            = $row['gender'];
+        $this->birth_date        = $row['birth_date'];
         $this->age              = $row['age'];
         $this->email            = $row['email'];
         $this->password         = $row['password'];
         $this->role             = $row['role'];
-        $this->is_verified      = $row['is_verified'];
+        $this->is_verified      = $this->_toBool($row['is_verified']);
         $this->otp_code         = $row['otp_code'];
         $this->otp_expires      = $row['otp_expires'];
-        $this->is_active        = $row['is_active'];
-        $this->is_banned        = $row['is_banned'];
+        $this->is_active        = $this->_toBool($row['is_active']);
+        $this->is_banned        = $this->_toBool($row['is_banned']);
         $this->banned_reason    = $row['banned_reason'];
-        $this->is_deleted       = $row['is_deleted'];
+        $this->is_deleted       = $this->_toBool($row['is_deleted']);
         $this->deleted_at       = $row['deleted_at'];
         $this->feed_ban_level   = $row['feed_ban_level'];
         $this->feed_ban_expires = $row['feed_ban_expires'];
         $this->login_attempts   = (int) $row['login_attempts'];
         $this->lockout_until    = $row['lockout_until'];
         $this->lockout_level    = (int) $row['lockout_level'];
+    }
+
+    // PDO_PGSQL returns boolean columns as the strings "t"/"f" (or sometimes
+    // native true/false depending on driver version) instead of PHP bool —
+    // "f" is truthy in PHP, so every boolean read from Postgres must be
+    // normalized through this before use in a condition.
+    private function _toBool($value): bool {
+        if (is_bool($value)) return $value;
+        return $value === 't' || $value === '1' || $value === 1;
     }
 }

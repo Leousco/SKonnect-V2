@@ -23,7 +23,7 @@ try {
         FROM users u
         JOIN user_status us ON u.id = us.user_id
         WHERE u.role = 'resident'
-          AND us.is_deleted = 0
+          AND us.is_deleted = FALSE
     ");
     $totalMembers = (int) $stmt->fetchColumn();
 
@@ -33,9 +33,9 @@ try {
         FROM users u
         JOIN user_status us ON u.id = us.user_id
         WHERE u.role = 'resident'
-          AND us.is_deleted = 0
-          AND MONTH(u.created_at) = MONTH(CURDATE())
-          AND YEAR(u.created_at)  = YEAR(CURDATE())
+          AND us.is_deleted = FALSE
+          AND EXTRACT(MONTH FROM u.created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+          AND EXTRACT(YEAR FROM u.created_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
     ");
     $membersThisMonth = (int) $stmt->fetchColumn();
 
@@ -61,7 +61,7 @@ try {
         FROM announcements
         WHERE status    = 'active'
           AND expired_at IS NOT NULL
-          AND expired_at BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+          AND expired_at BETWEEN CURRENT_DATE AND (CURRENT_DATE + INTERVAL '7 days')
     ");
     $expiringSoon = (int) $stmt->fetchColumn();
 
@@ -97,8 +97,8 @@ try {
             COUNT(*) AS count
         FROM service_applications sa
         JOIN services s ON sa.service_id = s.id
-        WHERE MONTH(sa.submitted_at) = MONTH(CURDATE())
-          AND YEAR(sa.submitted_at)  = YEAR(CURDATE())
+        WHERE EXTRACT(MONTH FROM sa.submitted_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+          AND EXTRACT(YEAR FROM sa.submitted_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
         GROUP BY s.category
         ORDER BY count DESC
     ");
@@ -107,12 +107,12 @@ try {
     /* ── 9. Member registrations — last 6 calendar months ────────── */
     $stmt = $conn->query("
         SELECT
-            DATE_FORMAT(created_at, '%b')    AS month,
-            DATE_FORMAT(created_at, '%Y-%m') AS ym,
+            to_char(created_at, 'Mon')    AS month,
+            to_char(created_at, 'YYYY-MM') AS ym,
             COUNT(*)                         AS count
         FROM users
         WHERE role       = 'resident'
-          AND created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+          AND created_at >= (CURRENT_DATE - INTERVAL '6 months')
         GROUP BY ym, month
         ORDER BY ym ASC
     ");
@@ -123,7 +123,7 @@ try {
         SELECT COUNT(*) AS total
         FROM users
         WHERE role       = 'resident'
-          AND created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+          AND created_at >= (CURRENT_DATE - INTERVAL '6 months')
     ");
     $membersSince6 = (int) $stmt->fetchColumn();
 
@@ -133,9 +133,9 @@ try {
         FROM users u
         JOIN user_status us ON u.id = us.user_id
         WHERE u.role       = 'resident'
-          AND us.is_active  = 1
-          AND us.is_deleted = 0
-          AND us.is_banned  = 0
+          AND us.is_active  = TRUE
+          AND us.is_deleted = FALSE
+          AND us.is_banned  = FALSE
     ");
     $activeMembers = (int) $stmt->fetchColumn();
     $activeRate    = $totalMembers > 0

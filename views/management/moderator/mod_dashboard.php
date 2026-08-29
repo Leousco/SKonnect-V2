@@ -24,30 +24,30 @@ $pendingReports = $pendingThreadReports + $pendingCommentReports;
 
 // Active threads (not removed)
 $activeThreads = (int)$conn->query(
-    "SELECT COUNT(*) FROM threads WHERE is_removed = 0"
+    "SELECT COUNT(*) FROM threads WHERE is_removed = FALSE"
 )->fetchColumn();
 
 // New threads today
 $newThreadsToday = (int)$conn->query(
-    "SELECT COUNT(*) FROM threads WHERE is_removed = 0 AND DATE(created_at) = CURDATE()"
+    "SELECT COUNT(*) FROM threads WHERE is_removed = FALSE AND created_at::date = CURRENT_DATE"
 )->fetchColumn();
 
 // Removed/hidden threads (locked equivalent — moderator-hidden)
 $removedThreads = (int)$conn->query(
-    "SELECT COUNT(*) FROM threads WHERE is_removed = 1 AND removed_by_user = 0"
+    "SELECT COUNT(*) FROM threads WHERE is_removed = TRUE AND removed_by_user = FALSE"
 )->fetchColumn();
 
 // Warnings issued this month (level = 1 sanctions)
 $warningsThisMonth = (int)$conn->query(
     "SELECT COUNT(*) FROM user_sanctions
      WHERE level = 1
-       AND MONTH(created_at) = MONTH(CURDATE())
-       AND YEAR(created_at)  = YEAR(CURDATE())"
+       AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+       AND EXTRACT(YEAR FROM created_at)  = EXTRACT(YEAR FROM CURRENT_DATE)"
 )->fetchColumn();
 
 // Total active sanctions (any level)
 $activeSanctions = (int)$conn->query(
-    "SELECT COUNT(*) FROM user_sanctions WHERE is_active = 1"
+    "SELECT COUNT(*) FROM user_sanctions WHERE is_active = TRUE"
 )->fetchColumn();
 
 // ── PENDING REPORTS TABLE (up to 5, thread + comment mixed, newest first) ────
@@ -130,11 +130,11 @@ $activityLog = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $stmt = $conn->query(
     "SELECT
-        DATE_FORMAT(created_at, '%b') AS month_label,
-        DATE_FORMAT(created_at, '%Y-%m') AS month_key,
+        to_char(created_at, 'Mon') AS month_label,
+        to_char(created_at, 'YYYY-MM') AS month_key,
         COUNT(*) AS cnt
      FROM threads
-     WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+     WHERE created_at >= (CURRENT_DATE - INTERVAL '6 months')
      GROUP BY month_key, month_label
      ORDER BY month_key ASC
      LIMIT 6"
@@ -185,9 +185,9 @@ $resolvedReports = (int)$conn->query(
 
 $removedThisMonth = (int)$conn->query(
     "SELECT COUNT(*) FROM threads
-     WHERE is_removed = 1 AND removed_by_user = 0
-       AND MONTH(updated_at) = MONTH(CURDATE())
-       AND YEAR(updated_at)  = YEAR(CURDATE())"
+     WHERE is_removed = TRUE AND removed_by_user = FALSE
+       AND EXTRACT(MONTH FROM updated_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+       AND EXTRACT(YEAR FROM updated_at)  = EXTRACT(YEAR FROM CURRENT_DATE)"
 )->fetchColumn();
 
 // ── RECENT COMMUNITY POSTS (5 most recent active threads) ────────────────────
@@ -198,23 +198,21 @@ $stmt = $conn->query(
         t.subject,
         t.created_at,
         CONCAT(u.first_name, ' ', u.last_name) AS author_name,
-        (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = 0) AS comment_count
+        (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count
      FROM threads t
      JOIN users u ON u.id = t.author_id
-     WHERE t.is_removed = 0
+     WHERE t.is_removed = FALSE
      ORDER BY t.created_at DESC
      LIMIT 5"
 );
 $recentThreads = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // ── UNREAD NOTIFICATIONS for topbar ──────────────────────────────────────────
-$notifCount = (int)$conn->prepare(
-    "SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = 0 AND is_dismissed = 0"
-)->execute([':uid' => $mod_id]) ? (function () use ($conn, $mod_id) {
-    $s = $conn->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = 0 AND is_dismissed = 0");
-    $s->execute([':uid' => $mod_id]);
-    return (int)$s->fetchColumn();
-})() : 0;
+$notifStmt = $conn->prepare(
+    "SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = FALSE AND is_dismissed = FALSE"
+);
+$notifStmt->execute([':uid' => $mod_id]);
+$notifCount = (int)$notifStmt->fetchColumn();
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 

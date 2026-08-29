@@ -1,3 +1,7 @@
+body::-webkit-scrollbar {
+    display: none;
+}
+
 .announcements-page {
   padding: 40px 8%;
   background: #f4f6f9;

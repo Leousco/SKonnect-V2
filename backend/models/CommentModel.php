@@ -36,7 +36,7 @@ class CommentModel
              FROM thread_comments tc
              JOIN users u ON u.id = tc.author_id
              WHERE tc.thread_id = :tid
-               AND (tc.is_removed = 0 OR tc.removed_by_mod = 1 OR tc.removed_by_user = 1)
+               AND (tc.is_removed = FALSE OR tc.removed_by_mod = TRUE OR tc.removed_by_user = TRUE)
              ORDER BY tc.created_at ASC"
         );
         $stmt->execute([':uid' => $user_id, ':tid' => $thread_id]);
@@ -71,7 +71,7 @@ class CommentModel
              FROM comment_replies cr
              JOIN users u ON u.id = cr.author_id
              WHERE cr.comment_id = :cid
-               AND (cr.is_removed = 0 OR cr.removed_by_mod = 1 OR cr.removed_by_user = 1)
+               AND (cr.is_removed = FALSE OR cr.removed_by_mod = TRUE OR cr.removed_by_user = TRUE)
              ORDER BY cr.created_at ASC"
         );
         $stmt->execute([':cid' => $comment_id]);
@@ -87,7 +87,11 @@ class CommentModel
             "INSERT INTO thread_comments (thread_id, author_id, message, is_mod_comment)
              VALUES (:tid, :uid, :msg, :is_mod)"
         );
-        $stmt->execute([':tid' => $thread_id, ':uid' => $author_id, ':msg' => $message, ':is_mod' => $is_mod]);
+        $stmt->bindValue(':tid', $thread_id, PDO::PARAM_INT);
+        $stmt->bindValue(':uid', $author_id, PDO::PARAM_INT);
+        $stmt->bindValue(':msg', $message, PDO::PARAM_STR);
+        $stmt->bindValue(':is_mod', (bool) $is_mod, PDO::PARAM_BOOL);
+        $stmt->execute();
         $comment_id = (int)$this->conn->lastInsertId();
 
         $fetch = $this->conn->prepare(
@@ -108,7 +112,7 @@ class CommentModel
     {
         // Verify parent comment exists and is not removed
         $check = $this->conn->prepare(
-            "SELECT id FROM thread_comments WHERE id = :cid AND is_removed = 0 LIMIT 1"
+            "SELECT id FROM thread_comments WHERE id = :cid AND is_removed = FALSE LIMIT 1"
         );
         $check->execute([':cid' => $comment_id]);
         if (!$check->fetch()) {
@@ -119,7 +123,11 @@ class CommentModel
             "INSERT INTO comment_replies (comment_id, author_id, message, is_mod_comment)
              VALUES (:cid, :uid, :msg, :is_mod)"
         );
-        $stmt->execute([':cid' => $comment_id, ':uid' => $author_id, ':msg' => $message, ':is_mod' => $is_mod]);
+        $stmt->bindValue(':cid', $comment_id, PDO::PARAM_INT);
+        $stmt->bindValue(':uid', $author_id, PDO::PARAM_INT);
+        $stmt->bindValue(':msg', $message, PDO::PARAM_STR);
+        $stmt->bindValue(':is_mod', (bool) $is_mod, PDO::PARAM_BOOL);
+        $stmt->execute();
         $reply_id = (int)$this->conn->lastInsertId();
 
         $fetch = $this->conn->prepare(
@@ -139,7 +147,7 @@ class CommentModel
     public function threadExists(int $thread_id): bool
     {
         $check = $this->conn->prepare(
-            "SELECT id FROM threads WHERE id = :id AND is_removed = 0"
+            "SELECT id FROM threads WHERE id = :id AND is_removed = FALSE"
         );
         $check->execute([':id' => $thread_id]);
         return (bool)$check->fetch();
@@ -153,8 +161,8 @@ class CommentModel
     {
         $stmt = $this->conn->prepare(
             "UPDATE thread_comments
-             SET is_removed = 1, removed_by_mod = 1
-             WHERE id = :id AND is_removed = 0"
+             SET is_removed = TRUE, removed_by_mod = TRUE
+             WHERE id = :id AND is_removed = FALSE"
         );
         return $stmt->execute([':id' => $comment_id]);
     }
@@ -166,8 +174,8 @@ class CommentModel
     {
         $stmt = $this->conn->prepare(
             "UPDATE comment_replies
-             SET is_removed = 1, removed_by_mod = 1
-             WHERE id = :id AND is_removed = 0"
+             SET is_removed = TRUE, removed_by_mod = TRUE
+             WHERE id = :id AND is_removed = FALSE"
         );
         return $stmt->execute([':id' => $reply_id]);
     }
@@ -180,8 +188,8 @@ class CommentModel
     {
         $stmt = $this->conn->prepare(
             "UPDATE thread_comments
-             SET is_removed = 1, removed_by_user = 1
-             WHERE id = :id AND author_id = :uid AND is_removed = 0"
+             SET is_removed = TRUE, removed_by_user = TRUE
+             WHERE id = :id AND author_id = :uid AND is_removed = FALSE"
         );
         $ok = $stmt->execute([':id' => $comment_id, ':uid' => $author_id]);
         return $ok && $stmt->rowCount() > 0;
@@ -195,8 +203,8 @@ class CommentModel
     {
         $stmt = $this->conn->prepare(
             "UPDATE comment_replies
-             SET is_removed = 1, removed_by_user = 1
-             WHERE id = :id AND author_id = :uid AND is_removed = 0"
+             SET is_removed = TRUE, removed_by_user = TRUE
+             WHERE id = :id AND author_id = :uid AND is_removed = FALSE"
         );
         $ok = $stmt->execute([':id' => $reply_id, ':uid' => $author_id]);
         return $ok && $stmt->rowCount() > 0;

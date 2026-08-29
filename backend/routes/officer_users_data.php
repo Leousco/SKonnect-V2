@@ -16,16 +16,16 @@ try {
             SELECT
                 u.id, u.first_name, u.last_name, u.middle_name,
                 u.gender, u.birth_date, u.age, u.email,
-                u.is_verified, u.created_at,
+                u.is_verified::int AS is_verified, u.created_at,
                 up.mobile_number, up.purok, up.street_address,
-                us.is_active, us.is_banned,
+                us.is_active::int AS is_active, us.is_banned::int AS is_banned,
                 (SELECT COUNT(*) FROM service_applications WHERE resident_id = u.id)                         AS request_total,
                 (SELECT COUNT(*) FROM service_applications WHERE resident_id = u.id AND status = 'pending')  AS request_pending,
                 (SELECT COUNT(*) FROM service_applications WHERE resident_id = u.id AND status = 'approved') AS request_approved
             FROM users u
             LEFT JOIN user_profiles up ON up.user_id = u.id
             JOIN  user_status us      ON us.user_id  = u.id
-            WHERE u.role = 'resident' AND us.is_deleted = 0
+            WHERE u.role = 'resident' AND us.is_deleted = FALSE
             ORDER BY u.created_at DESC
         ");
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -49,15 +49,15 @@ try {
             SELECT
                 u.id, u.first_name, u.last_name, u.middle_name,
                 u.gender, u.birth_date, u.age, u.email,
-                u.is_verified, u.created_at,
+                u.is_verified::int AS is_verified, u.created_at,
                 up.mobile_number, up.purok, up.street_address,
                 up.civil_status, up.nationality, up.religion,
                 up.educational_attainment, up.school_institution, up.course_strand,
-                up.employment_status, up.is_registered_voter
+                up.employment_status, up.is_registered_voter::int AS is_registered_voter
             FROM users u
             LEFT JOIN user_profiles up ON up.user_id = u.id
             JOIN  user_status us      ON us.user_id  = u.id
-            WHERE u.id = :id AND u.role = 'resident' AND us.is_deleted = 0
+            WHERE u.id = :id AND u.role = 'resident' AND us.is_deleted = FALSE
             LIMIT 1
         ");
         $stmt->execute([':id' => $id]);
@@ -66,12 +66,12 @@ try {
 
         $stmt2 = $conn->prepare("
             SELECT
-                COUNT(*)                          AS total,
-                SUM(status = 'approved')          AS approved,
-                SUM(status = 'pending')           AS pending,
-                SUM(status = 'rejected')          AS rejected,
-                SUM(status = 'cancelled')         AS cancelled,
-                SUM(status = 'action_required')   AS action_required
+                COUNT(*)                                              AS total,
+                COUNT(*) FILTER (WHERE status = 'approved')           AS approved,
+                COUNT(*) FILTER (WHERE status = 'pending')            AS pending,
+                COUNT(*) FILTER (WHERE status = 'rejected')           AS rejected,
+                COUNT(*) FILTER (WHERE status = 'cancelled')          AS cancelled,
+                COUNT(*) FILTER (WHERE status = 'action_required')    AS action_required
             FROM service_applications
             WHERE resident_id = :id
         ");

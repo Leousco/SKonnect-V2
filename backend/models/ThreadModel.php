@@ -22,13 +22,13 @@ class ThreadModel
                 t.is_pinned,
                 t.created_at,
                 CONCAT(u.first_name, ' ', u.last_name) AS author_name,
-                (SELECT COUNT(*) FROM thread_comments  tc  WHERE tc.thread_id  = t.id AND tc.is_removed = 0)           AS comment_count,
+                (SELECT COUNT(*) FROM thread_comments  tc  WHERE tc.thread_id  = t.id AND tc.is_removed = FALSE)       AS comment_count,
                 (SELECT COUNT(*) FROM thread_supports  ts  WHERE ts.thread_id  = t.id)                                AS support_count,
                 (SELECT COUNT(*) FROM thread_bookmarks tb  WHERE tb.thread_id  = t.id AND tb.user_id = :uid1)          AS is_bookmarked,
                 (SELECT COUNT(*) FROM thread_supports  ts2 WHERE ts2.thread_id = t.id AND ts2.user_id = :uid2)         AS user_supported
              FROM threads t
              JOIN users u ON u.id = t.author_id
-             WHERE t.is_removed = 0
+             WHERE t.is_removed = FALSE
              ORDER BY t.is_pinned DESC, t.created_at DESC"
         );
         $stmt->execute([':uid1' => $user_id, ':uid2' => $user_id]);
@@ -42,12 +42,12 @@ class ThreadModel
                 t.*,
                 CONCAT(u.first_name, ' ', u.last_name) AS author_name,
                 (SELECT COUNT(*) FROM thread_supports  ts  WHERE ts.thread_id  = t.id)                                AS support_count,
-                (SELECT COUNT(*) FROM thread_comments  tc  WHERE tc.thread_id  = t.id AND tc.is_removed = 0)           AS comment_count,
+                (SELECT COUNT(*) FROM thread_comments  tc  WHERE tc.thread_id  = t.id AND tc.is_removed = FALSE)       AS comment_count,
                 (SELECT COUNT(*) FROM thread_bookmarks tb  WHERE tb.thread_id  = t.id AND tb.user_id = :uid1)          AS is_bookmarked,
                 (SELECT COUNT(*) FROM thread_supports  ts2 WHERE ts2.thread_id = t.id AND ts2.user_id = :uid2)         AS user_supported
              FROM threads t
              JOIN users u ON u.id = t.author_id
-             WHERE t.id = :tid AND t.is_removed = 0
+             WHERE t.id = :tid AND t.is_removed = FALSE
              LIMIT 1"
         );
         $stmt->execute([':uid1' => $user_id, ':uid2' => $user_id, ':tid' => $thread_id]);
@@ -104,7 +104,9 @@ class ThreadModel
         $stmt = $this->conn->prepare(
             "UPDATE threads SET is_flagged = :flagged WHERE id = :tid"
         );
-        return $stmt->execute([':flagged' => $flagged, ':tid' => $thread_id]);
+        $stmt->bindValue(':flagged', (bool) $flagged, PDO::PARAM_BOOL);
+        $stmt->bindValue(':tid', $thread_id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     public function setThreadRemoved(int $thread_id, int $removed): bool
@@ -112,7 +114,9 @@ class ThreadModel
         $stmt = $this->conn->prepare(
             "UPDATE threads SET is_removed = :removed WHERE id = :tid"
         );
-        return $stmt->execute([':removed' => $removed, ':tid' => $thread_id]);
+        $stmt->bindValue(':removed', (bool) $removed, PDO::PARAM_BOOL);
+        $stmt->bindValue(':tid', $thread_id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     public function setThreadPinned(int $thread_id, int $pinned): bool
@@ -120,7 +124,9 @@ class ThreadModel
         $stmt = $this->conn->prepare(
             "UPDATE threads SET is_pinned = :pinned WHERE id = :tid"
         );
-        return $stmt->execute([':pinned' => $pinned, ':tid' => $thread_id]);
+        $stmt->bindValue(':pinned', (bool) $pinned, PDO::PARAM_BOOL);
+        $stmt->bindValue(':tid', $thread_id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     public function getModFeedThreads(): array
@@ -138,11 +144,10 @@ class ThreadModel
                 t.is_pinned,
                 t.created_at,
                 CONCAT(u.first_name, ' ', u.last_name) AS author_name,
-                (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = 0) AS comment_count,
+                (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count,
                 (SELECT COUNT(*) FROM thread_supports ts WHERE ts.thread_id = t.id) AS support_count
             FROM threads t
             JOIN users u ON u.id = t.author_id
-            GROUP BY t.id
             ORDER BY t.is_pinned DESC, t.created_at DESC
         ";
 
@@ -154,8 +159,8 @@ class ThreadModel
     {
         $stmt = $this->conn->prepare(
             "UPDATE threads
-             SET is_removed = 1, removed_by_user = 1
-             WHERE id = :tid AND author_id = :uid AND is_removed = 0"
+             SET is_removed = TRUE, removed_by_user = TRUE
+             WHERE id = :tid AND author_id = :uid AND is_removed = FALSE"
         );
         $ok = $stmt->execute([':tid' => $thread_id, ':uid' => $author_id]);
         return $ok && $stmt->rowCount() > 0;

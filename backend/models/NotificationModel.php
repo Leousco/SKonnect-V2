@@ -51,7 +51,7 @@ class NotificationModel
      */
     public function getByUser(int $userId, array $filters = []): array
     {
-        $where  = ['user_id = :uid', 'is_dismissed = 0'];
+        $where  = ['user_id = :uid', 'is_dismissed = FALSE'];
         $params = [':uid' => $userId];
 
         if (!empty($filters['type'])) {
@@ -65,7 +65,7 @@ class NotificationModel
         }
 
         if (!empty($filters['search'])) {
-            $where[]           = '(title LIKE :search OR message LIKE :search)';
+            $where[]           = '(title ILIKE :search OR message ILIKE :search)';
             $params[':search'] = '%' . $filters['search'] . '%';
         }
 
@@ -81,10 +81,10 @@ class NotificationModel
     {
         $stmt = $this->conn->prepare("
             SELECT
-                SUM(is_dismissed = 0)                                        AS total,
-                SUM(is_dismissed = 0 AND is_read = 0)                        AS unread,
-                SUM(is_dismissed = 0 AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)) AS this_week,
-                SUM(is_dismissed = 1)                                        AS dismissed
+                COUNT(*) FILTER (WHERE is_dismissed = FALSE)                                            AS total,
+                COUNT(*) FILTER (WHERE is_dismissed = FALSE AND is_read = FALSE)                         AS unread,
+                COUNT(*) FILTER (WHERE is_dismissed = FALSE AND created_at >= NOW() - INTERVAL '7 days') AS this_week,
+                COUNT(*) FILTER (WHERE is_dismissed = TRUE)                                              AS dismissed
             FROM notifications
             WHERE user_id = :uid
         ");
@@ -103,7 +103,7 @@ class NotificationModel
     public function markRead(int $id, int $userId): bool
     {
         $stmt = $this->conn->prepare(
-            "UPDATE notifications SET is_read = 1 WHERE id = :id AND user_id = :uid"
+            "UPDATE notifications SET is_read = TRUE WHERE id = :id AND user_id = :uid"
         );
         return $stmt->execute([':id' => $id, ':uid' => $userId]);
     }
@@ -111,14 +111,14 @@ class NotificationModel
     public function markAllRead(int $userId): void
     {
         $this->conn->prepare(
-            "UPDATE notifications SET is_read = 1 WHERE user_id = :uid AND is_dismissed = 0"
+            "UPDATE notifications SET is_read = TRUE WHERE user_id = :uid AND is_dismissed = FALSE"
         )->execute([':uid' => $userId]);
     }
 
     public function dismiss(int $id, int $userId): bool
     {
         $stmt = $this->conn->prepare(
-            "UPDATE notifications SET is_dismissed = 1, is_read = 1 WHERE id = :id AND user_id = :uid"
+            "UPDATE notifications SET is_dismissed = TRUE, is_read = TRUE WHERE id = :id AND user_id = :uid"
         );
         return $stmt->execute([':id' => $id, ':uid' => $userId]);
     }
@@ -133,7 +133,7 @@ class NotificationModel
         $stmt = $this->conn->query(
             "SELECT u.id FROM users u
              JOIN user_status us ON us.user_id = u.id
-             WHERE u.role = 'resident' AND u.is_verified = 1 AND us.is_deleted = 0"
+             WHERE u.role = 'resident' AND u.is_verified = TRUE AND us.is_deleted = FALSE"
         );
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }

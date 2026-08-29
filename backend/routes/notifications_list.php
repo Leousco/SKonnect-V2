@@ -19,7 +19,7 @@ $action = $_GET['action'] ?? 'list';
 
 try {
     if ($action === 'mark-read') {
-        $conn->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = :uid")
+        $conn->prepare("UPDATE notifications SET is_read = TRUE WHERE user_id = :uid")
              ->execute([':uid' => $userId]);
         echo json_encode(['status' => 'success']);
         exit;
@@ -27,7 +27,7 @@ try {
 
     // Fetch latest 8 notifications
     $stmt = $conn->prepare("
-        SELECT id, type, title, message, is_read, created_at
+        SELECT id, type, title, message, is_read::int AS is_read, created_at
         FROM notifications
         WHERE user_id = :uid
         ORDER BY created_at DESC
@@ -37,7 +37,7 @@ try {
     $notifs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Unread count
-    $unreadStmt = $conn->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = 0");
+    $unreadStmt = $conn->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = FALSE");
     $unreadStmt->execute([':uid' => $userId]);
     $unreadCount = (int)$unreadStmt->fetchColumn();
 

@@ -26,7 +26,15 @@ class UserProfileModel
             LIMIT 1
         ");
         $stmt->execute([':uid' => $userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            // PDO's pgsql driver returns BOOLEAN columns as the literal
+            // string 't'/'f', not a real bool — normalize it here so every
+            // caller (this page, and every action in ProfileController that
+            // echoes this array back to the frontend) gets a clean boolean.
+            $row['is_registered_voter'] = $row['is_registered_voter'] === 't';
+        }
+        return $row;
     }
 
     public function isProfileComplete(int $userId): bool
@@ -44,12 +52,12 @@ class UserProfileModel
     {
         $stmt = $this->db->prepare("
             SELECT
-                COUNT(*) AS total,
-                SUM(status = 'approved')         AS approved,
-                SUM(status = 'pending')          AS pending,
-                SUM(status = 'rejected')         AS rejected,
-                SUM(status = 'cancelled')        AS cancelled,
-                SUM(status = 'action_required')  AS action_required
+                COUNT(*)                                          AS total,
+                COUNT(*) FILTER (WHERE status = 'approved')        AS approved,
+                COUNT(*) FILTER (WHERE status = 'pending')         AS pending,
+                COUNT(*) FILTER (WHERE status = 'rejected')        AS rejected,
+                COUNT(*) FILTER (WHERE status = 'cancelled')       AS cancelled,
+                COUNT(*) FILTER (WHERE status = 'action_required') AS action_required
             FROM service_applications
             WHERE resident_id = :uid
         ");
@@ -57,7 +65,7 @@ class UserProfileModel
         $counts = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $stmt2 = $this->db->prepare("
-            SELECT COUNT(*) AS thread_count FROM threads WHERE author_id = :uid AND is_removed = 0
+            SELECT COUNT(*) AS thread_count FROM threads WHERE author_id = :uid AND is_removed = FALSE
         ");
         $stmt2->execute([':uid' => $userId]);
         $threads = $stmt2->fetch(PDO::FETCH_ASSOC);
@@ -96,10 +104,10 @@ class UserProfileModel
         $stmt = $this->db->prepare("
             SELECT
                 t.id, t.category, t.subject, t.status, t.created_at,
-                (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = 0) AS comment_count,
+                (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count,
                 (SELECT COUNT(*) FROM thread_supports ts WHERE ts.thread_id = t.id) AS support_count
             FROM threads t
-            WHERE t.author_id = :uid AND t.is_removed = 0
+            WHERE t.author_id = :uid AND t.is_removed = FALSE
             ORDER BY t.created_at DESC
         ");
         $stmt->execute([':uid' => $userId]);
@@ -128,10 +136,10 @@ class UserProfileModel
         $this->db->prepare("
             INSERT INTO user_profiles (user_id, civil_status, nationality, religion)
             VALUES (:uid, :civil, :nat, :rel)
-            ON DUPLICATE KEY UPDATE
-                civil_status = VALUES(civil_status),
-                nationality  = VALUES(nationality),
-                religion     = VALUES(religion)
+            ON CONFLICT (user_id) DO UPDATE SET
+                civil_status = EXCLUDED.civil_status,
+                nationality  = EXCLUDED.nationality,
+                religion     = EXCLUDED.religion
         ")->execute([
             ':uid'   => $userId,
             ':civil' => $d['civil_status'] ?? null,
@@ -149,10 +157,10 @@ class UserProfileModel
         $this->db->prepare("
             INSERT INTO user_profiles (user_id, mobile_number, purok, street_address)
             VALUES (:uid, :mob, :purok, :street)
-            ON DUPLICATE KEY UPDATE
-                mobile_number  = VALUES(mobile_number),
-                purok          = VALUES(purok),
-                street_address = VALUES(street_address)
+            ON CONFLICT (user_id) DO UPDATE SET
+                mobile_number  = EXCLUDED.mobile_number,
+                purok          = EXCLUDED.purok,
+                street_address = EXCLUDED.street_address
         ")->execute([
             ':uid'    => $userId,
             ':mob'    => $d['mobile_number'],
@@ -168,19 +176,19 @@ class UserProfileModel
                 (user_id, educational_attainment, school_institution,
                  course_strand, employment_status, is_registered_voter)
             VALUES (:uid, :edu, :school, :course, :emp, :voter)
-            ON DUPLICATE KEY UPDATE
-                educational_attainment = VALUES(educational_attainment),
-                school_institution     = VALUES(school_institution),
-                course_strand          = VALUES(course_strand),
-                employment_status      = VALUES(employment_status),
-                is_registered_voter    = VALUES(is_registered_voter)
+            ON CONFLICT (user_id) DO UPDATE SET
+                educational_attainment = EXCLUDED.educational_attainment,
+                school_institution     = EXCLUDED.school_institution,
+                course_strand          = EXCLUDED.course_strand,
+                employment_status      = EXCLUDED.employment_status,
+                is_registered_voter    = EXCLUDED.is_registered_voter
         ")->execute([
             ':uid'    => $userId,
             ':edu'    => $d['educational_attainment'] ?? null,
             ':school' => isset($d['school_institution']) ? trim($d['school_institution']) : null,
             ':course' => isset($d['course_strand'])      ? trim($d['course_strand'])      : null,
             ':emp'    => $d['employment_status'] ?? null,
-            ':voter'  => isset($d['is_registered_voter']) ? (int)$d['is_registered_voter'] : 0,
+            ':voter'  => isset($d['is_registered_voter']) && $d['is_registered_voter'] ? 1 : 0,
         ]);
     }
 
@@ -190,12 +198,12 @@ class UserProfileModel
             INSERT INTO user_profiles
                 (user_id, mobile_number, purok, street_address, nationality, religion)
             VALUES (:uid, :mob, :purok, :street, :nat, :rel)
-            ON DUPLICATE KEY UPDATE
-                mobile_number  = VALUES(mobile_number),
-                purok          = VALUES(purok),
-                street_address = VALUES(street_address),
-                nationality    = VALUES(nationality),
-                religion       = VALUES(religion)
+            ON CONFLICT (user_id) DO UPDATE SET
+                mobile_number  = EXCLUDED.mobile_number,
+                purok          = EXCLUDED.purok,
+                street_address = EXCLUDED.street_address,
+                nationality    = EXCLUDED.nationality,
+                religion       = EXCLUDED.religion
         ")->execute([
             ':uid'    => $userId,
             ':mob'    => $d['mobile_number'],
@@ -211,7 +219,7 @@ class UserProfileModel
         $this->db->prepare("
             INSERT INTO user_profiles (user_id, avatar_path)
             VALUES (:uid, :path)
-            ON DUPLICATE KEY UPDATE avatar_path = VALUES(avatar_path)
+            ON CONFLICT (user_id) DO UPDATE SET avatar_path = EXCLUDED.avatar_path
         ")->execute([':uid' => $userId, ':path' => $path]);
     }
 }

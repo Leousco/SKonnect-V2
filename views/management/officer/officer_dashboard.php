@@ -127,7 +127,7 @@ $expiringAnnCount = (int)$db->query("
     SELECT COUNT(*) FROM announcements
     WHERE status = 'active'
       AND expired_at IS NOT NULL
-      AND expired_at BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+      AND expired_at BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
 ")->fetchColumn();
 
 $activeServicesCount = count($svcM->getAll(['status' => 'active']));
@@ -136,8 +136,8 @@ $totalResidents    = (int)$db->query("SELECT COUNT(*) FROM users WHERE role = 'r
 $newResidentsMonth = (int)$db->query("
     SELECT COUNT(*) FROM users
     WHERE role = 'resident'
-      AND MONTH(created_at) = MONTH(CURDATE())
-      AND YEAR(created_at)  = YEAR(CURDATE())
+      AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+      AND EXTRACT(YEAR FROM created_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
 ")->fetchColumn();
 
 // ── 2. RECENT PENDING REQUESTS TABLE ─────────────────────────
@@ -163,8 +163,8 @@ $stmtBar = $db->prepare("
     SELECT sv.name AS service_name, COUNT(*) AS cnt
     FROM service_applications sa
     INNER JOIN services sv ON sv.id = sa.service_id
-    WHERE MONTH(sa.submitted_at) = MONTH(CURDATE())
-      AND YEAR(sa.submitted_at)  = YEAR(CURDATE())
+    WHERE EXTRACT(MONTH FROM sa.submitted_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+      AND EXTRACT(YEAR FROM sa.submitted_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
     GROUP BY sv.id, sv.name
     ORDER BY cnt DESC
     LIMIT 5
@@ -176,9 +176,9 @@ $barColors = ['bar-cyan', 'bar-indigo', 'bar-green', 'bar-amber', 'bar-muted'];
 
 // ── 4. SPARKLINE: Monthly request volume (last 6 months) ──────
 $stmtSpark = $db->query("
-    SELECT DATE_FORMAT(submitted_at, '%Y-%m') AS ym, COUNT(*) AS cnt
+    SELECT TO_CHAR(submitted_at, 'YYYY-MM') AS ym, COUNT(*) AS cnt
     FROM service_applications
-    WHERE submitted_at >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 5 MONTH), '%Y-%m-01')
+    WHERE submitted_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '5 months')
     GROUP BY ym
     ORDER BY ym ASC
 ");
@@ -216,14 +216,14 @@ $thisMonthCount = $sparkValues[count($sparkValues) - 1] ?? 0;
 $resolvedMonth  = (int)$db->query("
     SELECT COUNT(*) FROM service_applications
     WHERE status = 'approved'
-      AND MONTH(updated_at) = MONTH(CURDATE())
-      AND YEAR(updated_at)  = YEAR(CURDATE())
+      AND EXTRACT(MONTH FROM updated_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+      AND EXTRACT(YEAR FROM updated_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
 ")->fetchColumn();
 $decidedMonth = (int)$db->query("
     SELECT COUNT(*) FROM service_applications
     WHERE status IN ('approved','rejected')
-      AND MONTH(updated_at) = MONTH(CURDATE())
-      AND YEAR(updated_at)  = YEAR(CURDATE())
+      AND EXTRACT(MONTH FROM updated_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+      AND EXTRACT(YEAR FROM updated_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
 ")->fetchColumn();
 $approvalRate = $decidedMonth > 0 ? round(($resolvedMonth / $decidedMonth) * 100) . '%' : 'N/A';
 
@@ -232,9 +232,9 @@ $stmtActivity = $db->query("
     (
         SELECT
             'request'                                           AS type,
-            an.note          COLLATE utf8mb4_unicode_ci         AS description,
-            sa.full_name     COLLATE utf8mb4_unicode_ci         AS subject,
-            sa.status        COLLATE utf8mb4_unicode_ci         AS status,
+            an.note                                             AS description,
+            sa.full_name                                        AS subject,
+            sa.status                                           AS status,
             an.created_at                                       AS activity_time
         FROM application_notes an
         INNER JOIN service_applications sa ON sa.id = an.application_id
@@ -245,9 +245,9 @@ $stmtActivity = $db->query("
     (
         SELECT
             'announcement'                                      AS type,
-            a.title          COLLATE utf8mb4_unicode_ci         AS description,
-            a.title          COLLATE utf8mb4_unicode_ci         AS subject,
-            a.status         COLLATE utf8mb4_unicode_ci         AS status,
+            a.title                                             AS description,
+            a.title                                             AS subject,
+            a.status                                            AS status,
             a.published_at                                      AS activity_time
         FROM announcements a
         ORDER BY a.published_at DESC
@@ -257,10 +257,10 @@ $stmtActivity = $db->query("
     (
         SELECT
             'event'                                             AS type,
-            e.title          COLLATE utf8mb4_unicode_ci         AS description,
-            e.title          COLLATE utf8mb4_unicode_ci         AS subject,
-            'active'         COLLATE utf8mb4_unicode_ci         AS status,
-            CAST(e.event_date AS DATETIME)                      AS activity_time
+            e.title                                             AS description,
+            e.title                                             AS subject,
+            'active'                                            AS status,
+            CAST(e.event_date AS TIMESTAMP)                     AS activity_time
         FROM events e
         ORDER BY e.event_date DESC
         LIMIT 3

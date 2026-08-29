@@ -48,7 +48,7 @@ class BookmarkModel
                 t.status,
                 t.created_at,
                 CONCAT(u.first_name, ' ', u.last_name) AS author_name,
-                (SELECT COUNT(*) FROM thread_comments  tc  WHERE tc.thread_id  = t.id AND tc.is_removed = 0)           AS comment_count,
+                (SELECT COUNT(*) FROM thread_comments  tc  WHERE tc.thread_id  = t.id AND tc.is_removed = FALSE)       AS comment_count,
                 (SELECT COUNT(*) FROM thread_supports  ts  WHERE ts.thread_id  = t.id)                                AS support_count,
                 (SELECT COUNT(*) FROM thread_supports  ts2 WHERE ts2.thread_id = t.id AND ts2.user_id = :uid2)         AS user_supported,
                 tb.created_at AS bookmarked_at
@@ -56,7 +56,7 @@ class BookmarkModel
              JOIN threads t ON t.id = tb.thread_id
              JOIN users   u ON u.id = t.author_id
              WHERE tb.user_id = :uid1
-               AND t.is_removed = 0
+               AND t.is_removed = FALSE
              ORDER BY tb.created_at DESC"
         );
         $stmt->execute([':uid1' => $user_id, ':uid2' => $user_id]);

@@ -44,17 +44,17 @@ try {
     // ── 1. KPIs ───────────────────────────────────────────────────
     $stmtKpi = $db->prepare("
         SELECT
-            COUNT(*)                                                            AS total,
-            SUM(status = 'approved')                                            AS approved,
-            SUM(status = 'rejected')                                            AS declined,
-            SUM(status IN ('approved','rejected'))                              AS decided,
-            SUM(status = 'pending')                                             AS pending,
-            SUM(status = 'action_required')                                     AS action_required,
+            COUNT(*)                                                              AS total,
+            COUNT(*) FILTER (WHERE status = 'approved')                           AS approved,
+            COUNT(*) FILTER (WHERE status = 'rejected')                           AS declined,
+            COUNT(*) FILTER (WHERE status IN ('approved','rejected'))             AS decided,
+            COUNT(*) FILTER (WHERE status = 'pending')                            AS pending,
+            COUNT(*) FILTER (WHERE status = 'action_required')                    AS action_required,
             AVG(CASE WHEN status IN ('approved','rejected')
-                THEN TIMESTAMPDIFF(HOUR, submitted_at, updated_at) / 24.0
-                ELSE NULL END)                                                  AS avg_days
+                THEN EXTRACT(EPOCH FROM (updated_at - submitted_at)) / 86400.0
+                ELSE NULL END)                                                    AS avg_days
         FROM service_applications
-        WHERE DATE(submitted_at) BETWEEN :start AND :end
+        WHERE submitted_at::date BETWEEN :start AND :end
     ");
     $stmtKpi->execute([':start' => $dateStart, ':end' => $dateEnd]);
     $kpi = $stmtKpi->fetch(PDO::FETCH_ASSOC);
@@ -73,13 +73,13 @@ try {
     // ── 2. VOLUME CHART ───────────────────────────────────────────
     $stmtVol = $db->prepare("
         SELECT
-            DATE(submitted_at)                              AS d,
-            SUM(status = 'approved')                        AS approved,
-            SUM(status = 'rejected')                        AS declined,
-            SUM(status IN ('pending','action_required'))    AS pending
+            submitted_at::date                                              AS d,
+            COUNT(*) FILTER (WHERE status = 'approved')                     AS approved,
+            COUNT(*) FILTER (WHERE status = 'rejected')                     AS declined,
+            COUNT(*) FILTER (WHERE status IN ('pending','action_required')) AS pending
         FROM service_applications
-        WHERE DATE(submitted_at) BETWEEN :start AND :end
-        GROUP BY DATE(submitted_at)
+        WHERE submitted_at::date BETWEEN :start AND :end
+        GROUP BY submitted_at::date
         ORDER BY d ASC
     ");
     $stmtVol->execute([':start' => $dateStart, ':end' => $dateEnd]);
@@ -128,7 +128,7 @@ try {
         SELECT sv.name, sv.category, COUNT(*) AS cnt
         FROM service_applications sa
         INNER JOIN services sv ON sv.id = sa.service_id
-        WHERE DATE(sa.submitted_at) BETWEEN :start AND :end
+        WHERE sa.submitted_at::date BETWEEN :start AND :end
         GROUP BY sv.id, sv.name, sv.category
         ORDER BY cnt DESC
         LIMIT 8
@@ -146,10 +146,10 @@ try {
     $pastEvts     = (int)$db->query("SELECT COUNT(*) FROM events WHERE event_date < '{$today}'")->fetchColumn();
 
     $stmtEvtMo = $db->prepare("
-        SELECT MONTH(event_date) AS mo, COUNT(*) AS cnt
+        SELECT EXTRACT(MONTH FROM event_date)::int AS mo, COUNT(*) AS cnt
         FROM events
-        WHERE YEAR(event_date) = :yr
-        GROUP BY MONTH(event_date)
+        WHERE EXTRACT(YEAR FROM event_date) = :yr
+        GROUP BY EXTRACT(MONTH FROM event_date)
     ");
     $stmtEvtMo->execute([':yr' => $now->format('Y')]);
     $evtMoMap = [];
@@ -177,9 +177,9 @@ try {
     // ── 5. ANNOUNCEMENTS ──────────────────────────────────────────
     $annStats = $db->query("
         SELECT
-            SUM(status = 'active')   AS published,
-            SUM(status = 'draft')    AS drafts,
-            SUM(status = 'archived') AS archived
+            COUNT(*) FILTER (WHERE status = 'active')   AS published,
+            COUNT(*) FILTER (WHERE status = 'draft')    AS drafts,
+            COUNT(*) FILTER (WHERE status = 'archived') AS archived
         FROM announcements
     ")->fetch(PDO::FETCH_ASSOC);
 
@@ -190,7 +190,7 @@ try {
         FROM services sv
         LEFT JOIN service_applications sa
             ON sa.service_id = sv.id
-            AND DATE(sa.submitted_at) BETWEEN :start AND :end
+            AND sa.submitted_at::date BETWEEN :start AND :end
         GROUP BY sv.id, sv.name, sv.category, sv.status
         ORDER BY requests DESC, sv.name ASC
         LIMIT 8
@@ -204,16 +204,14 @@ try {
     ], $stmtSvcList->fetchAll(PDO::FETCH_ASSOC));
 
     // ── 7. RECENT ACTIVITY ────────────────────────────────────────
-    // COLLATE required — application_notes/services are unicode_ci,
-    // announcements/events are general_ci.
     $stmtAct = $db->query("
         (
             SELECT
-                an.note         COLLATE utf8mb4_unicode_ci AS raw_note,
-                sa.full_name    COLLATE utf8mb4_unicode_ci AS subject,
-                sa.status       COLLATE utf8mb4_unicode_ci AS app_status,
-                sv.name         COLLATE utf8mb4_unicode_ci AS service_name,
-                'request'       COLLATE utf8mb4_unicode_ci AS source,
+                an.note       AS raw_note,
+                sa.full_name  AS subject,
+                sa.status     AS app_status,
+                sv.name       AS service_name,
+                'request'     AS source,
                 an.created_at AS act_time
             FROM application_notes an
             INNER JOIN service_applications sa ON sa.id = an.application_id
@@ -224,11 +222,11 @@ try {
         UNION ALL
         (
             SELECT
-                a.title         COLLATE utf8mb4_unicode_ci,
-                a.title         COLLATE utf8mb4_unicode_ci,
-                a.status        COLLATE utf8mb4_unicode_ci,
-                CAST(NULL AS CHAR) COLLATE utf8mb4_unicode_ci,
-                'announcement'  COLLATE utf8mb4_unicode_ci,
+                a.title,
+                a.title,
+                a.status,
+                NULL::text,
+                'announcement',
                 a.published_at
             FROM announcements a
             ORDER BY a.published_at DESC
@@ -237,12 +235,12 @@ try {
         UNION ALL
         (
             SELECT
-                e.title         COLLATE utf8mb4_unicode_ci,
-                e.title         COLLATE utf8mb4_unicode_ci,
-                'active'        COLLATE utf8mb4_unicode_ci,
-                CAST(NULL AS CHAR) COLLATE utf8mb4_unicode_ci,
-                'event'         COLLATE utf8mb4_unicode_ci,
-                CAST(e.event_date AS DATETIME)
+                e.title,
+                e.title,
+                'active',
+                NULL::text,
+                'event',
+                CAST(e.event_date AS TIMESTAMP)
             FROM events e
             ORDER BY e.created_at DESC
             LIMIT 3

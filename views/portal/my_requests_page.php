@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
 
-require_once __DIR__ . '/../../backend/config/Database.php';
+require_once __DIR__ . '/../../backend/config/database.php';
 require_once __DIR__ . '/../../backend/models/ServiceRequestModel.php';
 
 $residentId = (int)($_SESSION['user_id'] ?? 0);

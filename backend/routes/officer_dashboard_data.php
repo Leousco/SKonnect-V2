@@ -8,7 +8,7 @@
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('sk_officer');
 
-require_once __DIR__ . '/../config/Database.php';
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/ServiceRequestModel.php';
 require_once __DIR__ . '/../models/AnnouncementModel.php';
 require_once __DIR__ . '/../models/ServiceModel.php';

@@ -3,7 +3,7 @@ require_once __DIR__ . '/../../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('sk_officer');
 
 // ── DEPENDENCIES ──────────────────────────────────────────────
-require_once __DIR__ . '/../../../backend/config/Database.php';
+require_once __DIR__ . '/../../../backend/config/database.php';
 require_once __DIR__ . '/../../../backend/models/ServiceRequestModel.php';
 require_once __DIR__ . '/../../../backend/models/AnnouncementModel.php';
 require_once __DIR__ . '/../../../backend/models/ServiceModel.php';

@@ -127,7 +127,7 @@ try {
 
             if (!move_uploaded_file($file['tmp_name'], $destPath)) respond(500, 'Failed to save the image. Check server write permissions.');
 
-            $relativePath = '/SKonnect/assets/uploads/avatars/' . $filename;
+            $relativePath = '/assets/uploads/avatars/' . $filename;
             $model->saveAvatar((int)$userId, $relativePath);
 
             echo json_encode(['status' => 'success', 'message' => 'Profile photo updated.', 'path' => $relativePath]);

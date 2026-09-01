@@ -48,7 +48,7 @@ if ($action === 'create') {
         $filename   = uniqid('', true) . '.' . $ext;
         $destPath   = $uploadDir . $filename;
         if (move_uploaded_file($_FILES['banner']['tmp_name'], $destPath)) {
-            $bannerPath = '/SKonnect/assets/uploads/banners/' . $filename;
+            $bannerPath = '/assets/uploads/banners/' . $filename;
         }
     }
 
@@ -88,7 +88,7 @@ if ($action === 'create') {
                         VALUES (:aid, :path)
                     ")->execute([
                         ':aid'  => $newId,
-                        ':path' => '/SKonnect/assets/uploads/attachments/' . $fname2,
+                        ':path' => '/assets/uploads/attachments/' . $fname2,
                     ]);
                 }
             }

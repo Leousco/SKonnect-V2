@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-$dotenv->safeload();
+$dotenv->safeLoad();
 
-header("Location: ../views/public/main.php");
+require __DIR__ . '/../views/public/main.php';
 exit;

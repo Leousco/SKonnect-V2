@@ -35,10 +35,15 @@
   text-decoration: none;
   color: var(--white);
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 24px;
   letter-spacing: -0.5px;
   position: relative;
   transition: transform 0.3s ease;
+}
+
+.navbar-logo span {
+  display: inline-block;
+  line-height: 1;
 }
 
 .navbar-logo:hover {
@@ -105,7 +110,7 @@
 .navbar-menu a.active {
   color: #1e40af;
   background: #ffd700;
-  font-weight: 600;
+  /* font-weight: 600; */
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
 }
 

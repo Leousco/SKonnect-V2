@@ -38,10 +38,15 @@ body::-webkit-scrollbar {
   text-decoration: none;
   color: var(--white);
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 24px;
   letter-spacing: -0.5px;
   position: relative;
   transition: transform 0.3s ease;
+}
+
+.navbar-logo span {
+  display: inline-block;
+  line-height: 1;
 }
 
 .navbar-logo::before {
@@ -140,19 +145,24 @@ body::-webkit-scrollbar {
 /* HERO / WRAPPER */
 
 .hero {
-  position: relative;
-  height: calc(100vh - 80px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
+    position: relative;
+    min-height: 90vh;   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    background: linear-gradient(135deg, #1E3A8A, #2563EB, #1D4ED8);
+    background-size: 400% 400%;
+    animation: gradientMove 12s ease infinite;
+    color: white;
+    text-align: center;
+    overflow: hidden;
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: url("../../assets/img/hero-bg.jpg") center center / 100% 100%
-    no-repeat;
+  background: url("../../assets/img/hero-bg.jpg") center center / 100% 100% no-repeat;
   z-index: 0;
 }
 
@@ -220,6 +230,7 @@ body::-webkit-scrollbar {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.85);
   margin-bottom: 5px;
+  text-align: left;
 }
 
 .input-field {

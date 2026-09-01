@@ -32,25 +32,25 @@ officer@skonnect.com   | passwords
 Features Checklist:  
   
 MILESTONE #1  
-- Basic Authentication ✔  
-- Basic Authorization ✔  
-- Frontend Pages ✔  
-- Announcements Module ✔  
+- Basic Authentication   
+- Basic Authorization   
+- Frontend Pages   
+- Announcements Module   
   
 MILESTONE #2  
-- Community Feed Module ✔  
-- Profile Page (resident) ✔  
-- Services Module ✔  
-- Dashboard (resident, officer, moderator) ✔  
-- In-System Notifications (resident) ✔  
+- Community Feed Module   
+- Profile Page (resident)   
+- Services Module   
+- Dashboard (resident, officer, moderator)   
+- In-System Notifications (resident)   
   
 MILESTONE #3  
-- Admin side improvements ✔  
-- User Management Module (system admin side) ✔  
-- Public view improvements ✔  
+- Admin side improvements   
+- User Management Module (system admin side)   
+- Public view improvements   
   
 
-Database Migration - Incomplete ⏳ 
+Refactoring for Database Migration - Incomplete ⏳ 
   
 Completed:  
 - Authentication  
@@ -80,6 +80,7 @@ General
 Public side  
  - Login page  
    - No loading visualization when clicking the "Login" button  
+   - Forgot Password non functional  
  - Registration  
    - No password restrictions  
  - Services  

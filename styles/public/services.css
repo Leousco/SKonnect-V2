@@ -191,16 +191,21 @@ body::-webkit-scrollbar {
 }
 
 .pub-select {
-    padding: 10px 14px;
-    font-size: 13px;
-    font-family: 'Poppins', sans-serif;
-    color: var(--text-body, #334155);
-    background: var(--surface, #fff);
-    border: 1px solid var(--border, #d1dae6);
-    border-radius: 10px;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.15s;
+  padding: 10px 32px 10px 12px;
+  font-size: 13px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--mod-text-body);
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
 }
 
 .pub-select:focus { border-color: var(--blue, #1e5fa8); }

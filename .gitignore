@@ -1,0 +1,16 @@
+# Environment variables (never commit real credentials)
+.env
+test_email.php
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# Debug/diagnostic files (remove before deploying)
+debug_env.php
+test_ab.php
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/

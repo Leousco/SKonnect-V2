@@ -95,7 +95,7 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
-  fetch("../../backend/routes/auth.php", {
+  fetch("/backend/routes/auth.php", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({

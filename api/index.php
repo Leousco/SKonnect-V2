@@ -14,7 +14,11 @@ if ($path === '' || $path === '/index') {
     exit;
 }
 
-$file = __DIR__ . '/../views' . $path . '.php';
+if (strpos($path, '/backend/') === 0) {
+    $file = __DIR__ . '/..' . $path . '.php';   // maps to backend/routes/auth.php
+} else {
+    $file = __DIR__ . '/../views' . $path . '.php';
+}
 
 if (file_exists($file)) {
     require $file;

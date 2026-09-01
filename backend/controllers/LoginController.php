@@ -1,5 +1,5 @@
 <?php
-require_once '../models/User.php';
+require_once __DIR__ . '/../models/User.php';
 
 class LoginController {
 
@@ -7,10 +7,10 @@ class LoginController {
     private const MAX_LOCKOUT_MIN = 30;
 
     private $roleRedirects = [
-        'resident'   => '../portal/dashboard.php',
-        'moderator'  => '../management/moderator/mod_dashboard.php',
-        'sk_officer' => '../management/officer/officer_dashboard.php',
-        'admin'      => '../management/admin/admin_dashboard.php',
+        'resident'   => '/portal/dashboard',
+        'moderator'  => '/management/moderator/mod_dashboard',
+        'sk_officer' => '/management/officer/officer_dashboard',
+        'admin'      => '/management/admin/admin_dashboard',
     ];
 
     public function login() {

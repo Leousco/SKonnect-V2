@@ -17,8 +17,8 @@ set_exception_handler(function($e) {
 
 session_start();
 
-require_once '../controllers/AuthController.php';
-require_once '../controllers/LoginController.php';
+require_once __DIR__ . '/../controllers/AuthController.php';
+require_once __DIR__ . '/../controllers/LoginController.php';
 
 $action = $_POST['action'] ?? null;
 

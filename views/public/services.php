@@ -19,7 +19,7 @@
 
     <?php
     /* ── LOAD SERVICES FROM DATABASE ─────────────────────── */
-    require_once __DIR__ . '/../../backend/config/Database.php';
+    require_once __DIR__ . '/../../backend/config/database.php';
     require_once __DIR__ . '/../../backend/controllers/ServiceController.php';
 
     $serviceController = new ServiceController();

@@ -192,21 +192,10 @@
 .search-icon {
     position: absolute;
     left: 12px;
-    font-size: 14px;
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted, #64748b);
     pointer-events: none;
-}
-
-.ann-search-input {
-    width: 100%;
-    padding: 10px 14px 10px 36px;
-    font-size: 14px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-body);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .ann-search-input:focus {
@@ -218,23 +207,6 @@
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-}
-
-.ann-select {
-    padding: 10px 14px;
-    font-size: 13px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-body);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.15s;
-}
-
-.ann-select:focus {
-    border-color: var(--blue);
 }
 
 /* ANNOUNCEMENTS GRID */

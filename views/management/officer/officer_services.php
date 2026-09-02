@@ -132,16 +132,16 @@ RoleMiddleware::requireRole('sk_officer');
                     <option value="legal">Legal</option>
                     <option value="other">Other</option>
                 </select>
-                <select id="svc-type" class="svc-select">
-                    <option value="all">All Types</option>
-                    <option value="document">Online Application</option>
-                    <option value="appointment">Request-based Service</option>
-                    <option value="info">Information &amp; Direct Contact</option>
-                </select>
                 <select id="svc-status" class="svc-select">
                     <option value="all">All Statuses</option>
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
+                </select>
+                <select id="svc-type" class="svc-select">
+                    <option value="all">All Service Types</option>
+                    <option value="document">Online Application</option>
+                    <option value="appointment">Request-based Service</option>
+                    <option value="info">Information &amp; Direct Contact</option>
                 </select>
             </div>
             <div class="svc-controls-right">

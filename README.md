@@ -69,13 +69,14 @@ Current Task:
 Known Issues:  
   
 General  
-- Design inconsistencies for buttons, dropdowns, etc.  
+- Design inconsistencies for buttons, dropdowns, etc. ✔️  
 - Topbars on each user views are not sticky  
 - After logging in, clicking the 'back' button of a browser returns the user to  
   the login page.  
 - Empty fields like threads, reports, etc. shows either two message saying  
   "no record yet" or misaligned (not centered) text.  
 - Inconsistent toast design across all user views.  
+- Make the notifications on admin users (officer, moderator, admin) a modal.  
   
 Public side  
  - Login page  
@@ -97,6 +98,7 @@ Portal side
    - User info improvements  
  - Services  
    - Clicking outside the modal closes the modal resulting in loss of progress  
+   - Make the "Submit Request" button unclickable if all fields are not complete yet  
  - Notif Badge  
    - Counter appears without any new notifications when opening "view" pages  
      (thread_view.php, announcement_view.php)  
@@ -108,6 +110,8 @@ Officer side
    - Past events doesn't auto delete (to be evaluated)  
    - New events appear at the bottom of the list  
  - Notification badge non functional  
+ - Services  
+   - No confirmation modal when deactivating or activating a service  
   
 Moderator side  
  - Dashboard  

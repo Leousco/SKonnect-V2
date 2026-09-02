@@ -159,7 +159,7 @@
 .svc-search-wrap {
   position: relative;
   flex: 1;
-  min-width: 200px;
+  min-width: 500px;
   max-width: 300px;
 }
 

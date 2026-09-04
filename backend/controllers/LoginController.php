@@ -35,7 +35,7 @@ class LoginController {
         $user->email = $email;
 
         if (!$user->getUserByEmail() || $user->is_deleted) {
-            echo json_encode(['status' => 'error', 'message' => 'Email not found.']);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid email or password.']);
             exit;
         }
 
@@ -121,7 +121,7 @@ class LoginController {
         $left = self::MAX_ATTEMPTS - $user->login_attempts;
         echo json_encode([
             'status'  => 'error',
-            'message' => 'Invalid input. Please try again.',
+            'message' => 'Invalid email or password.',
         ]);
     }
 }

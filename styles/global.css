@@ -371,10 +371,10 @@ body {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.ann-search-input:focus {
+/* .ann-search-input:focus {
   border-color: var(--blue);
   box-shadow: 0 0 0 3px rgba(30, 95, 168, 0.1);
-}
+} */
 
 .controls-right {
   display: flex;

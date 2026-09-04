@@ -1,7 +1,19 @@
-/* ============================================================
-   services_page.css — Resident Portal Services
-   Extends the base variables from global.css
-   ============================================================ */
+/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.how-it-works-section,
+.announcements-controls,
+.announcements-section {
+    animation: fadeUp 0.45s ease both;
+}
+
+.how-it-works-section   { animation-delay: 0.05s; }
+.announcements-controls { animation-delay: 0.15s; }
+.announcements-section  { animation-delay: 0.25s; }
 
 /* HOW IT WORKS */
 
@@ -452,6 +464,13 @@
 .svc-attachment-link:hover {
   background: #eff6ff;
   border-color: #93c5fd;
+}
+
+.search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 51%;
 }
 
 /* ── CAPACITY — matches officer card layout ─────────────────── */

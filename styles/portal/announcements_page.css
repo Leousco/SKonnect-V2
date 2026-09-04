@@ -1,3 +1,23 @@
+/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.featured-section,
+.announcements-controls,
+.announcements-section,
+.pagination-section {
+    animation: fadeUp 0.45s ease both;
+}
+
+.featured-section        { animation-delay: 0.05s; }
+.announcements-controls  { animation-delay: 0.15s; }
+.announcements-section   { animation-delay: 0.25s; }
+.pagination-section      { animation-delay: 0.35s; }
+
+
 /* FEATURED ANNOUNCEMENT */
 
 .featured-section {
@@ -187,6 +207,7 @@
     position: relative;
     display: flex;
     align-items: center;
+    width: 52%;
 }
 
 .search-icon {
@@ -196,6 +217,19 @@
     height: 16px;
     color: var(--text-muted, #64748b);
     pointer-events: none;
+}
+
+.anno-search-input {
+      width: 100%;
+  padding: 10px 14px 10px 36px;
+  font-size: 14px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-body);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .ann-search-input:focus {

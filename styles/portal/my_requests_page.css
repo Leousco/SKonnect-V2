@@ -1,3 +1,21 @@
+/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-widgets,
+.announcements-controls,
+.announcements-section {
+    animation: fadeUp 0.45s ease both;
+}
+
+.dashboard-widgets      { animation-delay: 0.05s; }
+.announcements-controls { animation-delay: 0.15s; }
+.announcements-section  { animation-delay: 0.25s; }
+
+
 /* ---- TABLE WRAPPER ---- */
 .req-table-wrap {
     background: var(--surface);
@@ -467,6 +485,13 @@
     background: #eff6ff;
     border-color: var(--blue);
     color: var(--blue);
+}
+
+.search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 50%;
 }
 
 /* FILE PREVIEW MODAL */

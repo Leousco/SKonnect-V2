@@ -77,6 +77,7 @@ General
   "no record yet" or misaligned (not centered) text.  
 - Inconsistent toast design across all user views.  
 - Make the notifications on admin users (officer, moderator, admin) a modal.  
+- Make a 404 page.   
   
 Public side  
  - Login page  
@@ -91,6 +92,8 @@ Portal side
  - Dashboard  
    - Event in calendar shows "Tomorrow" even though the event is still 2 days  
      from now  
+   - Include a services section for easy viewing
+   - Include latest community discussions (trending threads)
  - Notifications  
    - Color and icon of "action require" service requests.  
    - Viewing a notification doesn't auto "mark as read" it.  

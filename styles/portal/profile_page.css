@@ -1,3 +1,20 @@
+/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.profile-hero-card,
+.dashboard-widgets,
+.profile-lower {
+    animation: fadeUp 0.45s ease both;
+}
+
+.profile-hero-card { animation-delay: 0.05s; }
+.dashboard-widgets  { animation-delay: 0.15s; }
+.profile-lower      { animation-delay: 0.25s; }
+
 .profile-hero-card {
     background: var(--surface);
     border: 1px solid var(--border);

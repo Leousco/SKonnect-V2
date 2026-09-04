@@ -14,7 +14,7 @@ $notifications = $notifModel->getByUser($userId);
 
 // ── Type config map ────────────────────────────────────────────────────────
 $typeMap = [
-    'service'      => ['ind' => 'type-service',      'icon' => 'icon-service',      'emoji' => '✅',  'tag' => 'tag-service',      'label' => 'Service Update'],
+    'service'      => ['ind' => 'type-service',      'icon' => 'icon-service',      'emoji' => '✔️',  'tag' => 'tag-service',      'label' => 'Service Update'],
     'announcement' => ['ind' => 'type-announcement', 'icon' => 'icon-announcement', 'emoji' => '📣', 'tag' => 'tag-announcement', 'label' => 'Announcement'],
     'new_service'  => ['ind' => 'type-new-service',  'icon' => 'icon-new-service',  'emoji' => '🆕', 'tag' => 'tag-new-service',  'label' => 'New Service'],
     'thread'       => ['ind' => 'type-thread',       'icon' => 'icon-thread',       'emoji' => '💬', 'tag' => 'tag-thread',       'label' => 'Community Thread'],
@@ -28,6 +28,12 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
         $cfg['ind']   = 'type-service type-rejected';
         $cfg['icon']  = 'icon-rejected';
         $cfg['emoji'] = '❌';
+    }
+    // Visually distinguish service notifications requiring action
+    if ($type === 'service' && stripos($title, 'Action Required') !== false) {
+        $cfg['ind']   = 'type-service type-action-required';
+        $cfg['icon']  = 'icon-action-required';
+        $cfg['emoji'] = '❗';
     }
     return $cfg;
 }

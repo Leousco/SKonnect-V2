@@ -41,7 +41,7 @@
 .dashboard-content {
     margin-left: 250px;
     flex: 1;
-    padding: 36px 40px 72px;
+    padding: 36px 40px 8px;
     max-width: 1300px;
 }
 
@@ -233,6 +233,51 @@
 }
 
 .activity-skeleton:last-child { margin-bottom: 0; }
+
+.calendar-skeleton {
+    padding: 4px 0;
+}
+
+.cal-skel-header {
+    height: 24px;
+    width: 160px;
+    margin: 0 auto 18px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 600px 100%;
+    animation: shimmer 1.4s infinite linear;
+}
+
+.cal-skel-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.cal-skel-cell {
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 600px 100%;
+    animation: shimmer 1.4s infinite linear;
+}
+
+.events-list-skeleton {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-skel-item {
+    height: 58px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 600px 100%;
+    animation: shimmer 1.4s infinite linear;
+}
 
 /* Items */
 .activity-list {

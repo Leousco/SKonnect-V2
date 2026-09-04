@@ -132,7 +132,7 @@
     async function loadEvents() {
         const data = await fetchJSON('events');
         if (data.status !== 'success') return;
-  
+
         eventsMap = {};
         data.data.forEach((ev, i) => {
             eventsMap[ev.event_date] = {
@@ -141,8 +141,12 @@
                 color: EVENT_COLORS[i % EVENT_COLORS.length],
             };
         });
-  
+
         renderCalendar();
+
+        // swap skeleton → real calendar
+        document.getElementById('calendar-skeleton').style.display = 'none';
+        document.getElementById('calendar').style.display = '';
     }
   
     function renderCalendar() {
@@ -195,7 +199,11 @@
     function renderEventsList(year, month) {
         const listEl  = document.getElementById('events-list');
         const emptyEl = document.getElementById('events-empty');
+        const skeletonEl = document.getElementById('events-list-skeleton');
         listEl.innerHTML = '';
+
+        if (skeletonEl) skeletonEl.style.display = 'none';
+        listEl.style.display = '';
   
         const monthEvents = Object.entries(eventsMap)
             .filter(([key]) => {

@@ -1,8 +1,19 @@
-/* =====================================================================
-   notifications_page.css
-   All rules that share class names with topbar.css are scoped under
-   .announcements-section so they never bleed into the topbar dropdown.
-   ===================================================================== */
+/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-widgets,
+.announcements-controls,
+.announcements-section {
+    animation: fadeUp 0.45s ease both;
+}
+
+.dashboard-widgets      { animation-delay: 0.05s; }
+.announcements-controls { animation-delay: 0.15s; }
+.announcements-section  { animation-delay: 0.25s; }
 
 /* ---- LIST HEADER ---- */
 
@@ -30,6 +41,13 @@
 .notif-unread-count.is-zero {
     background: var(--border);
     color: var(--text-muted);
+}
+
+.search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 52%;
 }
 
 /* ---- NOTIFICATION LIST WRAPPER ---- */
@@ -105,12 +123,13 @@
     color: inherit;
 }
 
-.announcements-section .icon-service      { background: #dcfce7; }
-.announcements-section .icon-announcement { background: #fef3c7; }
-.announcements-section .icon-new-service  { background: #cffafe; }
-.announcements-section .icon-thread       { background: #dbeafe; }
-.announcements-section .icon-system       { background: #f1f5f9; }
-.announcements-section .icon-rejected     { background: #fee2e2; }
+.announcements-section .icon-service             { background: #dcfce7; }
+.announcements-section .icon-announcement        { background: #fef3c7; }
+.announcements-section .icon-new-service         { background: #cffafe; }
+.announcements-section .icon-thread              { background: #dbeafe; }
+.announcements-section .icon-system              { background: #f1f5f9; }
+.announcements-section .icon-rejected            { background: #fee2e2; }
+.announcements-section .icon-action-required     { background: #dcfce7; }
 
 /* ---- CONTENT ---- */
 

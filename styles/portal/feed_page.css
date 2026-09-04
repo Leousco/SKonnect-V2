@@ -1,6 +1,19 @@
-/* ============================================================
-   feed_page.css — SKonnect Community Feed (Portal)
-   ============================================================ */
+/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.announcements-controls,
+.announcements-section,
+.pagination-section {
+    animation: fadeUp 0.45s ease both;
+}
+
+.announcements-controls { animation-delay: 0.05s; }
+.announcements-section  { animation-delay: 0.15s; }
+.pagination-section     { animation-delay: 0.25s; }
 
 /* FEED CARD */
 

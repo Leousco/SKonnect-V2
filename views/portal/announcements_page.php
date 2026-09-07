@@ -8,7 +8,7 @@ RoleMiddleware::requireAuth();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKonnect | Announcements Page</title>
+    <title>SKonnect | Announcements</title>
     <link rel="stylesheet" href="../../styles/portal/announcements_page.css">
     <link rel="stylesheet" href="../../styles/global.css">
     <link rel="stylesheet" href="../../styles/portal/sidebar.css">

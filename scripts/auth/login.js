@@ -1,3 +1,10 @@
+// ── FORCE RELOAD ON BACK/FORWARD (BFCACHE) ───────────────────────────────────
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
+
 // ── TOAST NOTIFICATION ───────────────────────────────────────────────────────
 function showToast(message, type = "error") {
   const existing = document.querySelector(".sk-toast");
@@ -122,7 +129,7 @@ form.addEventListener("submit", (e) => {
 
       if (data.status === "success" || data.status === "unverified") {
         setTimeout(() => {
-          window.location.href = data.redirect;
+          window.location.replace(data.redirect);
         }, 1200);
       }
     })

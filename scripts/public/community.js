@@ -1,3 +1,9 @@
+window.addEventListener("pageshow", function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
+
 /* community.js — SKonnect Public Community Feed & Thread View */
 
 document.addEventListener("DOMContentLoaded", () => {

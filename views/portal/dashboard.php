@@ -2,6 +2,10 @@
 require_once __DIR__ . '/../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('resident');
 
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+
 $pageTitle      = 'Dashboard';
 $pageBreadcrumb = [['Home', '#'], ['Dashboard', null]];
 $userName       = $_SESSION['user_name'] ?? 'Guest';
@@ -177,6 +181,12 @@ $notifCount     = 0;
     </div>
 
     <script src="../../scripts/portal/dashboard.js"></script>
+    <script>
+        history.pushState(null, "", location.href);
+        window.addEventListener("popstate", function () {
+            history.pushState(null, "", location.href);
+        });
+    </script>
 </body>
 
 </html>

@@ -1,3 +1,24 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) session_start();
+
+// Same guard as login.php — a logged-in user shouldn't be able to land on
+// the registration form via Back/history navigation.
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+
+if (!empty($_SESSION['user_id'])) {
+    $roleRedirects = [
+        'resident'   => '../portal/dashboard.php',
+        'moderator'  => '../management/moderator/mod_dashboard.php',
+        'sk_officer' => '../management/officer/officer_dashboard.php',
+        'admin'      => '../management/admin/admin_dashboard.php',
+    ];
+    $redirect = $roleRedirects[$_SESSION['user_role'] ?? ''] ?? $roleRedirects['resident'];
+    header('Location: ' . $redirect);
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

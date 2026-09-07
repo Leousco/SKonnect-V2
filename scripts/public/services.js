@@ -1,3 +1,9 @@
+window.addEventListener("pageshow", function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const searchInput  = document.getElementById('pub-svc-search');

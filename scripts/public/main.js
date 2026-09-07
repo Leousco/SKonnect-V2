@@ -1,3 +1,13 @@
+// ── FORCE RELOAD ON BACK/FORWARD (BFCACHE) ───────────────────────────────────
+// If this page is restored from the browser's cache instead of being freshly
+// requested, force a reload so the server-side session check in main.php
+// runs and redirects to the dashboard if the user is already logged in.
+window.addEventListener("pageshow", function (event) {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // Navbar toggle

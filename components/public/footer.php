@@ -10,6 +10,7 @@
             <a href="index.php">Home</a>
             <a href="announcements.php">Announcements</a>
             <a href="services.php">Services</a>
+            <a href="community.php">Community Feed</a>
         </div>
 
         <div class="footer-section">

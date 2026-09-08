@@ -167,7 +167,7 @@ body::-webkit-scrollbar {
 }
 
 .pub-search-input {
-    width: 100%;
+    width: 50%;
     padding: 10px 14px 10px 36px;
     font-size: 14px;
     font-family: 'Poppins', sans-serif;

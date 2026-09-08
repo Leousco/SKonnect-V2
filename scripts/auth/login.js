@@ -87,6 +87,7 @@ function clearLockoutNotice() {
 const form          = document.getElementById("loginForm");
 const emailInput    = document.getElementById("email");
 const passwordInput = document.getElementById("password");
+const loginBtn = document.querySelector(".login-btn");
 
 // Clear lockout notice when the user switches to a different account
 emailInput.addEventListener("input", clearLockoutNotice);
@@ -102,6 +103,10 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
+  // Enter loading state
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Logging in...";
+
   fetch("../../backend/routes/auth.php", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -114,11 +119,13 @@ form.addEventListener("submit", (e) => {
     .then((res) => res.json())
     .then((data) => {
       if (data.status === "banned") {
+        resetLoginBtn();
         showBanModal(data.reason);
         return;
       }
 
       if (data.status === "locked") {
+        resetLoginBtn();
         showToast(data.message);
         showLockoutNotice(data.remaining);
         return;
@@ -128,15 +135,24 @@ form.addEventListener("submit", (e) => {
       showToast(data.message, data.status === "success" ? "success" : "error");
 
       if (data.status === "success" || data.status === "unverified") {
+        // keep button disabled — page is about to navigate away
         setTimeout(() => {
           window.location.replace(data.redirect);
         }, 1200);
+      } else {
+        resetLoginBtn();
       }
     })
     .catch(() => {
+      resetLoginBtn();
       showToast("Server error. Please try again.");
     });
 });
+
+function resetLoginBtn() {
+  loginBtn.disabled = false;
+  loginBtn.textContent = "Login";
+}
 
 // ── BAN MODAL ─────────────────────────────────────────────────────────────────
 function showBanModal(reason) {

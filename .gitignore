@@ -1,6 +1,9 @@
 # Environment variables (never commit real credentials)
 .env
 test_email.php
+.prettierrc
+package-lock.json
+package.json
 
 # Dependencies
 /vendor/

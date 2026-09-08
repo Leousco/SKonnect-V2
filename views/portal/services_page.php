@@ -268,6 +268,9 @@ RoleMiddleware::requireAuth();
                                     <!-- Title & description -->
                                     <h3 class="ann-card-title"><?= htmlspecialchars($svc['name']) ?></h3>
                                     <p class="svc-card-excerpt"><?= htmlspecialchars($svc['description']) ?></p>
+                                    <!-- <div class="svc-card-excerpt-wrap">
+                                        <p class="svc-card-excerpt"><?= htmlspecialchars($svc['description']) ?></p>
+                                    </div> -->
 
                                     <!-- Details list -->
                                     <ul class="svc-details-list">

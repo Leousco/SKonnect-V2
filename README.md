@@ -72,7 +72,7 @@ General
 - Design inconsistencies for buttons, dropdowns, etc. ✔️  
 - Topbars on each user views are not sticky  
 - After logging in, clicking the 'back' button of a browser returns the user to  
-  the login page.  
+  the login page. (fixed maybe) ✔️  
 - Empty fields like threads, reports, etc. shows either two message saying  
   "no record yet" or misaligned (not centered) text.  
 - Inconsistent toast design across all user views.  
@@ -81,7 +81,7 @@ General
   
 Public side  
  - Login page  
-   - No loading visualization when clicking the "Login" button  
+   - No loading visualization when clicking the "Login" button ✔️  
    - Forgot Password non functional  
  - Registration  
    - No password restrictions  

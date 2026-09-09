@@ -5,7 +5,7 @@ RoleMiddleware::requireRole('sk_officer');
 require_once __DIR__ . '/../../../backend/controllers/ServiceRequestController.php';
 
 $controller = new ServiceRequestController();
-$requests   = $controller->getAll();   // all applications, newest first
+$requests   = $controller->getAll();   
 $counts     = $controller->getStatusCounts();
 
 // Helper: build initials from full_name or first+last name
@@ -131,27 +131,27 @@ function statusCss(string $status): string {
                 <button class="req-tab"        data-status="cancelled"        role="tab">Cancelled <span class="req-tab-count"><?= $counts['cancelled'] ?? 0 ?></span></button>
             </div>
 
-            <div class="req-filters">
-                <div class="req-search-wrap">
-                    <svg class="req-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-                    <input type="text" id="req-search" class="req-search-input" placeholder="Search requests…">
-                </div>
-                <select id="req-category" class="req-select">
-                    <option value="all">All Categories</option>
-                    <option value="medical">Medical</option>
-                    <option value="education">Education</option>
-                    <option value="scholarship">Scholarship</option>
-                    <option value="livelihood">Livelihood</option>
-                    <option value="assistance">Assistance</option>
-                    <option value="legal">Legal</option>
-                    <option value="other">Other</option>
-                </select>
-                <select id="req-sort" class="req-select">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                </select>
-            </div>
+        </div>
 
+        <div class="req-filters">
+            <div class="req-search-wrap">
+                <svg class="req-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+                <input type="text" id="req-search" class="req-search-input" placeholder="Search requests…">
+            </div>
+            <select id="req-category" class="req-select">
+                <option value="all">All Categories</option>
+                <option value="medical">Medical</option>
+                <option value="education">Education</option>
+                <option value="scholarship">Scholarship</option>
+                <option value="livelihood">Livelihood</option>
+                <option value="assistance">Assistance</option>
+                <option value="legal">Legal</option>
+                <option value="other">Other</option>
+            </select>
+            <select id="req-sort" class="req-select">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+            </select>
         </div>
 
         <!-- REQUESTS TABLE -->

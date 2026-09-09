@@ -135,7 +135,7 @@
   border-top-color: var(--gold, #f59e0b);
 }
 .res-svc-card[data-status="closed"] {
-  border-top-color: #cbd5e1;
+  border-top-color: #ef4444;
   opacity: 0.78;
 }
 
@@ -298,9 +298,9 @@
 }
 
 .feed-badge.status-closed {
-  background: #fef2f2;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
+  background: #ffedd5;
+  color: #7c2d12;
+  border: 1px solid #f8cfc2;
 }
 
 .feed-badge.status-closed .feed-badge-dot {
@@ -1275,18 +1275,18 @@
 }
 
 .details-status-strip.strip-closed {
-  border-left-color: #94a3b8;
-  background: linear-gradient(135deg, #f8fafc 0%, #fefefe 100%);
+  border-left-color: #ef4444;
+  background: linear-gradient(135deg, #fef2f2 0%, #fef5f5 100%);
 }
 
 .details-status-strip.strip-closed::before {
-  background: #94a3b8;
+  background: #ef4444;
   box-shadow: none;
   animation: none;
 }
 
 .details-status-strip.strip-closed .status-badge {
-  background: #94a3b8;
+  background: #81675e;
   color: white;
 }
 

@@ -61,12 +61,12 @@
 }
 
 /* Drafts info banner */
-.ann-drafts-info-banner {
+.ann-drafts-info-banner, .ann-archive-info-banner {
   background: #f0f9ff !important;
   border-color: #bae6fd !important;
   color: #0369a1 !important;
 }
-.ann-drafts-info-banner svg {
+.ann-drafts-info-banner, .ann-archive-info-banner svg {
   color: #0369a1 !important;
   flex-shrink: 0;
 }

@@ -1,6 +1,6 @@
-<?php  
-    require_once __DIR__ . '/../../../backend/middleware/RoleMiddleware.php';
-    RoleMiddleware::requireRole('sk_officer');
+<?php
+require_once __DIR__ . "/../../../backend/middleware/RoleMiddleware.php";
+RoleMiddleware::requireRole("sk_officer");
 ?>
 
 <!DOCTYPE html>
@@ -18,17 +18,19 @@
 
 <div class="off-layout">
 
-    <?php include __DIR__ . '/../../../components/management/officer/officer_sidebar.php'; ?>
+    <?php include __DIR__ .
+        "/../../../components/management/officer/officer_sidebar.php"; ?>
 
     <main class="off-content">
 
     <?php
-        $pageTitle      = 'Announcements';
-        $pageBreadcrumb = [['Home', '#'], ['Announcements', null]];
-        $officerName    = $_SESSION['user_name'] ?? 'Officer';
-        $officerRole    = $_SESSION['user_role'] ?? 'SK Officer';
-        $notifCount     = 3;
-        include __DIR__ . '/../../../components/management/officer/officer_topbar.php';
+    $pageTitle = "Announcements";
+    $pageBreadcrumb = [["Home", "#"], ["Announcements", null]];
+    $officerName = $_SESSION["user_name"] ?? "Officer";
+    $officerRole = $_SESSION["user_role"] ?? "SK Officer";
+    $notifCount = 3;
+    include __DIR__ .
+        "/../../../components/management/officer/officer_topbar.php";
     ?>
 
         <!-- PAGE TABS -->
@@ -437,8 +439,12 @@
                                 <h4 class="preview-title" id="preview-title">Your announcement title will appear here…</h4>
                                 <p class="preview-excerpt" id="preview-excerpt">The announcement body text will be summarised here for the card view.</p>
                                 <div class="preview-meta-row" id="preview-meta-row">
-                                    <span class="preview-posted-by">By: <strong><?= htmlspecialchars($_SESSION['user_name'] ?? 'Officer') ?></strong></span>
-                                    <span class="preview-date" id="preview-date"><?= date('M j, Y') ?></span>
+                                    <span class="preview-posted-by">By: <strong><?= htmlspecialchars(
+                                        $_SESSION["user_name"] ?? "Officer",
+                                    ) ?></strong></span>
+                                    <span class="preview-date" id="preview-date"><?= date(
+                                        "M j, Y",
+                                    ) ?></span>
                                 </div>
                                 <div class="preview-footer">
                                     <a href="#" class="preview-read-more">Read More</a>

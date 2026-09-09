@@ -18,7 +18,7 @@ function navLink(string $href, string $label, string $activeTarget): string
     <div class="navbar-container">
         <a href="main.php" class="navbar-logo">
             <img src="../../assets/img/loger.jpg" alt="SK Logo">
-            <span>SKonnect</span>
+            <span>OneSauyo</span>
         </a>
 
         <button class="navbar-toggle" id="navbarToggle">

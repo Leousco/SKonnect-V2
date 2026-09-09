@@ -114,6 +114,7 @@
     border-radius: var(--admin-radius);
     box-shadow: var(--admin-shadow);
     padding: 22px 24px;
+    min-height: 320px;
 }
 
 .requests-table-wrap {

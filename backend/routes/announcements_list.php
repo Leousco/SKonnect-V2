@@ -19,6 +19,7 @@ $search   = trim($_GET['search']   ?? '');
 $category = trim($_GET['category'] ?? '');
 $status   = trim($_GET['status']   ?? '');
 $page     = max(1, (int)($_GET['page'] ?? 1));
+$sort     = trim($_GET['sort'] ?? 'newest') === 'oldest' ? 'ASC' : 'DESC';
 $perPage  = 10;
 $offset   = ($page - 1) * $perPage;
 
@@ -51,12 +52,14 @@ $stmt = $conn->prepare("
     SELECT
         a.id,
         a.title,
+        a.content,
         a.category,
         a.status,
         a.featured::int AS featured,
         a.banner_img,
         a.published_at,
         a.expired_at,
+        a.archived_at,
         a.updated_at,
         CONCAT(u.first_name, ' ', u.last_name) AS author
     FROM announcements a
@@ -65,7 +68,7 @@ $stmt = $conn->prepare("
     ORDER BY
         CASE a.status WHEN 'active' THEN 1 WHEN 'draft' THEN 2 WHEN 'archived' THEN 3 ELSE 4 END,
         a.featured DESC,
-        a.published_at DESC
+        a.published_at $sort
     LIMIT :limit OFFSET :offset
 ");
 foreach ($params as $k => $v) $stmt->bindValue($k, $v);

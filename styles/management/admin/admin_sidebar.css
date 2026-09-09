@@ -120,19 +120,19 @@
 }
 
 /* ACTIVE — amber highlight (top-level only, excludes submenu items) */
-.admin-sidebar-nav li.active:not(.submenu li.active) a {
+.admin-sidebar-nav li.active:not(.submenu li) > a {
   background: var(--admin-accent);
   color: var(--admin-dark);
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
 }
 
-.admin-sidebar-nav li.active:not(.submenu li.active) a svg {
+.admin-sidebar-nav li.active:not(.submenu li) > a svg {
   stroke: var(--admin-dark);
   opacity: 1;
 }
 
-.admin-sidebar-nav li.active:not(.submenu li.active) a:hover {
+.admin-sidebar-nav li.active:not(.submenu li) > a:hover {
   background: var(--admin-accent-lt);
   box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45);
 }
@@ -285,6 +285,23 @@
   background: rgba(255, 255, 255, 0.07);
 }
 
+.has-submenu.active > .submenu-toggle {
+  background: var(--admin-accent);
+  color: var(--admin-dark);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+}
+
+.has-submenu.active > .submenu-toggle svg {
+  stroke: var(--admin-dark);
+  opacity: 1;
+}
+
+.has-submenu.active > .submenu-toggle:hover {
+  background: var(--admin-accent-lt);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45);
+}
+
 /* SUBMENU LIST */
 .submenu {
   list-style: none;
@@ -344,6 +361,10 @@
   font-weight: 600;
   background: none;
   box-shadow: none;
+}
+
+.submenu li.active a:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .submenu li.active a::before {

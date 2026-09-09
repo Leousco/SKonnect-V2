@@ -34,24 +34,32 @@ RoleMiddleware::requireAdmin();
         <div class="ann-page-tabs">
             <button class="ann-tab active" data-tab="list">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
-                All Announcements
+                Published
             </button>
-            <button class="ann-tab" data-tab="create">
+            <button class="ann-tab" data-tab="drafts">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+                Drafts
+            </button>
+            <button class="ann-tab" data-tab="archive">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"/></svg>
+                Archived
+            </button>
+            <button class="ann-tab ann-tab--create" data-tab="create">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-                Create New
+                Create Announcement
             </button>
         </div>
 
-        <!-- ══ TAB: ALL ANNOUNCEMENTS LIST ═══════════════════════ -->
+        <!-- ══ TAB: PUBLISHED ═════════════════════════════════════ -->
         <div class="ann-panel" id="panel-list">
 
             <div class="ann-controls">
                 <div class="ann-search-wrap">
                     <svg class="ann-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-                    <input type="text" id="ann-search" class="ann-search-input" placeholder="Search announcements…">
+                    <input type="text" id="list-search" class="ann-search-input" placeholder="Search published announcements…">
                 </div>
                 <div class="ann-filters">
-                    <select id="ann-filter-category" class="ann-select">
+                    <select id="list-filter-category" class="ann-select">
                         <option value="">All Categories</option>
                         <option value="event">Event</option>
                         <option value="program">Program</option>
@@ -59,24 +67,16 @@ RoleMiddleware::requireAdmin();
                         <option value="notice">Notice</option>
                         <option value="urgent">Urgent</option>
                     </select>
-                    <select id="ann-filter-status" class="ann-select">
-                        <option value="">All Status</option>
-                        <option value="active">Published</option>
-                        <option value="draft">Draft</option>
-                        <option value="archived">Archived</option>
+                    <select id="list-filter-sort" class="ann-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
                     </select>
-                    <button class="btn-ann-create" id="btn-switch-create">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                        New Announcement
-                    </button>
                 </div>
             </div>
 
             <!-- Stats strip — populated by JS -->
-            <div class="ann-stats-strip" id="ann-stats-strip">
-                <div class="ann-stat-pill"><span class="stat-num" id="stat-total">—</span><span class="stat-lbl">Total</span></div>
+            <div class="ann-stats-strip">
                 <div class="ann-stat-pill stat-published"><span class="stat-num" id="stat-active">—</span><span class="stat-lbl">Published</span></div>
-                <div class="ann-stat-pill stat-draft"><span class="stat-num" id="stat-draft">—</span><span class="stat-lbl">Drafts</span></div>
                 <div class="ann-stat-pill stat-featured">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.45 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z" clip-rule="evenodd"/></svg>
                     <span class="stat-num" id="stat-featured">—</span><span class="stat-lbl">Featured</span>
@@ -92,26 +92,142 @@ RoleMiddleware::requireAdmin();
                             <th style="width:40px"></th>
                             <th>Title</th>
                             <th>Category</th>
-                            <th>Status</th>
                             <th>Featured</th>
                             <th>Published</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="ann-table-body">
-                        <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--ap-text-muted);">Loading…</td></tr>
+                    <tbody id="list-table-body">
+                        <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--ap-text-muted);">Loading…</td></tr>
                     </tbody>
                 </table>
             </div>
 
             <!-- Pagination -->
-            <div class="ann-pagination" id="ann-pagination">
-                <button class="ann-page-btn" id="btn-prev" disabled>&#8249; Prev</button>
-                <div class="ann-page-numbers" id="ann-page-numbers"></div>
-                <button class="ann-page-btn" id="btn-next">Next &#8250;</button>
+            <div class="ann-pagination" id="list-pagination">
+                <button class="ann-page-btn" id="list-btn-prev" disabled>&#8249; Prev</button>
+                <div class="ann-page-numbers" id="list-page-numbers"></div>
+                <button class="ann-page-btn" id="list-btn-next">Next &#8250;</button>
             </div>
 
         </div><!-- /panel-list -->
+
+        <!-- ══ TAB: DRAFTS ════════════════════════════════════════ -->
+        <div class="ann-panel ann-panel--hidden" id="panel-drafts">
+
+            <div class="ann-controls">
+                <div class="ann-search-wrap">
+                    <svg class="ann-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+                    <input type="text" id="drafts-search" class="ann-search-input" placeholder="Search drafts…">
+                </div>
+                <div class="ann-filters">
+                    <select id="drafts-filter-category" class="ann-select">
+                        <option value="">All Categories</option>
+                        <option value="event">Event</option>
+                        <option value="program">Program</option>
+                        <option value="meeting">Meeting</option>
+                        <option value="notice">Notice</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                    <select id="drafts-filter-sort" class="ann-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="ann-archive-info-banner ann-drafts-info-banner">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                <p>Drafts are not visible on the resident portal. Edit and publish them when ready.</p>
+            </div>
+
+            <div class="ann-stats-strip">
+                <div class="ann-stat-pill stat-draft"><span class="stat-num" id="stat-draft">—</span><span class="stat-lbl">Drafts</span></div>
+            </div>
+
+            <div class="ann-table-wrap">
+                <table class="ann-table">
+                    <thead>
+                        <tr>
+                            <th style="width:40px"></th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Last Saved</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="drafts-table-body">
+                        <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--ap-text-muted);">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ann-pagination" id="drafts-pagination">
+                <button class="ann-page-btn" id="drafts-btn-prev" disabled>&#8249; Prev</button>
+                <div class="ann-page-numbers" id="drafts-page-numbers"></div>
+                <button class="ann-page-btn" id="drafts-btn-next">Next &#8250;</button>
+            </div>
+
+        </div><!-- /panel-drafts -->
+
+        <!-- ══ TAB: ARCHIVED ══════════════════════════════════════ -->
+        <div class="ann-panel ann-panel--hidden" id="panel-archive">
+
+            <div class="ann-controls">
+                <div class="ann-search-wrap">
+                    <svg class="ann-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+                    <input type="text" id="archive-search" class="ann-search-input" placeholder="Search archived announcements…">
+                </div>
+                <div class="ann-filters">
+                    <select id="archive-filter-category" class="ann-select">
+                        <option value="">All Categories</option>
+                        <option value="event">Event</option>
+                        <option value="program">Program</option>
+                        <option value="meeting">Meeting</option>
+                        <option value="notice">Notice</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                    <select id="archive-filter-sort" class="ann-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="ann-archive-info-banner">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                <p>Archived announcements are hidden from the resident portal. You can restore them to <strong>Draft</strong> or delete them permanently.</p>
+            </div>
+
+            <div class="ann-stats-strip">
+                <div class="ann-stat-pill stat-archived-total"><span class="stat-num" id="stat-archived">—</span><span class="stat-lbl">Archived</span></div>
+            </div>
+
+            <div class="ann-table-wrap ann-table-wrap--archived">
+                <table class="ann-table">
+                    <thead>
+                        <tr>
+                            <th style="width:40px"></th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Originally Published</th>
+                            <th>Archived On</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archive-table-body">
+                        <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--ap-text-muted);">Loading…</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ann-pagination" id="archive-pagination">
+                <button class="ann-page-btn" id="archive-btn-prev" disabled>&#8249; Prev</button>
+                <div class="ann-page-numbers" id="archive-page-numbers"></div>
+                <button class="ann-page-btn" id="archive-btn-next">Next &#8250;</button>
+            </div>
+
+        </div><!-- /panel-archive -->
 
         <!-- ══ TAB: CREATE ANNOUNCEMENT ════════════════════════════ -->
         <div class="ann-panel ann-panel--hidden" id="panel-create">

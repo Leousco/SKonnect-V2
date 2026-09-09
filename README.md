@@ -1,4 +1,4 @@
-Last Update: 8/29/26  
+Last Update: 9/9/26  
 
 System Users:  
 
@@ -19,7 +19,7 @@ System Admin - They have full authority, control, and has access to everything.
 They can manage, create, delete, or configure users. They can change system configs,  
 access system logs. They can do everything the system offers.  
   
-
+  
 Login credentials:
 
 Email | Password
@@ -28,28 +28,54 @@ admin@skonnect.com     | passwords
 moderator@skonnect.com | passwords  
 officer@skonnect.com   | passwords  
   
-
-Features Checklist:  
   
-MILESTONE #1  
-- Basic Authentication   
-- Basic Authorization   
-- Frontend Pages   
-- Announcements Module   
+List of Implemented Major Features:  
   
-MILESTONE #2  
-- Community Feed Module   
-- Profile Page (resident)   
-- Services Module   
-- Dashboard (resident, officer, moderator)   
-- In-System Notifications (resident)   
+Public view  
+- View announcements  
+- View available services (application requires login)  
+- View community feed (interaction requires login)  
+- Register an account  
+- Login registered account (authentication)  
+- Login admin accounts (authorization)  
   
-MILESTONE #3  
-- Admin side improvements   
-- User Management Module (system admin side)   
-- Public view improvements   
+Portal view  
+- View upcoming events (calendar based)  
+- View and bookmark an announcement  
+- View, create, comment, reply, support, report, and bookmark a thread in community feed  
+- View and apply for available services  
+- View, edit, and resubmit, recent user applications  
+- View, mark as read, and dismiss notifications  
+- Setup basic profile for personal insights about the user's account  
   
-
+Officer panel  
+- Create and configure announcements  
+- Create, configure, and activate/deactivate a service  
+- Approve, reject, and require for revision a service application  
+- Mark upcoming events on calendar  
+- View system analytics (Officer module only)  
+- View system users for basic insights (not included admin users)  
+  
+Moderator panel  
+- View community feed  
+- Set thread status  
+- Comment/reply on threads  
+- Hide threads, comments, and replies  
+- Ban/sanction specific users  
+- Handle reports (sanction, remove or dismiss)  
+- View moderators activity logs  
+  
+Admin panel  
+- Create and configure announcements  
+- Manage services  
+- Manage service applications  
+- Manage threads  
+- Manage community reports  
+- Manage all system users (add, ban, remove, change role)  
+- View system-wide analytics  
+- View admin activity logs  
+  
+  
 Refactoring for Database Migration - Incomplete ⏳ 
   
 Completed:  
@@ -61,11 +87,10 @@ Completed:
 - Notifications Module (resident)  
 - Dashboard (resident, officer, moderator, admin)  
   
-
 Current Task:  
 - Admin pages ⏳  
   
-
+  
 Known Issues:  
   
 General  
@@ -95,7 +120,7 @@ Portal side
    - Include a services section for easy viewing
    - Include latest community discussions (trending threads)
  - Notifications  
-   - Color and icon of "action require" service requests.  
+   - Color and icon of "action require" service requests. ✔️  
    - Viewing a notification doesn't auto "mark as read" it.  
  - Profile  
    - User info improvements  

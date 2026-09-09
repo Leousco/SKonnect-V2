@@ -21,18 +21,23 @@ class AnnouncementModel {
                      :published_at, :expired_at, :status)";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            ':title'        => $data['title'],
-            ':content'      => $data['content'],
-            ':category'     => $data['category'],
-            ':featured'     => (bool) $data['featured'],
-            ':featured_at'  => $data['featured'] ? date('Y-m-d H:i:s') : null,
-            ':banner_img'   => $data['banner_img'] ?? null,
-            ':author_id'    => $data['author_id'],
-            ':published_at' => $data['published_at'] ?? date('Y-m-d H:i:s'),
-            ':expired_at'   => $data['expired_at'] ?? null,
-            ':status'       => $data['status'] ?? 'active',
-        ]);
+        try {
+            $stmt->execute([
+                ':title'        => $data['title'],
+                ':content'      => $data['content'],
+                ':category'     => $data['category'],
+                ':featured'     => !empty($data['featured']) ? 1 : 0,
+                ':featured_at'  => $data['featured'] ? date('Y-m-d H:i:s') : null,
+                ':banner_img'   => $data['banner_img'] ?? null,
+                ':author_id'    => $data['author_id'],
+                ':published_at' => $data['published_at'] ?? date('Y-m-d H:i:s'),
+                ':expired_at'   => $data['expired_at'] ?? null,
+                ':status'       => $data['status'] ?? 'active',
+            ]);
+        } catch (PDOException $e) {
+            error_log('AnnouncementModel::create failed: ' . $e->getMessage());
+            return false;
+        }
 
         return (int) $this->conn->lastInsertId();
     }
@@ -167,7 +172,7 @@ class AnnouncementModel {
         foreach ($allowed as $field) {
             if (array_key_exists($field, $data)) {
                 $sets[]          = "{$field} = :{$field}";
-                $params[":{$field}"] = $field === 'featured' ? (bool) $data[$field] : $data[$field];
+                $params[":{$field}"] = $field === 'featured' ? (!empty($data[$field]) ? 1 : 0) : $data[$field];
             }
         }
 
@@ -182,7 +187,13 @@ class AnnouncementModel {
         $stmt = $this->conn->prepare(
             "UPDATE announcements SET " . implode(', ', $sets) . " WHERE id = :id"
         );
-        return $stmt->execute($params);
+
+        try {
+            return $stmt->execute($params);
+        } catch (PDOException $e) {
+            error_log('AnnouncementModel::update failed: ' . $e->getMessage());
+            return false;
+        }
     }
 
     /* ARCHIVE (soft) */

@@ -145,16 +145,23 @@
 }
 
 .ann-select {
-  padding: 10px 14px;
+  padding: 8px 30px 8px 11px;
   font-size: 13px;
   font-family: "Poppins", sans-serif;
   color: var(--ap-text-body);
   background: var(--ap-surface);
-  border: 1px solid var(--ap-border);
-  border-radius: var(--ap-radius);
+  border: 1.5px solid var(--ap-border);
+  border-radius: 8px;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 13px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .ann-select:focus {
@@ -1575,3 +1582,103 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* ── CREATE TAB (CTA STYLE) ──────────────────────────────── */
+
+.ann-tab--create {
+  margin-left: auto;
+  background: var(--admin-primary);
+  color: #fff !important;
+  border-radius: 8px 8px 0 0;
+  padding: 10px 18px;
+  border-bottom-color: transparent !important;
+}
+.ann-tab--create:hover {
+  color: #fff;
+  background: var(--ap-dark);
+}
+.ann-tab--create.active {
+  color: #fff;
+  background: var(--ap-dark);
+  border-bottom-color: transparent;
+}
+
+/* ── DRAFTS / ARCHIVE INFO BANNER ─────────────────────────── */
+
+.ann-archive-info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--ap-surface-2);
+  border: 1.5px solid var(--ap-border);
+  border-radius: var(--ap-radius);
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: var(--ap-text-muted);
+  line-height: 1.55;
+}
+.ann-archive-info-banner svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--ap-lt);
+  margin-top: 1px;
+}
+.ann-archive-info-banner strong {
+  color: var(--ap-text-head);
+}
+.ann-drafts-info-banner {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
+}
+.ann-drafts-info-banner svg {
+  color: #d97706;
+}
+
+/* ── ARCHIVED TABLE STATE ─────────────────────────────────── */
+
+.ann-table-wrap--archived {
+  border-color: var(--ap-border);
+}
+.ann-row--archived td {
+  opacity: 0.82;
+}
+.ann-row--archived:hover td {
+  background: var(--ap-surface-2);
+  opacity: 1;
+}
+.ann-title-text--archived {
+  color: var(--ap-text-muted) !important;
+  font-weight: 600;
+}
+.stat-archived-total .stat-num {
+  color: var(--ap-text-muted);
+}
+.btn-restore:hover {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  color: var(--ap-green);
+}
+
+/* ── CANCEL BUTTON (edit mode) ────────────────────────────── */
+
+.btn-ann-cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .55rem 1.1rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--ap-border-mid);
+  background: #fff;
+  color: var(--ap-text-muted);
+  font-size: .875rem;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.btn-ann-cancel svg { width: 16px; height: 16px; }
+.btn-ann-cancel:hover { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
+.btn-ann-cancel:disabled { opacity: .5; cursor: not-allowed; }

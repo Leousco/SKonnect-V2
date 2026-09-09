@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!wrap) return;
 
         if (!byCategory || byCategory.length === 0) {
-            wrap.innerHTML = `<p style="color:var(--admin-text-muted);font-size:13px;">No data for this month.</p>`;
+            wrap.innerHTML = `<p style="text-align:center;color:var(--admin-text-muted);font-size:13px;">No data for this month.</p>`;
             return;
         }
 

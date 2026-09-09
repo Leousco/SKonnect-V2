@@ -12,6 +12,12 @@ function isGroupOpen(array $pages): string
     global $current;
     return in_array($current, $pages) ? 'open' : '';
 }
+
+function isGroupActive(array $pages): string
+{
+    global $current;
+    return in_array($current, $pages) ? 'active' : '';
+}
 ?>
 
 <aside class="admin-sidebar">
@@ -54,7 +60,7 @@ function isGroupOpen(array $pages): string
                 </li>
 
                 <!-- Services -->
-                <li class="has-submenu <?= isGroupOpen(['admin_manage_services.php', 'admin_service_requests.php']) ?>">
+                <li class="has-submenu <?= isGroupOpen(['admin_manage_services.php', 'admin_service_requests.php']) ?> <?= isGroupActive(['admin_manage_services.php', 'admin_service_requests.php']) ?>">
                     <button class="submenu-toggle" aria-expanded="<?= isGroupOpen(['admin_manage_services.php', 'admin_service_requests.php']) === 'open' ? 'true' : 'false' ?>">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -78,7 +84,7 @@ function isGroupOpen(array $pages): string
                 </li>
 
                 <!-- Community -->
-                <li class="has-submenu <?= isGroupOpen(['admin_threads.php', 'admin_reports.php']) ?>">
+                <li class="has-submenu <?= isGroupOpen(['admin_threads.php', 'admin_reports.php']) ?> <?= isGroupActive(['admin_threads.php', 'admin_reports.php']) ?>">
                     <button class="submenu-toggle" aria-expanded="<?= isGroupOpen(['admin_threads.php', 'admin_reports.php']) === 'open' ? 'true' : 'false' ?>">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -115,7 +121,7 @@ function isGroupOpen(array $pages): string
                 </li>
 
                 <!-- Reports & Logs -->
-                <li class="has-submenu <?= isGroupOpen(['admin_analytics.php', 'admin_activity_logs.php']) ?>">
+                <li class="has-submenu <?= isGroupOpen(['admin_analytics.php', 'admin_activity_logs.php']) ?> <?= isGroupActive(['admin_analytics.php', 'admin_activity_logs.php']) ?>">
                     <button class="submenu-toggle" aria-expanded="<?= isGroupOpen(['admin_analytics.php', 'admin_activity_logs.php']) === 'open' ? 'true' : 'false' ?>">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <line x1="18" y1="20" x2="18" y2="10" />

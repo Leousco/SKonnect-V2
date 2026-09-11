@@ -1,60 +1,104 @@
 <?php
-/**
- * service_request_action.php
- * Handles approve / reject / complete / action_required actions.
- * Place at: /backend/routes/service_request_action.php
- */
-
-header('Content-Type: application/json');
+// backend/routes/service_request_action.php
+// Admin-facing: list applications, view details, update status, add notes.
+// Mirrors backend/routes/officer_service_requests.php so the admin panel
+// gets the same approval/decline/notes flow as the SK Officer panel.
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../controllers/ServiceRequestController.php';
 
 RoleMiddleware::requireAdmin();
 
-$db   = new Database();
-$conn = $db->getConnection();
+header('Content-Type: application/json; charset=utf-8');
+ob_clean();
 
-$input = json_decode(file_get_contents('php://input'), true);
-
-$appId   = isset($input['id'])      ? (int) $input['id']           : 0;
-$action  = isset($input['action'])  ? trim($input['action'])        : '';
-$note    = isset($input['note'])    ? trim($input['note'])          : '';
-$officer = $_SESSION['user_id']     ?? 0;
-
-$allowed = ['approved', 'rejected', 'action_required'];
-
-if (!$appId || !in_array($action, $allowed)) {
-    http_response_code(400);
-    echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
-    exit;
-}
+$action     = $_GET['action'] ?? ($_POST['action'] ?? '');
+$controller = new ServiceRequestController();
+$adminId    = (int)($_SESSION['user_id'] ?? 0);
 
 try {
-    // Update status
-    $stmt = $conn->prepare("
-        UPDATE service_applications
-        SET status = :status, updated_at = NOW()
-        WHERE id = :id
-    ");
-    $stmt->execute([':status' => $action, ':id' => $appId]);
+    switch ($action) {
 
-    // Save note if provided
-    if ($note !== '' && $officer) {
-        $stmt = $conn->prepare("
-            INSERT INTO application_notes (application_id, officer_id, note, created_at)
-            VALUES (:app_id, :officer, :note, NOW())
-        ");
-        $stmt->execute([
-            ':app_id'  => $appId,
-            ':officer' => $officer,
-            ':note'    => $note,
-        ]);
+        case 'list':
+            $filters = [
+                'status'   => $_GET['status']   ?? '',
+                'category' => $_GET['category'] ?? '',
+                'search'   => $_GET['search']   ?? '',
+            ];
+            echo json_encode(['success' => true, 'data' => $controller->getAll($filters)]);
+            break;
+
+        case 'view':
+            $id = (int)($_GET['id'] ?? 0);
+            if (!$id) {
+                echo json_encode(['success' => false, 'message' => 'Application ID is required.']);
+                break;
+            }
+            $application = $controller->getById($id);
+            if (!$application) {
+                echo json_encode(['success' => false, 'message' => 'Application not found.']);
+                break;
+            }
+            echo json_encode(['success' => true, 'data' => $application]);
+            break;
+
+        case 'get_approval_message':
+            $id = (int)($_GET['id'] ?? 0);
+            if (!$id) {
+                echo json_encode(['success' => false, 'message' => 'Application ID is required.']);
+                break;
+            }
+            echo json_encode($controller->getApprovalMessage($id));
+            break;
+
+        case 'counts':
+            echo json_encode(['success' => true, 'data' => $controller->getStatusCounts()]);
+            break;
+
+        // approve / reject / cancel — optional fulfillment file on approval
+        case 'update_status':
+            $id     = (int)($_POST['id']     ?? 0);
+            $status = trim($_POST['status']  ?? '');
+            $note   = trim($_POST['note']    ?? '');
+
+            if (!$id) {
+                echo json_encode(['success' => false, 'message' => 'Application ID is required.']);
+                break;
+            }
+
+            $fulfillmentFile = ($status === 'approved' && !empty($_FILES['fulfillment_file']))
+                ? $_FILES['fulfillment_file']
+                : null;
+
+            echo json_encode($controller->updateStatus($id, $status, $adminId, $note, $fulfillmentFile));
+            break;
+
+        // admin note → status becomes action_required
+        case 'add_note':
+            $id   = (int)($_POST['id']   ?? 0);
+            $note = trim($_POST['note']  ?? '');
+
+            if (!$id) {
+                echo json_encode(['success' => false, 'message' => 'Application ID is required.']);
+                break;
+            }
+            if ($note === '') {
+                echo json_encode(['success' => false, 'message' => 'Note text is required.']);
+                break;
+            }
+            echo json_encode($controller->addNote($id, $adminId, $note));
+            break;
+
+        default:
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Unknown action.']);
     }
-
-    echo json_encode(['status' => 'success', 'new_status' => $action]);
-
-} catch (Exception $e) {
+} catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Server error: ' . $e->getMessage(),
+        'file'    => $e->getFile(),
+        'line'    => $e->getLine(),
+    ]);
 }

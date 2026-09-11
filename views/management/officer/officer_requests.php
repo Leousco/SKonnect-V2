@@ -71,7 +71,7 @@ function statusCss(string $status): string {
     ?>
 
         <!-- STAT WIDGETS -->
-        <section class="off-widgets">
+        <!-- <section class="off-widgets">
 
             <div class="off-widget-card widget-amber">
                 <div class="widget-icon-wrap">
@@ -117,7 +117,7 @@ function statusCss(string $status): string {
                 </div>
             </div>
 
-        </section>
+        </section> -->
 
         <!-- STATUS TABS + CONTROLS -->
         <div class="req-controls-wrap">

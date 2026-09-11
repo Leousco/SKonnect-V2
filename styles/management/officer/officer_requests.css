@@ -667,6 +667,13 @@
   border-color: var(--off-primary);
 }
 
+.off-page-ellipsis {
+  padding: 0 4px;
+  font-size: 13px;
+  color: var(--off-text-muted);
+  user-select: none;
+}
+
 /* ── MODAL OVERLAY ───────────────────────────────────────── */
 
 .req-modal-overlay {

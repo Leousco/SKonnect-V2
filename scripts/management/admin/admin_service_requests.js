@@ -1,153 +1,792 @@
-document.addEventListener('DOMContentLoaded', () => {
 
-    const ACTION_URL = '../../../backend/routes/service_request_action.php';
+document.addEventListener("DOMContentLoaded", () => {
+  const API = "../../../backend/routes/service_request_action.php";
 
-    const searchInput    = document.getElementById('req-search');
-    const categorySelect = document.getElementById('req-category');
-    const statusSelect   = document.getElementById('req-status');
-    const rows           = Array.from(document.querySelectorAll('#req-tbody .req-row'));
-    const noResults      = document.getElementById('no-results');
+  const tbody      = document.getElementById("req-tbody");
+  const noResults  = document.getElementById("req-no-results");
+  const countLabel = document.getElementById("req-count");
 
-    function filterCards() {
-        const query    = searchInput.value.toLowerCase().trim();
-        const category = categorySelect.value;
-        const status   = statusSelect.value;
-        let visible    = 0;
+  const searchInput = document.getElementById("req-search");
+  const selCategory = document.getElementById("req-category");
+  const selSort      = document.getElementById("req-sort");
+  const tabs         = document.querySelectorAll(".req-tab");
 
-        rows.forEach(row => {
-            const matchSearch   = !query    || (row.dataset.name || '').includes(query) || (row.dataset.service || '').includes(query);
-            const matchCategory = category === 'all' || row.dataset.category === category;
-            const matchStatus   = status   === 'all' || row.dataset.status   === status;
-            const show = matchSearch && matchCategory && matchStatus;
-            row.style.display = show ? '' : 'none';
-            if (show) visible++;
-        });
+  const drawerOverlay = document.getElementById("req-drawer-overlay");
+  const drawerClose   = document.getElementById("req-drawer-close");
+  const drawerTitle   = document.getElementById("drawer-title");
+  const drawerSubtitle = document.getElementById("drawer-subtitle");
+  const drawerLoading = document.getElementById("drawer-loading");
+  const drawerContent = document.getElementById("drawer-content");
+  const drawerAvatar  = document.getElementById("drawer-avatar");
+  const drawerResident = document.getElementById("drawer-resident-name");
+  const drawerResidentSub = document.getElementById("drawer-resident-sub");
+  const drawerContact = document.getElementById("drawer-contact");
+  const drawerEmail   = document.getElementById("drawer-email");
+  const drawerAddress = document.getElementById("drawer-address");
+  const drawerService = document.getElementById("drawer-service");
+  const drawerCategory = document.getElementById("drawer-category");
+  const drawerStatusWrap = document.getElementById("drawer-status-wrap");
+  const drawerDate    = document.getElementById("drawer-date");
+  const drawerPurpose = document.getElementById("drawer-purpose");
+  const drawerFiles   = document.getElementById("drawer-files");
+  const drawerFulfillmentSection = document.getElementById("drawer-fulfillment-section");
+  const drawerFulfillmentFile    = document.getElementById("drawer-fulfillment-file");
+  const drawerNotesSection = document.getElementById("drawer-notes-thread-section");
+  const drawerNotesThread  = document.getElementById("drawer-notes-thread");
+  const drawerNoteInput    = document.getElementById("drawer-note-input-section");
+  const drawerResponse     = document.getElementById("drawer-response");
+  const drawerFooter       = document.getElementById("req-drawer-footer");
 
-        noResults.style.display = visible === 0 ? 'block' : 'none';
-    }
+  const confirmOverlay = document.getElementById("req-confirm-overlay");
+  const confirmIcon    = document.getElementById("req-confirm-icon");
+  const confirmTitle   = document.getElementById("req-confirm-title");
+  const confirmBody    = document.getElementById("req-confirm-body");
+  const confirmOk      = document.getElementById("req-confirm-ok");
+  const confirmCancel  = document.getElementById("req-confirm-cancel");
 
-    searchInput?.addEventListener('input',     filterCards);
-    categorySelect?.addEventListener('change', filterCards);
-    statusSelect?.addEventListener('change',   filterCards);
+  const toast = document.getElementById("req-toast");
 
-    const overlay = document.getElementById('req-modal-overlay');
-    let currentId = null;
+  const pagePrevBtn    = document.getElementById("req-prev-btn");
+  const pageNextBtn    = document.getElementById("req-next-btn");
+  const pageNumbersWrap = document.getElementById("req-page-numbers");
 
-    function openRequestModal(req) {
-        currentId = req.id;
+  const PAGE_SIZE = 10;
 
-        document.getElementById('req-modal-icon').textContent    = req.icon || '📋';
-        document.getElementById('req-modal-title').textContent    = req.service;
-        document.getElementById('req-modal-subtitle').textContent = `Submitted by ${req.resident}`;
-        document.getElementById('req-modal-resident').textContent = req.resident;
-        document.getElementById('req-modal-contact').textContent  = req.contact;
-        document.getElementById('req-modal-email').textContent    = req.email || '—';
-        document.getElementById('req-modal-address').textContent  = req.address;
-        document.getElementById('req-modal-date').textContent     = req.date;
-        document.getElementById('req-modal-purpose').textContent  = req.purpose || '—';
-        document.getElementById('req-modal-remarks').value        = req.admin_remarks || '';
+  let activeTab = "all";
+  let sortDir = "desc";
+  let pendingAction = null;
+  let activeAppId = null;
+  let toastTimer = null;
+  let currentPage = 1;
 
-        const statusLabels = {
-            pending:         'Pending',
-            action_required: 'Action Required',
-            approved:        'Approved',
-            rejected:        'Rejected',
-            cancelled:       'Cancelled',
-        };
-        document.getElementById('req-modal-status').textContent = statusLabels[req.status] || req.status;
+  function showToast(msg, type = "info") {
+    clearTimeout(toastTimer);
+    toast.innerHTML = escapeHtml(msg);
+    toast.className = `req-toast req-toast--${type} req-toast--show`;
+    toastTimer = setTimeout(() => toast.classList.remove("req-toast--show"), 3400);
+  }
 
-        overlay.classList.add('is-open');
-    }
+  function showLoadingToast(msg) {
+    clearTimeout(toastTimer);
+    toast.innerHTML = `<span class="req-toast-spinner"></span><span>${escapeHtml(msg)}</span>`;
+    toast.className = "req-toast req-toast--loading req-toast--show";
+  }
 
-    function closeRequestModal() {
-        overlay.classList.remove('is-open');
-        currentId = null;
-    }
+  function hideLoadingToast() { toast.classList.remove("req-toast--show"); }
 
-    overlay?.addEventListener('click', e => {
-        if (e.target === overlay) closeRequestModal();
+  function getRows() { return Array.from(tbody.querySelectorAll("tr")); }
+
+  function applyFilters() {
+    const q = searchInput.value.toLowerCase().trim();
+    const category = selCategory.value;
+    const matched = [];
+
+    getRows().forEach((row) => {
+      const matchTab = activeTab === "all" || row.dataset.status === activeTab;
+      const matchCat = category === "all" || row.dataset.category === category;
+      const matchSearch = !q ||
+        (row.dataset.resident || "").includes(q) ||
+        (row.dataset.service  || "").includes(q);
+
+      const show = matchTab && matchCat && matchSearch;
+      row.style.display = "none";
+      if (show) matched.push(row);
     });
 
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeRequestModal();
+    renderPage(matched);
+  }
+
+  function renderPage(matchedRows) {
+    const total = matchedRows.length;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end   = start + PAGE_SIZE;
+    matchedRows.slice(start, end).forEach((row) => { row.style.display = ""; });
+
+    if (total === 0) {
+      countLabel.textContent = "Showing 0 requests";
+    } else {
+      countLabel.textContent = `Showing ${start + 1}–${Math.min(end, total)} of ${total} request${total !== 1 ? "s" : ""}`;
+    }
+    noResults.style.display = total === 0 ? "flex" : "none";
+
+    renderPaginationControls(totalPages);
+  }
+
+  function getPageList(current, total) {
+    const delta = 1;
+    const range = [];
+    for (let i = 1; i <= total; i++) {
+      if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+        range.push(i);
+      }
+    }
+    const withDots = [];
+    let last = null;
+    range.forEach((i) => {
+      if (last !== null) {
+        if (i - last === 2) withDots.push(last + 1);
+        else if (i - last > 2) withDots.push("...");
+      }
+      withDots.push(i);
+      last = i;
     });
+    return withDots;
+  }
 
-    function updateStatus(action) {
-        if (!currentId) return;
+  function renderPaginationControls(totalPages) {
+    if (!pageNumbersWrap) return;
 
-        const note    = document.getElementById('req-modal-remarks').value.trim();
-        const buttons = document.querySelectorAll('.svc-modal-footer button');
-        buttons.forEach(b => b.disabled = true);
+    pagePrevBtn.disabled = currentPage <= 1;
+    pageNextBtn.disabled = currentPage >= totalPages;
 
-        fetch(ACTION_URL, {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ id: currentId, action, note }),
-        })
-        .then(res => res.json())
-        .then(json => {
-            if (json.status !== 'success') {
-                showToast('Error: ' + (json.message || 'Unknown error'), 'error');
-                buttons.forEach(b => b.disabled = false);
-                return;
-            }
+    pageNumbersWrap.innerHTML = "";
+    getPageList(currentPage, totalPages).forEach((p) => {
+      if (p === "...") {
+        const span = document.createElement("span");
+        span.className = "req-page-ellipsis";
+        span.textContent = "…";
+        pageNumbersWrap.appendChild(span);
+        return;
+      }
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "req-page-num" + (p === currentPage ? " active" : "");
+      btn.dataset.page = String(p);
+      btn.textContent = String(p);
+      pageNumbersWrap.appendChild(btn);
+    });
+  }
 
-            const labels = {
-                approved:        '✅ Approved',
-                rejected:        '❌ Rejected',
-                action_required: '📋 Marked as Action Required',
-            };
-            showToast(`Request #${currentId} — ${labels[action] || action}`, action === 'rejected' ? 'error' : 'success');
+  pagePrevBtn.addEventListener("click", () => {
+    if (currentPage <= 1) return;
+    currentPage--;
+    applyFilters();
+  });
 
-            const card = document.getElementById(`req-card-${currentId}`);
-            if (card) {
-                card.dataset.status = json.new_status;
-                const badgeMap = {
-                    approved:        ['badge-approved',  'Approved'],
-                    rejected:        ['badge-rejected',  'Rejected'],
-                    action_required: ['badge-completed', 'Action Required'],
-                };
-                const badge = card.querySelector('.svc-badge');
-                if (badge && badgeMap[json.new_status]) {
-                    badge.className   = `svc-badge ${badgeMap[json.new_status][0]}`;
-                    badge.textContent = badgeMap[json.new_status][1];
-                }
-            }
+  pageNextBtn.addEventListener("click", () => {
+    currentPage++;
+    applyFilters();
+  });
 
-            closeRequestModal();
-            buttons.forEach(b => b.disabled = false);
-        })
-        .catch(err => {
-            console.error('Update failed:', err);
-            showToast('Network error. Please try again.', 'error');
-            buttons.forEach(b => b.disabled = false);
-        });
+  pageNumbersWrap.addEventListener("click", (e) => {
+    const btn = e.target.closest(".req-page-num");
+    if (!btn) return;
+    const p = parseInt(btn.dataset.page, 10);
+    if (!Number.isNaN(p) && p !== currentPage) {
+      currentPage = p;
+      applyFilters();
+    }
+  });
+
+  searchInput.addEventListener("input", () => { currentPage = 1; applyFilters(); });
+  selCategory.addEventListener("change", () => { currentPage = 1; applyFilters(); });
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      activeTab = tab.dataset.status;
+      currentPage = 1;
+      applyFilters();
+    });
+  });
+
+  selSort.addEventListener("change", () => {
+    sortDir = selSort.value === "newest" ? "desc" : "asc";
+    currentPage = 1;
+    sortRows();
+  });
+
+  document.querySelectorAll(".req-table thead th.sortable").forEach((th) => {
+    th.addEventListener("click", () => {
+      sortDir = sortDir === "desc" ? "asc" : "desc";
+      document.querySelectorAll(".req-table thead th.sortable")
+        .forEach((h) => h.classList.remove("sort-asc", "sort-desc"));
+      th.classList.add(sortDir === "asc" ? "sort-asc" : "sort-desc");
+      currentPage = 1;
+      sortRows();
+    });
+  });
+
+  function sortRows() {
+    const rows = getRows();
+    rows.sort((a, b) => {
+      const da = new Date(a.dataset.date || 0).getTime();
+      const db = new Date(b.dataset.date || 0).getTime();
+      return sortDir === "desc" ? db - da : da - db;
+    });
+    rows.forEach((r) => tbody.appendChild(r));
+    applyFilters();
+  }
+
+  tbody.addEventListener("click", (e) => {
+    const viewBtn = e.target.closest(".req-btn-view");
+    if (!viewBtn) return;
+    openDrawer(viewBtn.closest("tr"));
+  });
+
+  async function openDrawer(row) {
+    activeAppId = row.dataset.id;
+
+    const resident = row.querySelector(".req-resident-name")?.textContent || "—";
+    drawerTitle.textContent = resident;
+    drawerSubtitle.textContent = `Request #${String(activeAppId).padStart(4, "0")}`;
+
+    drawerLoading.style.display = "block";
+    drawerContent.style.display = "none";
+    drawerFooter.innerHTML = "";
+    drawerOverlay.style.display = "flex";
+
+    await fetchAndPopulate(activeAppId);
+  }
+
+  async function fetchAndPopulate(id) {
+    try {
+      const res  = await fetch(`${API}?action=view&id=${id}`);
+      const json = await res.json();
+
+      if (!json.success) {
+        showToast(json.message || "Failed to load request details.", "error");
+        closeDrawer();
+        return;
+      }
+      populateDrawer(json.data);
+    } catch (err) {
+      showToast("Network error loading request details.", "error");
+      closeDrawer();
+    }
+  }
+
+  function populateDrawer(app) {
+    const fullName = (app.full_name || `${app.first_name} ${app.last_name}`).trim();
+    const initials = fullName.split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase() || "").join("");
+    const statusDb  = app.status;
+    const statusCls = dbStatusToCss(statusDb);
+    const statusLbl = dbStatusToLabel(statusDb);
+    const finalized = statusDb === "approved" || statusDb === "rejected" || statusDb === "cancelled";
+
+    drawerTitle.textContent = fullName;
+    drawerSubtitle.textContent = `Request #${String(app.id).padStart(4, "0")}`;
+    drawerAvatar.textContent = initials;
+    drawerResident.textContent = fullName;
+    drawerResidentSub.textContent = `${app.first_name} ${app.last_name} · Barangay Resident`;
+    drawerContact.textContent = app.contact || "—";
+    drawerEmail.textContent = app.email || "—";
+    drawerAddress.textContent = app.address || "—";
+    drawerService.textContent = app.service_name || "—";
+    drawerCategory.textContent = capitalize(app.service_category || "—");
+    drawerPurpose.textContent = app.purpose || "No details provided.";
+    drawerDate.textContent = formatDate(app.submitted_at);
+
+    drawerStatusWrap.innerHTML = `<span class="req-status-pill status-${statusCls}">${statusLbl}</span>`;
+
+    renderNotesThread(app.notes || [], finalized);
+    renderDocuments(app.documents || []);
+    renderFulfillmentFile(app.fulfillment_file || null, app.status);
+
+    drawerNoteInput.style.display = finalized ? "none" : "";
+    drawerResponse.value = "";
+
+    buildDrawerFooter(statusDb, app.id);
+    syncTableRow(app.id, statusDb);
+
+    drawerLoading.style.display = "none";
+    drawerContent.style.display = "block";
+  }
+
+  function renderNotesThread(notes, finalized) {
+    if (!notes || notes.length === 0) {
+      drawerNotesSection.style.display = "none";
+      return;
+    }
+    drawerNotesSection.style.display = "";
+
+    const items = notes.map((n) => {
+      const authorName = escapeHtml(n.officer_name || "Admin");
+      const noteText = escapeHtml(n.note);
+      const when = formatDate(n.created_at);
+      return `
+        <div class="drawer-note-entry">
+          <div class="drawer-note-header">
+            <span class="drawer-note-author">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+              </svg>
+              ${authorName}
+            </span>
+            <span class="drawer-note-date">${when}</span>
+          </div>
+          <p class="drawer-note-body">${noteText}</p>
+        </div>`;
+    }).join("");
+
+    drawerNotesThread.innerHTML = `<div class="drawer-notes-list">${items}</div>`;
+  }
+
+  const MAX_DOC_NAME = 42;
+  function truncateDocName(name) {
+    return name.length > MAX_DOC_NAME ? name.slice(0, MAX_DOC_NAME - 1) + "…" : name;
+  }
+
+  function renderDocuments(docs) {
+    if (!docs || docs.length === 0) {
+      drawerFiles.innerHTML = '<p class="drawer-no-files">No documents submitted.</p>';
+      return;
     }
 
-    function showToast(msg, type = 'success') {
-        const toast = document.createElement('div');
-        toast.className   = `svc-toast toast-${type}`;
-        toast.textContent = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3500);
+    const extIcon = (mime) => {
+      if (mime && mime.startsWith("image/")) return "🖼️";
+      if (mime === "application/pdf") return "📕";
+      if (mime && mime.includes("word")) return "📘";
+      if (mime && mime.includes("sheet")) return "📗";
+      return "📄";
+    };
+
+    const formatSize = (bytes) => {
+      if (!bytes) return "";
+      if (bytes < 1024) return bytes + " B";
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+      return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    };
+
+    const items = docs.map((doc) => {
+      const icon      = extIcon(doc.mime_type);
+      const fullName  = doc.file_name || "";
+      const shortName = escapeHtml(truncateDocName(fullName));
+      const titleAttr = escapeHtml(fullName);
+      const size      = formatSize(doc.file_size);
+      const metaParts = [formatDate(doc.uploaded_at), size].filter(Boolean);
+      const basePath  = "/SKonnect/" + doc.file_path.replace(/^\/+/, "");
+      const isImage   = doc.mime_type && doc.mime_type.startsWith("image/");
+      const isPdf     = doc.mime_type === "application/pdf";
+
+      const previewBtn = (isImage || isPdf) ? `
+        <button class="drawer-file-preview-btn" data-path="${escapeHtml(basePath)}" data-name="${titleAttr}" data-type="${doc.mime_type}" title="Quick View">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:15px;height:15px;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.641 0-8.573-3.007-9.964-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+        </button>` : "";
+
+      return `
+        <div class="drawer-file-item">
+          <span class="drawer-file-icon">${icon}</span>
+          <div class="drawer-file-info">
+            <a href="${escapeHtml(basePath)}" class="drawer-file-link" download="${titleAttr}" title="${titleAttr}">${shortName}</a>
+            ${metaParts.length ? `<span class="drawer-file-meta">${metaParts.join(" · ")}</span>` : ""}
+          </div>
+          ${previewBtn}
+        </div>`;
+    }).join("");
+
+    drawerFiles.innerHTML = `<div class="drawer-files-list">${items}</div>`;
+  }
+
+  function renderFulfillmentFile(filePath, status) {
+    if (status !== "approved" || !filePath) {
+      drawerFulfillmentSection.style.display = "none";
+      drawerFulfillmentFile.innerHTML = "—";
+      return;
     }
 
-    const focusId = window.FOCUS_REQUEST_ID;
-    if (focusId) {
-        const targetRow = document.getElementById(`req-card-${focusId}`);
-        if (targetRow) {
-            targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            targetRow.style.outline   = '2.5px solid #7c3aed';
-            targetRow.style.boxShadow = 'inset 0 0 0 9999px rgba(124,58,237,0.06)';
-            setTimeout(() => {
-                targetRow.style.outline   = '';
-                targetRow.style.boxShadow = '';
-            }, 2500);
-            targetRow.querySelector('.btn-svc-primary')?.click();
-        }
+    drawerFulfillmentSection.style.display = "";
+
+    const basePath = "/SKonnect/" + filePath.replace(/^\/+/, "");
+    const fileName = filePath.split("/").pop() || "fulfillment_file";
+    const ext = fileName.split(".").pop().toLowerCase();
+
+    const mimeMap = { pdf: "application/pdf", jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", gif: "image/gif", webp: "image/webp" };
+    const mime = mimeMap[ext] || "";
+    const isImage = mime.startsWith("image/");
+    const isPdf = mime === "application/pdf";
+    const icon = isImage ? "🖼️" : isPdf ? "📕" : "📄";
+
+    const previewBtn = (isImage || isPdf) ? `
+      <button class="drawer-file-preview-btn drawer-fulfillment-preview-btn" data-path="${escapeHtml(basePath)}" data-name="${escapeHtml(fileName)}" data-type="${escapeHtml(mime)}" title="Quick View">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:15px;height:15px;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.641 0-8.573-3.007-9.964-7.178Z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+        </svg>
+      </button>` : "";
+
+    drawerFulfillmentFile.innerHTML = `
+      <div class="drawer-files-list">
+        <div class="drawer-file-item drawer-file-item--fulfillment">
+          <span class="drawer-file-icon">${icon}</span>
+          <div class="drawer-file-info">
+            <a href="${escapeHtml(basePath)}" class="drawer-file-link" download="${escapeHtml(fileName)}" title="${escapeHtml(fileName)}">${escapeHtml(truncateDocName(fileName))}</a>
+            <span class="drawer-file-meta drawer-fulfillment-meta">Officer-issued document</span>
+          </div>
+          ${previewBtn}
+        </div>
+      </div>`;
+  }
+
+  function buildDrawerFooter(statusDb, id) {
+    drawerFooter.innerHTML = "";
+
+    if (statusDb === "approved" || statusDb === "rejected" || statusDb === "cancelled") {
+      const modifierMap = { approved: "approved", rejected: "rejected", cancelled: "cancelled" };
+      const iconMap     = { approved: "✅", rejected: "❌", cancelled: "🚫" };
+      const labelMap    = {
+        approved:  "This request has been approved. No further actions are available.",
+        rejected:  "This request has been rejected. No further actions are available.",
+        cancelled: "This request was cancelled by the resident. No further actions are available.",
+      };
+      drawerFooter.innerHTML = `
+        <div class="drawer-finalized-banner drawer-finalized-banner--${modifierMap[statusDb]}">
+          <span>${iconMap[statusDb]}</span>${labelMap[statusDb]}
+        </div>`;
+      return;
     }
 
-    window.openRequestModal  = openRequestModal;
-    window.closeRequestModal = closeRequestModal;
-    window.updateStatus      = updateStatus;
+    drawerFooter.appendChild(makeDrawerBtn("drawer-btn-respond", id, "add_note",
+      `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.127 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>Action Required`));
+
+    drawerFooter.appendChild(makeDrawerBtn("drawer-btn-approve", id, "approve",
+      `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>Approve`));
+
+    drawerFooter.appendChild(makeDrawerBtn("drawer-btn-decline", id, "decline",
+      `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>Reject`));
+  }
+
+  function makeDrawerBtn(cls, id, action, innerHTML) {
+    const btn = document.createElement("button");
+    btn.className = cls;
+    btn.dataset.id = id;
+    btn.dataset.action = action;
+    btn.innerHTML = innerHTML;
+    return btn;
+  }
+
+  drawerFooter.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    handleAction(btn.dataset.action, btn.dataset.id);
+  });
+
+  function handleAction(action, id) {
+    const row = tbody.querySelector(`tr[data-id="${id}"]`);
+    const residentName = row?.querySelector(".req-resident-name")?.textContent || "this resident";
+    const serviceName  = row?.querySelector(".req-service-badge")?.textContent?.trim() || "this request";
+    const note = drawerResponse.value.trim();
+
+    if (action === "add_note") {
+      if (!note) {
+        showToast("Please write a note before setting status.", "error");
+        drawerResponse.focus();
+        return;
+      }
+      pendingAction = async () => submitNote(id, note);
+      confirmIcon.textContent = "💬";
+      confirmTitle.textContent = "Send Admin Note";
+      confirmBody.textContent = `Send a note to ${residentName}'s application? Status will be set to "Action Required".`;
+      confirmOk.textContent = "Send Note";
+      confirmOverlay.style.display = "flex";
+      return;
+    }
+
+    if (action === "approve") { openApproveModal(id, residentName, serviceName); return; }
+    if (action === "decline") { openDeclineModal(id, residentName, serviceName); return; }
+  }
+
+  async function submitNote(id, note) {
+    const fd = new FormData();
+    fd.append("action", "add_note");
+    fd.append("id", id);
+    fd.append("note", note);
+
+    showLoadingToast("Sending…");
+
+    try {
+      const res  = await fetch(API, { method: "POST", body: fd });
+      const json = await res.json();
+      hideLoadingToast();
+
+      if (!json.success) {
+        showToast(json.message || "Failed to send note.", "error");
+        return;
+      }
+
+      showToast('Note sent. Status set to "Action Required".', "success");
+
+      if (activeAppId == id) {
+        drawerLoading.style.display = "block";
+        drawerContent.style.display = "none";
+        await fetchAndPopulate(id);
+      }
+    } catch (err) {
+      hideLoadingToast();
+      showToast("Network error. Please try again.", "error");
+    }
+  }
+
+  async function submitStatusUpdate(id, newStatus, note = "", fileInput = null) {
+    const fd = new FormData();
+    fd.append("action", "update_status");
+    fd.append("id", id);
+    fd.append("status", newStatus);
+    fd.append("note", note);
+
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+      fd.append("fulfillment_file", fileInput.files[0]);
+    }
+
+    showLoadingToast(newStatus === "approved" ? "Approving application…" : "Rejecting application…");
+
+    try {
+      const res  = await fetch(API, { method: "POST", body: fd });
+      const json = await res.json();
+      hideLoadingToast();
+
+      if (!json.success) {
+        showToast(json.message || "Update failed.", "error");
+        return false;
+      }
+
+      const label = newStatus === "approved" ? "approved" : "rejected";
+      showToast(`Application ${label} successfully.`, newStatus === "approved" ? "success" : "info");
+
+      if (activeAppId == id) {
+        drawerLoading.style.display = "block";
+        drawerContent.style.display = "none";
+        await fetchAndPopulate(id);
+      }
+
+      closeDrawer();
+      return true;
+    } catch (err) {
+      hideLoadingToast();
+      showToast("Network error. Please try again.", "error");
+      return false;
+    }
+  }
+
+  /* Approve modal */
+  const approveModalOverlay = document.getElementById("req-approve-modal-overlay");
+  const approveModalClose   = document.getElementById("req-approve-modal-close");
+  const approveNoteTextarea = document.getElementById("approve-modal-note");
+  const approveFileInput    = document.getElementById("approve-modal-file");
+  const approveFileLabel    = document.getElementById("approve-modal-file-label");
+  const approveSubmitBtn    = document.getElementById("approve-modal-submit");
+  const approveModalLoading = document.getElementById("approve-modal-loading");
+  let approveTargetId = null;
+
+  async function openApproveModal(id, residentName, serviceName) {
+    approveTargetId = id;
+    approveNoteTextarea.value = "";
+    approveFileInput.value = "";
+    approveFileLabel.textContent = "No file chosen";
+    approveModalLoading.style.display = "block";
+    approveNoteTextarea.disabled = true;
+    approveSubmitBtn.disabled = true;
+    approveModalOverlay.style.display = "flex";
+    document.getElementById("approve-modal-title").textContent = `Approve: ${residentName}'s ${serviceName}`;
+
+    try {
+      const res  = await fetch(`${API}?action=get_approval_message&id=${id}`);
+      const json = await res.json();
+      approveNoteTextarea.value = json.success ? (json.approval_message || "") : "";
+    } catch (_) {
+      approveNoteTextarea.value = "";
+    } finally {
+      approveModalLoading.style.display = "none";
+      approveNoteTextarea.disabled = false;
+      approveSubmitBtn.disabled = false;
+    }
+  }
+
+  function closeApproveModal() { approveModalOverlay.style.display = "none"; approveTargetId = null; }
+
+  approveModalClose.addEventListener("click", closeApproveModal);
+  approveModalOverlay.addEventListener("click", (e) => { if (e.target === approveModalOverlay) closeApproveModal(); });
+
+  approveFileInput.addEventListener("change", () => {
+    approveFileLabel.textContent = approveFileInput.files[0] ? approveFileInput.files[0].name : "No file chosen";
+  });
+
+  approveSubmitBtn.addEventListener("click", async () => {
+    if (!approveTargetId) return;
+    const note = approveNoteTextarea.value.trim();
+    approveSubmitBtn.disabled = true;
+    approveSubmitBtn.textContent = "Approving…";
+    const ok = await submitStatusUpdate(approveTargetId, "approved", note, approveFileInput);
+    if (ok) closeApproveModal();
+    else { approveSubmitBtn.disabled = false; approveSubmitBtn.textContent = "Approve Application"; }
+  });
+
+  /* Reject modal */
+  const declineModalOverlay = document.getElementById("req-decline-modal-overlay");
+  const declineModalClose   = document.getElementById("req-decline-modal-close");
+  const declineNoteTextarea = document.getElementById("decline-modal-note");
+  const declineSubmitBtn    = document.getElementById("decline-modal-submit");
+  let declineTargetId = null;
+
+  function openDeclineModal(id, residentName, serviceName) {
+    declineTargetId = id;
+    declineNoteTextarea.value = "";
+    declineModalOverlay.style.display = "flex";
+    document.getElementById("decline-modal-title").textContent = `Reject: ${residentName}'s ${serviceName}`;
+    setTimeout(() => declineNoteTextarea.focus(), 80);
+  }
+
+  function closeDeclineModal() { declineModalOverlay.style.display = "none"; declineTargetId = null; }
+
+  declineModalClose.addEventListener("click", closeDeclineModal);
+  declineModalOverlay.addEventListener("click", (e) => { if (e.target === declineModalOverlay) closeDeclineModal(); });
+
+  declineSubmitBtn.addEventListener("click", async () => {
+    if (!declineTargetId) return;
+    const note = declineNoteTextarea.value.trim();
+    if (!note) {
+      declineNoteTextarea.classList.add("textarea--error");
+      declineNoteTextarea.focus();
+      showToast("A reason is required before rejecting.", "error");
+      return;
+    }
+    declineNoteTextarea.classList.remove("textarea--error");
+    declineSubmitBtn.disabled = true;
+    declineSubmitBtn.textContent = "Rejecting…";
+    const ok = await submitStatusUpdate(declineTargetId, "rejected", note);
+    if (ok) closeDeclineModal();
+    else { declineSubmitBtn.disabled = false; declineSubmitBtn.textContent = "Reject Application"; }
+  });
+
+  declineNoteTextarea.addEventListener("input", () => {
+    if (declineNoteTextarea.value.trim()) declineNoteTextarea.classList.remove("textarea--error");
+  });
+
+  function syncTableRow(id, statusDb) {
+    const row = tbody.querySelector(`tr[data-id="${id}"]`);
+    if (!row) return;
+
+    const css = dbStatusToCss(statusDb);
+    const label = dbStatusToLabel(statusDb);
+    row.dataset.status = css;
+
+    const pill = row.querySelector(".req-status-pill");
+    if (pill) {
+      pill.className = `req-status-pill status-${css}`;
+      pill.textContent = label;
+    }
+
+    updateTabCounts();
+    applyFilters();
+  }
+
+  function updateTabCounts() {
+    const rows = getRows();
+    const countMap = { all: rows.length, pending: 0, "action-required": 0, approved: 0, rejected: 0, cancelled: 0 };
+    rows.forEach((r) => { const s = r.dataset.status; if (s in countMap) countMap[s]++; });
+    tabs.forEach((tab) => {
+      const status = tab.dataset.status;
+      const badge = tab.querySelector(".req-tab-count");
+      if (badge && status in countMap) badge.textContent = countMap[status];
+    });
+  }
+
+  function closeDrawer() { drawerOverlay.style.display = "none"; activeAppId = null; }
+
+  drawerClose.addEventListener("click", closeDrawer);
+  drawerOverlay.addEventListener("click", (e) => { if (e.target === drawerOverlay) closeDrawer(); });
+
+  confirmOk.addEventListener("click", async () => {
+    const actionToExecute = pendingAction;
+    closeConfirm();
+    if (typeof actionToExecute === "function") await actionToExecute();
+  });
+
+  confirmCancel.addEventListener("click", closeConfirm);
+  confirmOverlay.addEventListener("click", (e) => { if (e.target === confirmOverlay) closeConfirm(); });
+
+  function closeConfirm() { confirmOverlay.style.display = "none"; pendingAction = null; }
+
+  function dbStatusToCss(status) {
+    return status === "action_required" ? "action-required" : status;
+  }
+
+  function dbStatusToLabel(status) {
+    const map = { pending: "Pending", action_required: "Action Required", approved: "Approved", rejected: "Rejected", cancelled: "Cancelled" };
+    return map[status] ?? capitalize(status.replace(/_/g, " "));
+  }
+
+  function capitalize(str) { return str ? str.charAt(0).toUpperCase() + str.slice(1) : str; }
+
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "—";
+    return new Date(dateStr).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "numeric" });
+  }
+
+  /* File preview modal */
+  const filePreviewOverlay = document.getElementById("req-file-preview-overlay");
+  const filePreviewClose   = document.getElementById("req-file-preview-close");
+  const filePreviewName    = document.getElementById("file-preview-name");
+  const filePreviewBody    = document.getElementById("file-preview-body");
+
+  drawerFiles.addEventListener("click", (e) => {
+    const previewBtn = e.target.closest(".drawer-file-preview-btn");
+    if (!previewBtn) return;
+    e.preventDefault();
+    openFilePreview(previewBtn.dataset.path, previewBtn.dataset.name, previewBtn.dataset.type);
+  });
+
+  drawerFulfillmentFile.addEventListener("click", (e) => {
+    const previewBtn = e.target.closest(".drawer-file-preview-btn");
+    if (!previewBtn) return;
+    e.preventDefault();
+    openFilePreview(previewBtn.dataset.path, previewBtn.dataset.name, previewBtn.dataset.type);
+  });
+
+  function openFilePreview(path, name, type) {
+    filePreviewName.textContent = name;
+    filePreviewBody.innerHTML = '<div class="req-file-preview-loading">Loading...</div>';
+    filePreviewOverlay.style.display = "flex";
+
+    setTimeout(() => {
+      if (type && type.startsWith("image/")) {
+        filePreviewBody.innerHTML = `<img src="${path}" alt="${name}" class="req-file-preview-image">`;
+      } else if (type === "application/pdf") {
+        filePreviewBody.innerHTML = `<iframe src="${path}" class="req-file-preview-pdf" frameborder="0"></iframe>`;
+      } else {
+        filePreviewBody.innerHTML = '<p class="req-file-preview-error">Preview not available for this file type.</p>';
+      }
+    }, 100);
+  }
+
+  function closeFilePreview() { filePreviewOverlay.style.display = "none"; filePreviewBody.innerHTML = ""; }
+
+  filePreviewClose.addEventListener("click", closeFilePreview);
+  filePreviewOverlay.addEventListener("click", (e) => { if (e.target === filePreviewOverlay) closeFilePreview(); });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (filePreviewOverlay.style.display !== "none") { closeFilePreview(); return; }
+    if (approveModalOverlay.style.display !== "none") { closeApproveModal(); return; }
+    if (declineModalOverlay.style.display !== "none") { closeDeclineModal(); return; }
+    closeConfirm();
+    closeDrawer();
+  });
+
+  /* Deep-link focus (?id=) from notifications etc. */
+  const focusId = window.FOCUS_REQUEST_ID;
+  if (focusId) {
+    const targetRow = tbody.querySelector(`tr[data-id="${focusId}"]`);
+    if (targetRow) {
+      targetRow.scrollIntoView({ behavior: "smooth", block: "center" });
+      targetRow.style.outline = "2.5px solid #7c3aed";
+      targetRow.style.boxShadow = "inset 0 0 0 9999px rgba(124,58,237,0.06)";
+      setTimeout(() => { targetRow.style.outline = ""; targetRow.style.boxShadow = ""; }, 2500);
+      openDrawer(targetRow);
+    }
+  }
+
+  sortRows();
+  applyFilters();
+  updateTabCounts();
 });

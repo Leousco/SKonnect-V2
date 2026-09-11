@@ -77,11 +77,21 @@
   const errContact = document.getElementById("err-svc-contact");
   const errCapacity = document.getElementById("err-svc-capacity");
 
-  // Confirm delete modal
+  // Confirm modal (reused for delete + discard-changes)
   const confirmOverlay = document.getElementById("svc-confirm-overlay");
+  const confirmTitle = document.getElementById("svc-confirm-title");
   const confirmBody = document.getElementById("svc-confirm-body");
   const confirmDelete = document.getElementById("svc-confirm-delete");
   const confirmCancel = document.getElementById("svc-confirm-cancel");
+  let confirmAction = null;
+
+  function openConfirm(title, message, confirmLabel, action) {
+    confirmTitle.textContent = title;
+    confirmBody.textContent = message;
+    confirmDelete.textContent = confirmLabel;
+    confirmAction = action;
+    confirmOverlay.style.display = "flex";
+  }
 
   // Toast
   const toast = document.getElementById("svc-toast");
@@ -581,14 +591,20 @@
     modalOverlay.style.display = "none";
   }
 
+  function confirmCloseModal() {
+    openConfirm(
+      "Discard Changes",
+      "Are you sure you want to close this form? Your progress will be lost.",
+      "Discard",
+      closeModal
+    );
+  }
+
   document
     .getElementById("svc-add-btn")
     .addEventListener("click", () => openModal("add"));
-  modalClose.addEventListener("click", closeModal);
-  modalCancel.addEventListener("click", closeModal);
-  modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) closeModal();
-  });
+  modalClose.addEventListener("click", confirmCloseModal);
+  modalCancel.addEventListener("click", confirmCloseModal);
 
   // (card-level edit button removed; use Edit Service in the view modal)
 
@@ -770,39 +786,43 @@
     pendingDeleteCard = deleteBtn.closest(".svc-card");
     const name = deleteBtn.dataset.name || "this service";
 
-    confirmBody.textContent = `Are you sure you want to delete "${name}"? This action cannot be undone.`;
-    confirmOverlay.style.display = "flex";
+    openConfirm(
+      "Remove Service",
+      `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+      "Remove",
+      () => {
+        if (!pendingDeleteCard) return;
+        const cardName =
+          pendingDeleteCard.querySelector(".svc-card-title")?.textContent ||
+          "Service";
+        pendingDeleteCard.style.transition = "opacity 0.3s, transform 0.3s";
+        pendingDeleteCard.style.opacity = "0";
+        pendingDeleteCard.style.transform = "scale(0.95)";
+        setTimeout(() => {
+          pendingDeleteCard.remove();
+          applyFilters();
+        }, 300);
+        showToast(`"${cardName}" has been deleted.`, "danger");
+
+        const fd = new FormData();
+        fd.append("action", "delete");
+        fd.append("id", pendingDeleteId);
+        fetch("../../../backend/routes/services.php", {
+          method: "POST",
+          body: fd,
+        })
+          .then((r) => r.json())
+          .then((json) => {
+            if (!json.success)
+              showToast(json.message || "Delete failed.", "danger");
+          })
+          .catch(() => showToast("Network error on delete.", "danger"));
+      }
+    );
   });
 
   confirmDelete.addEventListener("click", () => {
-    if (pendingDeleteCard) {
-      const name =
-        pendingDeleteCard.querySelector(".svc-card-title")?.textContent ||
-        "Service";
-      pendingDeleteCard.style.transition = "opacity 0.3s, transform 0.3s";
-      pendingDeleteCard.style.opacity = "0";
-      pendingDeleteCard.style.transform = "scale(0.95)";
-      setTimeout(() => {
-        pendingDeleteCard.remove();
-        applyFilters();
-      }, 300);
-      showToast(`"${name}" has been deleted.`, "danger");
-
-      // Persist to DB
-      const fd = new FormData();
-      fd.append("action", "delete");
-      fd.append("id", pendingDeleteId);
-      fetch("../../../backend/routes/services.php", {
-        method: "POST",
-        body: fd,
-      })
-        .then((r) => r.json())
-        .then((json) => {
-          if (!json.success)
-            showToast(json.message || "Delete failed.", "danger");
-        })
-        .catch(() => showToast("Network error on delete.", "danger"));
-    }
+    if (confirmAction) confirmAction();
     closeConfirm();
   });
 
@@ -815,6 +835,7 @@
     confirmOverlay.style.display = "none";
     pendingDeleteId = null;
     pendingDeleteCard = null;
+    confirmAction = null;
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -1316,9 +1337,13 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      closeModal();
-      closeConfirm();
-      closeViewModal();
+      if (confirmOverlay.style.display === "flex") {
+        closeConfirm();
+      } else if (modalOverlay.style.display === "flex") {
+        confirmCloseModal();
+      } else {
+        closeViewModal();
+      }
     }
   });
 

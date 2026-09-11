@@ -33,6 +33,10 @@
 }
 
 /* ── RESET (scoped) ──────────────────────────────────────── */
+html {
+  scrollbar-gutter: stable;
+}
+
 *,
 *::before,
 *::after {
@@ -1610,25 +1614,25 @@
   align-items: flex-start;
   gap: 12px;
   padding: 14px 18px;
-  background: var(--ap-surface-2);
-  border: 1.5px solid var(--ap-border);
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
   border-radius: var(--ap-radius);
   margin-bottom: 18px;
   font-size: 13px;
-  color: var(--ap-text-muted);
+  color: #92400e;
   line-height: 1.55;
 }
 .ann-archive-info-banner svg {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  color: var(--ap-lt);
+  color: #d97706;
   margin-top: 1px;
 }
 .ann-archive-info-banner strong {
   color: var(--ap-text-head);
 }
-.ann-drafts-info-banner {
+.ann-drafts-info-banner{
   background: #fffbeb;
   border-color: #fde68a;
   color: #92400e;

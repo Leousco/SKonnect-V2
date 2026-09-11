@@ -134,7 +134,7 @@ Portal side
 Officer side  
  - Events Page  
    - Clicking outside the add event modal closes the modal resulting in  
-     loss of progress  
+     loss of progress ✔️  
    - Past events doesn't auto delete (to be evaluated)  
    - New events appear at the bottom of the list  
  - Notification badge non functional  

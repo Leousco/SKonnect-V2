@@ -146,7 +146,7 @@ RoleMiddleware::requireRole("sk_officer");
             <!-- Info banner -->
             <div class="ann-archive-info-banner ann-drafts-info-banner">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
-                <p>Drafts are not visible to the public. Edit them and publish when ready.</p>
+                <p>Drafts are not visible to the resident portal. Edit them and publish when ready.</p>
             </div>
 
             <!-- Stats strip -->
@@ -512,7 +512,7 @@ RoleMiddleware::requireRole("sk_officer");
             <!-- Archive info banner -->
             <div class="ann-archive-info-banner">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
-                <p>Archived announcements are hidden from the public portal. You can restore them to <strong>Draft</strong> or permanently delete them.</p>
+                <p>Archived announcements are hidden from the resident portal. You can restore them to <strong>Draft</strong> or permanently delete them.</p>
             </div>
 
             <!-- Stats strip -->

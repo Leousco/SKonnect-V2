@@ -1,8 +1,4 @@
-/* ============================================================
-   officer_requests.js — SK Officer | Service Requests
-   Status flow: pending → action_required (via note) → approved | rejected
-   Notes work as a thread; status updates persist via DB + re-fetch.
-   ============================================================ */
+
 
    document.addEventListener("DOMContentLoaded", () => {
     /* ── BACKEND ROUTE ─────────────────────────────────────── */
@@ -57,6 +53,12 @@
   
     // Toast
     const toast = document.getElementById("req-toast");
+
+    // Pagination
+    const pagePrevBtn     = document.getElementById("req-prev-btn");
+    const pageNextBtn     = document.getElementById("req-next-btn");
+    const pageNumbersWrap = document.getElementById("req-page-numbers");
+    const PAGE_SIZE = 10;
   
     /* ── STATE ─────────────────────────────────────────────── */
     let activeTab = "all";
@@ -64,6 +66,7 @@
     let pendingAction = null;
     let activeAppId = null; // currently open application id
     let toastTimer = null;
+    let currentPage = 1;
   
     /* ── TOAST ─────────────────────────────────────────────── */
     function showToast(msg, type = "info") {
@@ -97,8 +100,8 @@
     function applyFilters() {
       const q = searchInput.value.toLowerCase().trim();
       const category = selCategory.value;
-      let visible = 0;
-  
+      const matched = [];
+
       getRows().forEach((row) => {
         const matchTab = activeTab === "all" || row.dataset.status === activeTab;
         const matchCat = category === "all" || row.dataset.category === category;
@@ -106,20 +109,104 @@
           !q ||
           (row.dataset.resident || "").includes(q) ||
           (row.dataset.service || "").includes(q);
-  
+
         const show = matchTab && matchCat && matchSearch;
-        row.style.display = show ? "" : "none";
-        if (show) visible++;
+        row.style.display = "none";
+        if (show) matched.push(row);
       });
-  
-      countLabel.textContent = `Showing ${visible} request${
-        visible !== 1 ? "s" : ""
-      }`;
-      noResults.style.display = visible === 0 ? "flex" : "none";
+
+      renderPage(matched);
     }
-  
-    searchInput.addEventListener("input", applyFilters);
-    selCategory.addEventListener("change", applyFilters);
+
+    /* ── PAGINATION ────────────────────────────────────────── */
+    function renderPage(matchedRows) {
+      const total = matchedRows.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+      matchedRows.slice(start, end).forEach((row) => { row.style.display = ""; });
+
+      if (total === 0) {
+        countLabel.textContent = "Showing 0 requests";
+      } else {
+        countLabel.textContent = `Showing ${start + 1}–${Math.min(end, total)} of ${total} request${total !== 1 ? "s" : ""}`;
+      }
+      noResults.style.display = total === 0 ? "flex" : "none";
+
+      renderPaginationControls(totalPages);
+    }
+
+    function getPageList(current, total) {
+      const delta = 1;
+      const range = [];
+      for (let i = 1; i <= total; i++) {
+        if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+          range.push(i);
+        }
+      }
+      const withDots = [];
+      let last = null;
+      range.forEach((i) => {
+        if (last !== null) {
+          if (i - last === 2) withDots.push(last + 1);
+          else if (i - last > 2) withDots.push("...");
+        }
+        withDots.push(i);
+        last = i;
+      });
+      return withDots;
+    }
+
+    function renderPaginationControls(totalPages) {
+      if (!pageNumbersWrap) return;
+
+      pagePrevBtn.disabled = currentPage <= 1;
+      pageNextBtn.disabled = currentPage >= totalPages;
+
+      pageNumbersWrap.innerHTML = "";
+      getPageList(currentPage, totalPages).forEach((p) => {
+        if (p === "...") {
+          const span = document.createElement("span");
+          span.className = "off-page-ellipsis";
+          span.textContent = "…";
+          pageNumbersWrap.appendChild(span);
+          return;
+        }
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "off-page-num" + (p === currentPage ? " active" : "");
+        btn.dataset.page = String(p);
+        btn.textContent = String(p);
+        pageNumbersWrap.appendChild(btn);
+      });
+    }
+
+    pagePrevBtn.addEventListener("click", () => {
+      if (currentPage <= 1) return;
+      currentPage--;
+      applyFilters();
+    });
+
+    pageNextBtn.addEventListener("click", () => {
+      currentPage++;
+      applyFilters();
+    });
+
+    pageNumbersWrap.addEventListener("click", (e) => {
+      const btn = e.target.closest(".off-page-num");
+      if (!btn) return;
+      const p = parseInt(btn.dataset.page, 10);
+      if (!Number.isNaN(p) && p !== currentPage) {
+        currentPage = p;
+        applyFilters();
+      }
+    });
+
+    searchInput.addEventListener("input", () => { currentPage = 1; applyFilters(); });
+    selCategory.addEventListener("change", () => { currentPage = 1; applyFilters(); });
   
     /* ── TABS ──────────────────────────────────────────────── */
     tabs.forEach((tab) => {
@@ -127,6 +214,7 @@
         tabs.forEach((t) => t.classList.remove("active"));
         tab.classList.add("active");
         activeTab = tab.dataset.status;
+        currentPage = 1;
         applyFilters();
       });
     });
@@ -134,6 +222,7 @@
     /* ── SORT ──────────────────────────────────────────────── */
     selSort.addEventListener("change", () => {
       sortDir = selSort.value === "newest" ? "desc" : "asc";
+      currentPage = 1;
       sortRows();
     });
   
@@ -144,6 +233,7 @@
           .querySelectorAll(".req-table thead th.sortable")
           .forEach((h) => h.classList.remove("sort-asc", "sort-desc"));
         th.classList.add(sortDir === "asc" ? "sort-asc" : "sort-desc");
+        currentPage = 1;
         sortRows();
       });
     });

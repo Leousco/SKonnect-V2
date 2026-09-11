@@ -4,7 +4,7 @@
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../controllers/ServiceController.php';
 
-RoleMiddleware::requireRole('sk_officer');
+RoleMiddleware::requireOfficerOrAbove();
 
 header('Content-Type: application/json; charset=utf-8');
 ob_clean();

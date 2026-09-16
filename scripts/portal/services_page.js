@@ -209,6 +209,27 @@
     const applyProc    = document.getElementById('apply-sum-processing');
     const applyReqs    = document.getElementById('apply-sum-requirements');
 
+    // Discard-changes confirmation (shown instead of closing the apply modal directly)
+    const discardOverlay = document.getElementById('discard-confirm-overlay');
+    const discardCancel  = document.getElementById('discard-confirm-cancel');
+    const discardOk      = document.getElementById('discard-confirm-ok');
+
+    function openDiscardConfirm() {
+        discardOverlay.style.display = 'flex';
+    }
+
+    function closeDiscardConfirm() {
+        discardOverlay.style.display = 'none';
+    }
+
+    discardCancel?.addEventListener('click', closeDiscardConfirm);
+    discardOk?.addEventListener('click', () => {
+        closeDiscardConfirm();
+        closeApplyModal();
+    });
+    // Clicking outside the confirmation dialog itself is treated as "Cancel" (keeps the form open, no data lost)
+    discardOverlay?.addEventListener('click', e => { if (e.target === discardOverlay) closeDiscardConfirm(); });
+
     let selectedFiles = [];
 
     function openApplyModal(btn) {
@@ -257,13 +278,14 @@
     }
 
     document.querySelectorAll('.svc-apply-btn').forEach(btn => btn.addEventListener('click', () => openApplyModal(btn)));
-    applyClose?.addEventListener('click',  closeApplyModal);
-    applyCancel?.addEventListener('click', closeApplyModal);
-    applyOverlay?.addEventListener('click', e => { if (e.target === applyOverlay) closeApplyModal(); });
+    applyClose?.addEventListener('click',  openDiscardConfirm);
+    applyCancel?.addEventListener('click', openDiscardConfirm);
+    // Clicking outside the request form no longer closes it — progress would otherwise be lost.
 
     document.addEventListener('keydown', e => {
         if (e.key !== 'Escape') return;
-        if (applyOverlay?.style.display === 'flex')   closeApplyModal();
+        if (discardOverlay?.style.display === 'flex') { closeDiscardConfirm(); return; }
+        if (applyOverlay?.style.display === 'flex')   { openDiscardConfirm(); return; }
         if (detailsOverlay?.style.display === 'flex') closeDetailsModal();
     });
 

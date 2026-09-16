@@ -79,7 +79,7 @@ Admin panel
 Refactoring for Database Migration - Incomplete ⏳ 
   
 Completed:  
-- Authentication  
+- Authentication/Authorization  
 - Announcements Module  
 - Community Feed Module  
 - Services Module  
@@ -88,7 +88,11 @@ Completed:
 - Dashboard (resident, officer, moderator, admin)  
   
 Current Task:  
-- Admin pages ⏳  
+- Admin panel ⏳  
+  - Threads  
+  - Reports
+  - User management
+  - Analytics & logs
   
   
 Known Issues:  
@@ -125,8 +129,9 @@ Portal side
  - Profile  
    - User info improvements  
  - Services  
-   - Clicking outside the modal closes the modal resulting in loss of progress  
+   - Clicking outside the modal closes the modal resulting in loss of progress ✔️  
    - Make the "Submit Request" button unclickable if all fields are not complete yet  
+   - Maybe add a confirmation modal or something before submitting an application  
  - Notif Badge  
    - Counter appears without any new notifications when opening "view" pages  
      (thread_view.php, announcement_view.php)  
@@ -152,5 +157,8 @@ Moderator side
 Admin side  
  - Mostly non functional, styles are inconsistent with other related modules  
    on different users  
+ - Dashboard
+   - Update the sections
+   - Add sections for other modules (threads, reports, recent announcements)
   
  

@@ -37,7 +37,7 @@ if (strlen($message) < 2) {
     exit;
 }
 
-$is_mod = ($user_role === 'moderator') ? 1 : 0;
+$is_mod = in_array($user_role, ['moderator', 'admin'], true) ? 1 : 0;
 $reply  = $model->createReply($comment_id, (int)$user_id, $message, $is_mod);
 
 // In-system notification

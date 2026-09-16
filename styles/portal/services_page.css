@@ -1163,6 +1163,89 @@
   gap: 6px;
 }
 
+/* ── DISCARD CHANGES CONFIRMATION MODAL ─────────────────────── */
+
+.modal-box.discard-confirm-box {
+  max-width: 380px;
+}
+
+.discard-confirm-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 32px 28px 4px;
+}
+
+.discard-confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.discard-confirm-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.discard-confirm-body h3 {
+  font-family: "Poppins", sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 8px;
+}
+
+.discard-confirm-body p {
+  font-size: 13.5px;
+  color: var(--text-body);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.discard-confirm-footer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px 28px 28px;
+}
+
+.discard-confirm-footer .btn-close-portal,
+.discard-confirm-footer .btn-discard-portal {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-discard-portal {
+  font-family: "Poppins", sans-serif;
+  background: #dc2626;
+  border: 1px solid #dc2626;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-discard-portal:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
 /* ── DETAILS MODAL SPECIFIC ────────────────────────────────── */
 
 /* DO NOT REMOVE - FOR TESTING */

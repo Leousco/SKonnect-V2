@@ -265,124 +265,63 @@ RoleMiddleware::requireAuth();
                                         </div>
                                     </div>
 
-                                    <!-- Title & description -->
-                                    <h3 class="ann-card-title"><?= htmlspecialchars($svc['name']) ?></h3>
-                                    <p class="svc-card-excerpt"><?= htmlspecialchars($svc['description']) ?></p>
-                                    <!-- <div class="svc-card-excerpt-wrap">
+                                    <!-- Title & description: fixed-height block, 4 states —
+                                         a 1-line title pairs with a 4-line description, a 2-line
+                                         title pairs with a 3-line description, so the combined
+                                         block is always the same total height. -->
+                                    <div class="svc-title-desc">
+                                        <h3 class="ann-card-title"><?= htmlspecialchars($svc['name']) ?></h3>
                                         <p class="svc-card-excerpt"><?= htmlspecialchars($svc['description']) ?></p>
-                                    </div> -->
+                                    </div>
 
-                                    <!-- Details list -->
-                                    <ul class="svc-details-list">
-                                        <li class="svc-detail-type">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
-                                            </svg>
-                                            <span class="svc-detail-label">Type</span>
-                                            <span class="res-type-pill res-type-<?= $svc['service_type'] ?>"><?= htmlspecialchars($typeLabel) ?></span>
-                                        </li>
-                                        <?php if ($svc['eligibility']) : ?>
+                                    <!-- Metadata: mutually exclusive —
+                                         services WITHOUT capacity show the eligibility/processing/
+                                         requirements rows; services WITH capacity show the slots
+                                         bar instead. -->
+                                    <ul class="svc-details-list <?= $hasCapacity ? 'svc-details-list--slots' : '' ?>">
+                                        <?php if ($hasCapacity) : ?>
+                                            <li class="res-capacity-box">
+                                                <div class="res-capacity-bar-header">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                                    </svg>
+                                                    <div class="res-capacity-bar-label">
+                                                        <span class="svc-detail-label">Slots</span>
+                                                        <span class="svc-detail-value res-slots-text <?= $capacityFull ? 'slots-full' : ($isLimited ? 'slots-limited' : '') ?>">
+                                                            <?= $svc['current_count'] ?> / <?= $svc['max_capacity'] ?> filled
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <?php $pct = min(100, round(($svc['current_count'] / $svc['max_capacity']) * 100)); ?>
+                                                <div class="res-capacity-bar">
+                                                    <div class="res-capacity-fill <?= $pct >= 100 ? 'bar-full' : ($pct >= 70 ? 'bar-warn' : '') ?>" style="width:<?= $pct ?>%"></div>
+                                                </div>
+                                            </li>
+                                        <?php else : ?>
                                             <li>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                                                 </svg>
-                                                <span class="svc-detail-label">Eligibility</span>
-                                                <span class="svc-detail-value"><?= htmlspecialchars($svc['eligibility']) ?></span>
+                                                <span class="svc-detail-label">Eligibility:</span>
+                                                <span class="svc-detail-value svc-detail-value-oneline"><?= htmlspecialchars($svc['eligibility'] ?: 'Not specified') ?></span>
                                             </li>
-                                        <?php endif; ?>
-                                        <?php if ($svc['processing_time']) : ?>
                                             <li>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                 </svg>
-                                                <span class="svc-detail-label">Processing</span>
-                                                <span class="svc-detail-value"><?= htmlspecialchars($svc['processing_time']) ?></span>
+                                                <span class="svc-detail-label">Processing:</span>
+                                                <span class="svc-detail-value"><?= htmlspecialchars($svc['processing_time'] ?: 'Not specified') ?></span>
                                             </li>
-                                        <?php endif; ?>
-                                        <?php if (!empty($reqLines)) : ?>
-                                            <li class="svc-detail-req">
+                                            <li>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                                                 </svg>
-                                                <div class="svc-detail-req-content">
-                                                    <span class="svc-detail-label">Requirements</span>
-                                                    <?php
-                                                    $totalReqs = count($reqLines);
-                                                    $limit = $totalReqs > 3 ? 2 : 3;
-                                                    ?>
-                                                    <ul class="svc-req-list">
-                                                        <?php foreach (array_slice($reqLines, 0, $limit) as $req) : ?>
-                                                            <li><?= htmlspecialchars(ltrim($req, '-• ')) ?></li>
-                                                        <?php endforeach; ?>
-                                                        <?php if ($totalReqs > 3) : ?>
-                                                            <li class="svc-req-more">+<?= $totalReqs - 2 ?> more...</li>
-                                                        <?php endif; ?>
-                                                    </ul>
-                                                </div>
-                                            </li>
-                                        <?php endif; ?>
-
-                                        <?php if ($isInfoOnly && !empty($svc['contact_info'])) : ?>
-                                            <li class="svc-detail-contact-row">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
-                                                </svg>
-                                                <div class="svc-detail-contact">
-                                                    <span class="svc-detail-label">Contact</span>
-                                                    <?php
-                                                    $contactLines = array_filter(array_map('trim', explode("\n", $svc['contact_info'])));
-                                                    ?>
-                                                    <ul class="svc-contact-list">
-                                                        <?php foreach ($contactLines as $line) : ?>
-                                                            <li><?= htmlspecialchars($line) ?></li>
-                                                        <?php endforeach; ?>
-                                                    </ul>
-                                                </div>
-                                            </li>
-                                        <?php endif; ?>
-
-                                        <?php if (!empty($attNames)) : ?>
-                                            <?php $totalAtts = count($attNames); ?>
-                                            <div class="res-forms-row">
-                                                <span class="svc-detail-label">
-                                                    Attachment<?= $totalAtts > 1 ? 's' : '' ?>:
+                                                <span class="svc-detail-label">Requirements:</span>
+                                                <span class="svc-detail-value">
+                                                    <?php $totalReqs = count($reqLines); ?>
+                                                    <?= $totalReqs > 0 ? $totalReqs . ' Document' . ($totalReqs > 1 ? 's' : '') : 'Not specified' ?>
                                                 </span>
-                                                <a href="<?= htmlspecialchars($attPaths[0] ?? '#') ?>" class="res-form-link" target="_blank" download title="<?= htmlspecialchars($attNames[0]) ?>">
-                                                    📎 <span class="res-form-link-name"><?= htmlspecialchars($attNames[0]) ?></span>
-                                                </a>
-                                                <?php if ($totalAtts > 1) : ?>
-                                                    <span class="svc-req-more">+<?= $totalAtts - 1 ?> more...</span>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endif; ?>
-
-
-                                        <?php if ($hasCapacity) : ?>
-                                            <li class="res-capacity-bar-header">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
-                                                </svg>
-                                                <div class="res-capacity-bar-label">
-                                                    <span class="svc-detail-label">Slots</span>
-
-                                                    <span class="svc-detail-value res-slots-text <?= $capacityFull ? 'slots-full' : ($isLimited ? 'slots-limited' : '') ?>">
-                                                        <?= $svc['current_count'] ?> / <?= $svc['max_capacity'] ?> filled
-                                                    </span>
-                                                </div>
                                             </li>
-                                        <?php endif; ?>
-
-                                        <!-- Capacity bar -->
-                                        <?php if ($hasCapacity) : ?>
-                                            <div class="res-capacity-bar-wrap">
-
-                                                <?php $pct = min(100, round(($svc['current_count'] / $svc['max_capacity']) * 100)); ?>
-
-                                                <div class="res-capacity-bar">
-                                                    <div class="res-capacity-fill <?= $pct >= 100 ? 'bar-full' : ($pct >= 70 ? 'bar-warn' : '') ?>" style="width:<?= $pct ?>%"></div>
-                                                </div>
-                                            </div>
                                         <?php endif; ?>
                                     </ul>
 

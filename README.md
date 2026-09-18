@@ -149,6 +149,7 @@ Officer side
 Moderator side  
  - Dashboard  
    - Styles for containers  
+   - Fix the layouts of each section  
  - Community Feed  
    - Commenting or replying auto updates the status of the thread to 'responded'  
     but it is not shown immediately because the page needs to refresh first.  

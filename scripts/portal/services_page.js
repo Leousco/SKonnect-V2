@@ -25,7 +25,7 @@
 
         cards.forEach(card => {
             const title    = card.querySelector('.ann-card-title')?.textContent.toLowerCase()  || '';
-            const desc     = card.querySelector('.ann-card-excerpt')?.textContent.toLowerCase() || '';
+            const desc     = card.querySelector('.svc-card-excerpt')?.textContent.toLowerCase() || '';
             const cardCat  = card.dataset.category || '';
             const cardType = card.dataset.type    || '';
             const cardSts  = card.dataset.status  || '';
@@ -48,6 +48,39 @@
     catSelect?.addEventListener('change',    filterCards);
     typeSelect?.addEventListener('change',   filterCards);
     statusSelect?.addEventListener('change', filterCards);
+
+    /* ══════════════════════════════════════════════════════════
+       CARD TITLE / DESCRIPTION STATE
+       Title is clamped to 2 lines in CSS either way. Here we just
+       measure how tall it actually rendered — 1 line or 2 — and
+       flip a class so the description clamps to 4 lines (short
+       title) or 3 lines (long title). Combined with the matched
+       21px line-heights in CSS, this keeps every card's title +
+       description block the same total height.
+    ══════════════════════════════════════════════════════════ */
+
+    function updateTitleStates() {
+        cards.forEach(card => {
+            const titleEl = card.querySelector('.ann-card-title');
+            if (!titleEl) return;
+
+            const lineHeight = parseFloat(getComputedStyle(titleEl).lineHeight) || 21;
+            const lines = Math.round(titleEl.clientHeight / lineHeight);
+
+            card.classList.toggle('svc-title-two-lines', lines >= 2);
+        });
+    }
+
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(updateTitleStates);
+    }
+    updateTitleStates();
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateTitleStates, 150);
+    });
 
     /* ══════════════════════════════════════════════════════════
        DETAILS MODAL (read-only)

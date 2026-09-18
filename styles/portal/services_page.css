@@ -148,6 +148,41 @@
   transform: none;
 }
 
+/* TITLE + DESCRIPTION — fixed total height across all 4 states.
+   Title and description share the same 21px line-height, so:
+     1-line title (21px)  + 4-line description (84px) = 105px
+     2-line title (42px)  + 3-line description (63px) = 105px
+   The block is always the same height, whichever state is showing. */
+
+.res-svc-card .svc-title-desc {
+  margin-bottom: 12px;
+}
+
+.res-svc-card .ann-card-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 21px;
+  margin-bottom: 6px;
+}
+
+.res-svc-card .svc-card-excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 21px;
+  margin-bottom: 0;
+}
+
+/* Set by JS once the title's rendered height is measured: a title that
+   wraps to 2 lines switches the description down to a 3-line clamp so the
+   combined block stays the same height as the 1-line/4-line state. */
+.res-svc-card.svc-title-two-lines .svc-card-excerpt {
+  -webkit-line-clamp: 3;
+}
+
 /* CARD TOP: icon + category badge on left, status badge on right */
 
 .svc-card-top {
@@ -337,6 +372,12 @@
 .svc-details-list {
   padding-top: 10px;
   border-top: 1px solid var(--border);
+  min-height: 96px;
+}
+
+.svc-details-list--slots {
+  padding-top: 6px;
+  min-height: 0;
 }
 
 .svc-details li,
@@ -366,7 +407,8 @@
   letter-spacing: 0.5px;
   color: var(--text-muted);
   flex-shrink: 0;
-  min-width: 72px;
+  min-width: 98px;
+  white-space: nowrap;
   margin-top: 1px;
 }
 
@@ -381,46 +423,11 @@
   min-width: 0;
 }
 
-/* Requirements sub-list inside detail row */
-.svc-detail-req {
-  align-items: flex-start !important;
-}
-
-.svc-detail-req-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  flex: 1;
-  min-width: 0;
-}
-
-.svc-req-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-}
-
-.svc-req-list li {
-  font-size: 12px;
-  color: var(--text-body);
-  display: flex !important;
-  gap: 6px;
-  align-items: baseline;
-  padding-left: 2px;
-}
-
-.svc-req-list li::before {
-  content: "•";
-  color: var(--navy);
-  font-weight: 700;
-  flex-shrink: 0;
-  font-size: 10px;
-}
-
-.svc-req-more {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-style: italic;
+.svc-detail-value-oneline {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Contact row in detail list */
@@ -489,52 +496,53 @@
   width: 60%;
 }
 
-/* ── CAPACITY — matches officer card layout ─────────────────── */
+/* ── CAPACITY ──────────────────────────────────────────────── */
+
+.svc-details-list li.res-capacity-box {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  background: #eef1f5;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
 
 .res-capacity-bar-header {
-  display: flex !important;
-  grid-template-columns: unset !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 8px !important;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-/* Icon inside the header li */
 .res-capacity-bar-header > svg {
-  width: 13px !important;
-  height: 13px !important;
-  color: var(--text-muted);
+  width: 15px;
+  height: 15px;
+  color: var(--text-body);
   flex-shrink: 0;
-  margin-top: 0 !important;
 }
 
-/* Inner label + count wrapper */
 .res-capacity-bar-label {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   flex: 1;
 }
 
-/* "Slots" label text */
 .res-capacity-bar-label .svc-detail-label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--text-head, var(--navy));
+  text-transform: none;
+  letter-spacing: normal;
   min-width: unset;
   white-space: nowrap;
 }
 
 .res-slots-text {
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--text-body);
+  color: var(--text-head, var(--navy));
   margin-left: auto;
   white-space: nowrap;
   flex: none;
@@ -548,22 +556,17 @@
   color: #b45309;
 }
 
-.res-capacity-bar-wrap {
-  margin-top: 0;
-  margin-bottom: 12px;
-}
-
 .res-capacity-bar {
-  height: 6px;
-  background: var(--border);
-  border-radius: 10px;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 999px;
   overflow: hidden;
 }
 
 .res-capacity-fill {
   height: 100%;
-  border-radius: 10px;
-  background: var(--navy, #1e5fa8);
+  border-radius: 999px;
+  background: var(--green, #1a7a4a);
   transition: width 0.4s ease;
 }
 

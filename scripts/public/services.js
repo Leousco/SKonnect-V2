@@ -42,6 +42,29 @@ document.addEventListener('DOMContentLoaded', () => {
     catSelect?.addEventListener('change',   filterCards);
     typeSelect?.addEventListener('change',  filterCards);
 
+    function updateTitleStates() {
+        cards.forEach(card => {
+            const titleEl = card.querySelector('.pub-card-title');
+            if (!titleEl) return;
+
+            const lineHeight = parseFloat(getComputedStyle(titleEl).lineHeight) || 21;
+            const lines = Math.round(titleEl.clientHeight / lineHeight);
+
+            card.classList.toggle('pub-title-two-lines', lines >= 2);
+        });
+    }
+
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(updateTitleStates);
+    }
+    updateTitleStates();
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateTitleStates, 150);
+    });
+
     const overlay        = document.getElementById('pub-details-overlay');
     const closeBtn       = document.getElementById('pub-details-close');
     const cancelBtn      = document.getElementById('pub-details-cancel');

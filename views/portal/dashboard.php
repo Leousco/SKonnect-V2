@@ -50,7 +50,7 @@ $notifCount     = 0;
                     <div class="widget-body">
                         <h3>Active Requests</h3>
                         <span class="widget-number" id="stat-requests">—</span>
-                        <span class="widget-sub">Pending or action required</span>
+                        <span class="widget-sub">Pending requests</span>
                     </div>
                 </div>
 
@@ -99,9 +99,63 @@ $notifCount     = 0;
 
             </section>
 
+            <!-- UPPER: ANNOUNCEMENTS + DISCUSSIONS -->
+            <div class="dashboard-upper">
+
+                <section class="mini-announcements">
+                    <h2 class="section-label">
+                        <span class="section-icon icon-announcements">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m3 11 18-5v12L3 14v-3z" />
+                                <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
+                            </svg>
+                        </span>
+                        Latest Announcements
+                    </h2>
+                    <div class="list-scroll">
+                        <ul class="announcement-list" id="announcement-list">
+                            <li class="activity-skeleton"></li>
+                            <li class="activity-skeleton"></li>
+                            <li class="activity-skeleton"></li>
+                        </ul>
+                    </div>
+                    <a href="announcements_page.php" class="btn-small">View All Announcements &rsaquo;</a>
+                </section>
+
+                <section class="community-discussions">
+                    <h2 class="section-label">
+                        <span class="section-icon icon-discussions">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg>
+                        </span>
+                        Latest Community Discussions
+                    </h2>
+                    <div class="list-scroll">
+                        <ul class="discussion-list" id="discussion-list">
+                            <li class="activity-skeleton"></li>
+                            <li class="activity-skeleton"></li>
+                            <li class="activity-skeleton"></li>
+                        </ul>
+                    </div>
+                    <a href="feed_page.php" class="btn-small">View All Discussions &rsaquo;</a>
+                </section>
+
+            </div>
+
             <!-- CALENDAR -->
             <section class="calendar-section">
-                <h2 class="section-label">Upcoming Events</h2>
+                <h2 class="section-label">
+                    <span class="section-icon icon-events">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                    </span>
+                    Upcoming Events
+                </h2>
 
                 <div class="calendar-skeleton" id="calendar-skeleton">
                     <div class="cal-skel-header"></div>
@@ -151,22 +205,41 @@ $notifCount     = 0;
                 </div>
             </section>
 
-            <!-- LOWER: ACTIVITY + ANNOUNCEMENTS -->
+            <!-- LOWER: SERVICES + ACTIVITY -->
             <div class="dashboard-lower">
 
-                <section class="mini-announcements">
-                    <h2 class="section-label">Latest Announcements</h2>
-                    <ul class="announcement-list" id="announcement-list">
-                        <li class="activity-skeleton"></li>
-                        <li class="activity-skeleton"></li>
-                        <li class="activity-skeleton"></li>
-                    </ul>
-                    <a href="announcements_page.php" class="btn-small">View All Announcements &rsaquo;</a>
+                <section class="available-services">
+                    <h2 class="section-label">
+                        <span class="section-icon icon-services">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="7" rx="1" />
+                                <rect x="14" y="3" width="7" height="7" rx="1" />
+                                <rect x="3" y="14" width="7" height="7" rx="1" />
+                                <rect x="14" y="14" width="7" height="7" rx="1" />
+                            </svg>
+                        </span>
+                        Available Services
+                    </h2>
+                    <div class="list-scroll">
+                        <ul class="service-list" id="service-list">
+                            <li class="activity-skeleton"></li>
+                            <li class="activity-skeleton"></li>
+                            <li class="activity-skeleton"></li>
+                        </ul>
+                    </div>
+                    <a href="services_page.php" class="btn-small">View All Services &rsaquo;</a>
                 </section>
 
                 <section class="recent-activity">
-                    <h2 class="section-label">Recent Activity</h2>
-                    <div class="activity-wrapper"> 
+                    <h2 class="section-label">
+                        <span class="section-icon icon-activity">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z" />
+                            </svg>
+                        </span>
+                        Recent Activity
+                    </h2>
+                    <div class="list-scroll">
                         <div class="activity-list" id="activity-list">
                             <div class="activity-skeleton"></div>
                             <div class="activity-skeleton"></div>

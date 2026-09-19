@@ -118,16 +118,102 @@
             return `
                 <li>
                     <a href="announcement_view.php?id=${ann.id}">
-                        <span class="ann-title">${escapeHtml(ann.title)}</span>
-                        <span class="ann-meta">
-                            <span class="ann-badge ${badge}">${ann.category}</span>
-                            <span class="ann-date">${date}</span>
+                        <span class="ann-content">
+                            <span class="ann-title">${escapeHtml(ann.title)}</span>
+                            <span class="ann-meta">
+                                <span class="ann-badge ${badge}">${ann.category}</span>
+                                <span class="ann-date">${date}</span>
+                            </span>
                         </span>
+                        <svg class="ann-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
                     </a>
                 </li>`;
         }).join('');
     }
   
+    // ── COMMUNITY DISCUSSIONS ────────────────────────────────
+    function initials(name) {
+        return String(name)
+            .split(' ')
+            .filter(Boolean)
+            .slice(0, 2)
+            .map(w => w[0].toUpperCase())
+            .join('');
+    }
+
+    async function loadDiscussions() {
+        const listEl = document.getElementById('discussion-list');
+        const data   = await fetchJSON('discussions');
+
+        if (data.status !== 'success' || !data.data.length) {
+            listEl.innerHTML = '<li class="empty-state">No discussions yet.</li>';
+            return;
+        }
+
+        listEl.innerHTML = data.data.map(t => {
+            const replies = Number(t.comment_count) || 0;
+            return `
+                <li>
+                    <a href="thread_view.php?id=${t.id}">
+                        <div class="discussion-avatar">${initials(t.author_name)}</div>
+                        <div class="discussion-body">
+                            <span class="discussion-subject">${escapeHtml(t.subject)}</span>
+                            <div class="discussion-footer">
+                                <span class="ann-badge disc-badge-${t.category}">${escapeHtml(t.category)}</span>
+                                <span class="discussion-meta">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                    ${replies} ${replies === 1 ? 'Reply' : 'Replies'}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </li>`;
+        }).join('');
+    }
+
+    // ── AVAILABLE SERVICES ───────────────────────────────────
+    const SERVICE_BADGE = {
+        medical:     'svc-badge-medical',
+        education:   'svc-badge-education',
+        scholarship: 'svc-badge-scholarship',
+        livelihood:  'svc-badge-livelihood',
+        assistance:  'svc-badge-assistance',
+        legal:       'svc-badge-legal',
+    };
+
+    async function loadServices() {
+        const listEl = document.getElementById('service-list');
+        const data   = await fetchJSON('services');
+
+        if (data.status !== 'success' || !data.data.length) {
+            listEl.innerHTML = '<li class="empty-state">No services available right now.</li>';
+            return;
+        }
+
+        listEl.innerHTML = data.data.map(s => {
+            const badgeClass = SERVICE_BADGE[s.category] || 'svc-badge-other';
+            return `
+                <li>
+                    <a href="service_view.php?id=${s.id}">
+                        <span class="service-content">
+                            <span class="service-name">${escapeHtml(s.name)}</span>
+                            <span class="service-meta">
+                                <span class="ann-badge ${badgeClass}">${escapeHtml(s.category)}</span>
+                                ${s.eligibility ? `<span class="service-time">${escapeHtml(s.eligibility)}</span>` : ''}
+                            </span>
+                        </span>
+                        <svg class="ann-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </a>
+                </li>`;
+        }).join('');
+    }
+
     // ── EVENTS / CALENDAR ────────────────────────────────────
     async function loadEvents() {
         const data = await fetchJSON('events');
@@ -413,6 +499,8 @@
     loadStats();
     loadActivity();
     loadAnnouncements();
+    loadDiscussions();
+    loadServices();
     loadEvents();
   
   })();

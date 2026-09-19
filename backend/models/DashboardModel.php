@@ -115,7 +115,7 @@ class DashboardModel
         return array_slice($activities, 0, $limit);
     }
 
-    public function getLatestAnnouncements(int $limit = 5): array
+    public function getLatestAnnouncements(): array
     {
         $stmt = $this->db->prepare("
             SELECT id, title, category, published_at
@@ -123,9 +123,7 @@ class DashboardModel
             WHERE status = 'active'
               AND (expired_at IS NULL OR expired_at >= CURRENT_DATE)
             ORDER BY published_at DESC
-            LIMIT :lim
         ");
-        $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -137,6 +135,46 @@ class DashboardModel
             FROM events
             ORDER BY event_date ASC
         ");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getLatestDiscussions(): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT
+                t.id,
+                t.category,
+                t.subject,
+                t.created_at,
+                CONCAT(u.first_name, ' ', u.last_name) AS author_name,
+                (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count
+            FROM threads t
+            JOIN users u ON u.id = t.author_id
+            WHERE t.is_removed = FALSE
+            ORDER BY t.is_pinned DESC, t.created_at DESC
+        ");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAvailableServices(?int $limit = null): array
+    {
+        $sql = "
+            SELECT id, name, category, service_type, eligibility
+            FROM services
+            WHERE status = 'active'
+            ORDER BY created_at DESC
+        ";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :lim";
+        }
+
+        $stmt = $this->db->prepare($sql);
+        if ($limit !== null) {
+            $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
+        }
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

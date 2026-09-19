@@ -132,6 +132,7 @@ Portal side
    - Clicking outside the modal closes the modal resulting in loss of progress ✔️  
    - Make the "Submit Request" button unclickable if all fields are not complete yet  
    - Maybe add a confirmation modal or something before submitting an application  
+   - On the request modal, make the info strip non-sticky to allow more space for viewing the form  
  - Notif Badge  
    - Counter appears without any new notifications when opening "view" pages  
      (thread_view.php, announcement_view.php)  

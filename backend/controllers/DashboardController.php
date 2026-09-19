@@ -31,6 +31,14 @@ switch ($action) {
         echo json_encode(['status' => 'success', 'data' => $model->getUpcomingEvents()]);
         break;
 
+    case 'discussions':
+        echo json_encode(['status' => 'success', 'data' => $model->getLatestDiscussions()]);
+        break;
+
+    case 'services':
+        echo json_encode(['status' => 'success', 'data' => $model->getAvailableServices()]);
+        break;
+
     default:
         echo json_encode(['status' => 'error', 'message' => 'Unknown action.']);
 }

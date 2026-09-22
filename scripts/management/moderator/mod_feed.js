@@ -1,10 +1,10 @@
-/**
- * mod_feed.js
- * scripts/management/moderator/mod_feed.js
- */
+
+
+
+
 
  document.addEventListener("DOMContentLoaded", () => {
-  /* ── ELEMENTS ──────────────────────────────────────────── */
+  
 
   const grid = document.getElementById("mod-feed-grid");
   const noResults = document.getElementById("mod-no-results");
@@ -24,7 +24,7 @@
   const confirmCxl = document.getElementById("mod-confirm-cancel");
   const toastEl = document.getElementById("mod-toast");
 
-  /* ── TOAST ─────────────────────────────────────────────── */
+  
 
   let toastTimer = null;
   function showToast(msg, type = "success") {
@@ -37,7 +37,7 @@
     );
   }
 
-  /* ── LOADING TOAST ─────────────────────────────────────── */
+  
 
   let loadingToastEl = null;
 
@@ -60,7 +60,7 @@
     }
   }
 
-  /* ── CONFIRM MODAL ─────────────────────────────────────── */
+  
 
   let pendingAction = null;
 
@@ -97,7 +97,7 @@
     }
   });
 
-  /* ── HELPERS ───────────────────────────────────────────── */
+  
 
   function getCards() {
     return Array.from(grid.querySelectorAll(".mod-feed-card"));
@@ -110,7 +110,7 @@
     return res.json();
   }
 
-  /* ── FILTER & SORT ─────────────────────────────────────── */
+  
 
   const CARDS_PER_PAGE = 9;
   let currentPage = 1;
@@ -188,7 +188,7 @@
     applyFilters();
   }
 
-  /* ── PAGINATION ────────────────────────────────────────── */
+  
 
   function getTotalPages() {
     const visible = getCards().filter((c) => c.dataset.filterVisible === "1");
@@ -248,7 +248,7 @@
   selVisibility.addEventListener("change", applyFilters);
   selSort.addEventListener("change", applySort);
 
-  /* ── STATUS TOGGLER ────────────────────────────────────── */
+  
 
   function bindStatusTogglers(container) {
     container.querySelectorAll(".mod-status-toggler").forEach((toggler) => {
@@ -259,7 +259,7 @@
           const threadId = toggler.dataset.threadId;
           const newStatus = btn.dataset.status;
 
-          // Find the current (active) status label for the confirmation message
+          
           const currentBtn = toggler.querySelector(".mod-status-opt.active");
           const currentStatus = currentBtn
             ? currentBtn.dataset.status
@@ -355,7 +355,7 @@
     });
   }
 
-  /* ── FLAG MODAL ────────────────────────────────────────── */
+  
 
   const flagModalOverlay = document.getElementById("mod-flag-modal-overlay");
   const flagModalClose   = document.getElementById("mod-flag-modal-close");
@@ -363,11 +363,11 @@
   const flagModalSubmit  = document.getElementById("mod-flag-modal-submit");
   const flagCatError     = document.getElementById("mod-flag-cat-error");
 
-  let _flagCtx = {}; // { threadId, onSuccess }
+  let _flagCtx = {}; 
 
   function openFlagModal(threadId, onSuccess) {
     _flagCtx = { threadId, onSuccess };
-    // Clear previous selection and error
+    
     flagModalOverlay.querySelectorAll("input[name='mod-flag-category']")
       .forEach(r => r.checked = false);
     if (flagCatError) flagCatError.textContent = "";
@@ -423,11 +423,11 @@
     }
   });
 
-  /* ── FLAG / REMOVE / PIN ACTIONS ──────────────────────── */
+  
 
   function handleFlag(threadId, isCurrentlyFlagged, onSuccess) {
     if (isCurrentlyFlagged) {
-      // Unflag: simple confirm as before
+      
       openConfirm({
         icon: "🏳️",
         title: "Remove Flag",
@@ -452,7 +452,7 @@
         },
       });
     } else {
-      // Flag: open the category modal
+      
       openFlagModal(threadId, onSuccess);
     }
   }
@@ -535,7 +535,7 @@
     });
   }
 
-  /* ── CARD SYNC HELPERS ─────────────────────────────────── */
+  
 
   function syncCardFlag(card, flagBtn, flagged) {
     card.dataset.flagged = flagged ? "1" : "0";
@@ -588,7 +588,7 @@
       const badge = document.createElement("span");
       badge.className = "mod-pin-indicator";
       badge.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><path d="M15.75 1.5a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM12.75 7.5a.75.75 0 0 0-1.5 0v5.69l-2.22-2.22a.75.75 0 0 0-1.06 1.06l3.5 3.5a.75.75 0 0 0 1.06 0l3.5-3.5a.75.75 0 1 0-1.06-1.06l-2.22 2.22V7.5Z"/></svg>Pinned`;
-      // Insert before flagged badge if it exists, otherwise prepend
+      
       const flagBadge = card.querySelector(".mod-flag-indicator");
       const badgesEl = card.querySelector(".mod-feed-badges");
       if (flagBadge) badgesEl.insertBefore(badge, flagBadge);
@@ -604,29 +604,29 @@
     }`;
   }
 
-  /* ── GRID EVENT DELEGATION ─────────────────────────────── */
+  
 
   grid.addEventListener("click", (e) => {
     const card = e.target.closest(".mod-feed-card");
     if (!card) return;
     const threadId = card.dataset.id;
 
-    // Absorb clicks on interactive footer elements without opening panel
+    
     if (
       e.target.closest(".mod-status-toggler") ||
       e.target.closest(".mod-action-flag") ||
       e.target.closest(".mod-action-remove")
     ) {
-      // These are handled separately below — don't open panel
+      
     }
 
-    // VIEW button
+    
     if (e.target.closest(".mod-action-view")) {
       openPanel(threadId);
       return;
     }
 
-    // PIN button
+    
     const pinBtn = e.target.closest(".mod-action-pin");
     if (pinBtn) {
       const pinned = card.dataset.pinned === "1";
@@ -640,10 +640,10 @@
       return;
     }
 
-    // FLAG button
+    
     const flagBtn = e.target.closest(".mod-action-flag");
     if (flagBtn && !flagBtn.id) {
-      // card-level flag btn (panel btn has id="panel-flag-btn")
+      
       const flagged = card.dataset.flagged === "1";
       handleFlag(threadId, flagged, (newFlagged) => {
         syncCardFlag(card, flagBtn, newFlagged);
@@ -655,7 +655,7 @@
       return;
     }
 
-    // REMOVE button
+    
     const removeBtn = e.target.closest(".mod-action-remove");
     if (removeBtn && !removeBtn.id) {
       const removed = card.dataset.removed === "1";
@@ -670,24 +670,24 @@
       return;
     }
 
-    // Status toggler — handled by bindStatusTogglers, don't open panel
+    
     if (e.target.closest(".mod-status-toggler")) return;
 
-    // CLICKABLE CARD — anything else opens the panel
+    
     openPanel(threadId);
   });
 
-  /* ── BIND STATUS TOGGLERS ON GRID ──────────────────────── */
+  
 
   bindStatusTogglers(grid);
 
-  /* ── SLIDE-IN PANEL ────────────────────────────────────── */
+  
 
   const panel = document.getElementById("mod-thread-panel");
   const backdrop = document.getElementById("mod-panel-backdrop");
   const panelClose = document.getElementById("mod-panel-close");
 
-  // Track which thread the panel is currently showing
+  
   let currentPanelThreadId = null;
 
   function openPanel(threadId) {
@@ -743,7 +743,7 @@
     const loading = document.getElementById("mod-panel-loading");
     const content = document.getElementById("mod-panel-content");
 
-    // Badges
+    
     const catKey = thread.category;
     document.getElementById("panel-badges").innerHTML = `
       <span class="mod-cat-badge category-${catKey}">${
@@ -769,10 +769,10 @@
       }
     `;
 
-    // Title
+    
     document.getElementById("panel-title").textContent = thread.subject;
 
-    // Meta
+    
     const initials = thread.author_name.substring(0, 2).toUpperCase();
     document.getElementById("panel-meta").innerHTML = `
       <div class="mod-panel-author">
@@ -794,12 +794,12 @@
       </div>
     `;
 
-    // Body text
+    
     document.getElementById("panel-body-text").innerHTML = nl2br(
       escHtml(thread.message)
     );
 
-    // Images
+    
     const imagesEl = document.getElementById("panel-images");
     if (images && images.length) {
       imagesEl.innerHTML = images
@@ -820,7 +820,7 @@
       imagesEl.style.display = "none";
     }
 
-    // Status toggler in panel
+    
     const panelToggler = document.getElementById("panel-status-toggler");
     panelToggler.dataset.threadId = thread.id;
     panelToggler.querySelectorAll(".mod-status-opt").forEach((btn) => {
@@ -828,12 +828,12 @@
     });
     bindStatusTogglers(document.getElementById("panel-actions"));
 
-    // Pin button
+    
     const panelPinBtn = document.getElementById("panel-pin-btn");
     panelPinBtn.dataset.threadId = thread.id;
     syncPanelPin(panelPinBtn, +thread.is_pinned === 1);
 
-    // Flag & remove buttons
+    
     const panelFlagBtn = document.getElementById("panel-flag-btn");
     const panelRemoveBtn = document.getElementById("panel-remove-btn");
     panelFlagBtn.dataset.threadId = thread.id;
@@ -841,7 +841,7 @@
     syncPanelFlag(panelFlagBtn, +thread.is_flagged === 1);
     syncPanelRemove(panelRemoveBtn, +thread.is_removed === 1);
 
-    // Comments
+    
     const commentCount = document.getElementById("panel-comments-count");
     const commentList = document.getElementById("panel-comment-list");
     commentCount.textContent = comments ? comments.length : 0;
@@ -849,17 +849,17 @@
     if (!comments || comments.length === 0) {
       commentList.innerHTML = `<div class="mod-panel-no-comments">No comments yet.</div>`;
     } else {
-      // Sort: SK Official/mod comments first (newest-first within group),
-      // then regular comments newest-first (LIFO — last posted appears at top).
+      
+      
       comments.sort((a, b) => {
         const aIsMod = +a.is_mod_comment;
         const bIsMod = +b.is_mod_comment;
-        if (bIsMod !== aIsMod) return bIsMod - aIsMod; // mod group always first
-        // Within each group, newest first
+        if (bIsMod !== aIsMod) return bIsMod - aIsMod; 
+        
         return new Date(b.created_at) - new Date(a.created_at);
       });
 
-      // Helper: build the inline deletion tag shown to mods (content stays visible)
+      
       function deletionTag(item, isReply = false) {
         if (!+item.is_removed) return "";
         if (+item.removed_by_mod) {
@@ -943,7 +943,7 @@
         })
         .join("");
 
-      // Bind inline reply UI for each comment in panel
+      
       commentList
         .querySelectorAll(".mod-panel-comment-item")
         .forEach((item) => {
@@ -951,16 +951,16 @@
         });
     }
 
-    // Setup the main mod reply box for this thread
+    
     setupModReplyBox(thread.id, commentCount, commentList);
 
-    // Set avatar initials from MOD_NAME
+    
     const modInitial = (
       typeof MOD_NAME === "string" ? MOD_NAME[0] : "M"
     ).toUpperCase();
     document.getElementById("mod-panel-reply-avatar").textContent = modInitial;
 
-    // Image lightbox inside panel
+    
     imagesEl.querySelectorAll(".mod-panel-image-item").forEach((item) => {
       item.addEventListener("click", () => openLightbox(item.dataset.src));
     });
@@ -968,13 +968,13 @@
     loading.style.display = "none";
     content.style.display = "";
 
-    // Wire panel pin/flag/remove buttons
+    
     panelPinBtn.onclick = () => {
       const pinned = panelPinBtn.classList.contains("mod-action-pin--active");
       const card = grid.querySelector(`.mod-feed-card[data-id="${thread.id}"]`);
       handlePin(thread.id, pinned, (newPinned) => {
         syncPanelPin(panelPinBtn, newPinned);
-        // Sync panel badges
+        
         document
           .getElementById("panel-badges")
           .querySelector(".mod-pin-indicator")
@@ -1042,17 +1042,17 @@
     };
   }
 
-  /* ── MOD COMMENT BOX (main) ────────────────────────────── */
+  
 
   function setupModReplyBox(threadId, commentCountEl, commentListEl) {
     const textarea = document.getElementById("mod-panel-reply-textarea");
     const submitBtn = document.getElementById("mod-panel-reply-submit");
     const labelEl = document.getElementById("mod-panel-reply-label");
 
-    // Reset textarea from previous thread
+    
     textarea.value = "";
 
-    // Remove old listener by cloning
+    
     const newSubmit = submitBtn.cloneNode(true);
     submitBtn.parentNode.replaceChild(newSubmit, submitBtn);
     const newLabel =
@@ -1133,8 +1133,8 @@
 
           commentListEl.prepend(item);
 
-          // Re-sort: mod comments always stay above regular comments,
-          // newest-first within each group
+          
+          
           const allItems = Array.from(
             commentListEl.querySelectorAll(".mod-panel-comment-item")
           );
@@ -1142,7 +1142,7 @@
             const aIsMod = a.classList.contains("mod-panel-comment-item--mod") ? 1 : 0;
             const bIsMod = b.classList.contains("mod-panel-comment-item--mod") ? 1 : 0;
             if (bIsMod !== aIsMod) return bIsMod - aIsMod;
-            // newest-first: compare data-created-at if present, else DOM order is fine
+            
             const da = new Date(a.dataset.createdAt || 0);
             const db = new Date(b.dataset.createdAt || 0);
             return db - da;
@@ -1154,7 +1154,7 @@
           const curr = parseInt(commentCountEl.textContent) || 0;
           commentCountEl.textContent = curr + 1;
 
-          // Sync card comment count
+          
           const card = grid.querySelector(
             `.mod-feed-card[data-id="${threadId}"]`
           );
@@ -1185,7 +1185,7 @@
     });
   }
 
-  /* ── MOD INLINE REPLY ──────────────────────────────────── */
+  
 
   function bindPanelReplyUI(commentEl, threadId) {
     if (commentEl.dataset.replyBound) return;
@@ -1238,7 +1238,7 @@
           replyBox.style.display = "none";
 
           const r = data.reply;
-          // Find or create the replies container
+          
           let repliesEl = commentEl.querySelector(".mod-panel-replies");
           if (!repliesEl) {
             repliesEl = document.createElement("div");
@@ -1291,7 +1291,7 @@
     });
   }
 
-  /* ── PANEL SYNC HELPERS ────────────────────────────────── */
+  
 
   function syncPanelPin(btn, pinned) {
     btn.classList.toggle("mod-action-pin--active", pinned);
@@ -1317,7 +1317,7 @@
       : "Hide";
   }
 
-  /* ── LIGHTBOX ───────────────────────────────────────────── */
+  
 
   const lightbox = document.getElementById("mod-lightbox");
   const lightboxImg = document.getElementById("mod-lightbox-img");
@@ -1336,7 +1336,7 @@
     if (e.target === lightbox) lightbox.style.display = "none";
   });
 
-  /* ── UTILITIES ──────────────────────────────────────────── */
+  
 
   function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -1365,7 +1365,7 @@
     );
   }
 
-  /* ── INIT ──────────────────────────────────────────────── */
+  
 
   getCards().forEach((c) => (c.dataset.filterVisible = "1"));
   applyFilters();

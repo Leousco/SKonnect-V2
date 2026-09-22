@@ -7,7 +7,7 @@
     display: none;
   }
   
-  /* ─── NAVBAR ─────────────────────────────── */
+  
   
   #navbar {
     background: linear-gradient(135deg, var(--primary-blue) 0%, #1e40af 100%);
@@ -142,7 +142,7 @@
     }
   }
   
-  /* ─── HERO / WRAPPER ─────────────────────── */
+  
   
   .hero {
     position: relative;
@@ -168,7 +168,7 @@
     z-index: 1;
   }
   
-  /* ─── VERIFY CARD ────────────────────────── */
+  
   
   .verify-card {
     position: relative;
@@ -185,7 +185,7 @@
     text-align: center;
   }
   
-  /* ─── LOGO ───────────────────────────────── */
+  
   
   .card-logo {
     text-align: center;
@@ -200,7 +200,7 @@
     border: 3px solid rgba(255, 255, 255, 0.15);
   }
   
-  /* ─── TITLES ─────────────────────────────── */
+  
   
   .card-title {
     font-size: 1.6rem;
@@ -222,7 +222,7 @@
     font-weight: 600;
   }
   
-  /* ─── OTP INPUT GROUP ────────────────────── */
+  
   
   .otp-group {
     display: flex;
@@ -267,7 +267,7 @@
     user-select: none;
   }
   
-  /* ─── VERIFY BUTTON ──────────────────────── */
+  
   
   .verify-btn {
     width: 100%;
@@ -296,7 +296,7 @@
     transform: translateY(0);
   }
   
-  /* ─── RESEND BLOCK ───────────────────────── */
+  
   
   .resend-block {
     margin-top: 20px;
@@ -337,7 +337,7 @@
     color: rgba(255, 255, 255, 0.4);
   }
   
-  /* ─── RESPONSIVE ─────────────────────────── */
+  
   
   @media (max-width: 480px) {
     .verify-card {
@@ -355,9 +355,9 @@
       gap: 6px;
     }
   }
-/* ── TOAST NOTIFICATIONS (verify_email page) ─────────────────────────────────
-   Duplicated here so verify_email.css is self-contained.
-   ─────────────────────────────────────────────────────────────────────────── */
+
+
+
 
 .sk-toast {
   position: fixed;

@@ -1,5 +1,4 @@
 <?php
-// backend/models/CommentModel.php
 
 class CommentModel
 {
@@ -10,15 +9,8 @@ class CommentModel
         $this->conn = $conn;
     }
 
-    /**
-     * Fetch all visible comments for a thread, with support counts and user state.
-     * Each comment row will have a 'replies' key populated separately via getReplies().
-     */
     public function getCommentsByThread(int $thread_id, int $user_id): array
     {
-        // Include mod-removed comments (removed_by_mod = 1) so a tombstone can be
-        // shown in their place. Comments removed by other means (is_removed = 1 but
-        // removed_by_mod = 0) are still hidden entirely.
         $stmt = $this->conn->prepare(
             "SELECT
                 tc.id,
@@ -42,7 +34,6 @@ class CommentModel
         $stmt->execute([':uid' => $user_id, ':tid' => $thread_id]);
         $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Attach replies to each comment
         foreach ($comments as &$comment) {
             $comment['replies'] = $this->getRepliesByComment((int)$comment['id']);
         }
@@ -51,12 +42,9 @@ class CommentModel
         return $comments;
     }
 
-    /**
-     * Fetch all visible replies for a comment.
-     */
     public function getRepliesByComment(int $comment_id): array
     {
-        // Include mod-removed replies so a tombstone can be shown.
+
         $stmt = $this->conn->prepare(
             "SELECT
                 cr.id,
@@ -78,9 +66,6 @@ class CommentModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Insert a new comment. Returns the full inserted row (with author info).
-     */
     public function createComment(int $thread_id, int $author_id, string $message, int $is_mod = 0): array|false
     {
         $stmt = $this->conn->prepare(
@@ -105,12 +90,8 @@ class CommentModel
         return $fetch->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Insert a new reply to a comment. Returns the full inserted row.
-     */
     public function createReply(int $comment_id, int $author_id, string $message, int $is_mod = 0): array|false
     {
-        // Verify parent comment exists and is not removed
         $check = $this->conn->prepare(
             "SELECT id FROM thread_comments WHERE id = :cid AND is_removed = FALSE LIMIT 1"
         );
@@ -141,9 +122,6 @@ class CommentModel
         return $fetch->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Check whether a thread exists and is not removed.
-     */
     public function threadExists(int $thread_id): bool
     {
         $check = $this->conn->prepare(
@@ -153,10 +131,6 @@ class CommentModel
         return (bool)$check->fetch();
     }
 
-    /**
-     * Mod-remove a comment (sets is_removed = 1, removed_by_mod = 1).
-     * The row is kept in the DB so a tombstone placeholder can be displayed.
-     */
     public function removeCommentByMod(int $comment_id): bool
     {
         $stmt = $this->conn->prepare(
@@ -167,9 +141,6 @@ class CommentModel
         return $stmt->execute([':id' => $comment_id]);
     }
 
-    /**
-     * Mod-remove a reply (sets is_removed = 1, removed_by_mod = 1).
-     */
     public function removeReplyByMod(int $reply_id): bool
     {
         $stmt = $this->conn->prepare(
@@ -180,10 +151,6 @@ class CommentModel
         return $stmt->execute([':id' => $reply_id]);
     }
 
-    /**
-     * User self-delete a comment (sets is_removed = 1, removed_by_user = 1).
-     * Ownership is enforced: only the comment's own author_id matches.
-     */
     public function removeCommentByUser(int $comment_id, int $author_id): bool
     {
         $stmt = $this->conn->prepare(
@@ -195,10 +162,6 @@ class CommentModel
         return $ok && $stmt->rowCount() > 0;
     }
 
-    /**
-     * User self-delete a reply (sets is_removed = 1, removed_by_user = 1).
-     * Ownership is enforced: only the reply's own author_id matches.
-     */
     public function removeReplyByUser(int $reply_id, int $author_id): bool
     {
         $stmt = $this->conn->prepare(

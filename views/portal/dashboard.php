@@ -35,7 +35,7 @@ $notifCount     = 0;
 
             <?php include __DIR__ . '/../../components/portal/topbar.php'; ?>
 
-            <!-- WIDGETS -->
+            
             <section class="dashboard-widgets">
 
                 <div class="widget-card" id="widget-requests">
@@ -99,7 +99,7 @@ $notifCount     = 0;
 
             </section>
 
-            <!-- UPPER: ANNOUNCEMENTS + DISCUSSIONS -->
+            
             <div class="dashboard-upper">
 
                 <section class="mini-announcements">
@@ -143,7 +143,7 @@ $notifCount     = 0;
 
             </div>
 
-            <!-- CALENDAR -->
+            
             <section class="calendar-section">
                 <h2 class="section-label">
                     <span class="section-icon icon-events">
@@ -205,7 +205,7 @@ $notifCount     = 0;
                 </div>
             </section>
 
-            <!-- LOWER: SERVICES + ACTIVITY -->
+            
             <div class="dashboard-lower">
 
                 <section class="available-services">

@@ -7,7 +7,7 @@ use PHPMailer\PHPMailer\Exception;
 $mail = new PHPMailer(true);
 
 try {
-    // Server settings
+    
     $mail->SMTPDebug = 2;                                    
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
@@ -17,11 +17,11 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
 
-    // Recipients
+    
     $mail->setFrom('skonnect.system@gmail.com', 'SKonnect'); 
-    $mail->addAddress('email@gmail.com', 'Emailer Name');         // Replace this with the email you want to send to
+    $mail->addAddress('email@gmail.com', 'Emailer Name');         
 
-    // Content
+    
     $mail->isHTML(true);
     $mail->Subject = 'SKonnect Test Email';
     $mail->Body    = 'This is a <strong>test email</strong> from SKonnect PHPMailer.';

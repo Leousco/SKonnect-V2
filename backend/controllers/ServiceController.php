@@ -1,6 +1,4 @@
 <?php
-// backend/controllers/ServiceController.php
-
 require_once __DIR__ . '/../models/ServiceModel.php';
 
 class ServiceController
@@ -62,7 +60,6 @@ class ServiceController
         $attachmentPath = $attachmentPaths ? implode(',', $attachmentPaths) : null;
 
         $newId = $this->model->insert($data, $attachmentName, $attachmentPath, $officerId);
-        // In-system notification broadcast
         require_once __DIR__ . '/../services/NotificationService.php';
         NotificationService::notifyNewService($newId, $data['name'], $data['category']);
         return ['success' => true, 'id' => $newId, 'service' => $this->model->getById($newId)];
@@ -80,7 +77,6 @@ class ServiceController
             return ['success' => false, 'errors' => $validation['errors']];
         }
 
-        // Start from kept existing files (sent from frontend as comma-separated names)
         $keptNames = [];
         $keptPaths = [];
         if (!empty($data['existing_attachments'])) {
@@ -93,22 +89,19 @@ class ServiceController
                     $keptNames[] = $name;
                     $keptPaths[] = $existingPaths[$i] ?? '';
                 } else {
-                    // File was removed by user — delete from disk
                     $this->deleteFile($existingPaths[$i] ?? null);
                 }
             }
         } elseif (isset($data['clear_attachment']) && $data['clear_attachment'] === '1') {
-            // All attachments cleared
+            
             foreach (array_filter(array_map('trim', explode(',', $existing['attachment_path'] ?? ''))) as $p) {
                 $this->deleteFile($p);
             }
         } else {
-            // No existing_attachments sent and no clear flag — keep all existing
             $keptNames = array_filter(array_map('trim', explode(',', $existing['attachment_name'] ?? '')));
             $keptPaths = array_filter(array_map('trim', explode(',', $existing['attachment_path'] ?? '')));
         }
 
-        // Upload any new files
         $uploadedFiles = $this->normaliseFilesArray($files);
         foreach ($uploadedFiles as $file) {
             if ($file['error'] !== UPLOAD_ERR_OK) continue;
@@ -127,15 +120,10 @@ class ServiceController
         return ['success' => true, 'service' => $this->model->getById($id)];
     }
 
-    /**
-     * Normalise $_FILES['attachments'] (which may be a multi-upload array structure)
-     * into a plain array of individual file arrays.
-     */
     private function normaliseFilesArray(?array $files): array
     {
         if (!$files || !isset($files['name'])) return [];
 
-        // Multi-file upload: $files['name'] is an array
         if (is_array($files['name'])) {
             $out = [];
             $count = count($files['name']);
@@ -151,7 +139,7 @@ class ServiceController
             return $out;
         }
 
-        // Single file
+    
         return [$files];
     }
 

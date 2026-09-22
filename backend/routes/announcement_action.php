@@ -1,9 +1,9 @@
 <?php
-/**
- * announcement_action.php
- * Handles create / update-status / delete / toggle-featured for announcements.
- * Place at: /backend/routes/announcement_action.php
- */
+
+
+
+
+
 
 header('Content-Type: application/json');
 
@@ -17,14 +17,14 @@ $conn   = $db->getConnection();
 $author = $_SESSION['user_id'] ?? 0;
 $action = $_GET['action'] ?? ($_POST['action'] ?? '');
 
-/**
- * Convert an absolute filesystem path (e.g. after move_uploaded_file())
- * into the correct web-accessible URL path, the same way
- * AnnouncementController::uploadFile() does. This matters because the
- * project may be deployed inside a subfolder (e.g. /SKonnect/) instead
- * of directly at the web server's document root — a hardcoded
- * '/assets/uploads/...' path would 404 in that case.
- */
+
+
+
+
+
+
+
+
 function resolveWebPath(string $absPath): string {
     $absPath = str_replace('\\', '/', $absPath);
 
@@ -37,13 +37,13 @@ function resolveWebPath(string $absPath): string {
         return str_replace($docRoot, '', $absPath);
     }
 
-    // Fallback: best effort, strip everything up to the project root marker
+    
     return $absPath;
 }
 
-/* ══════════════════════════════════════════════════════════
-   ACTION: create  (multipart/form-data)
-   ══════════════════════════════════════════════════════════ */
+
+
+
 if ($action === 'create') {
 
     $title      = trim($_POST['title']        ?? '');
@@ -63,7 +63,7 @@ if ($action === 'create') {
         exit;
     }
 
-    // Banner upload
+    
     $bannerPath = null;
     if (!empty($_FILES['banner']['name'])) {
         $uploadDir = __DIR__ . '/../../assets/uploads/banners/';
@@ -97,7 +97,7 @@ if ($action === 'create') {
         ]);
         $newId = $conn->lastInsertId();
 
-        // Attachments
+        
         if (!empty($_FILES['attachments']['name'][0])) {
             $attDir = __DIR__ . '/../../assets/uploads/attachments/';
             if (!is_dir($attDir)) mkdir($attDir, 0755, true);
@@ -127,9 +127,9 @@ if ($action === 'create') {
     exit;
 }
 
-/* ══════════════════════════════════════════════════════════
-   ACTION: getForEdit  (GET)
-   ══════════════════════════════════════════════════════════ */
+
+
+
 if ($action === 'getForEdit') {
     $id = (int)($_GET['id'] ?? 0);
     $stmt = $conn->prepare("SELECT * FROM announcements WHERE id = :id");
@@ -146,9 +146,9 @@ if ($action === 'getForEdit') {
     exit;
 }
 
-/* ══════════════════════════════════════════════════════════
-   ACTION: update  (multipart/form-data)
-   ══════════════════════════════════════════════════════════ */
+
+
+
 if ($action === 'update') {
 
     $id         = (int)($_POST['id'] ?? 0);
@@ -241,9 +241,9 @@ if ($action === 'update') {
     exit;
 }
 
-/* ══════════════════════════════════════════════════════════
-   JSON body actions: set-status | delete | toggle-featured
-   ══════════════════════════════════════════════════════════ */
+
+
+
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 $action = $action ?: ($input['action'] ?? '');
 $id     = (int)($input['id'] ?? 0);
@@ -272,7 +272,7 @@ try {
             break;
 
         case 'delete':
-            // Also delete physical banner/attachment files
+            
             $stmt = $conn->prepare("SELECT banner_img FROM announcements WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $ann = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -280,7 +280,7 @@ try {
                 $localPath = $_SERVER['DOCUMENT_ROOT'] . $ann['banner_img'];
                 if (file_exists($localPath)) @unlink($localPath);
             }
-            // Attachment files
+            
             $attStmt = $conn->prepare("SELECT file_path FROM announcement_files WHERE announcement_id = :id");
             $attStmt->execute([':id' => $id]);
             foreach ($attStmt->fetchAll(PDO::FETCH_COLUMN) as $path) {

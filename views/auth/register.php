@@ -1,8 +1,8 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Same guard as login.php — a logged-in user shouldn't be able to land on
-// the registration form via Back/history navigation.
+
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
@@ -61,7 +61,7 @@ if (!empty($_SESSION['user_id'])) {
 
             <input type="hidden" name="action" value="register">
 
-            <!-- Full name -->
+            
             <div class="form-row three-col">
                 <div class="input-group">
                     <label for="first_name">First Name <span class="req">*</span></label>
@@ -77,7 +77,7 @@ if (!empty($_SESSION['user_id'])) {
                 </div>
             </div>
 
-            <!-- Gender, Birth Date, Age -->
+            
             <div class="form-row three-col">
                 <div class="input-group">
                     <label for="gender">Gender <span class="req">*</span></label>
@@ -105,7 +105,7 @@ if (!empty($_SESSION['user_id'])) {
                 
             </div>
 
-            <!-- Email -->
+            
             <div class="form-row one-col">
                 <div class="input-group">
                     <label for="email">Email Address <span class="req">*</span></label>
@@ -113,7 +113,7 @@ if (!empty($_SESSION['user_id'])) {
                 </div>
             </div>
 
-            <!-- Password, Confirm Password -->
+            
             <div class="form-row two-col">
                 <div class="input-group">
                     <label for="password">Password <span class="req">*</span></label>
@@ -138,7 +138,7 @@ if (!empty($_SESSION['user_id'])) {
                 </div>
             </div>
 
-            <!-- Privacy Policy Checkbox -->
+            
             <div class="form-row one-col">
                 <div class="privacy-policy-checkbox">
                     <label class="checkbox-container">

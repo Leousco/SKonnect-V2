@@ -353,7 +353,7 @@
     white-space: nowrap;
 }
 
-/* ── BAR CHART ───────────────────────────────────────────── */
+
 /* To change the fixed height of this section, edit the `height` value below */
 .bar-chart-wrap {
     display: flex;
@@ -408,7 +408,7 @@
     flex-shrink: 0;
 }
 
-/* ── BOTTOM ROW ──────────────────────────────────────────── */
+
 
 .admin-bottom-row {
     display: grid;
@@ -551,7 +551,7 @@
     color: var(--admin-text-muted);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1100px) {
     .admin-bottom-row { grid-template-columns: 1fr; }

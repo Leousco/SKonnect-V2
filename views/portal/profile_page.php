@@ -100,7 +100,7 @@ $notifCount     = $notifStats['unread'];
 
         <?php include __DIR__ . '/../../components/portal/topbar.php'; ?>
 
-        <!-- PROFILE HERO CARD -->
+        
         <section class="profile-hero-card">
             <div class="profile-hero-bg"></div>
             <div class="profile-hero-body">
@@ -155,7 +155,7 @@ $notifCount     = $notifStats['unread'];
             </div>
         </section>
 
-        <!-- STAT WIDGETS -->
+        
         <section class="dashboard-widgets" style="margin-top: 24px;">
             <div class="widget-card">
                 <h3>Service Requests</h3>
@@ -179,13 +179,13 @@ $notifCount     = $notifStats['unread'];
             </div>
         </section>
 
-        <!-- TWO-COLUMN LOWER -->
+        
         <div class="profile-lower">
 
-            <!-- LEFT COL -->
+            
             <div class="profile-left-col">
 
-                <!-- PERSONAL INFORMATION -->
+                
                 <section class="profile-card" id="card-personal">
                     <div class="profile-card-header">
                         <h2 class="section-label">Personal Information</h2>
@@ -291,7 +291,7 @@ $notifCount     = $notifStats['unread'];
                     </form>
                 </section>
 
-                <!-- CONTACT & ADDRESS -->
+                
                 <section class="profile-card" id="card-contact">
                     <div class="profile-card-header">
                         <h2 class="section-label">Contact & Address</h2>
@@ -369,7 +369,7 @@ $notifCount     = $notifStats['unread'];
                     </form>
                 </section>
 
-                <!-- SK MEMBERSHIP -->
+                
                 <section class="profile-card" id="card-membership">
                     <div class="profile-card-header">
                         <h2 class="section-label">SK Membership</h2>
@@ -477,12 +477,12 @@ $notifCount     = $notifStats['unread'];
                     </form>
                 </section>
 
-            </div><!-- /left col -->
+            </div>
 
-            <!-- RIGHT COL -->
+            
             <div class="profile-right-col">
 
-                <!-- ACTIVITY SUMMARY -->
+                
                 <section class="profile-card">
                     <div class="profile-card-header">
                         <h2 class="section-label">Activity Summary</h2>
@@ -538,7 +538,7 @@ $notifCount     = $notifStats['unread'];
                     </ul>
                 </section>
 
-                <!-- POSTED THREADS -->
+                
                 <section class="profile-card" id="card-threads">
                     <div class="profile-card-header">
                         <h2 class="section-label">Posted Threads</h2>
@@ -550,13 +550,13 @@ $notifCount     = $notifStats['unread'];
                     </div>
                 </section>
 
-            </div><!-- /right col -->
+            </div>
         </div>
 
     </main>
 </div>
 
-<!-- PROFILE SETUP MODAL -->
+
 <div class="modal-overlay setup-modal-overlay" id="setup-overlay"
      style="display:none;" aria-modal="true" role="dialog">
     <div class="modal-box" style="max-width:520px;">
@@ -615,37 +615,37 @@ $notifCount     = $notifStats['unread'];
     </div>
 </div>
 
-<!-- TOAST -->
+
 <div class="profile-toast" id="profile-toast" style="display:none;">
     <span class="toast-icon" id="toast-icon">✅</span>
     <span class="toast-text" id="toast-text">Changes saved.</span>
 </div>
 
-<!-- DEACTIVATE CONFIRM MODAL -->
-<!-- <div class="modal-overlay" id="confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
-    <div class="modal-box" style="max-width:440px;">
-        <div class="modal-header">
-            <div class="modal-header-left">
-                <div class="modal-icon" style="background:#fee2e2; font-size:20px;">⚠️</div>
-                <div>
-                    <h3 style="color:#991b1b;">Deactivate Account</h3>
-                    <p class="modal-subtitle">This action requires confirmation.</p>
-                </div>
-            </div>
-            <button class="modal-close" id="confirm-close">&times;</button>
-        </div>
-        <div class="modal-body" style="padding:24px;">
-            <p style="font-size:14px; color:var(--text-body); line-height:1.7;">
-                Are you sure you want to <strong>deactivate your account</strong>? Your profile and
-                requests will be hidden until you reactivate by visiting the SK office in person.
-            </p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-secondary-portal" id="confirm-cancel">Cancel</button>
-            <button class="btn-danger" id="confirm-deactivate">Yes, Deactivate</button>
-        </div>
-    </div>
-</div> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script>
     window.profileData       = <?= $profileJson ?>;

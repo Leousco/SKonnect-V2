@@ -20,7 +20,7 @@
     letter-spacing: -0.3px;
   }
   
-  /* ── LEFT ───────────────────────────────────────────────── */
+  
   
   .off-topbar-left {
     display: flex;
@@ -86,7 +86,7 @@
     border-radius: 2px;
   }
   
-  /* ── RIGHT ──────────────────────────────────────────────── */
+  
   
   .off-topbar-right {
     display: flex;
@@ -102,7 +102,7 @@
     flex-shrink: 0;
   }
   
-  /* ── DATE/TIME ──────────────────────────────────────────── */
+  
   
   .off-topbar-datetime {
     display: flex;
@@ -127,7 +127,7 @@
     letter-spacing: 0.5px;
   }
   
-  /* ── NOTIFICATIONS ──────────────────────────────────────── */
+  
   
   .off-topbar-notif {
     position: relative;
@@ -187,7 +187,7 @@
     }
   }
   
-  /* ── NOTIF DROPDOWN ─────────────────────────────────────── */
+  
   
   .off-notif-dropdown {
     position: absolute;
@@ -290,7 +290,7 @@
     color: var(--off-text-muted);
   }
   
-  /* ── USER PILL ──────────────────────────────────────────── */
+  
   
   .off-topbar-user {
     position: relative;
@@ -373,7 +373,7 @@
     transform: rotate(180deg);
   }
   
-  /* ── USER DROPDOWN ──────────────────────────────────────── */
+  
   
   .off-user-dropdown {
     position: absolute;
@@ -484,7 +484,7 @@
     margin: 4px 0;
   }
   
-  /* ── RESPONSIVE ─────────────────────────────────────────── */
+  
   
   @media (max-width: 900px) {
     .off-topbar-datetime {
@@ -510,7 +510,7 @@
       padding: 5px;
     }
   }
-/* ── LOGOUT MODAL ───────────────────────────────────────────── */
+
 
 .off-logout-overlay {
     position: fixed;

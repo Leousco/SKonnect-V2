@@ -1,12 +1,4 @@
 <?php
-/**
- * AnalyticsController.php
- *
- * Aggregates data from every module for the Admin Analytics dashboard.
- * Instantiate with a PDO connection; call getAll($year) for the full payload.
- *
- * Place at: /backend/controllers/AnalyticsController.php
- */
 
 class AnalyticsController
 {
@@ -17,12 +9,10 @@ class AnalyticsController
         $this->conn = $conn;
     }
 
-    /* ── ENTRY POINT ──────────────────────────────────────── */
-
     public function getAll(int $year): array
     {
         return [
-            /* Users */
+            
             'totalUsers'          => $this->totalUsers(),
             'newThisMonth'        => $this->newUsersThisMonth(),
             'activeUsers'         => $this->activeUsers(),
@@ -32,7 +22,7 @@ class AnalyticsController
             'growthLabels'        => $this->growthLabels(),
             'growthData'          => $this->growthData(),
 
-            /* Service Requests */
+            
             'totalRequests'       => $this->totalRequests(),
             'requestsThisMonth'   => $this->requestsThisMonth(),
             'topService'          => $this->topService(),
@@ -42,27 +32,23 @@ class AnalyticsController
             'requestStatusCounts' => $this->requestStatusCounts(),
             'requestsByService'   => $this->requestsByService(),
 
-            /* Announcements */
+            
             'announcementStats'   => $this->announcementStats(),
 
-            /* Events */
+            
             'eventStats'          => $this->eventStats(),
 
-            /* Threads */
+            
             'threadStats'         => $this->threadStats(),
 
-            /* Reports */
+            
             'reportStats'         => $this->reportStats(),
 
-            /* Meta */
+            
             'availableYears'      => $this->availableYears(),
             'selectedYear'        => $year,
         ];
     }
-
-    /* ════════════════════════════════════════════════════════
-       USERS
-    ════════════════════════════════════════════════════════ */
 
     private function totalUsers(): int
     {
@@ -84,9 +70,6 @@ class AnalyticsController
         )->fetchColumn();
     }
 
-    /**
-     * Active = is_active=1, not banned, not deleted.
-     */
     private function activeUsers(): int
     {
         return (int) $this->conn->query(
@@ -95,9 +78,6 @@ class AnalyticsController
         )->fetchColumn();
     }
 
-    /**
-     * Inactive = is_active=0 OR is_banned=1, but not deleted.
-     */
     private function inactiveUsers(): int
     {
         return (int) $this->conn->query(
@@ -113,9 +93,6 @@ class AnalyticsController
         return $total > 0 ? (int) round($active / $total * 100) : 0;
     }
 
-    /**
-     * Returns an associative array: ['admin'=>N, 'resident'=>N, 'moderator'=>N, 'sk_officer'=>N]
-     */
     private function usersByRole(): array
     {
         $stmt = $this->conn->query(
@@ -127,7 +104,6 @@ class AnalyticsController
         );
         $rows = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
-        // Ensure all expected roles are present even with zero count
         $defaults = ['admin' => 0, 'resident' => 0, 'moderator' => 0, 'sk_officer' => 0];
         return array_merge($defaults, array_map('intval', $rows));
     }
@@ -146,7 +122,7 @@ class AnalyticsController
 
     private function growthData(): array
     {
-        // Base count: users registered before the 12-month window
+
         $baseCount = (int) $this->conn->query(
             "SELECT COUNT(*) FROM users
              WHERE created_at < DATE_SUB(DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 11 MONTH)"
@@ -171,10 +147,6 @@ class AnalyticsController
         }
         return $data;
     }
-
-    /* ════════════════════════════════════════════════════════
-       SERVICE REQUESTS
-    ════════════════════════════════════════════════════════ */
 
     private function totalRequests(): int
     {
@@ -224,9 +196,6 @@ class AnalyticsController
         return $data;
     }
 
-    /**
-     * Breakdown by service category for the current month (donut chart).
-     */
     private function serviceBreakdownByCategory(): array
     {
         $stmt = $this->conn->query(
@@ -241,10 +210,6 @@ class AnalyticsController
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Counts per service_type (document / appointment / info) — all time.
-     * Returns associative array: ['document'=>N, 'appointment'=>N, 'info'=>N]
-     */
     private function requestsByServiceType(): array
     {
         $stmt = $this->conn->query(
@@ -258,10 +223,6 @@ class AnalyticsController
         return array_merge($defaults, array_map('intval', $rows));
     }
 
-    /**
-     * Counts per application status — all time.
-     * Returns associative array keyed by status.
-     */
     private function requestStatusCounts(): array
     {
         $stmt = $this->conn->query(
@@ -274,9 +235,6 @@ class AnalyticsController
         return array_merge($defaults, array_map('intval', $rows));
     }
 
-    /**
-     * Top 10 services by total requests — all time.
-     */
     private function requestsByService(): array
     {
         $stmt = $this->conn->query(
@@ -289,10 +247,6 @@ class AnalyticsController
         );
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    /* ════════════════════════════════════════════════════════
-       ANNOUNCEMENTS
-    ════════════════════════════════════════════════════════ */
 
     private function announcementStats(): array
     {
@@ -312,10 +266,6 @@ class AnalyticsController
         ]);
     }
 
-    /* ════════════════════════════════════════════════════════
-       EVENTS
-    ════════════════════════════════════════════════════════ */
-
     private function eventStats(): array
     {
         $row = $this->conn->query(
@@ -331,10 +281,6 @@ class AnalyticsController
             'total' => 0, 'upcoming' => 0, 'past' => 0, 'this_month' => 0,
         ]);
     }
-
-    /* ════════════════════════════════════════════════════════
-       THREADS
-    ════════════════════════════════════════════════════════ */
 
     private function threadStats(): array
     {
@@ -356,10 +302,6 @@ class AnalyticsController
             'responded' => 0, 'resolved' => 0,
         ]);
     }
-
-    /* ════════════════════════════════════════════════════════
-       REPORTS (thread + comment)
-    ════════════════════════════════════════════════════════ */
 
     private function reportStats(): array
     {
@@ -386,10 +328,6 @@ class AnalyticsController
             'comments' => array_map('intval', $comments ?: ['total' => 0, 'pending' => 0, 'reviewed' => 0, 'dismissed' => 0]),
         ];
     }
-
-    /* ════════════════════════════════════════════════════════
-       YEAR FILTER
-    ════════════════════════════════════════════════════════ */
 
     private function availableYears(): array
     {

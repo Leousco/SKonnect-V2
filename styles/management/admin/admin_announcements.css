@@ -4,14 +4,14 @@
    No inheritance from other admin CSS files.
    ============================================================ */
 
-/* ── DESIGN TOKENS ──────────────────────────────────────── */
+
 :root {
-  --ap: #5b21b6; /* admin primary violet */
+  --ap: #5b21b6; 
   --ap-mid: #6d28d9;
   --ap-lt: #7c3aed;
-  --ap-dark: #1e1b4b; /* dark indigo */
+  --ap-dark: #1e1b4b; 
   --ap-dark-mid: #312e81;
-  --ap-accent: #f59e0b; /* amber */
+  --ap-accent: #f59e0b; 
   --ap-accent-lt: #fbbf24;
   --ap-danger: #dc2626;
   --ap-green: #059669;
@@ -32,7 +32,7 @@
   --ap-shadow-md: 0 4px 24px rgba(91, 33, 182, 0.14);
 }
 
-/* ── RESET (scoped) ──────────────────────────────────────── */
+
 html {
   scrollbar-gutter: stable;
 }
@@ -45,7 +45,7 @@ html {
   padding: 0;
 }
 
-/* ── PAGE TABS ───────────────────────────────────────────── */
+
 
 .ann-page-tabs {
   display: flex;
@@ -88,13 +88,13 @@ html {
   border-bottom-color: var(--ap);
 }
 
-/* ── PANELS ──────────────────────────────────────────────── */
+
 
 .ann-panel--hidden {
   display: none;
 }
 
-/* ── LIST TAB: CONTROLS ──────────────────────────────────── */
+
 
 .ann-controls {
   display: flex;
@@ -198,7 +198,7 @@ html {
   box-shadow: 0 4px 14px rgba(91, 33, 182, 0.3);
 }
 
-/* ── STATS STRIP ─────────────────────────────────────────── */
+
 
 .ann-stats-strip {
   display: flex;
@@ -253,7 +253,7 @@ html {
   color: var(--ap-danger);
 }
 
-/* ── TABLE ───────────────────────────────────────────────── */
+
 
 .ann-table-wrap {
   background: var(--ap-surface);
@@ -305,7 +305,7 @@ html {
   background: #f5f0ff;
 }
 
-/* Thumbnail */
+
 .ann-thumb {
   width: 36px;
   height: 36px;
@@ -321,7 +321,7 @@ html {
   height: 18px;
 }
 
-/* Title cell */
+
 .ann-title-cell {
   display: flex;
   align-items: center;
@@ -343,7 +343,7 @@ html {
   max-width: 400px;
 }
 
-/* Category pill */
+
 .ann-cat-pill {
   display: inline-flex;
   padding: 3px 10px;
@@ -376,7 +376,7 @@ html {
   color: #b91c1c;
 }
 
-/* Status pill */
+
 .ann-status-pill {
   display: inline-flex;
   padding: 4px 10px;
@@ -402,7 +402,7 @@ html {
   color: #94a3b8;
 }
 
-/* Urgent badge */
+
 .ann-badge {
   display: inline-flex;
   padding: 2px 8px;
@@ -419,7 +419,7 @@ html {
   border: 1px solid #fca5a5;
 }
 
-/* Featured star */
+
 .ann-featured-dot {
   font-size: 16px;
   cursor: default;
@@ -437,7 +437,7 @@ html {
   white-space: nowrap;
 }
 
-/* Row actions */
+
 .ann-row-actions {
   display: flex;
   align-items: center;
@@ -479,7 +479,7 @@ html {
   color: var(--ap-danger);
 }
 
-/* ── PAGINATION ──────────────────────────────────────────── */
+
 
 .ann-pagination {
   display: flex;
@@ -540,9 +540,9 @@ html {
   color: white;
 }
 
-/* ══════════════════════════════════════════════════════════
-   CREATE FORM — editor layout
-   ══════════════════════════════════════════════════════════ */
+
+
+
 
 .ann-editor-layout {
   display: grid;
@@ -551,7 +551,7 @@ html {
   align-items: start;
 }
 
-/* ── FORM CARD ───────────────────────────────────────────── */
+
 
 .ann-form-card {
   background: var(--ap-surface);
@@ -611,7 +611,7 @@ html {
   line-height: 1.5;
 }
 
-/* Field group */
+
 .ann-field-group {
   margin-bottom: 20px;
   position: relative;
@@ -672,7 +672,7 @@ html {
   font-family: "Poppins", sans-serif;
 }
 
-/* ── BANNER DROP ZONE ────────────────────────────────────── */
+
 
 .ann-banner-drop {
   border: 2px dashed var(--ap-border-mid);
@@ -752,7 +752,7 @@ html {
   text-decoration-style: dotted;
 }
 
-/* Banner preview */
+
 .ann-banner-preview {
   position: relative;
   width: 100%;
@@ -793,7 +793,7 @@ html {
   background: rgba(220, 38, 38, 0.85);
 }
 
-/* ── RICH TEXT TOOLBAR ───────────────────────────────────── */
+
 
 .ann-toolbar {
   display: flex;
@@ -860,7 +860,7 @@ html {
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
-/* ── TWO-COL (category + settings) ──────────────────────── */
+
 
 .ann-two-col {
   display: grid;
@@ -869,7 +869,7 @@ html {
   align-items: start;
 }
 
-/* ── CATEGORY GRID ───────────────────────────────────────── */
+
 
 .ann-category-grid {
   display: grid;
@@ -914,7 +914,7 @@ html {
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
 }
 
-/* Category card colours */
+
 .cat-event-card {
   color: #065f46;
   background: #d1fae5;
@@ -952,7 +952,7 @@ html {
   border-color: var(--ap-danger);
 }
 
-/* ── SETTINGS COLUMN ─────────────────────────────────────── */
+
 
 .ann-settings-col {
   display: flex;
@@ -960,7 +960,7 @@ html {
   gap: 0;
 }
 
-/* Featured toggle card */
+
 .ann-toggle-card {
   display: flex;
   align-items: center;
@@ -1009,7 +1009,7 @@ html {
   line-height: 1.4;
 }
 
-/* Toggle switch */
+
 .ann-switch {
   position: relative;
   display: inline-block;
@@ -1052,7 +1052,7 @@ html {
   transform: translateX(18px);
 }
 
-/* ── ATTACHMENT DROP ZONE ────────────────────────────────── */
+
 
 .ann-attach-drop {
   border: 2px dashed var(--ap-border);
@@ -1085,7 +1085,7 @@ html {
   color: var(--ap-lt);
 }
 
-/* Attachment list */
+
 .ann-attach-list {
   list-style: none;
   display: flex;
@@ -1185,7 +1185,7 @@ html {
   color: var(--ap-danger);
 }
 
-/* ── FORM ACTIONS ────────────────────────────────────────── */
+
 
 .ann-form-actions {
   display: flex;
@@ -1274,12 +1274,12 @@ html {
   box-shadow: 0 4px 14px rgba(91, 33, 182, 0.3);
 }
 
-/* ══════════════════════════════════════════════════════════
-   PREVIEW PANEL
-   ══════════════════════════════════════════════════════════ */
 
-/* .ann-preview-col {
-} */
+
+
+
+
+
 
 .ann-preview-sticky {
   position: sticky;
@@ -1320,7 +1320,7 @@ html {
   font-family: "Poppins", sans-serif;
 }
 
-/* Preview card */
+
 .ann-preview-card {
   background: var(--ap-surface);
   border: 1px solid var(--ap-border);
@@ -1487,7 +1487,7 @@ html {
   color: var(--ap);
 }
 
-/* ── COMPLETION CHECKLIST ────────────────────────────────── */
+
 
 .ann-checklist {
   background: var(--ap-surface);
@@ -1538,7 +1538,7 @@ html {
   color: var(--ap-green);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1100px) {
   .ann-editor-layout {
@@ -1587,7 +1587,7 @@ html {
   }
 }
 
-/* ── CREATE TAB (CTA STYLE) ──────────────────────────────── */
+
 
 .ann-tab--create {
   margin-left: auto;
@@ -1607,7 +1607,7 @@ html {
   border-bottom-color: transparent;
 }
 
-/* ── DRAFTS / ARCHIVE INFO BANNER ─────────────────────────── */
+
 
 .ann-archive-info-banner {
   display: flex;
@@ -1641,7 +1641,7 @@ html {
   color: #d97706;
 }
 
-/* ── ARCHIVED TABLE STATE ─────────────────────────────────── */
+
 
 .ann-table-wrap--archived {
   border-color: var(--ap-border);
@@ -1666,7 +1666,7 @@ html {
   color: var(--ap-green);
 }
 
-/* ── CANCEL BUTTON (edit mode) ────────────────────────────── */
+
 
 .btn-ann-cancel {
   display: inline-flex;

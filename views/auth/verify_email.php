@@ -47,7 +47,7 @@ if (!isset($_SESSION['verify_email'])) {
             <span class="email-highlight">your email address</span>
         </p>
 
-        <!-- OTP FORM -->
+        
         <form id="otpForm" autocomplete="off">
 
         <input type="hidden" name="otp" id="otpValue" autocomplete="off">
@@ -67,7 +67,7 @@ if (!isset($_SESSION['verify_email'])) {
             <button type="submit" class="verify-btn">Verify Code</button>
         </form>
 
-        <!-- RESEND -->
+        
         <div class="resend-block">
             <p class="resend-text">Didn't receive a code?</p>
             <button type="button" class="resend-btn" id="resendBtn" disabled>

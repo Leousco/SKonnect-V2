@@ -1,4 +1,4 @@
-<!-- PUBLIC ANNOUNCEMENT VIEW -->
+
 
 <?php
 require_once __DIR__ . '/../../backend/models/AnnouncementModel.php';
@@ -15,7 +15,7 @@ if (!$ann || $ann['status'] === 'archived') {
 
 $files = $annModel->getFiles($id);
 
-// Helpers
+
 
 $catColors = [
     'event'   => ['bg' => '#d1fae5', 'color' => '#065f46', 'border' => '#6ee7b7', 'accent' => '#059669', 'bar' => '#059669'],
@@ -62,23 +62,23 @@ function fileIcon(string $path): string {
 
     <div class="pub-av-layout">
 
-        <!-- MAIN CONTENT -->
+        
         <article class="pub-av-main">
 
-            <!-- Banner -->
+            
             <?php if ($ann['banner_img']): ?>
             <div class="pub-av-banner">
                 <img src="<?= htmlspecialchars($ann['banner_img']) ?>" alt="<?= htmlspecialchars($ann['title']) ?>">
 
-                <!-- Temporarily removed -->
-                <!-- <?php if ($ann['featured']): ?>
-                <div class="pub-av-ribbon">⭐ Featured</div>
-                <?php endif; ?> -->
+                
+                
+
+
 
             </div>
             <?php endif; ?>
 
-            <!-- Header/Headline -->
+            
             <div class="pub-av-header" style="--cat-bg: <?= $theme['bg'] ?>; --cat-border: <?= $theme['border'] ?>;">
 
                 <div class="pub-av-badges">
@@ -104,15 +104,15 @@ function fileIcon(string $path): string {
                 </div>
             </div>
 
-            <!-- Divider -->
+            
             <div class="pub-av-accent-line"></div>
 
-            <!-- Body -->
+            
             <div class="pub-av-body">
                 <?= $ann['content'] ?>
             </div>
             
-            <!-- Attachments -->
+            
             <?php if (!empty($files)): ?>
             <div class="pub-av-attachments">
                 <h3 class="pub-av-attach-title">
@@ -134,7 +134,7 @@ function fileIcon(string $path): string {
             </div>
             <?php endif; ?>
 
-            <!-- Footer nav -->
+            
             <div class="pub-av-footer-nav">
                 <a href="announcements.php" class="pub-av-back-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
@@ -144,7 +144,7 @@ function fileIcon(string $path): string {
 
         </article>
 
-        <!-- SIDEBAR -->
+        
         <aside class="pub-av-sidebar">
 
             <div class="pub-av-info-card">

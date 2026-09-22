@@ -1,4 +1,4 @@
-/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
 
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -18,7 +18,7 @@
 .pagination-section      { animation-delay: 0.35s; }
 
 
-/* FEATURED ANNOUNCEMENT */
+
 
 .featured-section {
     margin-bottom: 36px;
@@ -125,7 +125,7 @@
     padding: 24px 0;
 }
 
-/* BADGE SYSTEM */
+
 
 .ann-badge {
     display: inline-flex;
@@ -190,7 +190,7 @@
     border: 1px solid rgba(250, 204, 21, 0.4);
 }
 
-/* CONTROLS */
+
 
 .announcements-controls {
     display: flex;
@@ -243,7 +243,7 @@
     flex-wrap: wrap;
 }
 
-/* ANNOUNCEMENTS GRID */
+
 
 .announcements-section {
     margin-bottom: 32px;
@@ -255,7 +255,7 @@
     gap: 20px;
 }
 
-/* ANNOUNCEMENT CARD */
+
 
 .ann-card {
     background: var(--surface);
@@ -350,7 +350,7 @@
     justify-content: space-between;
 }
 
-/* BUTTONS */
+
 
 .btn-primary-portal {
     display: inline-flex;
@@ -416,7 +416,7 @@
     border-color: var(--gold);
 }
 
-/* NO RESULTS */
+
 
 .no-results {
     text-align: center;
@@ -426,7 +426,7 @@
     font-style: italic;
 }
 
-/* PAGINATION */
+
 
 .pagination-section {
     display: flex;
@@ -494,7 +494,7 @@
     color: white;
 }
 
-/* RESPONSIVE */
+
 
 @media (max-width: 900px) {
     .featured-card .btn-primary-portal { width: 100%; justify-content: center; text-align: center; }

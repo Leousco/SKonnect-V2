@@ -23,7 +23,7 @@ RoleMiddleware::requireAuth();
 
     <main class="dashboard-content">
 
-    <!-- HELPERS -->
+    
 
     <?php
     $pageTitle      = 'Announcements';
@@ -32,7 +32,7 @@ RoleMiddleware::requireAuth();
     $userRole       = 'Resident';
     include __DIR__ . '/../../components/portal/topbar.php';
 
-    // Load announcement data (SSR)
+    
     require_once __DIR__ . '/../../backend/models/AnnouncementModel.php';
     $annModel  = new AnnouncementModel();
     $annModel->archiveExpired();
@@ -45,7 +45,7 @@ RoleMiddleware::requireAuth();
     $bookmarkedIds = $userId ? $bmModel->getBookmarkedIds($userId) : [];
     ?>
 
-        <!-- FEATURED ANNOUNCEMENT -->
+        
         <section class="featured-section">
             <h2 class="section-label">Featured Announcement</h2>
 
@@ -76,7 +76,7 @@ RoleMiddleware::requireAuth();
             <?php endif; ?>
         </section>
 
-        <!-- CONTROLS: SEARCH, FILTER, SORT, BOOKMARKS -->
+        
         <section class="announcements-controls">
             <div class="controls-left">
                 <div class="search-wrap">
@@ -100,7 +100,7 @@ RoleMiddleware::requireAuth();
                     <option value="oldest">Oldest First</option>
                 </select>
 
-                <!-- MY BOOKMARKS BUTTON -->
+                
                 <a href="bookmark_page.php" class="btn-bookmarks-portal" title="My Bookmarks">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path fill-rule="evenodd" d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z" clip-rule="evenodd"/>
@@ -110,7 +110,7 @@ RoleMiddleware::requireAuth();
             </div>
         </section>
 
-        <!-- ANNOUNCEMENTS GRID -->
+        
         <section class="announcements-section">
             <h2 class="section-label">All Announcements</h2>
 
@@ -176,13 +176,13 @@ RoleMiddleware::requireAuth();
 
             </div>
 
-            <!-- NO RESULTS MESSAGE -->
+            
             <div class="no-results" id="no-results" style="display:none;">
                 <p>No announcements found matching your search.</p>
             </div>
         </section>
 
-        <!-- PAGINATION -->
+        
         <section class="pagination-section">
             <button class="page-btn" id="prev-btn" disabled>&#8249; Previous</button>
             <div class="page-numbers" id="page-numbers"></div>
@@ -192,7 +192,7 @@ RoleMiddleware::requireAuth();
     </main>
 </div>
 
-<!-- Pass bookmarked IDs to JS -->
+
 <script>
     window.SKONNECT = {
         bookmarkedIds:    <?= json_encode(array_map('intval', $bookmarkedIds)) ?>,

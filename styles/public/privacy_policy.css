@@ -1,4 +1,4 @@
-/* ── PRIVACY POLICY PAGE ─────────────────── */
+
 
 .privacy-card {
   max-width: 560px;
@@ -124,7 +124,7 @@
   font-weight: 600;
 }
 
-/* ── DIVIDER ─────────────────────────────── */
+
 
 .policy-divider {
   border: none;
@@ -132,7 +132,7 @@
   margin: 0 0 14px 0;
 }
 
-/* ── META BADGES ─────────────────────────── */
+
 
 .policy-meta {
   display: flex;
@@ -158,7 +158,7 @@
   padding: 2px 8px;
 }
 
-/* ── BACK BUTTON ─────────────────────────── */
+
 
 .privacy-card .back-btn {
   width: 100%;
@@ -183,7 +183,7 @@
   transform: translateY(-1px);
 }
 
-/* ── CONTACT BOX ─────────────────────────── */
+
 
 .policy-contact-box {
   background: rgba(245, 197, 24, 0.06);
@@ -209,7 +209,7 @@
   color: #ffe066;
 }
 
-/* ── RESPONSIVE ──────────────────────────── */
+
 
 @media (max-width: 600px) {
   .privacy-card {

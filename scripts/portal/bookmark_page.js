@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const BOOKMARK_URL = window.SKONNECT?.bookmarkRouteUrl ?? '../../backend/routes/bookmarks.php';
 
-    // FILTER, SORT, PAGINATION
+    
 
     function getVisibleCards() {
         const query    = searchInput?.value.toLowerCase().trim() ?? '';
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     prevBtn?.addEventListener('click', () => { currentPage--; renderPage(); });
     nextBtn?.addEventListener('click', () => { currentPage++; renderPage(); });
 
-    // REMOVE BOOKMARKS
+    
 
     function wireBookmarkButtons() {
         document.querySelectorAll('.bmp-remove-btn').forEach(btn => {
@@ -171,13 +171,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // HELPER
+    
     function debounce(fn, delay) {
         let t;
         return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
     }
 
-    // INITIALIZE
+    
     wireBookmarkButtons();
     if (allCards.length > 0) renderPage();
 });

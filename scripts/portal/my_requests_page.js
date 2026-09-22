@@ -1,9 +1,9 @@
-/* my_requests_page.js — Portal My Requests */
+
 
 document.addEventListener("DOMContentLoaded", () => {
-  /* ─────────────────────────────────────────────
-       FILTER & SORT
-    ───────────────────────────────────────────── */
+  
+
+
 
   const searchInput = document.getElementById("req-search");
   const statusSelect = document.getElementById("req-status");
@@ -59,9 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
   categorySelect.addEventListener("change", filterRows);
   sortSelect.addEventListener("change", sortRows);
 
-  /* ─────────────────────────────────────────────
-       MODAL ELEMENTS
-    ───────────────────────────────────────────── */
+  
+
+
 
   const modalOverlay = document.getElementById("modal-overlay");
   const modalClose = document.getElementById("modal-close");
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const stripUpdated = document.getElementById("strip-updated");
   const stripDocs = document.getElementById("strip-docs");
 
-  // Read view elements
+  
   const detailFullName = document.getElementById("detail-full-name");
   const detailContact = document.getElementById("detail-contact");
   const detailEmail = document.getElementById("detail-email");
@@ -83,22 +83,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const detailPurpose = document.getElementById("detail-purpose");
   const detailDocsList = document.getElementById("detail-documents-list");
 
-  // Timeline / notes
+  
   const reqTimeline = document.getElementById("req-timeline");
   const skBlock = document.getElementById("sk-response-block");
   const noRespBlock = document.getElementById("no-response-block");
   const skNotesThread = document.getElementById("sk-notes-thread");
 
-  // Action required banner
+  
   const actionRequiredBanner = document.getElementById(
     "action-required-banner"
   );
 
-  // Fulfillment file block
+  
   const fulfillmentBlock = document.getElementById("fulfillment-block");
   const fulfillmentFileWrap = document.getElementById("fulfillment-file-wrap");
 
-  // Edit view elements
+  
   const submissionReadView = document.getElementById("submission-read-view");
   const submissionEditView = document.getElementById("submission-edit-view");
   const editFullName = document.getElementById("edit-full-name");
@@ -112,25 +112,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const editFileList = document.getElementById("edit-file-list");
   const editFileDropZone = document.getElementById("edit-file-drop-zone");
 
-  // Resubmit confirm modal
+  
   const resubmitConfirmOverlay = document.getElementById(
     "resubmit-confirm-overlay"
   );
   const resubmitCancelBtn = document.getElementById("resubmit-cancel-btn");
   const resubmitConfirmBtn = document.getElementById("resubmit-confirm-btn");
 
-  // Toast
+  
   const toast = document.getElementById("req-toast");
 
-  // State
+  
   let currentRow = null;
   let isEditMode = false;
-  let newFiles = []; // DataTransfer-style list of new File objects
-  let removedDocIds = []; // IDs of existing docs the user wants removed
+  let newFiles = []; 
+  let removedDocIds = []; 
 
-  /* ─────────────────────────────────────────────
-       HELPERS
-    ───────────────────────────────────────────── */
+  
+
+
 
   const iconMap = {
     medical: "🏥",
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showLoadingToast(msg) {
-    // Inject spinner keyframe once
+    
     if (!document.getElementById("req-toast-spin-style")) {
       const s = document.createElement("style");
       s.id = "req-toast-spin-style";
@@ -209,9 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return "📄";
   }
 
-  /* ─────────────────────────────────────────────
-       TIMELINE BUILDER
-    ───────────────────────────────────────────── */
+  
+
+
 
   const timelineConfig = {
     pending: [
@@ -352,9 +352,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ─────────────────────────────────────────────
-       DOCUMENTS LIST (read view)
-    ───────────────────────────────────────────── */
+  
+
+
 
   const MAX_DOC_NAME = 40;
 
@@ -411,9 +411,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  /* ─────────────────────────────────────────────
-       SK NOTES THREAD
-    ───────────────────────────────────────────── */
+  
+
+
 
   function renderNotesThread(notes) {
     if (!notes || notes.length === 0) {
@@ -532,9 +532,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  /* ─────────────────────────────────────────────
-       NEW FILES PICKER (edit mode)
-    ───────────────────────────────────────────── */
+  
+
+
 
   function renderNewFileList() {
     editFileList.innerHTML = "";
@@ -596,9 +596,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderNewFileList();
   });
 
-  /* ─────────────────────────────────────────────
-       MODAL FOOTER BUTTONS
-    ───────────────────────────────────────────── */
+  
+
+
 
   function renderFooterButtons(status) {
     modalFooter.innerHTML = "";
@@ -663,9 +663,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ─────────────────────────────────────────────
-       EDIT MODE TOGGLE
-    ───────────────────────────────────────────── */
+  
+
+
 
   function enterEditMode() {
     isEditMode = true;
@@ -704,14 +704,14 @@ document.addEventListener("DOMContentLoaded", () => {
     renderFooterButtons("action-required");
   }
 
-  /* ─────────────────────────────────────────────
-       RESUBMIT FLOW
-    ───────────────────────────────────────────── */
+  
+
+
 
   function showResubmitConfirm() {
-    // Basic validation first
+    
     const errors = validateEditForm();
-    if (errors.length > 0) return; // errors already displayed inline
+    if (errors.length > 0) return; 
 
     resubmitConfirmOverlay.style.display = "flex";
   }
@@ -779,7 +779,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const appId = row.dataset.id;
 
-    // Collect IDs of docs to remove (unchecked boxes)
+    
     removedDocIds = [];
     document.querySelectorAll(".existing-doc-check").forEach((cb) => {
       if (!cb.checked) removedDocIds.push(parseInt(cb.value, 10));
@@ -797,7 +797,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     newFiles.forEach((file) => formData.append("documents[]", file));
 
-    // Disable the resubmit confirm button to prevent double-submit
+    
     resubmitConfirmBtn.disabled = true;
     resubmitConfirmBtn.textContent = "Submitting…";
 
@@ -811,7 +811,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (data.success) {
         showToast("✅ Application resubmitted successfully!", "success");
         closeModal();
-        // Reload the page after a short delay so the table reflects the updated status
+        
         setTimeout(() => window.location.reload(), 1200);
       } else {
         const msg = Array.isArray(data.errors)
@@ -828,9 +828,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ─────────────────────────────────────────────
-       CANCEL FLOW
-    ───────────────────────────────────────────── */
+  
+
+
 
   const cancelConfirmOverlay = document.getElementById("cancel-confirm-overlay");
   const cancelConfirmBackBtn = document.getElementById("cancel-confirm-back-btn");
@@ -886,9 +886,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ─────────────────────────────────────────────
-       FILE PREVIEW MODAL
-    ───────────────────────────────────────────── */
+  
+
+
 
   const filePreviewOverlay = document.getElementById("req-file-preview-overlay");
   const filePreviewClose = document.getElementById("req-file-preview-close");
@@ -928,9 +928,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === filePreviewOverlay) closeFilePreview();
   });
 
-  /* ─────────────────────────────────────────────
-       OPEN / CLOSE MODAL
-    ───────────────────────────────────────────── */
+  
+
+
 
   function openModal(row) {
     currentRow = row;
@@ -961,11 +961,11 @@ document.addEventListener("DOMContentLoaded", () => {
       documents = JSON.parse(row.dataset.documents || "[]");
     } catch (e) {}
 
-    // Header
+    
     modalTitle.textContent = service;
     modalIcon.textContent = iconMap[category] || "📋";
 
-    // Status strip
+    
     stripStatus.innerHTML = `<span class="req-status-badge status-${status}">${formatStatus(
       status
     )}</span>`;
@@ -973,11 +973,11 @@ document.addEventListener("DOMContentLoaded", () => {
     stripUpdated.textContent = updated;
     stripDocs.textContent = docs;
 
-    // Action required banner
+    
     actionRequiredBanner.style.display =
       status === "action-required" ? "flex" : "none";
 
-    // My Submission (read view)
+    
     submissionReadView.style.display = "block";
     submissionEditView.style.display = "none";
 
@@ -989,13 +989,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderDocumentsList(documents);
 
-    // Fulfillment file
+    
     renderFulfillmentFile(fulfillmentFile);
 
-    // Timeline
+    
     buildTimeline(status, submitted, updated);
 
-    // SK Notes Thread
+    
     if (notes && notes.length > 0) {
       skBlock.style.display = "block";
       noRespBlock.style.display = "none";
@@ -1005,7 +1005,7 @@ document.addEventListener("DOMContentLoaded", () => {
       noRespBlock.style.display = "block";
     }
 
-    // Footer buttons
+    
     renderFooterButtons(status);
 
     modalOverlay.style.display = "flex";
@@ -1020,13 +1020,13 @@ document.addEventListener("DOMContentLoaded", () => {
     removedDocIds = [];
     currentRow = null;
 
-    // Reset edit form
+    
     submissionEditView.style.display = "none";
     submissionReadView.style.display = "block";
     editFileList.innerHTML = "";
   }
 
-  // Attach open to all view buttons
+  
   document.querySelectorAll(".btn-view-req").forEach((btn) => {
     btn.addEventListener("click", () => {
       const row = btn.closest(".req-row");
@@ -1053,9 +1053,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ─────────────────────────────────────────────
-       PAGINATION
-    ───────────────────────────────────────────── */
+  
+
+
 
   const ROWS_PER_PAGE = 10;
   const pageNumbers = document.getElementById("page-numbers");

@@ -1,4 +1,4 @@
-/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
 
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -15,28 +15,28 @@
 .announcements-section  { animation-delay: 0.15s; }
 .pagination-section     { animation-delay: 0.25s; }
 
-/* FEED CARD */
+
 
 .feed-card {
   border-top: 3px solid var(--border);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* .feed-card[data-status="pending"] {
-  border-top-color: var(--gold);
-}
-.feed-card[data-status="responded"] {
-  border-top-color: var(--blue);
-}
-.feed-card[data-status="resolved"] {
-  border-top-color: var(--green);
-} */
+
+
+
+
+
+
+
+
+
 
 .feed-card:hover {
   transform: translateY(-4px);
 }
 
-/* FEED CARD BADGES ROW */
+
 
 .feed-card-badges {
   display: flex;
@@ -59,13 +59,13 @@
   border: 1px solid #c4b5fd;
 }
 
-/* Pinned cards get a subtle top border accent */
+
 .feed-card[data-pinned="1"],
 .feed-card.feed-card--pinned {
   border-top: 3px solid #818cf8;
 }
 
-/* STATUS BADGES */
+
 
 .feed-badge {
   display: inline-flex;
@@ -95,7 +95,7 @@
   border: 1px solid #86efac;
 }
 
-/* CATEGORY BADGE OVERRIDES */
+
 
 .ann-badge.category-inquiry {
   background: #ccfbf1;
@@ -123,7 +123,7 @@
   border: 1px solid #cbd5e1;
 }
 
-/* --- MODERN FEED CARD FOOTER --- */
+
 
 .feed-card-footer {
   display: flex;
@@ -139,7 +139,7 @@
   gap: 8px;
 }
 
-/* Base style for Support & Comment buttons */
+
 .action-btn {
   display: inline-flex;
   align-items: center;
@@ -170,7 +170,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* SUPPORT BUTTON */
+
 
 .support-btn {
   font-family: "Poppins", sans-serif;
@@ -224,7 +224,7 @@
   filter: invert(27%) sepia(60%) saturate(500%) hue-rotate(100deg) brightness(80%);
 }
 
-/* BOOKMARK BUTTON — feed card (icon-only, matches announcements_page style) */
+
 
 .bookmark-btn {
   background: none;
@@ -286,7 +286,7 @@
   transition: fill 0.15s;
 }
 
-/* CARD ACTIONS LAYOUT — support left, comment+bookmark right */
+
 
 .ann-card-actions {
   display: flex;
@@ -301,7 +301,7 @@
   gap: 8px;
 }
 
-/* CONTROLS */
+
 
 .controls-left {
   display: flex;
@@ -326,7 +326,7 @@
   gap: 6px;
 }
 
-/* OUTLINE BUTTON (Bookmarks / Back to Feed) */
+
 
 .btn-outline-portal {
   display: inline-flex;
@@ -353,7 +353,7 @@
   transform: translateY(-1px);
 }
 
-/* MODAL */
+
 
 .modal-overlay {
   position: fixed;
@@ -391,7 +391,7 @@
   }
 }
 
-/* MODAL HEADER */
+
 
 .modal-header {
   display: flex;
@@ -467,7 +467,7 @@
   color: #b91c1c;
 }
 
-/* MODAL BODY */
+
 
 .modal-body {
   padding: 24px;
@@ -475,7 +475,7 @@
   flex: 1;
 }
 
-/* FORM GROUPS */
+
 
 .form-group {
   display: flex;
@@ -519,7 +519,7 @@
   min-height: 16px;
 }
 
-/* CONCERN TEXTAREA */
+
 
 .concern-textarea {
   width: 100%;
@@ -542,7 +542,7 @@
   box-shadow: 0 0 0 3px rgba(30, 95, 168, 0.1);
 }
 
-/* FILE DROP ZONE */
+
 
 .file-drop-zone {
   border: 2px dashed var(--border);
@@ -608,7 +608,7 @@
   color: var(--text-muted);
 }
 
-/* IMAGE PREVIEW GRID */
+
 
 .image-preview-grid {
   display: grid;
@@ -656,7 +656,7 @@
   background: #e11d48;
 }
 
-/* MODAL FOOTER */
+
 
 .modal-footer {
   display: flex;
@@ -668,7 +668,7 @@
   flex-shrink: 0;
 }
 
-/* TOAST */
+
 
 .feed-toast {
   position: fixed;
@@ -700,7 +700,7 @@
   background: #991b1b;
 }
 
-/* RESPONSIVE */
+
 
 @media (max-width: 768px) {
   .controls-left {
@@ -797,7 +797,7 @@
   max-width: 380px;
 }
 
-/* Details table */
+
 .ban-modal-details {
   width: 100%;
   background: var(--bg);
@@ -880,7 +880,7 @@
   transform: scale(0.98);
 }
 
-/* Inline ban notice replacing the comment box on thread_view */
+
 .ban-comment-notice {
   display: flex;
   align-items: center;

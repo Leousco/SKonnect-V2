@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/PostCommentController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
 
@@ -47,7 +46,7 @@ if (!$model->threadExists($thread_id)) {
 $is_mod  = in_array($user_role, ['moderator', 'admin'], true) ? 1 : 0;
 $comment = $model->createComment($thread_id, (int)$user_id, $message, $is_mod);
 
-// In-system notification
+
 if ($comment) {
     require_once __DIR__ . '/../services/NotificationService.php';
     $threadAuthor = $threadModel->getThreadAuthor($thread_id);

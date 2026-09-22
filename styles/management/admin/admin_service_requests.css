@@ -1,4 +1,4 @@
-/* ── STAT WIDGETS ────────────────────────────────────────── */
+
 
 .off-widgets {
   display: grid;
@@ -92,7 +92,7 @@
 .widget-trend.await   { background: #e0f2fe; color: #0369a1; }
 .widget-trend.danger  { background: #fee2e2; color: #b91c1c; }
 
-/* ── CONTROLS + TABS ─────────────────────────────────────── */
+
 
 .req-controls-wrap {
   display: flex;
@@ -151,7 +151,7 @@
   color: var(--ap-text-muted);
 }
 
-/* ── FILTERS ─────────────────────────────────────────────── */
+
 
 .req-filters {
   display: flex;
@@ -220,7 +220,7 @@
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 
-/* ── TABLE PANEL ─────────────────────────────────────────── */
+
 
 .req-table-panel {
   background: var(--ap-surface);
@@ -249,7 +249,7 @@
 
 .req-count { font-size: 12px; font-weight: 600; color: var(--ap-text-muted); }
 
-/* ── TABLE ───────────────────────────────────────────────── */
+
 
 .req-table-wrap { overflow-x: auto; margin: 0 -4px; }
 
@@ -293,7 +293,7 @@
 .col-status   { width: 130px; }
 .col-actions  { width: 80px; text-align: center; }
 
-/* ── CELL COMPONENTS ─────────────────────────────────────── */
+
 
 .req-resident-cell { display: flex; align-items: center; gap: 10px; white-space: nowrap; min-width: 0; }
 
@@ -322,7 +322,7 @@
   white-space: nowrap;
 }
 
-/* Service badges — admin category palette */
+
 .req-service-badge {
   display: inline-block;
   max-width: 160px;
@@ -380,7 +380,7 @@
 .req-files-badge svg { width: 13px; height: 13px; flex-shrink: 0; }
 .req-no-files { font-size: 12px; color: var(--ap-text-muted); }
 
-/* Status pills */
+
 .req-status-pill {
   display: inline-flex;
   align-items: center;
@@ -419,7 +419,7 @@
 .req-btn-view svg { width: 12px; height: 12px; flex-shrink: 0; }
 .req-btn-view:hover { background: #ede9fe; color: var(--ap); border-color: var(--ap-border-mid); }
 
-/* ── NO RESULTS ──────────────────────────────────────────── */
+
 
 .req-no-results {
   display: flex;
@@ -432,7 +432,7 @@
 }
 .req-no-results svg { width: 36px; height: 36px; opacity: 0.35; }
 
-/* ── MODAL OVERLAY / DRAWER ──────────────────────────────── */
+
 
 .req-modal-overlay {
   position: fixed;
@@ -524,7 +524,7 @@
 }
 .req-drawer-close:hover { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
 
-/* ── DRAWER BODY ─────────────────────────────────────────── */
+
 
 .req-drawer-body { display: flex; flex-direction: column; gap: 0; }
 
@@ -572,7 +572,7 @@
 .drawer-resident-name { font-size: 14px; font-weight: 700; color: var(--ap-text-head); margin-bottom: 2px; }
 .drawer-resident-sub { font-size: 11.5px; color: var(--ap-text-muted); }
 
-/* Files in drawer */
+
 .drawer-files-list { display: flex; flex-direction: column; gap: 7px; }
 
 .drawer-file-item {
@@ -627,7 +627,7 @@
 .drawer-file-item--fulfillment .drawer-file-link { color: #065f46; font-weight: 600; }
 .drawer-fulfillment-meta { color: var(--ap-green); font-weight: 500; }
 
-/* Finalized banner in footer */
+
 .drawer-finalized-banner {
   display: flex;
   align-items: center;
@@ -645,7 +645,7 @@
 .drawer-finalized-banner--rejected  { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
 .drawer-finalized-banner--cancelled { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
 
-/* Response textarea */
+
 .drawer-textarea {
   width: 100%;
   box-sizing: border-box;
@@ -663,7 +663,7 @@
 }
 .drawer-textarea:focus { border-color: var(--ap-lt); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12); }
 
-/* Notes thread */
+
 .drawer-notes-list { display: flex; flex-direction: column; gap: 8px; }
 
 .drawer-note-entry {
@@ -682,7 +682,7 @@
 .drawer-note-date { font-size: 11px; color: var(--ap-text-muted); white-space: nowrap; }
 .drawer-note-body { font-size: 13px; color: var(--ap-text-body); line-height: 1.6; margin: 0; white-space: pre-wrap; word-wrap: break-word; }
 
-/* Drawer footer action buttons */
+
 .drawer-btn-approve,
 .drawer-btn-decline,
 .drawer-btn-respond {
@@ -714,7 +714,7 @@
 .drawer-btn-decline { background: var(--ap-danger); color: white; }
 .drawer-btn-decline:hover { background: #b91c1c; box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3); }
 
-/* ── CONFIRM MODAL ───────────────────────────────────────── */
+
 
 .req-confirm-overlay {
   position: fixed;
@@ -777,7 +777,7 @@
 }
 .req-confirm-ok:hover { background: var(--ap-mid); }
 
-/* ── TOAST ───────────────────────────────────────────────── */
+
 
 .req-toast {
   position: fixed;
@@ -825,7 +825,7 @@
 }
 @keyframes req-toast-spin { to { transform: rotate(360deg); } }
 
-/* ── FILE PREVIEW MODAL ──────────────────────────────────── */
+
 
 .req-file-preview-overlay {
   position: fixed;
@@ -958,7 +958,7 @@
 }
 .req-file-preview-error::before { content: "📄"; font-size: 36px; font-style: normal; opacity: 0.5; }
 
-/* ── APPROVE / REJECT ACTION MODALS ─────────────────────── */
+
 
 .req-action-modal-overlay {
   position: fixed;
@@ -1137,7 +1137,7 @@
 .req-action-modal-submit--decline { background: var(--ap-danger); }
 .req-action-modal-submit--decline:hover:not(:disabled) { background: #b91c1c; }
 
-/* ── PAGINATION ──────────────────────────────────────────── */
+
 
 .req-pagination {
   display: flex;
@@ -1210,7 +1210,7 @@
   user-select: none;
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1100px) {
   .req-filters { flex-wrap: wrap; }

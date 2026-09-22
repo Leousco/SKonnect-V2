@@ -30,7 +30,7 @@ RoleMiddleware::requireAdmin();
     include __DIR__ . '/../../../components/management/admin/admin_topbar.php';
     ?>
 
-        <!-- ══ PAGE TABS ══════════════════════════════════════════ -->
+        
         <div class="ann-page-tabs">
             <button class="ann-tab active" data-tab="list">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
@@ -50,7 +50,7 @@ RoleMiddleware::requireAdmin();
             </button>
         </div>
 
-        <!-- ══ TAB: PUBLISHED ═════════════════════════════════════ -->
+        
         <div class="ann-panel" id="panel-list">
 
             <div class="ann-controls">
@@ -74,7 +74,7 @@ RoleMiddleware::requireAdmin();
                 </div>
             </div>
 
-            <!-- Stats strip — populated by JS -->
+            
             <div class="ann-stats-strip">
                 <div class="ann-stat-pill stat-published"><span class="stat-num" id="stat-active">—</span><span class="stat-lbl">Published</span></div>
                 <div class="ann-stat-pill stat-featured">
@@ -84,7 +84,7 @@ RoleMiddleware::requireAdmin();
                 <div class="ann-stat-pill stat-urgent"><span class="stat-num" id="stat-urgent">—</span><span class="stat-lbl">Urgent</span></div>
             </div>
 
-            <!-- Table -->
+            
             <div class="ann-table-wrap">
                 <table class="ann-table">
                     <thead>
@@ -103,16 +103,16 @@ RoleMiddleware::requireAdmin();
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div class="ann-pagination" id="list-pagination">
                 <button class="ann-page-btn" id="list-btn-prev" disabled>&#8249; Prev</button>
                 <div class="ann-page-numbers" id="list-page-numbers"></div>
                 <button class="ann-page-btn" id="list-btn-next">Next &#8250;</button>
             </div>
 
-        </div><!-- /panel-list -->
+        </div>
 
-        <!-- ══ TAB: DRAFTS ════════════════════════════════════════ -->
+        
         <div class="ann-panel ann-panel--hidden" id="panel-drafts">
 
             <div class="ann-controls">
@@ -168,9 +168,9 @@ RoleMiddleware::requireAdmin();
                 <button class="ann-page-btn" id="drafts-btn-next">Next &#8250;</button>
             </div>
 
-        </div><!-- /panel-drafts -->
+        </div>
 
-        <!-- ══ TAB: ARCHIVED ══════════════════════════════════════ -->
+        
         <div class="ann-panel ann-panel--hidden" id="panel-archive">
 
             <div class="ann-controls">
@@ -227,13 +227,13 @@ RoleMiddleware::requireAdmin();
                 <button class="ann-page-btn" id="archive-btn-next">Next &#8250;</button>
             </div>
 
-        </div><!-- /panel-archive -->
+        </div>
 
-        <!-- ══ TAB: CREATE ANNOUNCEMENT ════════════════════════════ -->
+        
         <div class="ann-panel ann-panel--hidden" id="panel-create">
             <div class="ann-editor-layout">
 
-                <!-- ── LEFT: FORM ──────────────────────────────── -->
+                
                 <div class="ann-form-col">
                     <div class="ann-form-card">
 
@@ -373,7 +373,7 @@ RoleMiddleware::requireAdmin();
                             <ul class="ann-attach-list" id="attach-list"></ul>
                         </div>
 
-                        <!-- FORM ACTIONS -->
+                        
                         <div class="ann-form-actions">
                             <button type="button" class="btn-ann-secondary" id="btn-save-draft">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
@@ -387,10 +387,10 @@ RoleMiddleware::requireAdmin();
                             </div>
                         </div>
 
-                    </div><!-- /ann-form-card -->
-                </div><!-- /ann-form-col -->
+                    </div>
+                </div>
 
-                <!-- ── RIGHT: LIVE PREVIEW ──────────────────────── -->
+                
                 <aside class="ann-preview-col">
                     <div class="ann-preview-sticky">
                         <div class="ann-preview-header">
@@ -439,13 +439,13 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </aside>
 
-            </div><!-- /ann-editor-layout -->
-        </div><!-- /panel-create -->
+            </div>
+        </div>
 
     </main>
 </div>
 
-<!-- Confirm modal for delete -->
+
 <div id="ann-confirm-overlay" style="display:none;position:fixed;inset:0;background:rgba(30,27,74,.45);z-index:1000;align-items:center;justify-content:center;">
     <div style="background:#fff;border-radius:12px;padding:28px 32px;max-width:380px;width:100%;box-shadow:0 8px 40px rgba(91,33,182,.2);">
         <h3 style="font-size:16px;font-weight:700;color:#1e1b4b;margin-bottom:8px;" id="confirm-title">Confirm</h3>

@@ -33,7 +33,7 @@ RoleMiddleware::requireRole("sk_officer");
         "/../../../components/management/officer/officer_topbar.php";
     ?>
 
-        <!-- PAGE TABS -->
+        
         <div class="ann-page-tabs">
             <button class="ann-tab active" data-tab="list">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
@@ -53,10 +53,10 @@ RoleMiddleware::requireRole("sk_officer");
             </button>
         </div>
 
-        <!-- TAB: PUBLISHED -->
+        
         <div class="ann-panel" id="panel-list">
 
-            <!-- Controls -->
+            
             <div class="ann-controls">
                 <div class="ann-search-wrap">
                     <svg class="ann-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
@@ -78,7 +78,7 @@ RoleMiddleware::requireRole("sk_officer");
                 </div>
             </div>
 
-            <!-- Stats strip -->
+            
             <div class="ann-stats-strip">
                 <div class="ann-stat-pill stat-published">
                     <span class="stat-num" id="stat-published">0</span>
@@ -95,7 +95,7 @@ RoleMiddleware::requireRole("sk_officer");
                 </div>
             </div>
 
-            <!-- Table -->
+            
             <div class="ann-table-wrap">
                 <table class="ann-table">
                     <thead>
@@ -113,15 +113,15 @@ RoleMiddleware::requireRole("sk_officer");
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div class="ann-pagination" id="list-pagination"></div>
 
         </div>
 
-        <!-- TAB: DRAFTS -->
+        
         <div class="ann-panel ann-panel--hidden" id="panel-drafts">
 
-            <!-- Controls -->
+            
             <div class="ann-controls">
                 <div class="ann-search-wrap">
                     <svg class="ann-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
@@ -143,13 +143,13 @@ RoleMiddleware::requireRole("sk_officer");
                 </div>
             </div>
 
-            <!-- Info banner -->
+            
             <div class="ann-archive-info-banner ann-drafts-info-banner">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
                 <p>Drafts are not visible to the resident portal. Edit them and publish when ready.</p>
             </div>
 
-            <!-- Stats strip -->
+            
             <div class="ann-stats-strip">
                 <div class="ann-stat-pill stat-draft">
                     <span class="stat-num" id="stat-drafts">0</span>
@@ -157,7 +157,7 @@ RoleMiddleware::requireRole("sk_officer");
                 </div>
             </div>
 
-            <!-- Table -->
+            
             <div class="ann-table-wrap">
                 <table class="ann-table">
                     <thead>
@@ -173,17 +173,17 @@ RoleMiddleware::requireRole("sk_officer");
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div class="ann-pagination" id="drafts-pagination"></div>
 
         </div>
 
-        <!-- TAB: CREATE ANNOUNCEMENT -->
+        
         <div class="ann-panel ann-panel--hidden" id="panel-create">
 
             <div class="ann-editor-layout">
 
-                <!-- LEFT FORM -->
+                
                 <div class="ann-form-col">
 
                     <div class="ann-form-card">
@@ -238,7 +238,7 @@ RoleMiddleware::requireRole("sk_officer");
 
                             <div class="ann-field-group">
                                 <label class="ann-label" for="ann-body">Announcement Details <span class="ann-required">*</span></label>
-                                <!-- Text Toolbar -->
+                                
                                 <div class="ann-toolbar" id="ann-toolbar">
                                     <button type="button" class="toolbar-btn" data-cmd="bold" title="Bold"><strong>B</strong></button>
                                     <button type="button" class="toolbar-btn" data-cmd="italic" title="Italic"><em>I</em></button>
@@ -331,10 +331,10 @@ RoleMiddleware::requireRole("sk_officer");
                                     </div>
                                 </div>
 
-                                <!-- Settings column -->
+                                
                                 <div class="ann-settings-col">
 
-                                    <!-- Featured toggle -->
+                                    
                                     <div class="ann-field-group">
                                         <label class="ann-label">Featured Announcement</label>
                                         <div class="ann-toggle-card" id="featured-toggle-card">
@@ -352,14 +352,14 @@ RoleMiddleware::requireRole("sk_officer");
                                         </div>
                                     </div>
 
-                                    <!-- Publish date -->
+                                    
                                     <div class="ann-field-group">
                                         <label class="ann-label" for="ann-publish-date">Publish Date</label>
                                         <input type="date" id="ann-publish-date" class="ann-input">
                                         <span class="ann-field-hint">Leave blank to publish immediately.</span>
                                     </div>
 
-                                    <!-- Expiry date -->
+                                    
                                     <div class="ann-field-group">
                                         <label class="ann-label" for="ann-expiry-date">Expiry Date</label>
                                         <input type="date" id="ann-expiry-date" class="ann-input">
@@ -394,7 +394,7 @@ RoleMiddleware::requireRole("sk_officer");
                             <ul class="ann-attach-list" id="attach-list"></ul>
                         </div>
 
-                        <!-- FORM ACTIONS -->
+                        
                         <div class="ann-form-actions">
                             <button type="button" class="btn-ann-secondary">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/></svg>
@@ -411,7 +411,7 @@ RoleMiddleware::requireRole("sk_officer");
                     </div>
                 </div>
 
-                <!-- RIGHT FORM: LIVE PREVIEW -->
+                
                 <aside class="ann-preview-col">
                     <div class="ann-preview-sticky">
 
@@ -453,7 +453,7 @@ RoleMiddleware::requireRole("sk_officer");
                             </div>
                         </div>
 
-                        <!-- Checklist -->
+                        
                         <div class="ann-checklist">
                             <p class="ann-checklist-label">Completion</p>
                             <div class="ann-checklist-item" id="check-banner">
@@ -484,10 +484,10 @@ RoleMiddleware::requireRole("sk_officer");
             </div>
         </div>
 
-        <!-- TAB: ARCHIVE -->
+        
         <div class="ann-panel ann-panel--hidden" id="panel-archive">
 
-            <!-- Controls -->
+            
             <div class="ann-controls">
                 <div class="ann-search-wrap">
                     <svg class="ann-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
@@ -509,13 +509,13 @@ RoleMiddleware::requireRole("sk_officer");
                 </div>
             </div>
 
-            <!-- Archive info banner -->
+            
             <div class="ann-archive-info-banner">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
                 <p>Archived announcements are hidden from the resident portal. You can restore them to <strong>Draft</strong> or permanently delete them.</p>
             </div>
 
-            <!-- Stats strip -->
+            
             <div class="ann-stats-strip">
                 <div class="ann-stat-pill stat-archived-total">
                     <span class="stat-num" id="stat-archived">0</span>
@@ -523,7 +523,7 @@ RoleMiddleware::requireRole("sk_officer");
                 </div>
             </div>
 
-            <!-- Archive Table -->
+            
             <div class="ann-table-wrap ann-table-wrap--archived">
                 <table class="ann-table">
                     <thead>
@@ -541,7 +541,7 @@ RoleMiddleware::requireRole("sk_officer");
                 </table>
             </div>
 
-            <!-- Pagination -->
+            
             <div class="ann-pagination" id="archive-pagination"></div>
 
         </div>

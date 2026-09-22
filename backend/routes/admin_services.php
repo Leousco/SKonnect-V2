@@ -1,5 +1,5 @@
 <?php
-// backend/routes/admin_services.php
+
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
@@ -12,7 +12,7 @@ $db     = (new Database())->getConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 
-/* ── helpers ────────────────────────────────────────────── */
+
 
 function jsonSuccess($data = [], string $message = 'OK'): void {
     echo json_encode(['status' => 'success', 'message' => $message, 'data' => $data]);
@@ -29,7 +29,7 @@ function sanitize(string $value): string {
     return htmlspecialchars(strip_tags(trim($value)));
 }
 
-/* ── GET /admin_services.php?action=list ────────────────── */
+
 
 if ($method === 'GET' && $action === 'list') {
 
@@ -65,7 +65,7 @@ if ($method === 'GET' && $action === 'list') {
     jsonSuccess($services);
 }
 
-/* ── POST /admin_services.php?action=create ─────────────── */
+
 
 if ($method === 'POST' && $action === 'create') {
 
@@ -123,7 +123,7 @@ if ($method === 'POST' && $action === 'create') {
     jsonSuccess(['id' => $newId], 'Service created successfully.');
 }
 
-/* ── POST /admin_services.php?action=update ─────────────── */
+
 
 if ($method === 'POST' && $action === 'update') {
 
@@ -153,7 +153,7 @@ if ($method === 'POST' && $action === 'update') {
     if (!in_array($service_type, $allowed_types))      $service_type = 'document';
     if (!in_array($status,       $allowed_statuses))   $status       = 'active';
 
-    // Verify record exists
+    
     $check = $db->prepare('SELECT id FROM services WHERE id = :id');
     $check->execute([':id' => $id]);
     if (!$check->fetch()) jsonError('Service not found.', 404);
@@ -190,7 +190,7 @@ if ($method === 'POST' && $action === 'update') {
     jsonSuccess([], 'Service updated successfully.');
 }
 
-/* ── POST /admin_services.php?action=delete ─────────────── */
+
 
 if ($method === 'POST' && $action === 'delete') {
 
@@ -203,7 +203,7 @@ if ($method === 'POST' && $action === 'delete') {
     $check->execute([':id' => $id]);
     if (!$check->fetch()) jsonError('Service not found.', 404);
 
-    // Prevent deletion if there are pending/active applications
+    
     $apps = $db->prepare('
         SELECT COUNT(*) FROM service_applications
         WHERE service_id = :id AND status IN (\'pending\', \'action_required\')

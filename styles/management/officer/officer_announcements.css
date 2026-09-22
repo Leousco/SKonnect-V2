@@ -1,4 +1,4 @@
-/* ── PAGE TABS ───────────────────────────────────────────── */
+
 
 .ann-page-tabs {
   display: flex;
@@ -41,7 +41,7 @@
   border-bottom-color: var(--off-primary);
 }
 
-/* Create tab — distinct styling, pushed to the right */
+
 .ann-tab--create {
   margin-left: auto;
   background: var(--off-primary);
@@ -60,7 +60,7 @@
   border-bottom-color: transparent !important;
 }
 
-/* Drafts info banner */
+
 .ann-drafts-info-banner, .ann-archive-info-banner {
   background: #f0f9ff !important;
   border-color: #bae6fd !important;
@@ -71,7 +71,7 @@
   flex-shrink: 0;
 }
 
-/* ── PANELS ──────────────────────────────────────────────── */
+
 
 .ann-panel--hidden {
   display: none;
@@ -82,7 +82,7 @@
   min-height: calc(100vh - 200px);
 }
 
-/* ── LIST TAB: CONTROLS ──────────────────────────────────── */
+
 
 .ann-controls {
   display: flex;
@@ -160,7 +160,7 @@
   border-color: var(--off-primary);
 }
 
-/* ── STATS STRIP ─────────────────────────────────────────── */
+
 
 .ann-stats-strip {
   display: flex;
@@ -215,7 +215,7 @@
   color: var(--off-danger);
 }
 
-/* ── TABLE ───────────────────────────────────────────────── */
+
 
 .ann-table-wrap {
   background: var(--off-surface);
@@ -246,13 +246,13 @@
   white-space: nowrap;
 }
 
-/* Published list: Featured column (col 4) centered */
+
 #panel-list .ann-table thead th:nth-child(4),
 #panel-list .ann-table .ann-row td:nth-child(4) {
     text-align: center;
 }
 
-/* Published list: Preview column (col 6) centered */
+
 #panel-list .ann-table thead th:nth-child(6),
 #panel-list .ann-table .ann-row td:nth-child(6) {
     text-align: center;
@@ -262,7 +262,7 @@
     display: flex;
 }
 
-/* Published list: Actions column (col 7) centered */
+
 #panel-list .ann-table thead th:nth-child(7),
 #panel-list .ann-table .ann-row td:nth-child(7) {
     text-align: center;
@@ -271,7 +271,7 @@
     justify-content: center;
 }
 
-/* Drafts table: Actions column (col 5) centered */
+
 #panel-drafts .ann-table thead th:nth-child(5),
 #panel-drafts .ann-table .ann-row td:nth-child(5) {
     text-align: center;
@@ -280,7 +280,7 @@
     justify-content: center;
 }
 
-/* Archive table: Actions column (col 7) centered */
+
 #panel-archive .ann-table thead th:nth-child(7),
 #panel-archive .ann-table .ann-row td:nth-child(7) {
     text-align: center;
@@ -310,7 +310,7 @@
   background: var(--off-accent);
 }
 
-/* Thumbnail */
+
 .ann-thumb {
   width: 36px;
   height: 36px;
@@ -326,7 +326,7 @@
   height: 18px;
 }
 
-/* Title cell */
+
 .ann-title-cell {
   display: flex;
   align-items: center;
@@ -349,7 +349,7 @@
   overflow-wrap: break-word;
 }
 
-/* Category pill */
+
 .ann-cat-pill {
   display: inline-flex;
   padding: 3px 10px;
@@ -361,7 +361,7 @@
   white-space: nowrap;
 }
 
-/* CATEGORY - BADGES */
+
 
 .cat-event {
   background: #d1fae5;
@@ -389,7 +389,7 @@
   border: 1px solid #fca5a5;
 }
 
-/* Urgent badge */
+
 .ann-badge {
   display: inline-flex;
   padding: 2px 8px;
@@ -437,7 +437,7 @@
   border: 1px solid #cbd5e1;
 }
 
-/* Featured star */
+
 .ann-featured-dot {
   font-size: 16px;
   cursor: default;
@@ -455,7 +455,7 @@
   white-space: nowrap;
 }
 
-/* Row actions */
+
 .ann-row-actions {
   display: flex;
   align-items: center;
@@ -497,7 +497,7 @@
   color: var(--off-danger);
 }
 
-/* ── PAGINATION ──────────────────────────────────────────── */
+
 
 .ann-pagination {
   display: flex;
@@ -558,7 +558,7 @@
   color: white;
 }
 
-/* ── CANCEL BUTTON ───────────────────────────────────────── */
+
 
 .btn-ann-cancel {
   display: inline-flex;
@@ -579,7 +579,7 @@
 .btn-ann-cancel:hover { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
 .btn-ann-cancel:disabled { opacity: .5; cursor: not-allowed; }
 
-/* Attachment item state variants */
+
 .ann-attach-item--saved { border-left: 3px solid #059669 !important; }
 .ann-attach-item--new   { border-left: 3px solid #2563eb !important; }
 
@@ -594,9 +594,9 @@
   border: 1px solid #6ee7b7;
 }
 
-/* ══════════════════════════════════════════════════════════
-     CREATE FORM — editor layout
-     ══════════════════════════════════════════════════════════ */
+
+
+
 
 .ann-editor-layout {
   display: grid;
@@ -605,7 +605,7 @@
   align-items: start;
 }
 
-/* ── FORM CARD ───────────────────────────────────────────── */
+
 
 .ann-form-card {
   background: var(--off-surface);
@@ -665,7 +665,7 @@
   line-height: 1.5;
 }
 
-/* Field group */
+
 .ann-field-group {
   margin-bottom: 20px;
   position: relative;
@@ -726,7 +726,7 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* ── BANNER DROP ZONE ────────────────────────────────────── */
+
 
 .ann-banner-drop {
   border: 2px dashed var(--off-border-mid);
@@ -806,7 +806,7 @@
   text-decoration-style: dotted;
 }
 
-/* Banner preview */
+
 .ann-banner-preview {
   position: relative;
   width: 100%;
@@ -847,7 +847,7 @@
   background: rgba(220, 38, 38, 0.85);
 }
 
-/* ── RICH TEXT TOOLBAR ───────────────────────────────────── */
+
 
 .ann-toolbar {
   display: flex;
@@ -917,7 +917,7 @@
   box-shadow: 0 0 0 3px rgba(45, 125, 154, 0.14);
 }
 
-/* Placeholder via CSS */
+
 .ann-richtext.ann-richtext--empty::before {
   content: attr(data-placeholder);
   color: var(--off-text-muted);
@@ -925,7 +925,7 @@
   font-style: italic;
 }
 
-/* Rich text content styles inside editor */
+
 .ann-richtext strong, .ann-richtext b { font-weight: 700; }
 .ann-richtext em, .ann-richtext i { font-style: italic; }
 .ann-richtext u { text-decoration: underline; }
@@ -935,13 +935,13 @@
 .ann-richtext a { color: var(--off-primary); text-decoration: underline; }
 .ann-richtext p { margin: 0 0 8px; }
 
-/* Active toolbar button */
+
 .toolbar-btn--active {
   background: var(--off-accent);
   color: var(--off-primary);
 }
 
-/* ── TWO-COL (category + settings) ──────────────────────── */
+
 
 .ann-two-col {
   display: grid;
@@ -950,7 +950,7 @@
   align-items: start;
 }
 
-/* ── CATEGORY GRID ───────────────────────────────────────── */
+
 
 .ann-category-grid {
   display: grid;
@@ -995,7 +995,7 @@
   box-shadow: 0 0 0 3px rgba(45, 125, 154, 0.08);
 }
 
-/* Category card colours */
+
 .cat-event-card {
   color: var(--off-green-text);
   background: var(--off-green-bg);
@@ -1033,7 +1033,7 @@
   border-color: var(--off-danger);
 }
 
-/* ── SETTINGS COLUMN ─────────────────────────────────────── */
+
 
 .ann-settings-col {
   display: flex;
@@ -1041,7 +1041,7 @@
   gap: 0;
 }
 
-/* Featured toggle card */
+
 .ann-toggle-card {
   display: flex;
   align-items: center;
@@ -1090,7 +1090,7 @@
   line-height: 1.4;
 }
 
-/* Toggle switch */
+
 .ann-switch {
   position: relative;
   display: inline-block;
@@ -1133,7 +1133,7 @@
   transform: translateX(18px);
 }
 
-/* ── ATTACHMENT DROP ZONE ────────────────────────────────── */
+
 
 .ann-attach-drop {
   border: 2px dashed var(--off-border);
@@ -1166,7 +1166,7 @@
   color: var(--off-primary);
 }
 
-/* Attachment list */
+
 .ann-attach-list {
   list-style: none;
   display: flex;
@@ -1266,7 +1266,7 @@
   color: var(--off-danger);
 }
 
-/* ── FORM ACTIONS ────────────────────────────────────────── */
+
 
 .ann-form-actions {
   display: flex;
@@ -1381,7 +1381,7 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* ── CARD  (mirrors .ann-card exactly) ───────────────────── */
+
 
 .ann-preview-card {
   background: var(--off-surface);
@@ -1399,7 +1399,7 @@
   transform: translateY(-2px);
 }
 
-/* Banner — mirrors .ann-card-image */
+
 .preview-banner {
   position: relative;
   height: 160px;
@@ -1439,7 +1439,7 @@
   opacity: 0.5;
 }
 
-/* Badges row — mirrors .ann-card-badges */
+
 .preview-badges {
   display: flex;
   align-items: center;
@@ -1452,7 +1452,7 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* Card body — mirrors .ann-card-body */
+
 .preview-body {
   flex: 1;
   display: flex;
@@ -1460,7 +1460,7 @@
   padding: 18px 20px;
 }
 
-/* Title — mirrors .ann-card-title */
+
 .preview-title {
   font-size: 15px;
   font-weight: 700;
@@ -1470,7 +1470,7 @@
   line-height: 1.4;
 }
 
-/* Excerpt — mirrors .ann-card-excerpt */
+
 .preview-excerpt {
   font-size: 13px;
   color: var(--off-text-muted);
@@ -1485,7 +1485,7 @@
   overflow-wrap: break-word;
 }
 
-/* Meta row — mirrors .ann-card-meta */
+
 .preview-meta-row {
   display: flex;
   align-items: center;
@@ -1516,14 +1516,14 @@
   color: var(--off-text-muted);
 }
 
-/* Actions row — mirrors .ann-card-actions */
+
 .preview-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* Read More — mirrors .btn-secondary-portal */
+
 .preview-read-more {
   display: inline-flex;
   align-items: center;
@@ -1540,7 +1540,7 @@
   pointer-events: none;
 }
 
-/* Bookmark — mirrors .bookmark-btn */
+
 .preview-bookmark-btn {
   background: none;
   border: 1px solid var(--off-border);
@@ -1552,7 +1552,7 @@
   cursor: default;
 }
 
-/* ── COMPLETION CHECKLIST ────────────────────────────────── */
+
 
 .ann-checklist {
   background: var(--off-surface);
@@ -1603,7 +1603,7 @@
   color: var(--off-green);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1100px) {
   .ann-editor-layout {
@@ -1654,12 +1654,12 @@
 
 /* ARCHIVE SECTION */
 
-/* Muted table wrapper tint for archived rows */
+
 .ann-table-wrap--archived {
   border-color: var(--off-border);
 }
 
-/* Archived row styling — desaturated, slightly dimmed */
+
 .ann-row--archived td {
   opacity: 0.82;
 }
@@ -1669,13 +1669,13 @@
   opacity: 1;
 }
 
-/* Archived title — muted colour, no strikethrough */
+
 .ann-title-text--archived {
   color: var(--off-text-muted) !important;
   font-weight: 600;
 }
 
-/* Archive reason pills */
+
 .ann-archive-reason {
   display: inline-flex;
   align-items: center;
@@ -1700,14 +1700,14 @@
   border: 1px solid #b8cae8;
 }
 
-/* Restore button */
+
 .btn-restore:hover {
   background: var(--off-accent);
   border-color: var(--off-border-mid);
   color: var(--off-primary);
 }
 
-/* Archive info banner */
+
 .ann-archive-info-banner {
   display: flex;
   align-items: flex-start;
@@ -1735,14 +1735,14 @@
   color: var(--off-text-head);
 }
 
-/* Archived total stat pill */
+
 .stat-archived-total .stat-num {
   color: var(--off-text-muted);
 }
 
-/* ══════════════════════════════════════════════════════════
-   PREVIEW BUTTON (table row action)
-   ══════════════════════════════════════════════════════════ */
+
+
+
 
 .btn-preview:hover {
   background: #e0f0ff;
@@ -1750,9 +1750,9 @@
   color: #1d4ed8;
 }
 
-/* ══════════════════════════════════════════════════════════
-   ANNOUNCEMENT PREVIEW MODAL  (.apm-*)
-   ══════════════════════════════════════════════════════════ */
+
+
+
 
 #ann-preview-modal {
   display: none;
@@ -1786,7 +1786,7 @@
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
   overflow: hidden;
 
-  /* slide-in from right */
+  
   animation: apm-slidein 0.22s cubic-bezier(0.22,1,0.36,1);
 }
 
@@ -1795,7 +1795,7 @@
   to   { transform: translateX(0);    opacity: 1; }
 }
 
-/* ── TOP BAR ─────────────────────────────────────────────── */
+
 
 .apm-topbar {
   display: flex;
@@ -1850,7 +1850,7 @@
   color: #b91c1c;
 }
 
-/* ── SCROLLABLE BODY ─────────────────────────────────────── */
+
 
 .apm-body {
   flex: 1;
@@ -1859,7 +1859,7 @@
   scroll-behavior: smooth;
 }
 
-/* Loading / error states */
+
 .apm-loading {
   display: flex;
   flex-direction: column;
@@ -1893,7 +1893,7 @@
   font-size: 14px;
 }
 
-/* ── TWO-COLUMN LAYOUT ───────────────────────────────────── */
+
 
 .apm-layout {
   display: grid;
@@ -1909,7 +1909,7 @@
   .apm-sidebar { order: -1; }
 }
 
-/* ── MAIN ARTICLE ────────────────────────────────────────── */
+
 
 .apm-main {
   background: #fff;
@@ -1919,7 +1919,7 @@
   overflow: hidden;
 }
 
-/* ── BANNER ──────────────────────────────────────────────── */
+
 
 .apm-banner {
   position: relative;
@@ -1960,7 +1960,7 @@
   height: 12px;
 }
 
-/* ── HEADER BLOCK ────────────────────────────────────────── */
+
 
 .apm-header {
   padding: 24px 28px 20px;
@@ -2050,7 +2050,7 @@
   color: #d97706;
 }
 
-/* ── DIVIDER ─────────────────────────────────────────────── */
+
 
 .apm-divider {
   height: 3px;
@@ -2059,7 +2059,7 @@
   opacity: 0.6;
 }
 
-/* ── BODY TEXT ───────────────────────────────────────────── */
+
 
 .apm-body-text {
   padding: 24px 28px 28px;
@@ -2069,7 +2069,7 @@
   line-height: 1.8;
 }
 
-/* Rich text rendering inside preview modal */
+
 .apm-body-text strong, .apm-body-text b { font-weight: 700; }
 .apm-body-text em, .apm-body-text i { font-style: italic; }
 .apm-body-text u { text-decoration: underline; }
@@ -2081,7 +2081,7 @@
 .apm-body-text p { margin: 0 0 10px; }
 .apm-body-text p:last-child { margin-bottom: 0; }
 
-/* ── ATTACHMENTS ─────────────────────────────────────────── */
+
 
 .apm-attachments {
   margin: 0 10px 28px;
@@ -2184,7 +2184,7 @@
   color: white;
 }
 
-/* ── SIDEBAR ─────────────────────────────────────────────── */
+
 
 .apm-sidebar {
   display: flex;

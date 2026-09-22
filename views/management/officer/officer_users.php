@@ -20,7 +20,7 @@ RoleMiddleware::requireRole('sk_officer');
 
     <?php include __DIR__ . '/../../../components/management/officer/officer_sidebar.php'; ?>
 
-    <!-- MAIN CONTENT -->
+    
     <main class="off-content">
 
     <?php
@@ -32,7 +32,7 @@ RoleMiddleware::requireRole('sk_officer');
     include __DIR__ . '/../../../components/management/officer/officer_topbar.php';
     ?>
 
-        <!-- STAT WIDGETS -->
+        
         <section class="off-widgets">
 
             <div class="off-widget-card widget-cyan">
@@ -89,7 +89,7 @@ RoleMiddleware::requireRole('sk_officer');
 
         </section>
 
-        <!-- CONTROLS -->
+        
         <div class="usr-controls-wrap">
             <div class="usr-search-wrap">
                 <svg class="usr-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -123,7 +123,7 @@ RoleMiddleware::requireRole('sk_officer');
             <span class="usr-count" id="usr-count"></span>
         </div>
 
-        <!-- USER TABLE PANEL -->
+        
         <section class="usr-table-panel">
             <div class="usr-table-wrap">
                 <table class="usr-table" id="usr-table">
@@ -140,7 +140,7 @@ RoleMiddleware::requireRole('sk_officer');
                         </tr>
                     </thead>
                     <tbody id="usr-tbody">
-                        <!-- Populated by JS -->
+                        
                     </tbody>
                 </table>
             </div>
@@ -150,7 +150,7 @@ RoleMiddleware::requireRole('sk_officer');
     </main>
 </div>
 
-<!-- ===================== USER DETAIL DRAWER ===================== -->
+
 <div class="usr-drawer-overlay" id="usrDrawerOverlay">
     <aside class="usr-drawer" id="usrDrawer" role="dialog" aria-modal="true" aria-label="User details">
 

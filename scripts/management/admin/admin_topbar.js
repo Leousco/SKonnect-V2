@@ -2,7 +2,7 @@
 
     const NOTIF_URL = '../../../backend/routes/notifications_list.php';
 
-    /* ── Clock ───────────────────────────────────────────── */
+    
     function updateClock() {
         const now    = new Date();
         const dateEl = document.getElementById('admin-date');
@@ -13,7 +13,7 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    /* ── Dropdown toggles ────────────────────────────────── */
+    
     function setupDropdown(btnId, dropdownId) {
         const btn = document.getElementById(btnId);
         const dd  = document.getElementById(dropdownId);
@@ -45,7 +45,7 @@
     setupDropdown('admin-notif-btn', 'admin-notif-dropdown');
     setupDropdown('admin-user-btn',  'admin-user-dropdown');
 
-    // Logout interceptor — capture phase so it fires BEFORE closeAll
+    
     document.addEventListener('click', function (e) {
         const link = e.target.closest('a[href*="logout.php"]');
         if (link && link.id !== 'logout-confirm-btn') {
@@ -53,11 +53,11 @@
             e.stopPropagation();
             openLogoutModal();
         }
-    }, true); // <-- capture: true is the key
+    }, true); 
 
     document.addEventListener('click', closeAll);
 
-    /* ── Logout confirmation modal ───────────────────────── */
+    
     function injectLogoutModal() {
         if (document.getElementById('logout-modal')) return;
 
@@ -88,7 +88,7 @@
         `;
         document.body.appendChild(modal);
 
-        // Inject styles
+        
         if (!document.getElementById('logout-modal-styles')) {
             const style = document.createElement('style');
             style.id = 'logout-modal-styles';
@@ -194,15 +194,15 @@
             document.head.appendChild(style);
         }
 
-        // Cancel button
+        
         document.getElementById('logout-cancel-btn').addEventListener('click', closeLogoutModal);
 
-        // Close on overlay click
+        
         modal.addEventListener('click', function (e) {
             if (e.target === modal) closeLogoutModal();
         });
 
-        // Close on Escape key
+        
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') closeLogoutModal();
         });
@@ -224,7 +224,7 @@
 
 
 
-    /* ── Load notifications from DB ──────────────────────── */
+    
     function loadNotifications() {
         const list = document.getElementById('admin-notif-list');
         if (!list) return;
@@ -293,7 +293,7 @@
             });
     }
 
-    /* ── Mark all read ───────────────────────────────────── */
+    
     document.getElementById('admin-notif-mark-all')?.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -306,7 +306,7 @@
             });
     });
 
-    /* ── Helpers ─────────────────────────────────────────── */
+    
     function timeAgo(dateStr) {
         const now  = new Date();
         const past = new Date(dateStr);

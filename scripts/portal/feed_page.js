@@ -1,7 +1,7 @@
-/* feed_page.js — SKonnect Community Feed (Portal) */
+
 
 document.addEventListener("DOMContentLoaded", () => {
-  /* ---- BAN MODAL HELPERS (hoisted outside if-block so openModal can reach them) ---- */
+  
 
   const banOverlay = document.getElementById("ban-modal-overlay");
   const banDismiss = document.getElementById("ban-modal-dismiss");
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   banDismiss?.addEventListener("click", hideBanModal);
 
-  /* ---- BAN ENFORCEMENT ---- */
+  
 
   if (typeof USER_IS_BANNED !== "undefined" && USER_IS_BANNED) {
     const BAN_SHOWN_KEY = "banShown_feed";
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.__bannedUser = true;
   }
 
-  /* ---- FILTER & SORT ELEMENTS ---- */
+  
   const searchInput = document.getElementById("feed-search");
   const categorySelect = document.getElementById("feed-category");
   const statusSelect = document.getElementById("feed-status");
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const noResults = document.getElementById("no-results");
   const grid = document.getElementById("feed-grid");
 
-  /* ---- FILTER ---- */
+  
 
   function filterCards() {
     const query = searchInput.value.toLowerCase().trim();
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applyPage();
   }
 
-  /* ---- SORT ---- */
+  
 
   function sortCards() {
     const order = sortSelect.value;
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
   statusSelect.addEventListener("change", filterCards);
   sortSelect.addEventListener("change", sortCards);
 
-  /* ---- SUPPORT BUTTONS ---- */
+  
 
   document.querySelectorAll(".support-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ---- BOOKMARK BUTTONS ---- */
+  
 
   document.querySelectorAll(".bookmark-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ---- MODAL ---- */
+  
 
   const submitBtn = document.getElementById("submit-concern-btn");
   const modalOverlay = document.getElementById("modal-overlay");
@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeModal();
   });
 
-  /* ---- FORM VALIDATION (priority removed) ---- */
+  
 
   function clearErrors() {
     document
@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return valid;
   }
 
-  /* ---- SUBMIT THREAD (AJAX) ---- */
+  
 
   modalSubmit?.addEventListener("click", async () => {
     if (!validateForm()) return;
@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ---- IMAGE UPLOAD & PREVIEW ---- */
+  
 
   const dropZone = document.getElementById("file-drop-zone");
   const fileInput = document.getElementById("m-images");
@@ -465,7 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   applyPage();
 
-  /* ---- TOAST ---- */
+  
 
   function showToast(msg, type = "success") {
     const toast = document.getElementById("feed-toast");

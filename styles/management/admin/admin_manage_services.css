@@ -13,7 +13,7 @@
   --svc-slate-text: #1e3a6e;
 }
 
-/* ── STAT WIDGETS ────────────────────────────────────────── */
+
 
 .svc-widgets {
   display: grid;
@@ -147,7 +147,7 @@
   color: #b83232;
 }
 
-/* ── CONTROLS BAR ────────────────────────────────────────── */
+
 
 .svc-controls {
   display: flex;
@@ -170,7 +170,7 @@
   flex-shrink: 0;
 }
 
-/* Search */
+
 .svc-search-wrap {
   position: relative;
   flex: 1;
@@ -206,7 +206,7 @@
   box-shadow: 0 0 0 3px rgba(45, 125, 154, 0.12);
 }
 
-/* Filter selects */
+
 .svc-select {
   padding: 8px 30px 8px 11px;
   font-size: 13px;
@@ -232,7 +232,7 @@
   box-shadow: 0 0 0 3px rgba(45, 125, 154, 0.12);
 }
 
-/* Add button */
+
 .svc-add-btn {
   display: inline-flex;
   align-items: center;
@@ -261,14 +261,14 @@
   box-shadow: 0 4px 14px rgba(45, 125, 154, 0.3);
 }
 
-/* Count label */
+
 .svc-count {
   font-size: 12px;
   font-weight: 600;
   color: var(--ap-text-muted);
 }
 
-/* ── SERVICES GRID ───────────────────────────────────────── */
+
 
 .svc-grid {
   display: grid;
@@ -279,7 +279,7 @@
   grid-auto-rows: 1fr;
 }
 
-/* ── SERVICE CARD ────────────────────────────────────────── */
+
 
 .svc-card {
   background: var(--ap-surface);
@@ -299,7 +299,7 @@
   transform: translateY(-2px);
 }
 
-/* Status accent stripe */
+
 .svc-card[data-status="active"] {
   border-top-color: var(--ap-green);
 }
@@ -307,7 +307,7 @@
   border-top-color: var(--svc-coral);
 }
 
-/* Card body */
+
 .svc-card-body {
   padding: 18px 20px 14px;
   flex: 1;
@@ -316,7 +316,7 @@
   gap: 0;
 }
 
-/* ── CARD TOP ROW ────────────────────────────────────────── */
+
 
 .svc-card-top {
   display: flex;
@@ -326,7 +326,7 @@
   margin-bottom: 14px;
 }
 
-/* Left group: icon + category badge */
+
 .svc-card-top-left {
   display: flex;
   align-items: center;
@@ -335,7 +335,7 @@
   flex: 1;
 }
 
-/* Icon wrap */
+
 .svc-icon-wrap {
   width: 44px;
   height: 44px;
@@ -368,7 +368,7 @@
   color: var(--svc-coral-text);
 }
 
-/* Status badge — rectangular with colored dot */
+
 .svc-status-badge {
   margin-top: 10px;
   display: inline-flex;
@@ -394,7 +394,7 @@
   flex-shrink: 0;
 }
 
-/* Colored dot */
+
 .svc-status-dot {
   width: 7px;
   height: 7px;
@@ -424,7 +424,7 @@
   border: 1px solid #fdba74;
 }
 
-/* Title */
+
 .svc-card-title {
   font-size: 15px;
   font-weight: 700;
@@ -433,7 +433,7 @@
   line-height: 1.3;
 }
 
-/* Category tag — rectangular with rounded corners, sits beside icon */
+
 .svc-cat-tag {
   display: inline-flex;
   align-items: center;
@@ -468,7 +468,7 @@
   border: 1px solid #fdba74;
 }
 
-/* Description */
+
 .svc-card-desc {
   font-size: 13px;
   color: var(--text-body);
@@ -481,7 +481,7 @@
   overflow: hidden;
 }
 
-/* Details list */
+
 .svc-details-list {
   list-style: none;
   padding: 0;
@@ -494,7 +494,7 @@
   flex-shrink: 0; 
 }
 
-/* Default row: icon | label | value — all on one line */
+
 .svc-details-list li {
   display: grid;
   grid-template-columns: 14px 72px 1fr;
@@ -536,7 +536,7 @@
   margin-top: 0px;
 }
 
-/* Service type value in details list */
+
 .svc-detail-type-value {
   margin-left: 15px;
   font-size: 12px;
@@ -544,7 +544,7 @@
   color: var(--ap-text-body);
 }
 
-/* Requirements row: icon on top-left, then a block that spans the rest */
+
 .svc-details-list li.svc-detail-req {
   grid-template-columns: 14px 1fr;
   align-items: flex-start;  
@@ -561,7 +561,7 @@
   padding-top: 0;
 }
 
-/* ── CARD FOOTER ─────────────────────────────────────────── */
+
 
 .svc-card-footer {
   display: flex;
@@ -579,7 +579,7 @@
   gap: 6px;
 }
 
-/* Toggle button */
+
 .svc-toggle-btn {
   display: inline-flex;
   align-items: center;
@@ -623,7 +623,7 @@
   border-color: var(--ap-green);
 }
 
-/* Edit and delete buttons */
+
 .svc-edit-btn,
 .svc-delete-btn {
   display: inline-flex;
@@ -667,7 +667,7 @@
   border-color: #fca5a5;
 }
 
-/* ── NO RESULTS ──────────────────────────────────────────── */
+
 
 .svc-no-results {
   display: flex;
@@ -690,7 +690,7 @@
   opacity: 0.35;
 }
 
-/* ── ADD/EDIT MODAL ──────────────────────────────────────── */
+
 
 .svc-modal-overlay {
   position: fixed;
@@ -728,7 +728,7 @@
   }
 }
 
-/* Modal header */
+
 .svc-modal-header {
   display: flex;
   align-items: center;
@@ -801,14 +801,14 @@
   color: #b91c1c;
 }
 
-/* Modal body */
+
 .svc-modal-body {
   padding: 24px;
   overflow-y: auto;
   flex: 1;
 }
 
-/* Form layout */
+
 .svc-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -886,7 +886,7 @@
   display: block;
 }
 
-/* Modal footer */
+
 .svc-modal-footer {
   display: flex;
   align-items: center;
@@ -924,7 +924,7 @@
   box-shadow: 0 4px 14px rgba(45, 125, 154, 0.3);
 }
 
-/* ── CONFIRM MODAL ───────────────────────────────────────── */
+
 
 .svc-confirm-overlay {
   position: fixed;
@@ -993,7 +993,7 @@
   background: #b91c1c;
 }
 
-/* ── TOAST ───────────────────────────────────────────────── */
+
 
 .svc-toast {
   position: fixed;
@@ -1029,7 +1029,7 @@
   background: #b91c1c;
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1100px) {
   .svc-grid {
@@ -1070,12 +1070,12 @@
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   ADMIN SERVICES — ADDITIONS & ENHANCEMENTS
-   Append to / merge with existing admin_manage_services.css
-   ═══════════════════════════════════════════════════════════ */
 
-/* ── CARD BADGES (multi-badge row) ───────────────────────── */
+
+
+
+
+
 
 .svc-card-badges {
   display: flex;
@@ -1084,14 +1084,14 @@
   gap: 5px;
 }
 
-/* Full / at-capacity badge */
+
 .svc-badge-full {
   background: #fef3c7;
   color: #92400e;
   border: 1px solid #fde68a;
 }
 
-/* ── CATEGORY ADDITIONS ───────────────────────────────────── */
+
 
 .svc-icon-assistance {
   background: #fef3c7;
@@ -1122,7 +1122,7 @@
   border: 1px solid var(--ap-border);
 }
 
-/* ── REQUIREMENTS LIST ON CARD ────────────────────────────── */
+
 
 .svc-detail-req {
   align-items: flex-start !important;
@@ -1182,7 +1182,7 @@
   padding-left: 12px;
 }
 
-/* ── CONTACT INFO ON CARD ─────────────────────────────────── */
+
 .svc-details-list li.svc-detail-contact-row {
   grid-template-columns: 14px 1fr;
   align-items: flex-start;
@@ -1209,7 +1209,7 @@
   line-height: 1.5;
 }
 
-/* ── ATTACHMENT LINK ON CARD ──────────────────────────────── */
+
 
 .svc-attachment-link {
   font-size: 12px;
@@ -1226,7 +1226,7 @@
   opacity: 0.75;
 }
 
-/* ── CAPACITY BAR ─────────────────────────────────────────── */
+
 
 .svc-capacity-wrap {
   margin-top: 12px;
@@ -1289,7 +1289,7 @@
   background: #dc2626;
 }
 
-/* ── MODAL TABS ───────────────────────────────────────────── */
+
 
 .svc-modal-tabs {
   display: flex;
@@ -1362,7 +1362,7 @@
   max-width: 32px;
 }
 
-/* ── TAB PANELS ───────────────────────────────────────────── */
+
 
 .svc-tab-panel {
   display: none;
@@ -1378,7 +1378,7 @@
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* ── PANEL INTRO BLOCK ─────────────────────────────────────── */
+
 
 .svc-panel-intro {
   display: flex;
@@ -1402,7 +1402,7 @@
   margin-top: 1px;
 }
 
-/* ── REQUIREMENTS EDITOR ──────────────────────────────────── */
+
 
 .svc-req-editor-wrap {
   display: flex;
@@ -1502,11 +1502,11 @@
   box-shadow: 0 2px 8px rgba(45, 125, 154, 0.15);
 }
 
-/* ── ATTACHMENT BOX ───────────────────────────────────────── */
+
 
 .svc-attachment-row {
   display: flex;
-  align-items: flex-start; /* was: center */
+  align-items: flex-start; 
   gap: 8px;
   width: 100%;
 }
@@ -1622,7 +1622,7 @@
   margin: 0;
 }
 
-/* Attachment file preview row */
+
 .svc-attachment-preview {
   display: flex;
   align-items: center;
@@ -1695,7 +1695,7 @@
   border-color: #fca5a5;
 }
 
-/* ── SETTINGS CARDS ───────────────────────────────────────── */
+
 
 .svc-settings-card {
   border: 1.5px solid var(--ap-border);
@@ -1751,7 +1751,7 @@
   margin: 0;
 }
 
-/* Toggle switch */
+
 .svc-toggle-switch {
   position: relative;
   display: inline-block;
@@ -1796,7 +1796,7 @@
   transform: translateX(20px);
 }
 
-/* Settings badge (read-only) */
+
 .svc-settings-badge {
   padding: 4px 10px;
   font-size: 10.5px;
@@ -1832,7 +1832,7 @@
   color: var(--ap-text-muted);
 }
 
-/* ── MODAL FOOTER EXTRAS ──────────────────────────────────── */
+
 
 .svc-modal-footer {
   justify-content: space-between !important;
@@ -1885,7 +1885,7 @@
   box-shadow: 0 3px 10px rgba(45, 125, 154, 0.18);
 }
 
-/* ── MISC MODAL FIELD HELPERS ─────────────────────────────── */
+
 
 .svc-optional {
   font-size: 10px;
@@ -1921,7 +1921,7 @@
   color: var(--ap-dark);
 }
 
-/* ── CONFIRM MODAL ICON UPDATE ────────────────────────────── */
+
 
 .svc-confirm-icon {
   width: 52px;
@@ -1940,7 +1940,7 @@
   height: 26px;
 }
 
-/* ── CONTACT GROUP STYLING ─────────────────────────────────── */
+
 
 .svc-contact-group {
   border: 1.5px solid #bfdbfe;
@@ -1957,13 +1957,13 @@
   background: white;
 }
 
-/* ── MODAL WIDTH EXPANSION ────────────────────────────────── */
+
 
 .svc-modal-box {
   max-width: 660px !important;
 }
 
-/* ── RESPONSIVE EXTRAS ────────────────────────────────────── */
+
 
 @media (max-width: 640px) {
   .svc-modal-tabs {
@@ -1994,7 +1994,7 @@
     flex: 1;
   }
 }
-/* ── VIEW BUTTON ─────────────────────────────────────────── */
+
 
 .svc-view-btn {
   display: inline-flex;
@@ -2025,7 +2025,7 @@
   border-color: var(--ap);
 }
 
-/* ── VIEW SERVICE MODAL ──────────────────────────────────── */
+
 
 .svc-view-overlay {
   position: fixed;
@@ -2347,7 +2347,7 @@
   background: var(--ap-surface-2);
 }
 
-/* ── MULTI-ATTACHMENT LIST ───────────────────────────────── */
+
 
 .svc-attachment-list {
   display: flex;

@@ -79,9 +79,10 @@ body {
   background: var(--bg);
   color: var(--text-body);
   font-family: "Poppins", sans-serif;
+  scrollbar-gutter: stable;
 }
 
-/* Main Content Layout */
+
 
 .dashboard-layout {
   display: flex;
@@ -117,7 +118,7 @@ body {
   border-radius: 2px;
 }
 
-/* INHERITED STYLES FROM ANNOUNCEMENTS.CSS */
+
 
 .announcements-section {
   margin-bottom: 32px;
@@ -198,7 +199,7 @@ body {
   font-style: italic;
 }
 
-/* BUTTONS */
+
 
 .btn-primary-portal {
   font-family: "Poppins", sans-serif;
@@ -259,7 +260,7 @@ body {
   border-color: var(--gold);
 }
 
-/* PAGINATION */
+
 
 .pagination-section {
   display: flex;
@@ -327,7 +328,7 @@ body {
   color: white;
 }
 
-/* CONTROLS */
+
 
 .announcements-controls {
   display: flex;
@@ -371,10 +372,10 @@ body {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-/* .ann-search-input:focus {
-  border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(30, 95, 168, 0.1);
-} */
+
+
+
+
 
 .controls-right {
   display: flex;
@@ -404,7 +405,7 @@ body {
   border-color: var(--blue);
 }
 
-/* BADGE */
+
 
 .ann-badge {
   display: inline-flex;
@@ -449,7 +450,7 @@ body {
   border: 1px solid #fcd34d;
 }
 
-/* WIDGETS */
+
 
 .dashboard-widgets {
   display: grid;
@@ -511,7 +512,7 @@ body {
   color: var(--text-muted);
 }
 
-/* Cancel Button */
+
 
 .btn-ghost-portal {
   font-family: "Poppins", sans-serif;

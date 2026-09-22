@@ -1,9 +1,9 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Same guard as login.php: an already-logged-in visitor (including one who
-// got here via the browser's Back button) gets bounced straight to their
-// dashboard instead of seeing the public homepage.
+
+
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');

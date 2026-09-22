@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/DeleteContentController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
 
@@ -23,7 +22,7 @@ if (!$user_id) {
     exit;
 }
 
-$type      = trim($_POST['type']      ?? '');   // 'thread' | 'comment' | 'reply'
+$type      = trim($_POST['type']      ?? '');   
 $target_id = (int)($_POST['target_id'] ?? 0);
 
 if (!$target_id || !in_array($type, ['thread', 'comment', 'reply'])) {
@@ -33,11 +32,9 @@ if (!$target_id || !in_array($type, ['thread', 'comment', 'reply'])) {
 
 switch ($type) {
 
-    // ── THREAD ──────────────────────────────────────────────────────────────
     case 'thread': {
         $model = new ThreadModel($conn);
 
-        // Ownership check
         $stmt = $conn->prepare(
             "SELECT author_id FROM threads WHERE id = :id AND is_removed = 0 LIMIT 1"
         );
@@ -53,7 +50,6 @@ switch ($type) {
             exit;
         }
 
-        // Soft-delete: mark is_removed + removed_by_user
         $stmt = $conn->prepare(
             "UPDATE threads
              SET is_removed = 1, removed_by_user = 1
@@ -70,11 +66,9 @@ switch ($type) {
         break;
     }
 
-    // ── COMMENT ─────────────────────────────────────────────────────────────
     case 'comment': {
         $model = new CommentModel($conn);
 
-        // Ownership check
         $stmt = $conn->prepare(
             "SELECT author_id FROM thread_comments
              WHERE id = :id AND is_removed = 0 LIMIT 1"
@@ -100,11 +94,9 @@ switch ($type) {
         break;
     }
 
-    // ── REPLY ────────────────────────────────────────────────────────────────
     case 'reply': {
         $model = new CommentModel($conn);
 
-        // Ownership check
         $stmt = $conn->prepare(
             "SELECT author_id FROM comment_replies
              WHERE id = :id AND is_removed = 0 LIMIT 1"

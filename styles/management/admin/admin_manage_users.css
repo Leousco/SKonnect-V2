@@ -1,6 +1,6 @@
-/* ══════════════════════════════════════════════════════════
-   CONTROLS BAR
-══════════════════════════════════════════════════════════ */
+
+
+
 
 .svc-controls {
     display: flex;
@@ -93,9 +93,9 @@
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
 }
 
-/* ══════════════════════════════════════════════════════════
-   STATS STRIP
-══════════════════════════════════════════════════════════ */
+
+
+
 
 .svc-stats-strip {
     display: flex;
@@ -159,9 +159,9 @@
     flex-shrink: 0;
 }
 
-/* ══════════════════════════════════════════════════════════
-   USER TABLE
-══════════════════════════════════════════════════════════ */
+
+
+
 
 .user-table-wrap {
     background: var(--ap-surface);
@@ -225,7 +225,7 @@
     color: var(--ap-text-muted);
 }
 
-/* ── USER NAME CELL ─────────────────────────────────────── */
+
 
 .user-name-cell {
     display: flex;
@@ -288,7 +288,7 @@
     white-space: nowrap;
 }
 
-/* ── ROLE BADGES ────────────────────────────────────────── */
+
 
 .user-role-badge {
     display: inline-flex;
@@ -307,7 +307,7 @@
 .role-officer   { background: #fef3c7; color: #92400e;    border: 1px solid #fcd34d; }
 .role-resident  { background: #d1fae5; color: #065f46;    border: 1px solid #6ee7b7; }
 
-/* ── STATUS BADGES ──────────────────────────────────────── */
+
 
 .user-verified-badge {
     display: inline-flex;
@@ -324,7 +324,7 @@
 .verified-yes { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
 .verified-no  { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
 
-/* ── ACTIONS COLUMN ─────────────────────────────────────── */
+
 
 .user-actions {
     display: flex;
@@ -363,9 +363,9 @@
     box-shadow: 0 4px 12px rgba(91, 33, 182, 0.22);
 }
 
-/* ══════════════════════════════════════════════════════════
-   NO RESULTS
-══════════════════════════════════════════════════════════ */
+
+
+
 
 .svc-no-results {
     text-align: center;
@@ -375,9 +375,9 @@
     font-size: 14px;
 }
 
-/* ══════════════════════════════════════════════════════════
-   TOAST NOTIFICATIONS
-══════════════════════════════════════════════════════════ */
+
+
+
 
 .svc-toast {
     position: fixed;
@@ -429,7 +429,7 @@
     to { transform: rotate(360deg); }
 }
 
-/* ── CONFIRM MODALS ─────────────────────────────────────── */
+
 
 .mu-confirm-overlay {
     z-index: 1100;
@@ -517,9 +517,9 @@
     flex-wrap: wrap;
 }
 
-/* ══════════════════════════════════════════════════════════
-   MODAL OVERLAY
-══════════════════════════════════════════════════════════ */
+
+
+
 
 .svc-modal-overlay {
     position: fixed;
@@ -552,7 +552,7 @@
     to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
 
-/* ── MODAL HEADER ───────────────────────────────────────── */
+
 
 .svc-modal-header {
     display: flex;
@@ -632,7 +632,7 @@
     border-color: #fca5a5;
 }
 
-/* ── MODAL SUMMARY STRIP ────────────────────────────────── */
+
 
 .svc-modal-summary {
     display: grid;
@@ -667,7 +667,7 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* ── MODAL BODY ─────────────────────────────────────────── */
+
 
 .svc-modal-body {
     padding: 24px;
@@ -787,7 +787,7 @@ input.svc-select-input {
     font-family: "Poppins", sans-serif;
 }
 
-/* ── MODAL FOOTER ───────────────────────────────────────── */
+
 
 .svc-modal-footer {
     display: flex;
@@ -913,9 +913,9 @@ input.svc-select-input {
     box-shadow: 0 4px 14px rgba(127, 29, 29, 0.3);
 }
 
-/* ══════════════════════════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════════════════════════ */
+
+
+
 
 @media (max-width: 1100px) {
     .user-table thead th:nth-child(4),

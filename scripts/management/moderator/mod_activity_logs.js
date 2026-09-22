@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentPage = 1;
   let filteredRows = [];
 
-  /* ── HELPERS ── */
+  
 
   function getAllRows() {
     return Array.from(tbody.querySelectorAll("tr:not(#log-empty-row)"));
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return (target + " " + mod).toLowerCase();
   }
 
-  /* ── FILTER + PAGINATE ── */
+  
 
   function applyFilters() {
     const q      = searchInput.value.toLowerCase().trim();
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (currentPage < total) { currentPage++; renderPage(); }
   });
 
-  /* ── SORTING ── */
+  
 
   document.querySelectorAll(".log-table thead th.sortable").forEach((th) => {
     th.addEventListener("click", () => {
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
   sortRows("datetime", "desc");
   document.querySelector('[data-col="datetime"]')?.classList.add("sort-desc");
 
-  /* ── PDF EXPORT ── */
+  
 
   exportBtn.addEventListener("click", () => {
     const { jsPDF } = window.jspdf;
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageW     = doc.internal.pageSize.getWidth();
     const pageH     = doc.internal.pageSize.getHeight();
 
-    /* header strip */
+    
     doc.setFillColor(...TEAL);
     doc.rect(0, 0, pageW, 52, "F");
 
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
       hour: "2-digit", minute: "2-digit"
     }), 36, 46);
 
-    /* active filter summary */
+    
     const filterParts = [];
     if (selAction.value !== "all") filterParts.push("Action: " + selAction.options[selAction.selectedIndex].text);
     if (selMod.value    !== "all") filterParts.push("Moderator: " + selMod.options[selMod.selectedIndex].text);
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
       yPos += 16;
     }
 
-    /* summary stat boxes */
+    
     const statItems = [
       { label: "Visible Entries",    value: filteredRows.length },
       { label: "Thread Actions",     value: filteredRows.filter(r => r.dataset.action?.startsWith("thread_")).length },
@@ -241,7 +241,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     yPos += 58;
 
-    /* table */
+    
     const headers = ["#", "Date & Time", "Moderator", "Action", "Target Type", "Target", "Posted By", "Notes"];
 
     const rows = filteredRows.map((row, i) => {
@@ -311,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       },
       didDrawPage(data) {
-        /* page footer */
+        
         doc.setFont("helvetica", "normal");
         doc.setFontSize(7.5);
         doc.setTextColor(...MUTED);
@@ -325,6 +325,6 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.save(filename);
   });
 
-  /* ── INIT ── */
+  
   applyFilters();
 });

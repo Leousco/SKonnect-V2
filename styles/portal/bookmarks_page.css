@@ -1,9 +1,9 @@
-/* bookmarks_page.css — Specific styles for the My Bookmarks module */
 
-/* 1. CONTROLS & NAVIGATION */
-/* .bookmarks-controls {
 
-} */
+
+
+
+
 
 .btn-back-portal {
   display: inline-flex;
@@ -56,9 +56,9 @@
 
 }
 
-/* 2. CARD LAYOUT REFINEMENTS */
+
 .bm-card {
-  border-left: 4px solid var(--gold); /* default / pending */
+  border-left: 4px solid var(--gold); 
 }
 
 .bm-card[data-status="pending"] {
@@ -87,7 +87,7 @@
   font-size: 12px;
 }
 
-/* Remove Bookmark Button */
+
 .bm-remove-btn {
   color: var(--gold);
   font-size: 16px;
@@ -104,7 +104,7 @@
   color: #ef4444 !important;
 }
 
-/* 3. EMPTY STATE STYLES */
+
 .bookmarks-empty {
   grid-column: 1 / -1;
   display: flex;
@@ -139,7 +139,7 @@
   max-width: 300px;
 }
 
-/* 4. FEED TOAST (Notifications) */
+
 .feed-toast {
   position: fixed;
   bottom: 28px;
@@ -172,13 +172,13 @@
   border-left: 3px solid var(--red);
 }
 
-/* BM ICON */
+
 
 .bmp-icon {
   color: var(--gold);
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 768px) {
   .bookmarks-controls {
     flex-direction: column;

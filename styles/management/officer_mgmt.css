@@ -3,7 +3,7 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 
 :root {
-  /*  Brand: teal  */
+  
   --off-primary: #2d7d9a;
   --off-primary-mid: #3d93b2;
   --off-primary-lt: #7bbdd1;
@@ -60,11 +60,13 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
   background: var(--off-bg);
   color: var(--off-text-body);
+  scrollbar-gutter: stable;
 }
 
 ::-webkit-scrollbar {
@@ -78,7 +80,7 @@ body {
   border-radius: 4px;
 }
 
-/* ── LAYOUT ─────────────────────────────────────────────── */
+
 
 .off-layout {
   display: flex;
@@ -117,7 +119,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── PANEL HEADER ───────────────────────────────────────── */
+
 
 .panel-header {
   display: flex;
@@ -126,7 +128,7 @@ body {
   margin-bottom: 18px;
 }
 
-/* ── SMALL BUTTON ───────────────────────────────────────── */
+
 
 .btn-off-sm {
   display: inline-flex;
@@ -149,7 +151,7 @@ body {
   border-color: var(--off-primary);
 }
 
-/* ── RESPONSIVE ─────────────────────────────────────────── */
+
 
 @media (max-width: 900px) {
   .off-content {
@@ -160,7 +162,7 @@ body {
 }
 
 
-/* CONTROLS DROPDOWN */
+
 
 .svc-select {
   padding: 8px 30px 8px 11px;

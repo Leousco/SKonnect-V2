@@ -108,7 +108,7 @@
     border-color: var(--admin-primary-lt);
 }
 
-/* ── SUMMARY CHIPS ──────────────────────────────────────── */
+
 
 .log-summary-row {
     display: flex;
@@ -133,7 +133,7 @@
 .chip-total    { background: #ede9fe; color: var(--admin-primary); }
 .chip-filtered { background: #e0f2fe; color: #0369a1; }
 
-/* ── LOG TABLE ──────────────────────────────────────────── */
+
 
 .log-panel {
     background: var(--admin-surface);
@@ -244,7 +244,7 @@
 
 .log-desc strong { color: var(--admin-dark); font-weight: 600; }
 
-/* ── EMPTY STATE ────────────────────────────────────────── */
+
 
 .log-empty {
     display: flex;
@@ -258,7 +258,7 @@
 .log-empty svg { width: 36px; height: 36px; color: var(--admin-text-muted); opacity: 0.5; }
 .log-empty p   { font-size: 13px; color: var(--admin-text-muted); }
 
-/* ── PAGINATION ─────────────────────────────────────────── */
+
 
 .log-pagination {
     display: flex;
@@ -319,7 +319,7 @@
 .log-page-num:hover  { background: var(--admin-surface); border-color: var(--admin-border-mid); }
 .log-page-num.active { background: var(--admin-primary); color: white; border-color: var(--admin-primary); }
 
-/* ── RESPONSIVE ─────────────────────────────────────────── */
+
 
 @media (max-width: 800px) {
     .log-filter-bar { flex-direction: column; align-items: stretch; }

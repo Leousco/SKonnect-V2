@@ -1,5 +1,5 @@
 <?php
-// views/portal/notifications_page.php
+
 
 require_once __DIR__ . '/../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
@@ -12,7 +12,7 @@ $userId     = (int) $_SESSION['user_id'];
 $stats         = $notifModel->getStats($userId);
 $notifications = $notifModel->getByUser($userId);
 
-// ── Type config map ────────────────────────────────────────────────────────
+
 $typeMap = [
     'service'      => ['ind' => 'type-service',      'icon' => 'icon-service',      'emoji' => '✔️',  'tag' => 'tag-service',      'label' => 'Service Update'],
     'announcement' => ['ind' => 'type-announcement', 'icon' => 'icon-announcement', 'emoji' => '📣', 'tag' => 'tag-announcement', 'label' => 'Announcement'],
@@ -23,13 +23,13 @@ $typeMap = [
 
 function getTypeCfg(array $typeMap, string $type, string $title): array {
     $cfg = $typeMap[$type] ?? $typeMap['system'];
-    // Visually distinguish rejected service notifications
+    
     if ($type === 'service' && stripos($title, 'Declined') !== false) {
         $cfg['ind']   = 'type-service type-rejected';
         $cfg['icon']  = 'icon-rejected';
         $cfg['emoji'] = '❌';
     }
-    // Visually distinguish service notifications requiring action
+    
     if ($type === 'service' && stripos($title, 'Action Required') !== false) {
         $cfg['ind']   = 'type-service type-action-required';
         $cfg['icon']  = 'icon-action-required';
@@ -68,7 +68,7 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
     include __DIR__ . '/../../components/portal/topbar.php';
     ?>
 
-        <!-- STAT WIDGETS -->
+        
         <section class="dashboard-widgets">
             <div class="widget-card">
                 <h3>Total</h3>
@@ -92,7 +92,7 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
             </div>
         </section>
 
-        <!-- CONTROLS -->
+        
         <section class="announcements-controls">
             <div class="controls-left">
                 <div class="search-wrap">
@@ -120,7 +120,7 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
             </div>
         </section>
 
-        <!-- NOTIFICATIONS LIST -->
+        
         <section class="announcements-section">
             <div class="notif-list-header">
                 <h2 class="section-label">All Notifications</h2>
@@ -194,14 +194,14 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
             </div>
             <?php endif; ?>
 
-            <!-- EMPTY STATE -->
+            
             <div class="notif-empty" id="notif-empty" <?= !empty($notifications) ? 'style="display:none;"' : '' ?>>
                 <div class="notif-empty-icon">🔔</div>
                 <p class="notif-empty-title">No notifications found</p>
                 <p class="notif-empty-sub">Try adjusting your filters or check back later.</p>
             </div>
 
-            <!-- PAGINATION -->
+            
             <?php if (!empty($notifications)): ?>
             <div class="pagination-section" style="margin-top: 24px;">
                 <button class="page-btn" id="prev-btn" disabled>&#8249; Previous</button>
@@ -214,7 +214,7 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
     </main>
 </div>
 
-<!-- NOTIFICATION DETAIL MODAL -->
+
 <div class="modal-overlay" id="modal-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="modal-notif-title">
     <div class="modal-box">
 

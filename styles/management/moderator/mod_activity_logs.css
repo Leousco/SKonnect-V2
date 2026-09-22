@@ -1,4 +1,4 @@
-/* ── STAT WIDGETS ────────────────────────────────────────── */
+
 
 .mod-widgets {
     display: grid;
@@ -51,7 +51,7 @@
     height: 22px;
   }
   
-  /* Widget color variants */
+  
   .widget-red .widget-icon-wrap {
     background: #fee2e2;
     color: #b91c1c;
@@ -133,7 +133,7 @@
     color: #b91c1c;
   }
   
-  /* ── FILTERS BAR ─────────────────────────────────────────── */
+  
   
   .log-filters-bar {
     display: flex;
@@ -148,7 +148,7 @@
     padding: 16px 20px;
   }
   
-  /* Search */
+  
   .log-search-wrap {
     position: relative;
     flex: 1;
@@ -185,7 +185,7 @@
     box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
   }
   
-  /* Selects */
+  
   .log-select {
     padding: 8px 30px 8px 11px;
     font-size: 13px;
@@ -211,7 +211,7 @@
     box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
   }
   
-  /* Date range */
+  
   .log-date-range {
     display: flex;
     align-items: center;
@@ -258,7 +258,7 @@
     font-weight: 500;
   }
   
-  /* Clear button */
+  
   .log-clear-btn {
     display: inline-flex;
     align-items: center;
@@ -288,7 +288,7 @@
     border-color: #fca5a5;
   }
   
-  /* ── TABLE PANEL ─────────────────────────────────────────── */
+  
   
   .log-table-panel {
     background: var(--mod-surface);
@@ -326,7 +326,7 @@
     flex-shrink: 0;
   }
   
-  /* ── TABLE ───────────────────────────────────────────────── */
+  
   
   .log-table-wrap {
     overflow-x: auto;
@@ -340,7 +340,7 @@
     min-width: 780px;
   }
   
-  /* Head */
+  
   .log-table thead th {
     font-size: 11px;
     font-weight: 700;
@@ -376,7 +376,7 @@
     opacity: 0.6;
   }
   
-  /* Body */
+  
   .log-table tbody td {
     padding: 13px 14px;
     border-bottom: 1px solid var(--mod-border);
@@ -392,7 +392,7 @@
     background: var(--mod-surface-2);
   }
   
-  /* Column widths */
+  
   .col-id {
     width: 56px;
   }
@@ -409,9 +409,9 @@
     width: 220px;
   }
   
-  /* ── CELL COMPONENTS ─────────────────────────────────────── */
   
-  /* ID */
+  
+  
   td.col-id {
     font-size: 11px;
     font-weight: 700;
@@ -419,7 +419,7 @@
     font-family: "Segoe UI", monospace;
   }
   
-  /* DateTime */
+  
   td.col-datetime {
     white-space: nowrap;
   }
@@ -438,7 +438,7 @@
     margin-top: 2px;
   }
   
-  /* Moderator cell */
+  
   .log-mod-cell {
     display: flex;
     align-items: center;
@@ -463,7 +463,7 @@
     letter-spacing: 0.3px;
   }
   
-  /* Target cell */
+  
   td.col-target {
     vertical-align: middle;
   }
@@ -512,14 +512,14 @@
     margin-top: 2px;
   }
   
-  /* Notes */
+  
   .log-notes-text {
     font-size: 12px;
     color: var(--mod-text-body);
     line-height: 1.5;
   }
   
-  /* ── ACTION BADGES ───────────────────────────────────────── */
+  
   
   .log-action-badge {
     display: inline-flex;
@@ -538,7 +538,7 @@
     flex-shrink: 0;
   }
   
-  /* Mod action badges */
+  
   .badge-lock {
     background: #f1f5f9;
     color: #475569;
@@ -565,7 +565,7 @@
     border: 1px solid #fca5a5;
   }
   
-  /* Sanction badges */
+  
   .badge-warning {
     background: #fef3c7;
     color: #92400e;
@@ -587,7 +587,7 @@
     border: 1px solid #86efac;
   }
   
-  /* Report badges */
+  
   .badge-report-reviewed {
     background: #d1fae5;
     color: #065f46;
@@ -604,7 +604,7 @@
     border: 1px solid #ddd6fe;
   }
   
-  /* ── NO RESULTS ──────────────────────────────────────────── */
+  
   
   .log-no-results {
     display: flex;
@@ -623,7 +623,7 @@
     opacity: 0.4;
   }
   
-  /* ── PAGINATION — reuse mod_feed conventions ─────────────── */
+  
   
   .mod-pagination {
     display: flex;
@@ -686,7 +686,7 @@
     border-color: var(--mod-primary);
   }
   
-  /* ── RESPONSIVE ──────────────────────────────────────────── */
+  
   
   @media (max-width: 1100px) {
     .log-date-range {

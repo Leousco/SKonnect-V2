@@ -1,5 +1,4 @@
 <?php
-// backend/models/ThreadBookmarkModel.php
 
 class BookmarkModel
 {
@@ -10,10 +9,6 @@ class BookmarkModel
         $this->conn = $conn;
     }
 
-    /**
-     * Toggle bookmark state for a thread.
-     * Returns true if now bookmarked, false if removed.
-     */
     public function toggle(int $thread_id, int $user_id): bool
     {
         $check = $this->conn->prepare(
@@ -34,9 +29,6 @@ class BookmarkModel
         return true;
     }
 
-    /**
-     * Fetch all threads bookmarked by a user, with counts and user state.
-     */
     public function getBookmarkedThreads(int $user_id): array
     {
         $stmt = $this->conn->prepare(

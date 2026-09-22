@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/AdminThreadActionController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAdmin();
 

@@ -1,18 +1,20 @@
 <?php
-// backend/routes/admin_reports.php
-
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/SanctionModel.php';
+require_once __DIR__ . '/../models/CommentModel.php';
+require_once __DIR__ . '/../models/ThreadModel.php';
+require_once __DIR__ . '/../models/ActivityLogModel.php';
+require_once __DIR__ . '/../services/EmailService.php';
 
 RoleMiddleware::requireAdmin();
 
 header('Content-Type: application/json');
 
-$db     = (new Database())->getConnection();
-$method = $_SERVER['REQUEST_METHOD'];
-$action = $_GET['action'] ?? '';
-
-/* ── helpers ────────────────────────────────────────────── */
+$db       = (new Database())->getConnection();
+$method   = $_SERVER['REQUEST_METHOD'];
+$action   = $_GET['action'] ?? '';
+$admin_id = (int)($_SESSION['user_id'] ?? 0);
 
 function jsonSuccess($data = [], string $message = 'OK'): void {
     echo json_encode(['status' => 'success', 'message' => $message, 'data' => $data]);
@@ -25,8 +27,6 @@ function jsonError(string $message, int $code = 400): void {
     exit;
 }
 
-/* ── GET ?action=list ───────────────────────────────────── */
-
 if ($method === 'GET' && $action === 'list') {
 
     $type   = $_GET['type']   ?? 'all';
@@ -34,39 +34,31 @@ if ($method === 'GET' && $action === 'list') {
     $status = $_GET['status'] ?? 'all';
     $search = trim($_GET['search'] ?? '');
 
-    /*
-     * Unify thread_reports + comment_reports into one result set.
-     *
-     * thread_reports  → category maps to reason
-     * comment_reports → target_type is 'comment' or 'reply'
-     *                   category maps to reason
-     *
-     * Columns returned:
-     *   id, type (thread|comment|reply), target_id,
-     *   content (subject/message excerpt), excerpt,
-     *   reported_by, author, reason, date, status
-     */
-
     $parts  = [];
     $params = [];
 
-    /* ---- thread_reports ---- */
     if ($type === 'all' || $type === 'thread') {
         $tSql = "
             SELECT
                 tr.id,
                 'thread'                                        AS type,
                 tr.thread_id                                    AS target_id,
+                tr.thread_id                                    AS thread_id,
                 t.subject                                       AS content,
-                LEFT(t.message, 120)                           AS excerpt,
-                CONCAT(ru.first_name, ' ', ru.last_name)       AS reported_by,
-                CONCAT(au.first_name, ' ', au.last_name)       AS author,
+                LEFT(t.message, 120)                            AS excerpt,
+                CONCAT(ru.first_name, ' ', ru.last_name)        AS reported_by,
+                CONCAT(au.first_name, ' ', au.last_name)        AS author,
                 tr.category                                     AS reason,
-                tr.note                                        AS details,
+                tr.note                                         AS details,
                 tr.status,
                 tr.created_at                                   AS date,
                 t.author_id                                     AS author_id,
-                ru.id                                           AS reporter_id
+                ru.id                                            AS reporter_id,
+                t.is_removed                                    AS content_removed,
+                COALESCE((
+                    SELECT MAX(us.level) FROM user_sanctions us
+                    WHERE us.user_id = t.author_id AND us.is_active = TRUE
+                ), 0)                                            AS author_sanction_level
             FROM thread_reports tr
             JOIN threads t  ON t.id  = tr.thread_id
             JOIN users   ru ON ru.id = tr.reporter_id
@@ -83,8 +75,7 @@ if ($method === 'GET' && $action === 'list') {
             $params[':status_t'] = $status;
         }
         if ($search !== '') {
-            $tSql .= " AND (t.subject LIKE :search_t
-                        OR CONCAT(ru.first_name,' ',ru.last_name) LIKE :search_t2)";
+            $tSql .= " AND (t.subject ILIKE :search_t OR CONCAT(ru.first_name,' ',ru.last_name) ILIKE :search_t2)";
             $params[':search_t']  = '%' . $search . '%';
             $params[':search_t2'] = '%' . $search . '%';
         }
@@ -92,29 +83,40 @@ if ($method === 'GET' && $action === 'list') {
         $parts[] = $tSql;
     }
 
-    /* ---- comment_reports ---- */
     if ($type === 'all' || $type === 'comment' || $type === 'reply') {
         $cSql = "
             SELECT
                 cr.id,
                 cr.target_type                                  AS type,
                 cr.target_id,
-                CONCAT('Comment on thread #', COALESCE(tc.thread_id, cr.target_id)) AS content,
+                COALESCE(tc.thread_id, crep_tc.thread_id)       AS thread_id,
+                COALESCE(th1.subject, th2.subject)              AS content,
                 LEFT(COALESCE(tc.message, cr2.message, ''), 120) AS excerpt,
                 CONCAT(ru.first_name, ' ', ru.last_name)        AS reported_by,
                 CONCAT(au.first_name, ' ', au.last_name)        AS author,
                 cr.category                                     AS reason,
-                cr.note                                        AS details,
+                cr.note                                         AS details,
                 cr.status,
                 cr.created_at                                   AS date,
                 COALESCE(tc.author_id, cr2.author_id)           AS author_id,
-                ru.id                                           AS reporter_id
+                ru.id                                            AS reporter_id,
+                COALESCE(tc.is_removed, cr2.is_removed, FALSE)  AS content_removed,
+                COALESCE((
+                    SELECT MAX(us.level) FROM user_sanctions us
+                    WHERE us.user_id = COALESCE(tc.author_id, cr2.author_id) AND us.is_active = TRUE
+                ), 0)                                            AS author_sanction_level
             FROM comment_reports cr
             JOIN users ru ON ru.id = cr.reporter_id
             LEFT JOIN thread_comments tc
                 ON cr.target_type = 'comment' AND tc.id = cr.target_id
+            LEFT JOIN threads th1
+                ON th1.id = tc.thread_id
             LEFT JOIN comment_replies cr2
-                ON cr.target_type = 'reply'   AND cr2.id = cr.target_id
+                ON cr.target_type = 'reply' AND cr2.id = cr.target_id
+            LEFT JOIN thread_comments crep_tc
+                ON cr.target_type = 'reply' AND crep_tc.id = cr2.comment_id
+            LEFT JOIN threads th2
+                ON th2.id = crep_tc.thread_id
             LEFT JOIN users au
                 ON au.id = COALESCE(tc.author_id, cr2.author_id)
             WHERE 1=1
@@ -129,11 +131,11 @@ if ($method === 'GET' && $action === 'list') {
             $params[':status_c'] = $status;
         }
         if ($search !== '') {
-            $cSql .= " AND (CONCAT(ru.first_name,' ',ru.last_name) LIKE :search_c)";
-            $params[':search_c'] = '%' . $search . '%';
+            $cSql .= " AND (CONCAT(ru.first_name,' ',ru.last_name) ILIKE :search_c OR COALESCE(th1.subject, th2.subject) ILIKE :search_c2)";
+            $params[':search_c']  = '%' . $search . '%';
+            $params[':search_c2'] = '%' . $search . '%';
         }
 
-        // Filter by type when explicitly selected
         if ($type === 'comment') {
             $cSql .= " AND cr.target_type = 'comment'";
         } elseif ($type === 'reply') {
@@ -150,149 +152,240 @@ if ($method === 'GET' && $action === 'list') {
 
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
-    $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    jsonSuccess($reports);
+    jsonSuccess($stmt->fetchAll(PDO::FETCH_ASSOC));
 }
-
-/* ── POST ?action=ignore ─────────────────────────────────── */
 
 if ($method === 'POST' && $action === 'ignore') {
 
     $body = json_decode(file_get_contents('php://input'), true) ?? [];
-    $id   = (int) ($body['id']   ?? 0);
+    $id   = (int)($body['id']   ?? 0);
     $type = $body['type'] ?? '';
 
     if ($id === 0) jsonError('Invalid report ID.');
 
+    $logModel = new ActivityLogModel($db);
+
     if ($type === 'thread') {
-        $db->prepare('UPDATE thread_reports  SET status = "dismissed" WHERE id = :id')
+        $db->prepare("UPDATE thread_reports SET status = 'dismissed' WHERE id = :id")
            ->execute([':id' => $id]);
+
+        $t = $db->prepare("SELECT thread_id FROM thread_reports WHERE id = :id");
+        $t->execute([':id' => $id]);
+        $threadId = (int)$t->fetchColumn();
+
+        $logModel->log($admin_id, 'report_dismissed', [
+            'target_type' => 'thread',
+            'target_id'   => $threadId,
+            'notes'       => 'Report dismissed. No action taken.',
+        ]);
     } else {
-        $db->prepare('UPDATE comment_reports SET status = "dismissed" WHERE id = :id')
+        $db->prepare("UPDATE comment_reports SET status = 'dismissed' WHERE id = :id")
            ->execute([':id' => $id]);
+
+        $logModel->log($admin_id, 'report_dismissed', [
+            'target_type' => $type ?: 'comment',
+            'target_id'   => $id,
+            'notes'       => 'Report dismissed. No action taken.',
+        ]);
     }
 
     jsonSuccess([], 'Report dismissed.');
 }
 
-/* ── POST ?action=warn ───────────────────────────────────── */
-/*
- * Issues a level-1 sanction (warning) to the content author.
- * Marks the report as reviewed.
- */
-
-if ($method === 'POST' && $action === 'warn') {
-
-    $body      = json_decode(file_get_contents('php://input'), true) ?? [];
-    $id        = (int) ($body['id']        ?? 0);
-    $type      = $body['type']      ?? '';
-    $author_id = (int) ($body['author_id'] ?? 0);
-    $note      = trim($body['note'] ?? 'Warning issued by admin.');
-
-    if ($id === 0 || $author_id === 0) jsonError('Missing required fields.');
-
-    // Record warning in user_sanctions (level 1 = warning)
-    $db->prepare("
-        INSERT INTO user_sanctions (user_id, issued_by, level, reason)
-        VALUES (:user_id, :issued_by, 1, :reason)
-    ")->execute([
-        ':user_id'   => $author_id,
-        ':issued_by' => $_SESSION['user_id'] ?? 0,
-        ':reason'    => $note,
-    ]);
-
-    // Mark report reviewed
-    if ($type === 'thread') {
-        $db->prepare('UPDATE thread_reports  SET status = "reviewed" WHERE id = :id')
-           ->execute([':id' => $id]);
-    } else {
-        $db->prepare('UPDATE comment_reports SET status = "reviewed" WHERE id = :id')
-           ->execute([':id' => $id]);
-    }
-
-    jsonSuccess([], 'Warning issued to user.');
-}
-
-/* ── POST ?action=delete_content ─────────────────────────── */
-
 if ($method === 'POST' && $action === 'delete_content') {
 
     $body      = json_decode(file_get_contents('php://input'), true) ?? [];
-    $id        = (int) ($body['id']        ?? 0);
+    $id        = (int)($body['id']        ?? 0);
     $type      = $body['type']      ?? '';
-    $target_id = (int) ($body['target_id'] ?? 0);
+    $target_id = (int)($body['target_id'] ?? 0);
 
     if ($id === 0 || $target_id === 0) jsonError('Missing required fields.');
 
-    // Soft-delete the actual content
+    $threadModel  = new ThreadModel($db);
+    $commentModel = new CommentModel($db);
+    $logModel     = new ActivityLogModel($db);
+
     if ($type === 'thread') {
-        $db->prepare('UPDATE threads         SET is_removed = 1 WHERE id = :id')
-           ->execute([':id' => $target_id]);
-        $db->prepare('UPDATE thread_reports  SET status = "reviewed" WHERE id = :id')
+        $author = $threadModel->getThreadAuthor($target_id);
+        $ok     = $threadModel->setThreadRemoved($target_id, 1);
+        $db->prepare("UPDATE thread_reports SET status = 'reviewed' WHERE id = :id")
            ->execute([':id' => $id]);
+
+        if ($ok) {
+            $logModel->log($admin_id, 'thread_removed', [
+                'target_type' => 'thread',
+                'target_id'   => $target_id,
+                'target_name' => $author['subject'] ?? "(Thread #{$target_id})",
+                'target_user' => $author['name'] ?? '',
+                'notes'       => 'Thread hidden from residents following a report.',
+            ]);
+
+            if ($author && !empty($author['email'])) {
+                (new EmailService())->sendRemovalStatusNotification(
+                    email: $author['email'],
+                    name: $author['name'],
+                    threadSubject: $author['subject'],
+                    isRemoved: true
+                );
+            }
+        }
     } elseif ($type === 'comment') {
-        $db->prepare('UPDATE thread_comments SET is_removed = 1 WHERE id = :id')
-           ->execute([':id' => $target_id]);
-        $db->prepare('UPDATE comment_reports SET status = "reviewed" WHERE id = :id')
+        $ok = $commentModel->removeCommentByMod($target_id);
+        $db->prepare("UPDATE comment_reports SET status = 'reviewed' WHERE id = :id")
            ->execute([':id' => $id]);
+
+        if ($ok) {
+            $logModel->log($admin_id, 'comment_removed', [
+                'target_type' => 'comment',
+                'target_id'   => $target_id,
+                'notes'       => 'Comment removed following a report.',
+            ]);
+        }
     } elseif ($type === 'reply') {
-        $db->prepare('UPDATE comment_replies SET is_removed = 1 WHERE id = :id')
-           ->execute([':id' => $target_id]);
-        $db->prepare('UPDATE comment_reports SET status = "reviewed" WHERE id = :id')
+        $ok = $commentModel->removeReplyByMod($target_id);
+        $db->prepare("UPDATE comment_reports SET status = 'reviewed' WHERE id = :id")
            ->execute([':id' => $id]);
+
+        if ($ok) {
+            $logModel->log($admin_id, 'comment_removed', [
+                'target_type' => 'reply',
+                'target_id'   => $target_id,
+                'notes'       => 'Reply removed following a report.',
+            ]);
+        }
     } else {
         jsonError('Unknown content type.');
     }
 
-    jsonSuccess([], 'Content deleted.');
+    jsonSuccess([], 'Content removed.');
 }
 
-/* ── POST ?action=ban ────────────────────────────────────── */
-/*
- * Bans the user account (is_banned = 1) and marks report reviewed.
- */
-
-if ($method === 'POST' && $action === 'ban') {
+if ($method === 'POST' && $action === 'sanction') {
 
     $body      = json_decode(file_get_contents('php://input'), true) ?? [];
-    $id        = (int) ($body['id']        ?? 0);
+    $id        = (int)($body['id']        ?? 0);
     $type      = $body['type']      ?? '';
-    $author_id = (int) ($body['author_id'] ?? 0);
-    $note      = trim($body['note'] ?? 'Banned by admin.');
+    $target_id = (int)($body['target_id'] ?? 0);
+    $author_id = (int)($body['author_id'] ?? 0);
+    $level     = (int)($body['level']     ?? 0);
+    $reason    = trim($body['reason']     ?? '');
 
-    if ($id === 0 || $author_id === 0) jsonError('Missing required fields.');
+    if ($id === 0 || $author_id === 0 || $target_id === 0) jsonError('Missing required fields.');
+    if ($level < 1 || $level > 3) jsonError('Invalid sanction level.');
 
-    // Ban the user
-    $db->prepare("
-        UPDATE user_status
-        SET is_banned = 1, banned_reason = :reason
-        WHERE user_id = :user_id
-    ")->execute([
-        ':reason'  => $note,
-        ':user_id' => $author_id,
-    ]);
+    $userStmt = $db->prepare(
+        "SELECT id, CONCAT(first_name, ' ', last_name) AS name, email FROM users WHERE id = :id LIMIT 1"
+    );
+    $userStmt->execute([':id' => $author_id]);
+    $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+    if (!$user) jsonError('User not found.');
 
-    // Record in sanctions (level 3 = permanent ban)
-    $db->prepare("
-        INSERT INTO user_sanctions (user_id, issued_by, level, reason)
-        VALUES (:user_id, :issued_by, 3, :reason)
-    ")->execute([
-        ':user_id'   => $author_id,
-        ':issued_by' => $_SESSION['user_id'] ?? 0,
-        ':reason'    => $note,
-    ]);
+    $threadModel   = new ThreadModel($db);
+    $commentModel  = new CommentModel($db);
+    $sanctionModel = new SanctionModel($db);
+    $logModel      = new ActivityLogModel($db);
 
-    // Mark report reviewed
+    $reportedContent = null;
+    $threadSubject   = null;
+    $threadAuthor    = null;
+
     if ($type === 'thread') {
-        $db->prepare('UPDATE thread_reports  SET status = "reviewed" WHERE id = :id')
+        $threadAuthor  = $threadModel->getThreadAuthor($target_id);
+        $threadSubject = $threadAuthor['subject'] ?? null;
+
+        $msgStmt = $db->prepare("SELECT message FROM threads WHERE id = :id LIMIT 1");
+        $msgStmt->execute([':id' => $target_id]);
+        $reportedContent = $msgStmt->fetchColumn() ?: null;
+    } else {
+        if ($type === 'comment') {
+            $q = $db->prepare(
+                "SELECT tc.message, t.subject FROM thread_comments tc
+                 JOIN threads t ON t.id = tc.thread_id
+                 WHERE tc.id = :id LIMIT 1"
+            );
+        } else {
+            $q = $db->prepare(
+                "SELECT cr.message, t.subject
+                 FROM comment_replies cr
+                 JOIN thread_comments tc ON tc.id = cr.comment_id
+                 JOIN threads t          ON t.id  = tc.thread_id
+                 WHERE cr.id = :id LIMIT 1"
+            );
+        }
+        $q->execute([':id' => $target_id]);
+        $row = $q->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $reportedContent = $row['message'];
+            $threadSubject   = $row['subject'];
+        }
+    }
+
+    $sanction_id = $sanctionModel->issue(
+        user_id:   $author_id,
+        issued_by: $admin_id,
+        level:     $level,
+        reason:    $reason ?: '(No additional reason provided)',
+        report_id: $id
+    );
+
+    $content_removed = false;
+    if ($level >= 2) {
+        if ($type === 'thread') {
+            $content_removed = $threadModel->setThreadRemoved($target_id, 1);
+            if ($content_removed && $threadAuthor && !empty($threadAuthor['email'])) {
+                (new EmailService())->sendRemovalStatusNotification(
+                    email: $threadAuthor['email'],
+                    name: $threadAuthor['name'],
+                    threadSubject: $threadAuthor['subject'],
+                    isRemoved: true
+                );
+            }
+        } elseif ($type === 'comment') {
+            $content_removed = $commentModel->removeCommentByMod($target_id);
+        } elseif ($type === 'reply') {
+            $content_removed = $commentModel->removeReplyByMod($target_id);
+        }
+    }
+
+    if ($type === 'thread') {
+        $db->prepare("UPDATE thread_reports SET status = 'reviewed' WHERE id = :id")
            ->execute([':id' => $id]);
     } else {
-        $db->prepare('UPDATE comment_reports SET status = "reviewed" WHERE id = :id')
+        $db->prepare("UPDATE comment_reports SET status = 'reviewed' WHERE id = :id")
            ->execute([':id' => $id]);
     }
 
-    jsonSuccess([], 'User has been banned.');
+    $logActionMap = [1 => 'warning_issued', 2 => 'mute_issued', 3 => 'ban_issued'];
+    $levelLabels  = [1 => 'Warning',        2 => '7-Day Ban',   3 => 'Permanent Ban'];
+
+    $notesStr = $levelLabels[$level] . ' issued.';
+    if ($reason)         $notesStr .= " Reason: {$reason}.";
+    if ($threadSubject)  $notesStr .= " Related thread: \"{$threadSubject}\".";
+    if ($content_removed) $notesStr .= ' Reported content also removed.';
+
+    $logModel->log($admin_id, $logActionMap[$level], [
+        'target_type' => 'user',
+        'target_id'   => $author_id,
+        'target_name' => $user['name'],
+        'target_user' => '',
+        'notes'       => $notesStr,
+    ]);
+
+    $emailSent = (new EmailService())->sendSanctionNotification(
+        email:           $user['email'],
+        name:            $user['name'],
+        level:           $level,
+        reason:          $reason,
+        reportedContent: $reportedContent,
+        threadSubject:   $threadSubject
+    );
+
+    jsonSuccess([
+        'sanction_id'     => $sanction_id,
+        'new_level'       => $level,
+        'email_sent'      => $emailSent,
+        'content_removed' => $content_removed,
+    ], "Sanction issued: Level {$level} ({$levelLabels[$level]}) to {$user['name']}.");
 }
 
 jsonError('Invalid action or method.', 405);

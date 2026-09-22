@@ -4,7 +4,7 @@
    Teal officer palette — mirrors officer_dashboard.css conventions
    ============================================================ */
 
-/* ── STAT WIDGETS ────────────────────────────────────────── */
+
 
 .off-widgets {
   display: grid;
@@ -138,7 +138,7 @@
   color: #b83232;
 }
 
-/* ── PERIOD BAR ──────────────────────────────────────────── */
+
 
 .an-period-bar {
   display: flex;
@@ -223,7 +223,7 @@
   border-color: var(--off-primary);
 }
 
-/* ── WIDGET UNIT SUFFIX ──────────────────────────────────── */
+
 
 .widget-unit {
   font-size: 18px;
@@ -232,7 +232,7 @@
   margin-left: 2px;
 }
 
-/* ── LAYOUT ROWS ─────────────────────────────────────────── */
+
 
 .an-row {
   display: grid;
@@ -242,7 +242,7 @@
   align-items: start;
 }
 
-/* ── PANEL ───────────────────────────────────────────────── */
+
 
 .an-panel {
   background: var(--off-surface);
@@ -252,12 +252,12 @@
   padding: 22px 24px;
 }
 
-/* Grow panel fills more width when paired with a side panel */
+
 .an-panel--grow {
   grid-column: span 1;
 }
 
-/* Side panel — narrower fixed feel via flex */
+
 .an-panel--side {
   display: flex;
   flex-direction: column;
@@ -272,7 +272,7 @@
   white-space: nowrap;
 }
 
-/* ── SPARKLINE + CANVAS ──────────────────────────────────── */
+
 
 .an-sparkline-wrap {
   margin: 4px 0 16px;
@@ -285,7 +285,7 @@
   height: 100% !important;
 }
 
-/* Spark stats row (reuses off-dashboard pattern) */
+
 .an-spark-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -322,7 +322,7 @@
   text-align: center;
 }
 
-/* ── HORIZONTAL BAR LIST (service type breakdown) ────────── */
+
 
 .an-bar-list {
   display: flex;
@@ -363,7 +363,7 @@
   transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Bar colors — each service type */
+
 .bar-clearance {
   background: var(--off-primary);
 }
@@ -398,7 +398,7 @@
   flex-shrink: 0;
 }
 
-/* ── EVENTS GRID ─────────────────────────────────────────── */
+
 
 .an-events-chart-wrap {
   position: relative;
@@ -448,7 +448,7 @@
   border-top: 3px solid var(--off-slate);
 }
 
-/* ── DONUT CHART (announcements) ─────────────────────────── */
+
 
 .an-donut-wrap {
   display: flex;
@@ -496,7 +496,7 @@
   color: var(--off-dark);
 }
 
-/* ── SERVICES LIST ───────────────────────────────────────── */
+
 
 .an-services-list {
   display: flex;
@@ -597,7 +597,7 @@
   height: 10px;
 }
 
-/* ── ACTIVITY FEED ───────────────────────────────────────── */
+
 
 .an-activity-feed {
   list-style: none;
@@ -678,7 +678,7 @@
   color: var(--off-text-muted);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1100px) {
   .an-row {
@@ -720,12 +720,12 @@
   }
 }
 
-/* ── ADDITIONAL BAR COLORS (db categories not in original set) ── */
+
 .bar-assistance { background: #0891b2; }
 .bar-legal      { background: #7c3aed; }
 .bar-other      { background: var(--off-text-muted); }
 
-/* ── ADDITIONAL SERVICE ICON THEMES ─────────────────────────── */
+
 .svc-icon-assistance {
   background: var(--off-slate-bg);
   color: var(--off-slate-text);

@@ -1,4 +1,4 @@
-// ── TOAST NOTIFICATION ───────────────────────────────────────────────────────
+
 function showToast(message, type = "error") {
   const existing = document.querySelector(".sk-toast");
   if (existing) existing.remove();
@@ -19,7 +19,7 @@ function showToast(message, type = "error") {
   }, 3500);
 }
 
-// ── AGE AUTO-CALCULATE ────────────────────────────────────────────────────────
+
 const birthInput = document.getElementById("birth_date");
 const ageValue   = document.getElementById("ageValue");
 const ageUnit    = document.getElementById("ageUnit");
@@ -53,7 +53,7 @@ birthInput.addEventListener("change", function () {
   checkFormReady();
 });
 
-// ── PASSWORD TOGGLE ───────────────────────────────────────────────────────────
+
 document.querySelectorAll(".toggle-pw").forEach((btn) => {
   btn.addEventListener("click", function () {
     const target = document.getElementById(this.dataset.target);
@@ -64,7 +64,7 @@ document.querySelectorAll(".toggle-pw").forEach((btn) => {
   });
 });
 
-// ── PASSWORD MATCH INDICATOR ──────────────────────────────────────────────────
+
 const pw  = document.getElementById("password");
 const cpw = document.getElementById("confirm_password");
 const msg = document.getElementById("pwMatchMsg");
@@ -89,11 +89,11 @@ function checkMatch() {
 pw.addEventListener("input", checkMatch);
 cpw.addEventListener("input", checkMatch);
 
-// ── SUBMIT BUTTON ENABLE / DISABLE ───────────────────────────────────────────
+
 const submitBtn       = document.querySelector("#registerForm .login-btn");
 const privacyCheckbox = document.getElementById("privacyCheckbox");
 
-// Start disabled
+
 submitBtn.disabled = true;
 
 function checkFormReady() {
@@ -120,7 +120,7 @@ function checkFormReady() {
   submitBtn.disabled = !allFilled;
 }
 
-// Wire all required fields to checkFormReady
+
 const watchedFields = [
   "first_name", "last_name", "middle_name",
   "gender", "email", "password", "confirm_password",

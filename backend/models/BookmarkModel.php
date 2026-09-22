@@ -29,8 +29,7 @@ class BookmarkModel
         $stmt->execute([':uid' => $userId, ':aid' => $announcementId]);
         return true; 
     }
-
-    /* Check whether a specific announcement is bookmarked by a user. */
+    
     public function isBookmarked(int $userId, int $announcementId): bool
     {
         $stmt = $this->conn->prepare(

@@ -1,5 +1,5 @@
 <?php
-// views/management/admin/admin_threads.php
+
 require_once __DIR__ . '/../../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireAdmin();
 
@@ -49,7 +49,7 @@ $cat_labels = [
             include __DIR__ . '/../../../components/management/admin/admin_topbar.php';
             ?>
 
-            <!-- CONTROLS -->
+            
             <section class="adm-feed-controls">
                 <div class="adm-feed-controls-left">
                     <div class="adm-search-wrap">
@@ -89,7 +89,7 @@ $cat_labels = [
                 </div>
             </section>
 
-            <!-- FEED PANEL -->
+            
             <section class="adm-feed-section">
                 <div class="panel-header">
                     <h2 class="section-label">Community Threads</h2>
@@ -123,7 +123,7 @@ $cat_labels = [
 
                                 <div class="adm-feed-card-body">
 
-                                    <!-- BADGES -->
+                                    
                                     <div class="adm-feed-badges">
                                         <span class="adm-cat-badge category-<?= $cat_key ?>"><?= $cat_label ?></span>
                                         <span class="adm-status-badge status-<?= $t['status'] ?>"><?= ucfirst($t['status']) ?></span>
@@ -162,11 +162,11 @@ $cat_labels = [
                                         <?php endif; ?>
                                     </div>
 
-                                    <!-- TITLE & EXCERPT -->
+                                    
                                     <h3 class="adm-feed-title"><?= htmlspecialchars($t['subject']) ?></h3>
                                     <p class="adm-feed-excerpt"><?= htmlspecialchars(mb_substr($t['message'], 0, 140)) ?><?= mb_strlen($t['message']) > 140 ? '…' : '' ?></p>
 
-                                    <!-- META -->
+                                    
                                     <div class="adm-feed-meta">
                                         <span class="adm-feed-author">
                                             <span class="adm-feed-avatar"><?= $initials ?></span>
@@ -176,21 +176,21 @@ $cat_labels = [
                                         <span class="adm-feed-comments">💬 <?= (int)$t['comment_count'] ?></span>
                                     </div>
 
-                                </div><!-- /.adm-feed-card-body -->
+                                </div>
 
-                                <!-- CARD FOOTER -->
+                                
                                 <div class="adm-feed-card-footer">
 
-                                    <!-- STATUS TOGGLER -->
+                                    
                                     <div class="adm-status-toggler" data-thread-id="<?= (int)$t['id'] ?>">
                                         <button class="adm-status-opt <?= $t['status'] === 'pending'   ? 'active' : '' ?>" data-status="pending" title="Set Pending">Pending</button>
                                         <button class="adm-status-opt <?= $t['status'] === 'responded' ? 'active' : '' ?>" data-status="responded" title="Set Responded">Responded</button>
                                         <button class="adm-status-opt <?= $t['status'] === 'resolved'  ? 'active' : '' ?>" data-status="resolved" title="Set Resolved">Resolved</button>
                                     </div>
 
-                                    <!-- ADMIN ACTIONS -->
+                                    
                                     <div class="adm-thread-actions">
-                                        <!-- VIEW (slide-in) -->
+                                        
                                         <button class="adm-action-btn adm-action-view" data-thread-id="<?= (int)$t['id'] ?>" title="View Thread">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -199,7 +199,7 @@ $cat_labels = [
                                             View
                                         </button>
 
-                                        <!-- PIN / UNPIN -->
+                                        
                                         <button class="adm-action-btn adm-action-pin <?= $is_pinned ? 'adm-action-pin--active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $is_pinned ? 'Unpin Thread' : 'Pin Thread' ?>">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -207,7 +207,7 @@ $cat_labels = [
                                             <?= $is_pinned ? 'Unpin' : 'Pin' ?>
                                         </button>
 
-                                        <!-- FLAG / UNFLAG -->
+                                        
                                         <button class="adm-action-btn adm-action-flag <?= $is_flagged ? 'adm-action-flag--active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $is_flagged ? 'Unflag Thread' : 'Flag for Review' ?>">
                                             <?php if ($is_flagged) : ?>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
@@ -222,7 +222,7 @@ $cat_labels = [
                                             <?php endif; ?>
                                         </button>
 
-                                        <!-- REMOVE / RESTORE -->
+                                        
                                         <button class="adm-action-btn adm-action-remove <?= $is_removed ? 'adm-action-remove--active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $is_removed ? 'Restore Thread' : 'Hide Thread' ?>">
                                             <?php if ($is_removed) : ?>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -239,16 +239,16 @@ $cat_labels = [
                                         </button>
                                     </div>
 
-                                </div><!-- /.adm-feed-card-footer -->
+                                </div>
 
                             </article>
                         <?php endforeach; ?>
 
                     <?php endif; ?>
 
-                </div><!-- /#adm-feed-grid -->
+                </div>
 
-                <!-- NO RESULTS -->
+                
                 <div class="adm-no-results" id="adm-no-results" style="display:none;">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -258,7 +258,7 @@ $cat_labels = [
 
             </section>
 
-            <!-- PAGINATION -->
+            
             <section class="adm-pagination">
                 <button class="adm-page-btn" id="adm-prev-btn" disabled>&#8249; Previous</button>
                 <div class="adm-page-numbers" id="adm-page-numbers"></div>
@@ -268,14 +268,14 @@ $cat_labels = [
         </main>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════
-     THREAD SLIDE-IN PANEL
-══════════════════════════════════════════════════════════ -->
+    
+
+
     <div class="adm-panel-backdrop" id="adm-panel-backdrop"></div>
 
     <aside class="adm-thread-panel" id="adm-thread-panel" aria-label="Thread detail panel">
 
-        <!-- PANEL HEADER -->
+        
         <div class="adm-panel-header">
             <div class="adm-panel-header-left">
                 <div class="adm-panel-badges" id="panel-badges"></div>
@@ -287,16 +287,16 @@ $cat_labels = [
             </button>
         </div>
 
-        <!-- PANEL BODY (scrollable) -->
+        
         <div class="adm-panel-body" id="adm-panel-body">
 
-            <!-- Loading state -->
+            
             <div class="adm-panel-loading" id="adm-panel-loading">
                 <div class="adm-panel-spinner"></div>
                 <span>Loading thread…</span>
             </div>
 
-            <!-- Thread content (injected by JS) -->
+            
             <div id="adm-panel-content" style="display:none;">
 
                 <h2 class="adm-panel-title" id="panel-title"></h2>
@@ -307,12 +307,12 @@ $cat_labels = [
 
                 <div class="adm-panel-body-text" id="panel-body-text"></div>
 
-                <!-- Attached images -->
+                
                 <div class="adm-panel-images" id="panel-images"></div>
 
                 <div class="adm-panel-divider"></div>
 
-                <!-- Admin action strip (inside panel) -->
+                
                 <div class="adm-panel-actions" id="panel-actions">
                     <div class="adm-panel-status-wrap">
                         <span class="adm-panel-actions-label">Status</span>
@@ -346,10 +346,10 @@ $cat_labels = [
 
                 <div class="adm-panel-divider"></div>
 
-                <!-- Comments -->
+                
                 <div class="adm-panel-comments-section">
 
-                    <!-- ADMIN REPLY BOX -->
+                    
                     <div class="adm-panel-reply-box" id="adm-panel-reply-box">
                         <div class="adm-panel-reply-avatar" id="adm-panel-reply-avatar">A</div>
                         <div class="adm-panel-reply-wrap">
@@ -371,13 +371,13 @@ $cat_labels = [
                     
                 </div>
 
-            </div><!-- /#adm-panel-content -->
+            </div>
 
-        </div><!-- /.adm-panel-body -->
+        </div>
 
     </aside>
 
-    <!-- CONFIRM MODAL -->
+    
     <div class="adm-confirm-overlay" id="adm-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
         <div class="adm-confirm-box">
             <div class="adm-confirm-icon" id="adm-confirm-icon">⚠️</div>
@@ -390,16 +390,16 @@ $cat_labels = [
         </div>
     </div>
 
-    <!-- TOAST -->
+    
     <div class="adm-toast" id="adm-toast" aria-live="polite"></div>
 
-    <!-- LIGHTBOX -->
+    
     <div class="adm-lightbox-overlay" id="adm-lightbox" style="display:none;">
         <button class="adm-lightbox-close" id="adm-lightbox-close">&times;</button>
         <img class="adm-lightbox-img" id="adm-lightbox-img" src="" alt="Image preview">
     </div>
 
-    <!-- FLAG CATEGORY MODAL -->
+    
     <div class="adm-flag-modal-overlay" id="adm-flag-modal-overlay" style="display:none;" aria-modal="true" role="dialog">
         <div class="adm-flag-modal-box">
             <div class="adm-flag-modal-header">

@@ -1,11 +1,11 @@
 <?php
-// backend/routes/service_requests.php
-// Resident-facing: submit a new service application or reapply after action_required.
+
+
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../controllers/ServiceRequestController.php';
 
-RoleMiddleware::requireAuth(); // any logged-in user (resident)
+RoleMiddleware::requireAuth(); 
 
 header('Content-Type: application/json; charset=utf-8');
 ob_clean();
@@ -33,7 +33,7 @@ try {
             );
             break;
 
-        // Resident updates + resubmits an application that is in 'action_required' status
+        
         case 'reapply':
             $id = (int)($_POST['id'] ?? 0);
             if (!$id) {
@@ -41,7 +41,7 @@ try {
                 break;
             }
 
-            // Decode the list of document IDs to remove (sent as JSON string)
+            
             $removeDocsRaw = $_POST['remove_docs'] ?? '[]';
             $removeDocs    = json_decode($removeDocsRaw, true);
             if (!is_array($removeDocs)) $removeDocs = [];

@@ -1,9 +1,9 @@
 <?php
-/**
- * dashboard_stats.php
- * Returns real-time stats for the Admin Dashboard from the skonnect DB.
- * Place this at: /backend/routes/dashboard_stats.php
- */
+
+
+
+
+
 
 header('Content-Type: application/json');
 
@@ -17,7 +17,7 @@ $conn = $db->getConnection();
 
 try {
 
-    /* ── 1. Total registered residents (not deleted) ─────────────── */
+    
     $stmt = $conn->query("
         SELECT COUNT(*) AS total
         FROM users u
@@ -27,7 +27,7 @@ try {
     ");
     $totalMembers = (int) $stmt->fetchColumn();
 
-    /* ── 2. New residents added this calendar month ───────────────── */
+    
     $stmt = $conn->query("
         SELECT COUNT(*) AS total
         FROM users u
@@ -39,7 +39,7 @@ try {
     ");
     $membersThisMonth = (int) $stmt->fetchColumn();
 
-    /* ── 3. Pending / action-required service applications ───────── */
+    
     $stmt = $conn->query("
         SELECT COUNT(*) AS total
         FROM service_applications
@@ -47,7 +47,7 @@ try {
     ");
     $pendingRequests = (int) $stmt->fetchColumn();
 
-    /* ── 4. Active announcements ──────────────────────────────────── */
+    
     $stmt = $conn->query("
         SELECT COUNT(*) AS total
         FROM announcements
@@ -55,7 +55,7 @@ try {
     ");
     $announcements = (int) $stmt->fetchColumn();
 
-    /* ── 5. Announcements expiring within the next 7 days ────────── */
+    
     $stmt = $conn->query("
         SELECT COUNT(*) AS total
         FROM announcements
@@ -65,7 +65,7 @@ try {
     ");
     $expiringSoon = (int) $stmt->fetchColumn();
 
-    /* ── 6. Pending flagged reports (threads + comments combined) ─── */
+    
     $stmt = $conn->query("
         SELECT
           (SELECT COUNT(*) FROM thread_reports  WHERE status = 'pending') +
@@ -73,7 +73,7 @@ try {
     ");
     $flaggedReports = (int) $stmt->fetchColumn();
 
-    /* ── 7. Recent pending requests (for the table, max 5) ───────── */
+    
     $stmt = $conn->query("
         SELECT
             sa.id,
@@ -90,7 +90,7 @@ try {
     ");
     $pendingList = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    /* ── 8. Service applications by category (current month) ─────── */
+    
     $stmt = $conn->query("
         SELECT
             s.category,
@@ -104,7 +104,7 @@ try {
     ");
     $byCategory = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    /* ── 9. Member registrations — last 6 calendar months ────────── */
+    
     $stmt = $conn->query("
         SELECT
             to_char(created_at, 'Mon')    AS month,
@@ -118,7 +118,7 @@ try {
     ");
     $registrations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    /* ── 10. Total residents registered in the last 6 months ─────── */
+    
     $stmt = $conn->query("
         SELECT COUNT(*) AS total
         FROM users
@@ -127,7 +127,7 @@ try {
     ");
     $membersSince6 = (int) $stmt->fetchColumn();
 
-    /* ── 11. Active-member rate (not banned, not deleted) ────────── */
+    
     $stmt = $conn->query("
         SELECT COUNT(*) AS active
         FROM users u
@@ -142,7 +142,7 @@ try {
         ? round(($activeMembers / $totalMembers) * 100)
         : 0;
 
-    /* ── Response ─────────────────────────────────────────────────── */
+    
     echo json_encode([
         'status' => 'success',
         'data'   => [

@@ -1,8 +1,8 @@
-/* =========================================================
-   topbar.js — SKonnect Dashboard
-   ========================================================= */
 
-/* ---- Live Clock ---- */
+
+
+
+
 (function () {
     const dateEl = document.getElementById('topbar-date');
     const timeEl = document.getElementById('topbar-time');
@@ -23,15 +23,15 @@
     setInterval(tick, 1000);
 })();
 
-/* ---- Notification Dropdown (live data) ---- */
+
 (function () {
 
-    // ── Config ────────────────────────────────────────────────────────────────
-    // Adjust this path if your folder structure differs.
+    
+    
     const NOTIF_API   = '../../backend/routes/notifications.php';
-    const MAX_PREVIEW = 5;   // items shown in the dropdown
+    const MAX_PREVIEW = 5;   
 
-    // ── DOM refs ──────────────────────────────────────────────────────────────
+    
     const btn         = document.getElementById('topbar-notif-btn');
     const dropdown    = document.getElementById('notif-dropdown');
     const list        = document.getElementById('notif-list');
@@ -40,10 +40,10 @@
 
     if (!btn || !dropdown || !list || !badge) return;
 
-    // ── State ─────────────────────────────────────────────────────────────────
-    let loaded      = false;   // have we fetched at least once?
+    
+    let loaded      = false;   
     let loading     = false;
-    // Parse initial count robustly: prefer the rendered text content, fall back to 0
+    
     let unreadCount = (function () {
         const txt = badge.textContent.trim();
         if (txt === '99+') return 99;
@@ -51,9 +51,9 @@
         return isNaN(n) ? 0 : n;
     }());
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    
 
-    /** Relative time label, e.g. "3 hours ago" */
+    
     function relativeTime(dateStr) {
         const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
         if (diff < 60)       return 'Just now';
@@ -64,7 +64,7 @@
         return new Date(dateStr).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
     }
 
-    /** Icon SVG per notification type */
+    
     function typeIcon(type, isOfficial) {
         if (isOfficial) return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
         const icons = {
@@ -76,7 +76,7 @@
         return icons[type] || icons.announcement;
     }
 
-    /** Update the badge element */
+    
     function setBadge(count) {
         unreadCount = Math.max(0, count);
         badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
@@ -84,20 +84,22 @@
         btn.setAttribute('aria-label', `${unreadCount} unread notifications`);
     }
 
-    /** Render skeleton loaders */
+    
     function renderSkeleton() {
-        list.innerHTML = Array.from({ length: 3 }, () => `
-            <li class="notif-item notif-skeleton" aria-hidden="true">
+    list.innerHTML = Array.from({ length: 3 }, () => `
+        <li class="notif-item notif-skeleton" aria-hidden="true">
+            <div class="notif-item-inner">
                 <span class="notif-icon-wrap notif-skeleton-icon"></span>
                 <div class="notif-content">
                     <div class="notif-skeleton-line notif-skeleton-line--title"></div>
                     <div class="notif-skeleton-line notif-skeleton-line--body"></div>
                     <div class="notif-skeleton-line notif-skeleton-line--time"></div>
                 </div>
-            </li>`).join('');
-    }
+            </div>
+        </li>`).join('');
+}
 
-    /** Render empty state */
+    
     function renderEmpty() {
         list.innerHTML = `
             <li class="notif-empty" role="listitem">
@@ -112,7 +114,7 @@
             </li>`;
     }
 
-    /** Render actual notifications */
+    
     function renderNotifications(items) {
         if (!items || items.length === 0) { renderEmpty(); return; }
 
@@ -144,7 +146,7 @@
 
         list.innerHTML = html;
 
-        // Mark individual item as read on click
+        
         list.querySelectorAll('.notif-item[data-id]').forEach(function (item) {
             item.addEventListener('click', function () {
                 const id = parseInt(item.dataset.id, 10);
@@ -155,7 +157,7 @@
         });
     }
 
-    /** Minimal HTML escaper */
+    
     function escapeHtml(str) {
         return String(str)
             .replace(/&/g, '&amp;')
@@ -164,8 +166,7 @@
             .replace(/"/g, '&quot;');
     }
 
-    // ── API calls ─────────────────────────────────────────────────────────────
-
+    
     function fetchNotifications() {
         if (loading) return;
         loading = true;
@@ -197,8 +198,7 @@
                     itemEl.classList.remove('unread');
                     const dot = itemEl.querySelector('.notif-dot');
                     if (dot) dot.remove();
-                    // Use server count if available, otherwise decrement safely
-                    const newCount = (res.stats && res.stats.unread != null)
+                                        const newCount = (res.stats && res.stats.unread != null)
                         ? res.stats.unread
                         : Math.max(0, unreadCount - 1);
                     setBadge(newCount);
@@ -223,18 +223,15 @@
             });
     }
 
-    // ── Mark-all button ───────────────────────────────────────────────────────
-    if (markAllBtn) {
+        if (markAllBtn) {
         markAllBtn.addEventListener('click', function (e) {
             e.stopPropagation();
             markAllRead();
         });
     }
 
-    // ── Dropdown open / close ─────────────────────────────────────────────────
-    function openDropdown() {
-        // Close user dropdown if open
-        const userDrop = document.getElementById('user-dropdown');
+        function openDropdown() {
+                const userDrop = document.getElementById('user-dropdown');
         const userBtn  = document.getElementById('topbar-user-btn');
         if (userDrop) userDrop.classList.remove('open');
         if (userBtn)  userBtn.setAttribute('aria-expanded', 'false');
@@ -242,8 +239,7 @@
         dropdown.classList.add('open');
         btn.setAttribute('aria-expanded', 'true');
 
-        // Fetch fresh data every time the dropdown opens
-        fetchNotifications();
+                fetchNotifications();
     }
 
     function closeDropdown() {
@@ -262,15 +258,13 @@
         if (e.key === 'Escape') closeDropdown();
     });
 
-    // Prevent clicks inside the dropdown from bubbling to document
-    dropdown.addEventListener('click', function (e) { e.stopPropagation(); });
+        dropdown.addEventListener('click', function (e) { e.stopPropagation(); });
 
-    // Close on outside click
-    document.addEventListener('click', function () { closeDropdown(); });
+        document.addEventListener('click', function () { closeDropdown(); });
 
 })();
 
-/* ---- User-menu Dropdown (unchanged logic) ---- */
+
 (function () {
     const btn  = document.getElementById('topbar-user-btn');
     const drop = document.getElementById('user-dropdown');
@@ -280,8 +274,7 @@
         e.stopPropagation();
         const isOpen = btn.getAttribute('aria-expanded') === 'true';
 
-        // Close notif dropdown if open
-        const notifDrop = document.getElementById('notif-dropdown');
+                const notifDrop = document.getElementById('notif-dropdown');
         const notifBtn  = document.getElementById('topbar-notif-btn');
         if (notifDrop) notifDrop.classList.remove('open');
         if (notifBtn)  notifBtn.setAttribute('aria-expanded', 'false');
@@ -307,7 +300,7 @@
         btn.setAttribute('aria-expanded', 'false');
     });
 })();
-/* ---- Logout Confirmation Modal ---- */
+
 (function () {
     const signoutLink = document.getElementById('signout-link');
     const overlay     = document.getElementById('logout-modal-overlay');

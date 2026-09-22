@@ -1,7 +1,7 @@
-/* bookmarks_page.js — SKonnect My Bookmarks Page */
+
 
 document.addEventListener("DOMContentLoaded", () => {
-  /* ---- FILTER ---- */
+  
 
   const searchInput = document.getElementById("bm-search");
   const categorySelect = document.getElementById("bm-category");
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
   categorySelect?.addEventListener("change", filterCards);
   statusSelect?.addEventListener("change", filterCards);
 
-  /* ---- SUPPORT BUTTONS ---- */
+  
 
   document.querySelectorAll(".support-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ---- REMOVE BOOKMARK ---- */
+  
 
   document.querySelectorAll(".bookmark-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -86,19 +86,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await res.json();
 
         if (data.status === "success" && !data.bookmarked) {
-          // Animate out then remove card
+          
           card.style.transition = "opacity 0.25s, transform 0.25s";
           card.style.opacity = "0";
           card.style.transform = "scale(0.97)";
           setTimeout(() => {
             card.remove();
-            // Update the count badge
+            
             const badge = document.querySelector(".bookmarks-total-badge");
             if (badge) {
               const curr = parseInt(badge.textContent) || 1;
               badge.textContent = Math.max(0, curr - 1);
             }
-            // Show empty state if no cards left
+            
             if (!document.querySelectorAll(".bm-card").length) {
               showEmptyState();
             }
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ---- TOAST ---- */
+  
 
   function showToast(msg, type = "success") {
     const toast = document.getElementById("feed-toast");

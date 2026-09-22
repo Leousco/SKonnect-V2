@@ -563,7 +563,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* Approve modal */
+  
   const approveModalOverlay = document.getElementById("req-approve-modal-overlay");
   const approveModalClose   = document.getElementById("req-approve-modal-close");
   const approveNoteTextarea = document.getElementById("approve-modal-note");
@@ -616,7 +616,7 @@ document.addEventListener("DOMContentLoaded", () => {
     else { approveSubmitBtn.disabled = false; approveSubmitBtn.textContent = "Approve Application"; }
   });
 
-  /* Reject modal */
+  
   const declineModalOverlay = document.getElementById("req-decline-modal-overlay");
   const declineModalClose   = document.getElementById("req-decline-modal-close");
   const declineNoteTextarea = document.getElementById("decline-modal-note");
@@ -723,7 +723,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return new Date(dateStr).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "numeric" });
   }
 
-  /* File preview modal */
+  
   const filePreviewOverlay = document.getElementById("req-file-preview-overlay");
   const filePreviewClose   = document.getElementById("req-file-preview-close");
   const filePreviewName    = document.getElementById("file-preview-name");
@@ -773,7 +773,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeDrawer();
   });
 
-  /* Deep-link focus (?id=) from notifications etc. */
+  
   const focusId = window.FOCUS_REQUEST_ID;
   if (focusId) {
     const targetRow = tbody.querySelector(`tr[data-id="${focusId}"]`);

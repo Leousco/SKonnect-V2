@@ -21,7 +21,7 @@ RoleMiddleware::requireAdmin();
 
     <?php include __DIR__ . '/../../../components/management/admin/admin_sidebar.php'; ?>
 
-    <!-- MAIN CONTENT -->
+    
     <main class="admin-content">
 
     <?php
@@ -34,7 +34,7 @@ RoleMiddleware::requireAdmin();
     ?>
 
     <?php
-    /* ── LOAD SERVICES FROM DATABASE ────────────────────────── */
+    
     require_once __DIR__ . '/../../../backend/config/database.php';
     require_once __DIR__ . '/../../../backend/controllers/ServiceController.php';
 
@@ -71,7 +71,7 @@ RoleMiddleware::requireAdmin();
     $pendingCount = (int) $pendingStmt->fetchColumn();
     ?>
 
-        <!-- STAT WIDGETS -->
+        
         <section class="svc-widgets">
 
             <div class="svc-widget-card widget-green">
@@ -120,7 +120,7 @@ RoleMiddleware::requireAdmin();
 
         </section>
 
-        <!-- CONTROLS BAR -->
+        
         <div class="svc-controls">
             <div class="svc-controls-left">
                 <div class="svc-search-wrap">
@@ -157,7 +157,7 @@ RoleMiddleware::requireAdmin();
             </div>
         </div>
 
-        <!-- SERVICES GRID -->
+        
         <div class="panel-header" style="margin-bottom: 16px;">
             <h2 class="section-label">All Services</h2>
             <span class="svc-count" id="svc-count">Showing <?= $totalServices ?> services</span>
@@ -181,7 +181,7 @@ RoleMiddleware::requireAdmin();
 
                 <div class="svc-card-body">
 
-                    <!-- Top row: icon + category badge | status badge -->
+                    
                     <div class="svc-card-top">
                         <div class="svc-card-top-left">
                             <div class="svc-icon-wrap svc-icon-<?= $svc['category'] ?>">
@@ -204,13 +204,13 @@ RoleMiddleware::requireAdmin();
                         </div>
                     </div>
 
-                    <!-- Title -->
+                    
                     <h3 class="svc-card-title"><?= htmlspecialchars($svc['name']) ?></h3>
 
-                    <!-- Description -->
+                    
                     <p class="svc-card-desc"><?= htmlspecialchars($svc['description']) ?></p>
 
-                    <!-- Details list -->
+                    
                     <ul class="svc-details-list">
                         <?php
                         $typeLabels = ['document' => 'Online Application', 'appointment' => 'Request-based Service', 'info' => 'Information & Contact'];
@@ -289,7 +289,7 @@ RoleMiddleware::requireAdmin();
                         <?php endif; ?>
                     </ul>
 
-                    <!-- Capacity bar (only if max_capacity is set) -->
+                    
                     <?php if ($hasCapacity): ?>
                     <div class="svc-capacity-wrap">
                         <div class="svc-capacity-header">
@@ -310,9 +310,9 @@ RoleMiddleware::requireAdmin();
 
                 </div>
 
-                <!-- Card Footer: actions -->
+                
                 <div class="svc-card-footer">
-                    <!-- Toggle status -->
+                    
                     <button class="svc-toggle-btn svc-toggle-<?= $svc['status'] ?>"
                         data-id="<?= $svc['id'] ?>"
                         data-status="<?= $svc['status'] ?>"
@@ -341,7 +341,7 @@ RoleMiddleware::requireAdmin();
             <?php endforeach; ?>
         </div>
 
-        <!-- NO RESULTS -->
+        
         <div class="svc-no-results" id="svc-no-results" style="display:none;">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
             <p>No services match your current filters.</p>
@@ -350,9 +350,9 @@ RoleMiddleware::requireAdmin();
     </main>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     ADD / EDIT MODAL
-══════════════════════════════════════════════════ -->
+
+
+
 <div class="svc-modal-overlay" id="svc-modal-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="svc-modal-title">
     <div class="svc-modal-box">
 
@@ -369,7 +369,7 @@ RoleMiddleware::requireAdmin();
             <button class="svc-modal-close" id="svc-modal-close" aria-label="Close">&times;</button>
         </div>
 
-        <!-- STEP TABS -->
+        
         <div class="svc-modal-tabs" role="tablist">
             <button class="svc-tab active" data-tab="1" role="tab">
                 <span class="svc-tab-num">1</span>
@@ -390,17 +390,17 @@ RoleMiddleware::requireAdmin();
         <div class="svc-modal-body">
             <input type="hidden" id="svc-id">
 
-            <!-- ── TAB 1: BASIC INFO ── -->
+            
             <div class="svc-tab-panel active" id="svc-panel-1">
 
-                <!-- Service Name -->
+                
                 <div class="svc-form-group">
                     <label class="svc-label" for="svc-name">Service Name <span class="svc-required">*</span></label>
                     <input type="text" id="svc-name" class="svc-input" placeholder="e.g. Medical Assistance" maxlength="80">
                     <span class="svc-field-error" id="err-svc-name"></span>
                 </div>
 
-                <!-- Row: Category + Service Type -->
+                
                 <div class="svc-form-row">
                     <div class="svc-form-group">
                         <label class="svc-label" for="svc-category-field">Category <span class="svc-required">*</span></label>
@@ -428,14 +428,14 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </div>
 
-                <!-- Description -->
+                
                 <div class="svc-form-group">
                     <label class="svc-label" for="svc-desc">Description <span class="svc-required">*</span></label>
                     <textarea id="svc-desc" class="svc-textarea" rows="3" placeholder="Describe what this service offers…"></textarea>
                     <span class="svc-field-error" id="err-svc-desc"></span>
                 </div>
 
-                <!-- Approval Message (hidden for info/walk-in type) -->
+                
                 <div class="svc-form-group" id="svc-approval-group">
                     <label class="svc-label" for="svc-approval-msg">Approval Message <span class="svc-required">*</span></label>
                     <textarea id="svc-approval-msg" class="svc-textarea" rows="3" placeholder="e.g. Approved! Please visit the SK Hall this Friday with your school ID.&#10;&#10;This message will be shown to residents when their application is approved."></textarea>
@@ -443,7 +443,7 @@ RoleMiddleware::requireAdmin();
                     <span class="svc-field-error" id="err-svc-approval-msg"></span>
                 </div>
 
-                <!-- Row: Eligibility + Processing Time -->
+                
                 <div class="svc-form-row">
                     <div class="svc-form-group">
                         <label class="svc-label" for="svc-eligibility">Eligibility <span class="svc-optional">(optional)</span></label>
@@ -455,7 +455,7 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </div>
 
-                <!-- Contact Info (shown only for info/walk-in type) -->
+                
                 <div class="svc-form-group svc-contact-group" id="svc-contact-group" style="display:none;">
                     <label class="svc-label" for="svc-contact">Contact Information <span class="svc-required">*</span></label>
                     <textarea id="svc-contact" class="svc-textarea" rows="3" placeholder="e.g. SK Hotline: 0917-123-4567&#10;SK Office: Barangay Hall Room 2&#10;Available: Mon–Fri, 8AM–5PM"></textarea>
@@ -463,7 +463,7 @@ RoleMiddleware::requireAdmin();
                     <span class="svc-field-error" id="err-svc-contact"></span>
                 </div>
 
-                <!-- Status -->
+                
                 <div class="svc-form-group">
                     <label class="svc-label" for="svc-status-field">Initial Status <span class="svc-required">*</span></label>
                     <select id="svc-status-field" class="svc-select-input">
@@ -472,12 +472,12 @@ RoleMiddleware::requireAdmin();
                     </select>
                 </div>
 
-            </div><!-- /tab 1 -->
+            </div>
 
-            <!-- ── TAB 2: REQUIREMENTS ── -->
+            
             <div class="svc-tab-panel" id="svc-panel-2">        
 
-                <!-- Requirements textarea -->
+                
                 <div class="svc-form-group">
                     <label class="svc-label" for="svc-requirements">
                         Document Requirements
@@ -499,7 +499,7 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </div>
 
-                <!-- Attachment upload -->
+                
                 <div class="svc-form-group" style="margin-top: 4px;">
                     <label class="svc-label">
                         Downloadable Forms / Attachments
@@ -514,23 +514,23 @@ RoleMiddleware::requireAdmin();
                             <p class="svc-attachment-meta">PDF, DOC, DOCX, XLSX — max 10MB each</p>
                         </div>
                     </div>
-                    <!-- Attachment list (filled dynamically) -->
+                    
                     <div class="svc-attachment-list" id="svc-attachment-list"></div>
                     <button type="button" class="svc-attachment-add-more" id="svc-attachment-add-more" style="display:none;">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                         Add another file
                         <input type="file" class="svc-attachment-add-more-input" id="svc-attachment-add-more-input" accept=".pdf,.doc,.docx,.xlsx" multiple>
                     </button>
-                    <!-- existing attachment names (edit mode) -->
+                    
                     <input type="hidden" id="svc-existing-attachment" value="">
                 </div>
 
-            </div><!-- /tab 2 -->
+            </div>
 
-            <!-- ── TAB 3: SETTINGS ── -->
+            
             <div class="svc-tab-panel" id="svc-panel-3">
 
-                <!-- Max Capacity toggle -->
+                
                 <div class="svc-settings-card">
                     <div class="svc-settings-card-header">
                         <div class="svc-settings-card-info">
@@ -558,7 +558,7 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </div>
 
-                <!-- Notification setting (future) -->
+                
                 <div class="svc-settings-card svc-settings-card--muted">
                     <div class="svc-settings-card-header">
                         <div class="svc-settings-card-info">
@@ -572,7 +572,7 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </div>
 
-                <!-- Visibility setting (future) -->
+                
                 <div class="svc-settings-card svc-settings-card--muted">
                     <div class="svc-settings-card-header">
                         <div class="svc-settings-card-info">
@@ -586,9 +586,9 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </div>
 
-            </div><!-- /tab 3 -->
+            </div>
 
-        </div><!-- /modal-body -->
+        </div>
 
         <div class="svc-modal-footer">
             <button class="btn-admin-sm" id="svc-modal-cancel">Cancel</button>
@@ -611,7 +611,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- VIEW SERVICE MODAL -->
+
 <div class="svc-view-overlay" id="svc-view-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="svc-view-name">
     <div class="svc-view-box">
 
@@ -639,7 +639,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
+
 <div class="svc-confirm-overlay" id="svc-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="svc-confirm-box">
         <div class="svc-confirm-icon">
@@ -654,7 +654,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- TOAST -->
+
 <div class="svc-toast" id="svc-toast" aria-live="polite"></div>
 
 <script src="../../../scripts/management/admin/admin_manage_services.js?v=<?= time() ?>"></script>

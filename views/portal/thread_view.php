@@ -19,7 +19,7 @@ if (!$thread_id) {
     exit;
 }
 
-// ── Sanction check ────────────────────────────────────────────
+
 require_once __DIR__ . '/../../backend/models/SanctionModel.php';
 $sanctionModel  = new SanctionModel($conn);
 $sanction_level = $sanctionModel->getActiveLevel((int)$user_id);
@@ -36,7 +36,7 @@ if ($is_banned) {
     $s_row = $s_stmt->fetch(PDO::FETCH_ASSOC);
     if ($s_row) $sanction_meta = $s_row;
 }
-// ─────────────────────────────────────────────────────────────
+
 
 $thread = $threadModel->getThreadById($thread_id, (int)$user_id);
 if (!$thread) {
@@ -47,15 +47,15 @@ if (!$thread) {
 $images   = $threadModel->getThreadImages($thread_id);
 $comments = $commentModel->getCommentsByThread($thread_id, (int)$user_id);
 
-// Mod / SK Official comments always appear first; preserve original order within each group
+
 usort($comments, function ($a, $b) {
     $a_mod = (int)!empty($a['is_mod_comment']);
     $b_mod = (int)!empty($b['is_mod_comment']);
-    if ($b_mod !== $a_mod) return $b_mod - $a_mod;   // mod comments first
-    return strtotime($b['created_at']) - strtotime($a['created_at']); // then newest first
+    if ($b_mod !== $a_mod) return $b_mod - $a_mod;   
+    return strtotime($b['created_at']) - strtotime($a['created_at']); 
 });
 
-// --- Helpers ---
+
 $cat_labels = [
     'inquiry'        => 'Inquiry',
     'complaint'      => 'Complaint',
@@ -100,10 +100,10 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
             include __DIR__ . '/../../components/portal/topbar.php';
             ?>
 
-            <!-- THREAD CONTAINER -->
+            
             <div class="thread-container">
 
-                <!-- BACK LINK -->
+                
                 <a href="feed_page.php" class="thread-back-link">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -111,19 +111,19 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                     Back to Community Feed
                 </a>
 
-                <!-- THREAD CARD -->
+                
                 <article class="thread-main-card">
 
-                    <!-- BADGES: category + status only (priority removed) -->
+                    
                     <div class="feed-card-badges">
                         <span class="ann-badge category-<?= $cat_key ?>"><?= $cat_label ?></span>
                         <span class="feed-badge status-<?= $thread['status'] ?>"><?= ucfirst($thread['status']) ?></span>
                     </div>
 
-                    <!-- TITLE -->
+                    
                     <h1 class="thread-title"><?= htmlspecialchars($thread['subject']) ?></h1>
 
-                    <!-- META -->
+                    
                     <div class="thread-meta">
                         <div class="thread-author-avatar">
                             <?= strtoupper(substr($thread['author_name'], 0, 1)) ?>
@@ -137,12 +137,12 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                         </div>
                     </div>
 
-                    <!-- BODY -->
+                    
                     <div class="thread-body">
                         <?= nl2br(htmlspecialchars($thread['message'])) ?>
                     </div>
 
-                    <!-- IMAGES (only shown on thread view, not on cards) -->
+                    
                     <?php if (!empty($images)) : ?>
                         <div class="thread-images-grid">
                             <?php foreach ($images as $img) : ?>
@@ -153,7 +153,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                         </div>
                     <?php endif; ?>
 
-                    <!-- ACTIONS -->
+                    
                     <div class="thread-actions">
                         <button class="support-btn <?= $thread['user_supported'] ? 'active' : '' ?>" id="thread-support-btn" data-thread-id="<?= $thread_id ?>" title="<?= $thread['user_supported'] ? 'Remove support' : 'I support this' ?>">
                             <img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon">
@@ -168,7 +168,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                             <span class="bm-label"><?= $thread['is_bookmarked'] ? 'Bookmarked' : 'Bookmark' ?></span>
                         </button>
 
-                        <!-- THREAD REPORT BUTTON (only for others' threads) -->
+                        
                         <?php if ((int)$user_id !== (int)$thread['author_id']) : ?>
                             <button class="thread-report-btn" id="thread-report-btn" data-report-type="thread" data-target-id="<?= $thread_id ?>" title="Report this thread">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -178,7 +178,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                             </button>
                         <?php endif; ?>
 
-                        <!-- THREAD DELETE BUTTON (only for own threads) -->
+                        
                         <?php if ((int)$user_id === (int)$thread['author_id']) : ?>
                             <button class="thread-delete-btn" id="thread-delete-btn" data-thread-id="<?= $thread_id ?>" title="Delete this thread">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -198,7 +198,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                         <span class="comments-count" id="comments-count"><?= count($comments) ?></span>
                     </h2>
 
-                    <!-- MAIN REPLY BOX -->
+                    
                     <?php if (!$is_banned) : ?>
                         <div class="reply-box">
                             <div class="reply-avatar">
@@ -224,7 +224,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                         </div>
                     <?php endif; ?>
 
-                    <!-- COMMENT LIST -->
+                    
                     <div class="comment-list" id="comment-list">
 
                         <?php if (empty($comments)) : ?>
@@ -290,7 +290,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                                                 <?php endif; ?>
                                             </div>
 
-                                            <!-- REPLIES -->
+                                            
                                             <?php if (!empty($c['replies'])) : ?>
                                                 <div class="reply-list" id="reply-list-<?= (int)$c['id'] ?>">
                                                     <?php foreach ($c['replies'] as $r) :
@@ -353,7 +353,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                                                 <div class="reply-list" id="reply-list-<?= (int)$c['id'] ?>"></div>
                                             <?php endif; ?>
 
-                                            <!-- INLINE REPLY BOX (hidden by default) -->
+                                            
                                             <div class="inline-reply-box" id="reply-box-<?= (int)$c['id'] ?>" style="display:none;">
                                                 <textarea class="concern-textarea reply-textarea inline-reply-textarea" rows="2" placeholder="Write a reply…" data-comment-id="<?= (int)$c['id'] ?>"></textarea>
                                                 <div class="inline-reply-footer">
@@ -374,18 +374,18 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
 
                 </section>
 
-            </div><!-- /.thread-container -->
+            </div>
 
         </main>
     </div>
 
-    <!-- LIGHTBOX -->
+    
     <div class="lightbox-overlay" id="lightbox-overlay" style="display:none;">
         <button class="lightbox-close" id="lightbox-close">&times;</button>
         <img class="lightbox-img" id="lightbox-img" src="" alt="Image preview">
     </div>
 
-    <!-- DELETE CONFIRM MODAL -->
+    
     <div class="delete-modal-overlay" id="delete-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
         <div class="delete-modal">
             <div class="delete-modal-icon">🗑️</div>
@@ -400,7 +400,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
         </div>
     </div>
 
-    <!-- REPORT MODAL -->
+    
     <div class="report-modal-overlay" id="report-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
         <div class="report-modal">
             <div class="report-modal-header">
@@ -410,7 +410,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
             <div class="report-modal-body">
                 <p class="report-modal-desc">Help us understand what's wrong with this content. Select a reason below.</p>
 
-                <!-- CATEGORY CHECKBOXES -->
+                
                 <div class="report-categories">
                     <label class="report-category-option">
                         <input type="radio" name="report-category" value="inappropriate">
@@ -443,7 +443,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                 </div>
                 <p class="report-category-error" id="report-category-error"></p>
 
-                <!-- OPTIONAL NOTE -->
+                
                 <div class="report-note-wrap">
                     <label class="report-note-label" for="report-note">Additional details <span class="report-note-optional">(optional)</span></label>
                     <textarea id="report-note" class="concern-textarea report-note-textarea" rows="3" placeholder="Provide any extra context that may help the moderator…" maxlength="500"></textarea>
@@ -458,10 +458,10 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
         </div>
     </div>
 
-    <!-- TOAST -->
+    
     <div id="feed-toast" class="feed-toast" aria-live="polite"></div>
 
-    <!-- BAN NOTICE MODAL -->
+    
     <?php if ($is_banned) :
         $ban_level_label = $sanction_level === 3 ? 'Permanent Ban' : '7-Day Posting Ban';
         $ban_icon        = $sanction_level === 3 ? '🚫' : '⏳';

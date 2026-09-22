@@ -12,7 +12,7 @@ body {
   min-height: 100vh;
 }
 
-/* HEADER */
+
 .feed-header {
   text-align: center;
   margin-bottom: 36px;
@@ -57,7 +57,7 @@ body {
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.38);
 }
 
-/* CONTROLS */
+
 .community-controls {
   display: flex;
   align-items: center;
@@ -70,7 +70,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  flex: 2 1 0; /* grows more than the dropdown siblings */
+  flex: 2 1 0; 
 }
 .community-search-icon {
   position: absolute;
@@ -132,7 +132,7 @@ body {
   border-color: var(--accent);
 }
 
-/* FEED GRID */
+
 .community-feed {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -140,7 +140,7 @@ body {
   align-items: start;
 }
 
-/* NO RESULTS */
+
 .pub-no-results {
   grid-column: 1 / -1;
   text-align: center;
@@ -149,7 +149,7 @@ body {
   color: var(--text-secondary);
 }
 
-/* CARD */
+
 .thread-card {
   background: var(--surface);
   padding: 22px 24px;
@@ -170,12 +170,12 @@ body {
   transform: translateY(-2px);
 }
 
-/* pinned card top border */
+
 .pub-feed-card[data-pinned="1"] {
   border-top: 3px solid #818cf8;
 }
 
-/* BADGES */
+
 .thread-header {
   display: flex;
   flex-wrap: wrap;
@@ -212,7 +212,7 @@ body {
   line-height: 1.6;
 }
 
-/* Category colours */
+
 .category-badge.program,
 .category-badge.inquiry {
   background: #dbeafe;
@@ -236,7 +236,7 @@ body {
   color: #475569;
 }
 
-/* Status colours */
+
 .status-badge.pending {
   background: #fef3c7;
   color: #92400e;
@@ -250,7 +250,7 @@ body {
   color: #166534;
 }
 
-/* CARD CONTENT */
+
 .thread-title {
   font-size: 17px;
   font-weight: 600;
@@ -308,7 +308,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* PAGINATION */
+
 .pagination-wrapper {
   grid-column: 1 / -1;
   display: flex;
@@ -380,7 +380,7 @@ body {
   color: white;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 900px) {
   .community-feed-page {
     padding: 40px 5%;

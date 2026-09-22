@@ -1,4 +1,4 @@
-/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
 
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -16,7 +16,7 @@
 .announcements-section  { animation-delay: 0.25s; }
 
 
-/* ---- TABLE WRAPPER ---- */
+
 .req-table-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -25,7 +25,7 @@
     overflow-x: auto;
 }
 
-/* ---- TABLE ---- */
+
 .req-table {
     width: 100%;
     border-collapse: collapse;
@@ -64,7 +64,7 @@
     vertical-align: middle;
 }
 
-/* SERVICE NAME */
+
 .svc-name {
     font-weight: 600;
     color: var(--text-body);
@@ -76,7 +76,7 @@
     vertical-align: middle;
 }
 
-/* CATEGORY TAGS */
+
 .req-cat-tag {
     display: inline-flex;
     align-items: center;
@@ -97,7 +97,7 @@
 .tag-legal       { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
 .tag-other       { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
 
-/* STATUS BADGES */
+
 .req-status-badge {
     display: inline-flex;
     align-items: center;
@@ -117,14 +117,14 @@
 .status-rejected       { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 .status-cancelled      { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
 
-/* LAST UPDATE COL */
+
 .update-col {
     color: var(--text-muted);
     font-size: 12px;
     white-space: nowrap;
 }
 
-/* ACTION REQUIRED BANNER */
+
 .action-required-banner {
     display: flex;
     align-items: flex-start;
@@ -162,7 +162,7 @@
     line-height: 1.55;
 }
 
-/* VIEW BUTTON */
+
 .btn-view-req {
     display: inline-flex;
     align-items: center;
@@ -185,7 +185,7 @@
     color: white;
 }
 
-/* NO RESULTS */
+
 .no-results {
     text-align: center;
     padding: 48px 24px;
@@ -229,7 +229,7 @@
     to   { opacity: 1; transform: translateY(0)   scale(1);    }
 }
 
-/* MODAL HEADER */
+
 .modal-header {
     display: flex;
     align-items: center;
@@ -293,7 +293,7 @@
     color: #b91c1c;
 }
 
-/* STATUS STRIP */
+
 .modal-status-strip {
     display: flex;
     background: var(--bg);
@@ -329,7 +329,7 @@
     line-height: 1.4;
 }
 
-/* MODAL BODY */
+
 .modal-body {
     padding: 24px;
     overflow-y: auto;
@@ -339,7 +339,7 @@
     gap: 24px;
 }
 
-/* DETAIL BLOCKS */
+
 .req-detail-block {
     display: flex;
     flex-direction: column;
@@ -357,7 +357,7 @@
     margin-bottom: 0;
 }
 
-/* MY SUBMISSION GRID */
+
 .submission-details-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -400,7 +400,7 @@
     margin: 0;
 }
 
-/* DOCUMENTS LIST */
+
 .detail-docs-list {
     display: flex;
     flex-direction: column;
@@ -494,7 +494,7 @@
     width: 50%;
 }
 
-/* FILE PREVIEW MODAL */
+
 .req-file-preview-overlay {
     position: fixed;
     inset: 0;
@@ -658,7 +658,7 @@
     opacity: 0.5;
 }
 
-/* TIMELINE */
+
 .req-timeline {
     display: flex;
     flex-direction: column;
@@ -720,7 +720,7 @@
     color: var(--text-muted);
 }
 
-/* SK OFFICER NOTES THREAD */
+
 #sk-notes-thread {
     display: flex;
     flex-direction: column;
@@ -807,7 +807,7 @@
     word-wrap: break-word;
 }
 
-/* NO RESPONSE YET */
+
 .no-response-yet {
     display: flex;
     align-items: center;
@@ -824,7 +824,7 @@
 .no-response-yet span { font-size: 20px; flex-shrink: 0; }
 .no-response-yet p    { margin: 0; line-height: 1.5; }
 
-/* MODAL FOOTER */
+
 .modal-footer {
     display: flex;
     align-items: center;
@@ -910,7 +910,7 @@
     line-height: 1.5;
 }
 
-/* EXISTING DOCUMENTS (EDIT MODE) */
+
 .existing-docs-list {
     display: flex;
     flex-direction: column;
@@ -962,7 +962,7 @@
     color: var(--text-muted);
 }
 
-/* FILE DROP ZONE (EDIT MODE) */
+
 .file-drop-zone {
     border: 2px dashed var(--border);
     border-radius: var(--radius);
@@ -1125,7 +1125,7 @@
     color: #b91c1c;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 900px) {
     .req-table thead th:nth-child(3),
     .req-table tbody td:nth-child(3) { display: none; }
@@ -1145,7 +1145,7 @@
     .req-table tbody td:nth-child(5) { display: none; }
 }
 
-/* DANGER BUTTON */
+
 .btn-danger-portal {
     display: inline-flex;
     align-items: center;
@@ -1164,7 +1164,7 @@
 .btn-danger-portal:hover  { background: #b91c1c; }
 .btn-danger-portal:disabled { opacity: .55; cursor: not-allowed; }
 
-/* ── TOAST NOTIFICATIONS ────────────────────────────────── */
+
 
 @keyframes req-toast-in {
     from { opacity: 0; transform: translateY(12px) scale(0.97); }
@@ -1195,7 +1195,7 @@
     pointer-events: none;
 }
 
-/* Show states */
+
 .req-toast[style*="block"],
 .req-toast[style*="flex"] {
     animation: req-toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);

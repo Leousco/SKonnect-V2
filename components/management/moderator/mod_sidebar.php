@@ -14,18 +14,18 @@ function modIsGroupOpen(array $pages): string {
 
 <aside class="mod-sidebar">
 
-    <!-- Sidebar Header -->
+    
     <div class="mod-sidebar-header">
         <div class="mod-sidebar-badge">Moderator</div>
         <h2>SKonnect</h2>
         <p>Moderator Panel</p>
     </div>
 
-    <!-- Navigation -->
+    
     <nav class="mod-sidebar-nav" aria-label="Moderator navigation">
         <ul>
 
-            <!-- Dashboard -->
+            
             <li class="<?= modIsActive('mod_dashboard.php') ?>">
                 <a href="mod_dashboard.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -41,11 +41,11 @@ function modIsGroupOpen(array $pages): string {
 
         </ul>
 
-        <!-- MODERATION -->
+        
         <div class="sidebar-section-title">Moderation</div>
         <ul>
 
-            <!-- Community -->
+            
             <li class="<?= modIsActive('mod_feed.php') ?>">
                 <a href="mod_feed.php">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -53,7 +53,7 @@ function modIsGroupOpen(array $pages): string {
                 </a>
             </li>
 
-            <!-- Reports -->
+            
             <li class="<?= modIsActive('mod_queue.php') ?>">
                 <a href="mod_queue.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -64,7 +64,7 @@ function modIsGroupOpen(array $pages): string {
                 </a>
             </li>
 
-            <!-- Warnings -->
+            
             <li class="<?= modIsActive('mod_sanctions.php') ?>">
                 <a href="mod_sanctions.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -77,11 +77,11 @@ function modIsGroupOpen(array $pages): string {
 
         </ul>
 
-        <!-- SYSTEM (Read-only) -->
+        
         <div class="sidebar-section-title">System</div>
         <ul>
 
-            <!-- Activity Logs -->
+            
             <li class="<?= modIsActive('mod_activity_logs.php') ?>">
                 <a href="mod_activity_logs.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -97,7 +97,7 @@ function modIsGroupOpen(array $pages): string {
         </ul>
     </nav>
 
-    <!-- Sidebar Footer -->
+    
     <div class="mod-sidebar-footer">
         <div class="mod-sidebar-footer-text">Sangguniang Kabataan</div>
         <div class="mod-sidebar-footer-sub">&copy; <?= date('Y') ?> SKonnect</div>

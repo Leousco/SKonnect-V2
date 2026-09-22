@@ -57,7 +57,7 @@
         return res.json();
     }
   
-    // ── STATS ────────────────────────────────────────────────
+    
     async function loadStats() {
         const data = await fetchJSON('stats');
         if (data.status !== 'success') return;
@@ -68,7 +68,7 @@
         document.getElementById('stat-notifs').textContent   = s.unread_notifs;
     }
   
-    // ── ACTIVITY ─────────────────────────────────────────────
+    
     async function loadActivity() {
         const listEl = document.getElementById('activity-list');
         const data   = await fetchJSON('activity');
@@ -94,7 +94,7 @@
         }).join('');
     }
   
-    // ── ANNOUNCEMENTS ────────────────────────────────────────
+    
     async function loadAnnouncements() {
         const listEl = document.getElementById('announcement-list');
         const data   = await fetchJSON('announcements');
@@ -133,7 +133,7 @@
         }).join('');
     }
   
-    // ── COMMUNITY DISCUSSIONS ────────────────────────────────
+    
     function initials(name) {
         return String(name)
             .split(' ')
@@ -175,7 +175,7 @@
         }).join('');
     }
 
-    // ── AVAILABLE SERVICES ───────────────────────────────────
+    
     const SERVICE_BADGE = {
         medical:     'svc-badge-medical',
         education:   'svc-badge-education',
@@ -214,7 +214,7 @@
         }).join('');
     }
 
-    // ── EVENTS / CALENDAR ────────────────────────────────────
+    
     async function loadEvents() {
         const data = await fetchJSON('events');
         if (data.status !== 'success') return;
@@ -230,7 +230,7 @@
 
         renderCalendar();
 
-        // swap skeleton → real calendar
+        
         document.getElementById('calendar-skeleton').style.display = 'none';
         document.getElementById('calendar').style.display = '';
     }
@@ -348,7 +348,7 @@
         monthEvents.forEach(([, ev]) => {
             const item = document.createElement('div');
             item.className = 'legend-item';
-            item.title = ev.title; // full name on hover
+            item.title = ev.title; 
             item.innerHTML = `<div class="legend-dot" style="background:${ev.color.dot}"></div><span>${escapeHtml(ev.title)}</span>`;
             legendEl.appendChild(item);
         });
@@ -376,8 +376,7 @@
             .replace(/"/g, '&quot;');
     }
   
-    // ── EVENT MODAL ───────────────────────────────────────────
-  
+      
     function buildModal() {
         const overlay = document.createElement('div');
         overlay.className = 'event-modal-overlay';
@@ -483,8 +482,7 @@
         document.body.style.overflow = '';
     }
   
-    // ── CALENDAR NAV ─────────────────────────────────────────
-    document.querySelector('.prev-month').addEventListener('click', () => {
+        document.querySelector('.prev-month').addEventListener('click', () => {
         current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
         renderCalendar();
     });
@@ -494,8 +492,7 @@
         renderCalendar();
     });
   
-    // ── INIT ─────────────────────────────────────────────────
-    buildModal();
+        buildModal();
     loadStats();
     loadActivity();
     loadAnnouncements();

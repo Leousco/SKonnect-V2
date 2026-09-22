@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/ModFlagThreadController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('moderator');
 

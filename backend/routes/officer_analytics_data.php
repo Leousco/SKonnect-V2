@@ -1,9 +1,9 @@
 <?php
-/**
- * backend/routes/officer_analytics_data.php
- * JSON API — provides all officer analytics data.
- * Accepts: ?period=month|quarter|year
- */
+
+
+
+
+
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('sk_officer');
@@ -18,7 +18,7 @@ try {
     $period = $_GET['period'] ?? 'month';
     $now    = new DateTime();
 
-    // ── DATE RANGE ────────────────────────────────────────────────
+    
     switch ($period) {
         case 'quarter':
             $q          = (int)ceil((int)$now->format('n') / 3);
@@ -41,7 +41,7 @@ try {
             break;
     }
 
-    // ── 1. KPIs ───────────────────────────────────────────────────
+    
     $stmtKpi = $db->prepare("
         SELECT
             COUNT(*)                                                              AS total,
@@ -70,7 +70,7 @@ try {
 
     $annCount = (int)$db->query("SELECT COUNT(*) FROM announcements WHERE status = 'active'")->fetchColumn();
 
-    // ── 2. VOLUME CHART ───────────────────────────────────────────
+    
     $stmtVol = $db->prepare("
         SELECT
             submitted_at::date                                              AS d,
@@ -102,7 +102,7 @@ try {
             $cursor->modify('+1 day');
         }
     } else {
-        // Aggregate to monthly buckets
+        
         $monthMap = [];
         foreach ($volRows as $key => $r) {
             $mo = substr($key, 0, 7);
@@ -123,7 +123,7 @@ try {
         }
     }
 
-    // ── 3. SERVICE BREAKDOWN ──────────────────────────────────────
+    
     $stmtSvcBreak = $db->prepare("
         SELECT sv.name, sv.category, COUNT(*) AS cnt
         FROM service_applications sa
@@ -140,7 +140,7 @@ try {
         'count' => (int)$r['cnt'],
     ], $stmtSvcBreak->fetchAll(PDO::FETCH_ASSOC));
 
-    // ── 4. EVENTS ─────────────────────────────────────────────────
+    
     $today        = $now->format('Y-m-d');
     $upcomingEvts = (int)$db->query("SELECT COUNT(*) FROM events WHERE event_date >= '{$today}'")->fetchColumn();
     $pastEvts     = (int)$db->query("SELECT COUNT(*) FROM events WHERE event_date < '{$today}'")->fetchColumn();
@@ -174,7 +174,7 @@ try {
         }
     }
 
-    // ── 5. ANNOUNCEMENTS ──────────────────────────────────────────
+    
     $annStats = $db->query("
         SELECT
             COUNT(*) FILTER (WHERE status = 'active')   AS published,
@@ -183,7 +183,7 @@ try {
         FROM announcements
     ")->fetch(PDO::FETCH_ASSOC);
 
-    // ── 6. SERVICES LIST ──────────────────────────────────────────
+    
     $stmtSvcList = $db->prepare("
         SELECT sv.name, sv.category, sv.status,
                COUNT(sa.id) AS requests
@@ -203,7 +203,7 @@ try {
         'requests' => (int)$r['requests'],
     ], $stmtSvcList->fetchAll(PDO::FETCH_ASSOC));
 
-    // ── 7. RECENT ACTIVITY ────────────────────────────────────────
+    
     $stmtAct = $db->query("
         (
             SELECT
@@ -286,7 +286,7 @@ try {
         ];
     }
 
-    // ── OUTPUT ────────────────────────────────────────────────────
+    
     echo json_encode([
         'success' => true,
         'period'  => $periodLabel,

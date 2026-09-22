@@ -1,9 +1,9 @@
 <?php
-/**
- * backend/routes/officer_dashboard_data.php
- * JSON API — provides all officer dashboard data.
- * Used on page load (PHP include) and by JS for periodic auto-refresh.
- */
+
+
+
+
+
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('sk_officer');
@@ -22,7 +22,7 @@ try {
     $annM = new AnnouncementModel();
     $svcM = new ServiceModel();
 
-    // ── 1. WIDGET COUNTS ─────────────────────────────────────────
+    
     $statusCounts       = $srm->getStatusCounts();
     $pendingCount       = $statusCounts['pending'] + $statusCounts['action_required'];
     $actionRequiredCount = $statusCounts['action_required'];
@@ -47,7 +47,7 @@ try {
           AND YEAR(created_at)  = YEAR(CURDATE())
     ")->fetchColumn();
 
-    // ── 2. PENDING REQUESTS TABLE (top 5) ────────────────────────
+    
     $stmtReq = $db->prepare("
         SELECT
             sa.id,
@@ -65,7 +65,7 @@ try {
     $stmtReq->execute();
     $recentRequests = $stmtReq->fetchAll(PDO::FETCH_ASSOC);
 
-    // ── 3. BAR CHART: Requests by Service Name (current month) ───
+    
     $stmtBar = $db->prepare("
         SELECT sv.name AS service_name, COUNT(*) AS cnt
         FROM service_applications sa
@@ -79,7 +79,7 @@ try {
     $stmtBar->execute();
     $barData = $stmtBar->fetchAll(PDO::FETCH_ASSOC);
 
-    // ── 4. SPARKLINE: Monthly request volume (last 6 months) ─────
+    
     $stmtSpark = $db->query("
         SELECT DATE_FORMAT(submitted_at, '%Y-%m') AS ym, COUNT(*) AS cnt
         FROM service_applications
@@ -100,7 +100,7 @@ try {
         $sparkValues[] = $sparkRaw[$key] ?? 0;
     }
 
-    // Sparkline SVG path computation
+    
     $svgW   = 560; $svgH = 120; $padT = 10; $padB = 10;
     $maxVal = max(array_merge($sparkValues, [1]));
     $n      = count($sparkValues);
@@ -116,7 +116,7 @@ try {
     $lastX         = $lastParts[0];
     $sparkAreaPath = $sparkPath . " L{$lastX},{$svgH} L0,{$svgH} Z";
 
-    // Sparkline summary stats
+    
     $thisMonthCount = $sparkValues[count($sparkValues) - 1] ?? 0;
     $resolvedMonth  = (int)$db->query("
         SELECT COUNT(*) FROM service_applications
@@ -132,8 +132,8 @@ try {
     ")->fetchColumn();
     $approvalRate = $decidedMonth > 0 ? round(($resolvedMonth / $decidedMonth) * 100) . '%' : 'N/A';
 
-    // ── 5. RECENT ACTIVITY FEED ───────────────────────────────────
-    // Merge: officer action notes | recently published announcements | upcoming events
+    
+    
     $stmtActivity = $db->query("
         (
             SELECT
@@ -176,14 +176,14 @@ try {
     ");
     $recentActivity = $stmtActivity->fetchAll(PDO::FETCH_ASSOC);
 
-    // ── 6. RECENT ANNOUNCEMENTS (active, latest 4) ────────────────
+    
     $recentAnn = array_slice($annM->getAll(['status' => 'active']), 0, 4);
-    // Fallback: if no active ones, grab any latest
+    
     if (empty($recentAnn)) {
         $recentAnn = array_slice($annM->getAll(), 0, 4);
     }
 
-    // ── OUTPUT ────────────────────────────────────────────────────
+    
     echo json_encode([
         'success' => true,
         'widgets' => [

@@ -3,7 +3,7 @@
    styles/management/moderator/mod_feed.css
    ============================================================ */
 
-/* ── CONTROLS BAR ────────────────────────────────────────── */
+
 
 .adm-feed-controls {
   display: flex;
@@ -107,7 +107,7 @@
   color: var(--ap-text-muted);
 }
 
-/* ── FEED GRID ───────────────────────────────────────────── */
+
 
 .adm-feed-grid {
   display: grid;
@@ -115,7 +115,7 @@
   gap: 16px;
 }
 
-/* ── FEED CARD ───────────────────────────────────────────── */
+
 
 .adm-feed-card {
   background: var(--ap-surface-2);
@@ -145,7 +145,7 @@
   border-top-color: #22c55e;
 }
 
-/* Hidden card visual */
+
 .adm-feed-card--removed {
   opacity: 0.62;
   border-top-color: #94a3b8 !important;
@@ -158,19 +158,19 @@
   );
 }
 
-/* Flagged card visual */
+
 .adm-feed-card--flagged {
   border-top-color: #f97316 !important;
   background: var(--ap-surface-2);
 }
 
-/* Card body */
+
 .adm-feed-card-body {
   padding: 16px 18px 12px;
   flex: 1;
 }
 
-/* ── BADGE ROWS ──────────────────────────────────────────── */
+
 
 .adm-feed-badges {
   display: flex;
@@ -196,7 +196,7 @@
   white-space: nowrap;
 }
 
-/* Category badges */
+
 .adm-cat-badge.category-inquiry {
   background: #ccfbf1;
   color: #0f766e;
@@ -223,7 +223,7 @@
   border: 1px solid #cbd5e1;
 }
 
-/* Status badges */
+
 .adm-status-badge.status-pending {
   background: #fef3c7;
   color: #92400e;
@@ -240,7 +240,7 @@
   border: 1px solid #86efac;
 }
 
-/* State indicators */
+
 .adm-flag-indicator {
   background: #fff7ed;
   color: #c2410c;
@@ -253,7 +253,7 @@
   border: 1px solid #cbd5e1;
 }
 
-/* ── CARD CONTENT ────────────────────────────────────────── */
+
 
 .adm-feed-title {
   font-size: 14px;
@@ -306,7 +306,7 @@
   letter-spacing: 0.3px;
 }
 
-/* ── CARD FOOTER ─────────────────────────────────────────── */
+
 
 .adm-feed-card-footer {
   display: flex;
@@ -319,7 +319,7 @@
   flex-wrap: wrap;
 }
 
-/* ── STATUS TOGGLER ──────────────────────────────────────── */
+
 
 .adm-status-toggler {
   display: inline-flex;
@@ -369,7 +369,7 @@
   color: #166534;
 }
 
-/* ── MODERATOR ACTION BUTTONS ────────────────────────────── */
+
 
 .adm-thread-actions {
   display: flex;
@@ -401,14 +401,14 @@
   flex-shrink: 0;
 }
 
-/* View */
+
 .adm-action-view:hover {
   background: var(--ap);
   border-color: var(--ap);
   color: white;
 }
 
-/* Flag */
+
 .adm-action-flag:hover {
   background: #fff7ed;
   color: #c2410c;
@@ -425,7 +425,7 @@
   background: #ffedd5;
 }
 
-/* Remove/Hide */
+
 .adm-action-remove:hover {
   background: #fee2e2;
   color: #b91c1c;
@@ -442,7 +442,7 @@
   background: #e2e8f0;
 }
 
-/* ── NO RESULTS ──────────────────────────────────────────── */
+
 
 .adm-no-results {
   display: flex;
@@ -461,7 +461,7 @@
   opacity: 0.4;
 }
 
-/* ── PAGINATION ──────────────────────────────────────────── */
+
 
 .adm-pagination {
   display: flex;
@@ -527,11 +527,11 @@
   border-color: var(--ap);
 }
 
-/* ══════════════════════════════════════════════════════════
-   SLIDE-IN THREAD PANEL
-══════════════════════════════════════════════════════════ */
 
-/* Backdrop */
+
+
+
+
 .adm-panel-backdrop {
   position: fixed;
   inset: 0;
@@ -547,7 +547,7 @@
   pointer-events: all;
 }
 
-/* Panel itself */
+
 .adm-thread-panel {
   position: fixed;
   top: 0;
@@ -570,12 +570,9 @@
   transform: translateX(0);
 }
 
-/* Prevent page scroll when panel is open */
-body.adm-panel-open {
-  overflow: hidden;
-}
 
-/* ── PANEL HEADER ────────────────────────────────────────── */
+
+
 
 .adm-panel-header {
   display: flex;
@@ -625,8 +622,6 @@ body.adm-panel-open {
   height: 16px;
 }
 
-/* ── PANEL BODY (scrollable) ─────────────────────────────── */
-
 .adm-panel-body {
   flex: 1;
   overflow-y: auto;
@@ -636,7 +631,7 @@ body.adm-panel-open {
   gap: 0;
 }
 
-/* Loading state */
+
 .adm-panel-loading {
   display: flex;
   flex-direction: column;
@@ -663,7 +658,7 @@ body.adm-panel-open {
   }
 }
 
-/* ── PANEL CONTENT ───────────────────────────────────────── */
+
 
 .adm-panel-title {
   font-size: 19px;
@@ -673,7 +668,7 @@ body.adm-panel-open {
   margin: 0 0 16px;
 }
 
-/* Meta row */
+
 .adm-panel-meta {
   display: flex;
   align-items: center;
@@ -724,7 +719,7 @@ body.adm-panel-open {
   color: var(--ap-text-muted);
 }
 
-/* Divider */
+
 .adm-panel-divider {
   height: 1px;
   background: var(--ap-border);
@@ -732,7 +727,7 @@ body.adm-panel-open {
   flex-shrink: 0;
 }
 
-/* Body text */
+
 .adm-panel-body-text {
   font-size: 14px;
   line-height: 1.75;
@@ -741,7 +736,7 @@ body.adm-panel-open {
   white-space: normal;
 }
 
-/* Images grid */
+
 .adm-panel-images {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -770,7 +765,7 @@ body.adm-panel-open {
   display: block;
 }
 
-/* ── PANEL ACTIONS STRIP ─────────────────────────────────── */
+
 
 .adm-panel-actions {
   display: flex;
@@ -793,7 +788,7 @@ body.adm-panel-open {
   flex-direction: column;
 }
 
-/* Panel-specific status toggler — slightly larger */
+
 .adm-panel-actions .adm-status-toggler {
   width: 100%;
 }
@@ -817,7 +812,7 @@ body.adm-panel-open {
   font-size: 12px;
 }
 
-/* ── PANEL COMMENTS ──────────────────────────────────────── */
+
 
 .adm-panel-comments-section {
   display: flex;
@@ -863,7 +858,7 @@ body.adm-panel-open {
   padding: 20px 0 8px;
 }
 
-/* Comment item */
+
 .adm-panel-comment-item {
   display: flex;
   gap: 10px;
@@ -920,7 +915,7 @@ body.adm-panel-open {
   word-break: break-word;
 }
 
-/* Replies */
+
 .adm-panel-replies {
   display: flex;
   flex-direction: column;
@@ -943,7 +938,7 @@ body.adm-panel-open {
   background: var(--ap-lt) !important;
 }
 
-/* ── CONFIRM MODAL ───────────────────────────────────────── */
+
 
 .adm-confirm-overlay {
   position: fixed;
@@ -1041,7 +1036,7 @@ body.adm-panel-open {
   background: #b91c1c;
 }
 
-/* ── TOAST ───────────────────────────────────────────────── */
+
 
 .adm-toast {
   position: fixed;
@@ -1076,7 +1071,7 @@ body.adm-panel-open {
   background: #b91c1c;
 }
 
-/* ── LOADING TOAST ───────────────────────────────────────── */
+
 
 .adm-toast-loading {
   position: fixed;
@@ -1105,7 +1100,7 @@ body.adm-panel-open {
   transform: translateY(0);
 }
 
-/* Shift the regular toast up when the loading toast is also visible */
+
 .adm-toast-loading--show ~ .adm-toast.adm-toast--show,
 .adm-toast.adm-toast--show {
   bottom: 28px;
@@ -1138,7 +1133,7 @@ body.adm-panel-open {
   }
 }
 
-/* ── LIGHTBOX ────────────────────────────────────────────── */
+
 
 .adm-lightbox-overlay {
   position: fixed;
@@ -1183,7 +1178,7 @@ body.adm-panel-open {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 900px) {
   .adm-feed-controls {
@@ -1228,18 +1223,18 @@ body.adm-panel-open {
    Append these to the bottom of your existing mod_feed.css
    ============================================================ */
 
-/* ── CLICKABLE CARD ──────────────────────────────────────── */
+
 
 .adm-feed-card {
   cursor: pointer;
 }
 
-/* Don't show pointer on the interactive footer */
+
 .adm-feed-card-footer {
   cursor: default;
 }
 
-/* ── PINNED CARD STATE ───────────────────────────────────── */
+
 
 .adm-feed-card--pinned {
   border-color: #818cf8;
@@ -1250,7 +1245,7 @@ body.adm-panel-open {
   );
 }
 
-/* ── PIN INDICATOR BADGE (card + panel) ──────────────────── */
+
 
 .adm-pin-indicator {
   display: inline-flex;
@@ -1266,7 +1261,7 @@ body.adm-panel-open {
   white-space: nowrap;
 }
 
-/* ── PIN ACTION BUTTON ───────────────────────────────────── */
+
 
 .adm-action-pin {
   color: var(--ap);
@@ -1285,7 +1280,7 @@ body.adm-panel-open {
   font-weight: 700;
 }
 
-/* ── MOD COMMENT BADGE (panel comments) ─────────────────── */
+
 
 .adm-comment-badge {
   display: inline-flex;
@@ -1301,7 +1296,7 @@ body.adm-panel-open {
   flex-shrink: 0;
 }
 
-/* Mod comment item — subtle left accent */
+
 .adm-panel-comment-item--mod > .adm-panel-comment-body,
 .adm-panel-reply-item.adm-panel-comment-item--mod > .adm-panel-comment-body {
   border-left: 3px solid #93c5fd;
@@ -1309,7 +1304,7 @@ body.adm-panel-open {
   background: #f0f7ff;
 }
 
-/* ── MOD REPLY BOX (panel) ───────────────────────────────── */
+
 
 .adm-panel-reply-box {
   display: flex;
@@ -1395,7 +1390,7 @@ body.adm-panel-open {
   cursor: not-allowed;
 }
 
-/* ── INLINE REPLY UI (per-comment in panel) ──────────────── */
+
 
 .adm-panel-inline-reply-wrap {
   margin-top: 8px;
@@ -1475,9 +1470,9 @@ body.adm-panel-open {
   font-size: 11px;
 }
 
-/* ══════════════════════════════════════════════════════════
-   FLAG CATEGORY MODAL
-══════════════════════════════════════════════════════════ */
+
+
+
 
 .adm-flag-modal-overlay {
   position: fixed;
@@ -1571,7 +1566,7 @@ body.adm-panel-open {
   gap: 8px;
 }
 
-/* Category radio options — mirrors thread_view report modal style */
+
 .adm-flag-categories {
   display: flex;
   flex-direction: column;
@@ -1665,9 +1660,9 @@ body.adm-panel-open {
 }
 
 .adm-remove-indicator--user {
-  background: #fef3c7;     /* amber-100 */
-  color: #92400e;           /* amber-800 */
-  border-color: #fcd34d;   /* amber-300 */
+  background: #fef3c7;     
+  color: #92400e;           
+  border-color: #fcd34d;   
 }
 /* ============================================================
    MOD PANEL — DELETION TAGS
@@ -1675,12 +1670,12 @@ body.adm-panel-open {
    been removed. Mods still see the full content.
    ============================================================ */
 
-/* Slightly dim removed items so they're visually distinct but still readable */
+
 .adm-panel-comment-item--removed {
   opacity: 0.82;
 }
 
-/* Base pill tag */
+
 .adm-deleted-tag {
   display: inline-flex;
   align-items: center;
@@ -1695,14 +1690,14 @@ body.adm-panel-open {
   vertical-align: middle;
 }
 
-/* Removed by moderator — red tint */
+
 .adm-deleted-tag--mod {
   background: #fee2e2;
   color: #b91c1c;
   border: 1px solid #fca5a5;
 }
 
-/* Deleted by the author themselves — amber/neutral tint */
+
 .adm-deleted-tag--user {
   background: #fef3c7;
   color: #92400e;

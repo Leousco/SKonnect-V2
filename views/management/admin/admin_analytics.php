@@ -32,7 +32,7 @@ RoleMiddleware::requireAdmin();
             include __DIR__ . '/../../../components/management/admin/admin_topbar.php';
             ?>
 
-            <!-- ── EXPORT BUTTON ────────────────────────────────── -->
+            
             <div class="an-toolbar">
                 <p class="an-toolbar-label">Live data · refreshes on load</p>
                 <button class="an-export-btn" id="exportPdfBtn">
@@ -193,7 +193,7 @@ RoleMiddleware::requireAdmin();
         ════════════════════════════════════════════════════ -->
             <div class="an-info-row">
 
-                <!-- User Roles -->
+                
                 <section class="an-info-panel">
                     <div class="an-info-header">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="an-info-icon icon-violet">
@@ -221,7 +221,7 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </section>
 
-                <!-- Announcements -->
+                
                 <section class="an-info-panel">
                     <div class="an-info-header">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="an-info-icon icon-amber">
@@ -262,7 +262,7 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </section>
 
-                <!-- Events -->
+                
                 <section class="an-info-panel">
                     <div class="an-info-header">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="an-info-icon icon-green">
@@ -293,7 +293,7 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </section>
 
-                <!-- Threads -->
+                
                 <section class="an-info-panel">
                     <div class="an-info-header">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="an-info-icon icon-indigo">
@@ -341,7 +341,7 @@ RoleMiddleware::requireAdmin();
         ════════════════════════════════════════════════════ -->
             <div class="an-service-row">
 
-                <!-- Top Services table -->
+                
                 <section class="an-chart-panel an-service-table-panel">
                     <div class="an-panel-header">
                         <div>
@@ -369,7 +369,7 @@ RoleMiddleware::requireAdmin();
                     </div>
                 </section>
 
-                <!-- Request Status + Type -->
+                
                 <section class="an-chart-panel an-status-panel">
 
                     <div class="an-panel-header">
@@ -379,7 +379,7 @@ RoleMiddleware::requireAdmin();
                         </div>
                     </div>
                     <div class="an-status-grid" id="statusGrid">
-                        <!-- filled by JS -->
+                        
                     </div>
 
                     <div class="an-divider"></div>
@@ -391,7 +391,7 @@ RoleMiddleware::requireAdmin();
                         </div>
                     </div>
                     <div class="an-type-grid" id="typeGrid">
-                        <!-- filled by JS -->
+                        
                     </div>
 
                 </section>

@@ -1,4 +1,4 @@
-/* ── STAT WIDGETS ────────────────────────────────────────── */
+
 
 .off-widgets {
   display: grid;
@@ -113,19 +113,19 @@
 .widget-trend.danger  { background: #fde8e8; color: #b83232; }
 
 
-/* ═══════════════════════════════════════════════════════════
-   NEWSPAPER GRID
-   Single two-column layout — all panels stack naturally.
-   No separate bottom row; no height-matching.
-   align-items: start is the key: columns are independent
-   stacks, so a short left column doesn't create dead space.
-═══════════════════════════════════════════════════════════ */
+
+
+
+
+
+
+
 
 .off-lower {
   display: grid;
   grid-template-columns: 1fr 320px;
   gap: 22px;
-  align-items: start; /* columns grow independently — no forced height */
+  align-items: start; 
 }
 
 .off-left-col {
@@ -141,7 +141,7 @@
 }
 
 
-/* ── REQUESTS PANEL ──────────────────────────────────────── */
+
 
 .off-requests-panel {
   background: var(--off-surface);
@@ -207,7 +207,7 @@
   flex-shrink: 0;
 }
 
-/* Request type badges */
+
 .req-badge {
   display: inline-flex;
   align-items: center;
@@ -223,7 +223,7 @@
 .badge-indigency { background: var(--off-violet-bg);  color: var(--off-violet-text); }
 .badge-business  { background: var(--off-slate-bg);   color: var(--off-slate-text); }
 
-/* Status pills */
+
 .status-pill {
   display: inline-flex;
   padding: 4px 10px;
@@ -257,7 +257,7 @@
 }
 
 
-/* ── SHARED CHART PANEL ──────────────────────────────────── */
+
 
 .chart-panel {
   background: var(--off-surface);
@@ -277,7 +277,7 @@
 }
 
 
-/* ── BAR CHART ───────────────────────────────────────────── */
+
 
 .bar-chart-wrap {
   display: flex;
@@ -331,7 +331,7 @@
 }
 
 
-/* ── SPARKLINE (natural height, no flex stretching) ──────── */
+
 
 .sparkline-wrap {
   margin-top: 16px;
@@ -396,7 +396,7 @@
 }
 
 
-/* ── QUICK ACTIONS ───────────────────────────────────────── */
+
 
 .quick-actions-panel {
   background: var(--off-surface);
@@ -452,7 +452,7 @@
 }
 
 
-/* ── ACTIVITY LOG ────────────────────────────────────────── */
+
 
 .off-activity-panel {
   background: var(--off-surface);
@@ -514,7 +514,7 @@
 }
 
 
-/* ── ANNOUNCEMENTS LIST ──────────────────────────────────── */
+
 
 .off-ann-list {
   list-style: none;
@@ -588,7 +588,7 @@
 }
 
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1024px) {
   .off-lower {
@@ -600,7 +600,7 @@
   .off-lower {
     grid-template-columns: 1fr;
   }
-  /* On mobile, right column flows after left column naturally */
+  
 }
 
 @media (max-width: 600px) {

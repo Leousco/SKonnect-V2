@@ -1,9 +1,9 @@
-/* ═══════════════════════════════════════════════
-   DASHBOARD — Resident Portal
-   Depends on: global.css (variables, reset, layout)
-═══════════════════════════════════════════════ */
 
-/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
+
+
+
+
 
 @keyframes fadeUp {
   from {
@@ -55,7 +55,7 @@
   animation-delay: 0.28s;
 }
 
-/* ── LAYOUT ───────────────────────────────────── */
+
 
 .dashboard-layout {
   display: flex;
@@ -126,9 +126,9 @@
   color: #c2410c;
 }
 
-/* ══════════════════════════════════════════════
-   STAT WIDGETS
-══════════════════════════════════════════════ */
+
+
+
 
 .dashboard-widgets {
   display: grid;
@@ -180,7 +180,7 @@
   transform: translateY(-3px);
 }
 
-/* Icon wrap */
+
 .widget-icon-wrap {
   width: 46px;
   height: 46px;
@@ -213,7 +213,7 @@
   color: #a16207;
 }
 
-/* Text */
+
 .widget-body {
   display: flex;
   flex-direction: column;
@@ -247,9 +247,9 @@
   margin-top: 1px;
 }
 
-/* ══════════════════════════════════════════════
-   TWO-COLUMN LOWER
-══════════════════════════════════════════════ */
+
+
+
 
 .dashboard-lower,
 .dashboard-upper {
@@ -260,9 +260,9 @@
   align-items: start;
 }
 
-/* ══════════════════════════════════════════════
-   RECENT ACTIVITY
-══════════════════════════════════════════════ */
+
+
+
 
 .list-scroll {
   flex: 1;
@@ -334,7 +334,7 @@
   word-break: break-word;
 }
 
-/* Skeleton loading */
+
 .activity-skeleton {
   height: 52px;
   border-radius: 8px;
@@ -393,7 +393,7 @@
   animation: shimmer 1.4s infinite linear;
 }
 
-/* Items */
+
 .activity-list {
   display: flex;
   flex-direction: column;
@@ -485,9 +485,9 @@
   text-align: center;
 }
 
-/* ══════════════════════════════════════════════
-   MINI ANNOUNCEMENTS
-══════════════════════════════════════════════ */
+
+
+
 
 .announcement-list {
   list-style: none;
@@ -569,7 +569,7 @@
   font-weight: 500;
 }
 
-/* Announcement category badges */
+
 .ann-badge {
   display: inline-flex;
   align-items: center;
@@ -603,9 +603,9 @@
   color: #92400e;
 }
 
-/* ══════════════════════════════════════════════
-   COMMUNITY DISCUSSIONS
-══════════════════════════════════════════════ */
+
+
+
 
 .discussion-list {
   list-style: none;
@@ -725,9 +725,9 @@
   border: 1px solid #cbd5e1;
 }
 
-/* ══════════════════════════════════════════════
-   AVAILABLE SERVICES
-══════════════════════════════════════════════ */
+
+
+
 
 .service-list {
   list-style: none;
@@ -891,7 +891,7 @@
   border-left: 1px solid var(--border);
 }
 
-/* Calendar header */
+
 .calendar-header {
   display: flex;
   justify-content: space-between;
@@ -932,7 +932,7 @@
   color: white;
 }
 
-/* Day headers */
+
 .calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -947,7 +947,7 @@
   margin-bottom: 8px;
 }
 
-/* Date cells */
+
 .calendar-dates {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -987,7 +987,7 @@
   margin: 3px auto 0;
 }
 
-/* Calendar legend */
+
 .calendar-legend {
   display: flex;
   align-items: center;
@@ -998,7 +998,7 @@
   flex-wrap: wrap;
 }
 
-/* "Today" pill + event pills share this base */
+
 .legend-item {
   display: inline-flex;
   align-items: center;
@@ -1027,7 +1027,7 @@
   min-width: 0;
 }
 
-/* Slots event pills directly into the flex row */
+
 #legend-events {
   display: contents;
 }
@@ -1043,9 +1043,9 @@
   background: var(--navy);
 }
 
-/* ══════════════════════════════════════════════
-   EVENTS LIST
-══════════════════════════════════════════════ */
+
+
+
 
 .events-list-title {
   font-size: 11px;
@@ -1175,9 +1175,9 @@
   padding: 8px 0;
 }
 
-/* ══════════════════════════════════════════════
-   EVENT DETAIL MODAL
-══════════════════════════════════════════════ */
+
+
+
 
 @keyframes modalIn {
   from {
@@ -1353,9 +1353,9 @@
   line-height: 1.65;
 }
 
-/* ══════════════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════════════ */
+
+
+
 
 @media (max-width: 1200px) {
   .dashboard-widgets {

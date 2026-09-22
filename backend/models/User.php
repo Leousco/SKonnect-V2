@@ -57,8 +57,6 @@ class User {
         $stmt->bindParam(":otp_expires", $this->otp_expires);
 
         if ($stmt->execute()) {
-            // user_status and user_profiles rows are auto-created by
-            // trg_user_status_init / trg_user_profile_init on the users table.
             $this->id = $this->conn->lastInsertId();
             return true;
         }
@@ -175,7 +173,6 @@ class User {
         return $stmt->execute();
     }
 
-    // Updates login_attempts, lockout_until, and lockout_level in user_status.
     public function updateLockoutState() {
         $query = "UPDATE user_status
                   SET login_attempts = :attempts,
@@ -216,10 +213,6 @@ class User {
         $this->lockout_level    = (int) $row['lockout_level'];
     }
 
-    // PDO_PGSQL returns boolean columns as the strings "t"/"f" (or sometimes
-    // native true/false depending on driver version) instead of PHP bool —
-    // "f" is truthy in PHP, so every boolean read from Postgres must be
-    // normalized through this before use in a condition.
     private function _toBool($value): bool {
         if (is_bool($value)) return $value;
         return $value === 't' || $value === '1' || $value === 1;

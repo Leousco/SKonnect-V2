@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('no-results').style.display = filtered.length === 0 ? 'block' : 'none';
     }
 
-    /* ── ADD USER MODAL ──────────────────────────────────── */
+    
 
     const addOverlay     = document.getElementById('add-user-modal-overlay');
     const pwField        = document.getElementById('add-password');
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* ── VIEW / EDIT USER MODAL ──────────────────────────── */
+    
 
     const viewOverlay   = document.getElementById('user-modal-overlay');
     const footerDefault = document.getElementById('footer-default');
@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
     banBtn?.addEventListener('click', () => { if (currentUser) handleBan(currentUser.id); });
     document.getElementById('user-modal-delete')?.addEventListener('click', () => { if (currentUser) handleDelete(currentUser.id); });
 
-    /* ── SHARED ACTIONS ──────────────────────────────────── */
+    
 
     function handleBan(id) {
         const user = getUser(id);
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* ── CONFIRM MODAL SYSTEM ────────────────────────────── */
+    
 
     function openConfirm(overlayId, bodyHtml, onConfirm) {
         const overlay = document.getElementById(overlayId);
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.mu-confirm-overlay.is-open').forEach(o => o.classList.remove('is-open'));
     }
 
-    /* ── API HELPER ──────────────────────────────────────── */
+    
 
     async function apiFetch(payload) {
         const res  = await fetch(API_URL, {
@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     }
 
-    /* ── LOADING TOAST ───────────────────────────────────── */
+    
 
     function showLoadingToast(msg) {
         const t = document.createElement('div');
@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    /* ── TOAST ───────────────────────────────────────────── */
+    
 
     function showToast(msg, type = 'success') {
         const t = document.createElement('div');
@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => { t.classList.remove('toast-visible'); setTimeout(() => t.remove(), 300); }, 3500);
     }
 
-    /* ── UTILS ───────────────────────────────────────────── */
+    
 
     function esc(s) {
         return String(s)

@@ -1,5 +1,4 @@
 <?php
-// backend/models/SanctionModel.php
 
 class SanctionModel
 {
@@ -97,8 +96,6 @@ class SanctionModel
 
         return $row ?: ['total_active' => 0, 'level1' => 0, 'level2' => 0, 'level3' => 0, 'today' => 0];
     }
-
-    // ── PRIVATE HELPERS ───────────────────────────────────────────
 
     private function expireOldBans(int $user_id): void
     {

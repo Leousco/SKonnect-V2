@@ -1,13 +1,13 @@
-/* mod_sanctions.js — SKonnect Moderator · User Sanctions
-   Updates:
-   1. "View Comment" opens a slide-in panel with the full thread;
-      the reported comment/reply is highlighted and smooth-scrolled into view.
-   2. Dismiss & Issue Sanction update the UI live (no page reload needed).
-   3. Reason field in the sanction modal is now optional.
-*/
+
+
+
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", function () {
-  /* ── HELPERS ────────────────────────────────────────────── */
+  
 
   function escHtml(str) {
     const d = document.createElement("div");
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  /* ── TOAST ──────────────────────────────────────────────── */
+  
 
   function showToast(msg, type = "success") {
     const toast = document.getElementById("ms-toast");
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3500);
   }
 
-  /* ── FORM COLLAPSE ─────────────────────────────────────── */
+  
 
   const formToggle = document.getElementById("ms-form-toggle");
   const formBody = document.getElementById("ms-form-body");
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* ── DIRECT SANCTION FORM — Clear ──────────────────────── */
+  
 
   document.getElementById("ms-cancel")?.addEventListener("click", () => {
     ["ms-user-id", "ms-reason"].forEach((id) => {
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (lvl) lvl.value = "1";
   });
 
-  /* ── DIRECT SANCTION FORM — Submit ─────────────────────── */
+  
 
   document
     .getElementById("ms-submit")
@@ -128,12 +128,12 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-  /* ── TABS ───────────────────────────────────────────────── */
+  
 
   const tabBtns = document.querySelectorAll(".ms-tab-btn");
   const tabPanels = document.querySelectorAll(".ms-tab-panel");
 
-  // Mark the initially-visible tab on page load so applyFilters can find it reliably
+  
   tabPanels.forEach((p) => {
     if (!p.style.display || p.style.display === "") {
       p.classList.add("ms-tab-active");
@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  /* ── FILTER + SEARCH ────────────────────────────────────── */
+  
 
   const filterBtns = document.querySelectorAll(".ms-filter-btn");
   const searchInput = document.getElementById("ms-search");
@@ -196,14 +196,14 @@ document.addEventListener("DOMContentLoaded", function () {
         visible === 0 && items.length > 0 ? "flex" : "none";
   }
 
-  /* ── TAB BADGE COUNTER ──────────────────────────────────── */
+  
 
   function updateTabBadge(tabId, delta) {
     const btn = document.querySelector(`.ms-tab-btn[data-tab="${tabId}"]`);
     if (!btn) return;
     let badge = btn.querySelector(".ms-tab-badge");
     if (!badge && delta > 0) {
-      // Tab had no badge (was empty) — create one
+      
       badge = document.createElement("span");
       const suffixMap = {
         reviewed: "ms-tab-badge--reviewed",
@@ -220,14 +220,14 @@ document.addEventListener("DOMContentLoaded", function () {
     badge.style.display = next <= 0 ? "none" : "";
   }
 
-  /* ── ANIMATE ITEM OUT ───────────────────────────────────── */
+  
 
   function animateOut(itemEl, onDone) {
     itemEl.style.transition = "opacity 0.28s ease, transform 0.28s ease";
     itemEl.style.opacity = "0";
     itemEl.style.transform = "translateX(28px)";
     setTimeout(() => {
-      // collapse height smoothly
+      
       const h = itemEl.offsetHeight;
       itemEl.style.transition +=
         ", max-height 0.3s ease, padding 0.3s ease, margin 0.3s ease, border 0.3s ease";
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 290);
   }
 
-  /* ── REPORT ACTION FETCH ────────────────────────────────── */
+  
 
   async function doReportAction(reportId, action, itemEl) {
     const fd = new FormData();
@@ -272,15 +272,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /**
-   * Takes a cloned pending card, strips its action buttons, stamps a status tag,
-   * and prepends it into the target tab list with a slide-in animation.
-   */
+  
+
+
+
   function moveCardToTab(cardEl, tabId) {
-    // Remove action buttons — they don't belong in reviewed/dismissed tabs
+    
     cardEl.querySelectorAll(".ms-item-actions").forEach((el) => el.remove());
 
-    // Add the correct modifier class and status tag
+    
     const statusMap = {
       dismissed: {
         cls: "ms-item--dismissed",
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     cardEl.classList.add(s.cls);
 
-    // Update sanction level badge for dismissed
+    
     if (tabId === "dismissed") {
       const lvlBadge = cardEl.querySelector(".ms-sanction-level");
       if (lvlBadge) {
@@ -313,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (content) content.classList.add("ms-reported-content--muted");
     }
 
-    // Inject the status tag into the header user row if not already there
+    
     const userRow = cardEl.querySelector(".ms-item-user");
     if (userRow && !userRow.querySelector(".ms-status-tag")) {
       const tag = document.createElement("span");
@@ -322,16 +322,16 @@ document.addEventListener("DOMContentLoaded", function () {
       userRow.appendChild(tag);
     }
 
-    // Find or create the list container in the destination tab
+    
     const tabPanel = document.getElementById(`tab-${tabId}`);
     if (!tabPanel) return;
 
-    // Show the destination tab panel if it's somehow hidden (shouldn't be, but guard it)
-    // We do NOT switch the active tab — user stays on Pending; the card just moves in the background.
+    
+    
 
     let listEl = tabPanel.querySelector(`#ms-list-${tabId}`);
     if (!listEl) {
-      // Tab was empty — remove the static "no items" empty state and build the list
+      
       tabPanel.querySelectorAll(".ms-empty").forEach((el) => el.remove());
       listEl = document.createElement("div");
       listEl.className = "ms-list";
@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", function () {
       tabPanel.prepend(listEl);
     }
 
-    // Slide-in animation: start invisible & shifted, then settle
+    
     cardEl.style.opacity = "0";
     cardEl.style.transform = "translateX(-24px)";
     cardEl.style.transition = "none";
@@ -353,11 +353,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    // Update the badge count for the destination tab
+    
     updateTabBadge(tabId, +1);
   }
 
-  /* ── DELEGATED BUTTON CLICKS ────────────────────────────── */
+  
 
   document.addEventListener("click", function (e) {
     const btn = e.target.closest(".ms-action-btn");
@@ -405,9 +405,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  /* ══════════════════════════════════════════════════════════
-     SLIDE-IN COMMENT PANEL
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   const panel = document.getElementById("ms-comment-panel");
   const backdrop = document.getElementById("ms-panel-backdrop");
@@ -480,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const loading = document.getElementById("ms-panel-loading");
     const content = document.getElementById("ms-panel-content");
 
-    // Badges
+    
     const catKey = thread.category || "other";
     document.getElementById("ms-panel-badges").innerHTML = `
       <span class="ms-panel-cat-badge cat-${catKey}">${
@@ -492,7 +492,7 @@ document.addEventListener("DOMContentLoaded", function () {
       <span class="ms-panel-report-label">📋 Viewing Reported Content</span>
     `;
 
-    // Title & meta
+    
     document.getElementById("ms-panel-title").textContent = thread.subject;
     const initials = (thread.author_name || "?").substring(0, 2).toUpperCase();
     document.getElementById("ms-panel-meta").innerHTML = `
@@ -519,7 +519,7 @@ document.addEventListener("DOMContentLoaded", function () {
       escHtml(thread.message)
     );
 
-    // Images
+    
     const imagesEl = document.getElementById("ms-panel-images");
     if (images && images.length) {
       imagesEl.innerHTML = images
@@ -538,7 +538,7 @@ document.addEventListener("DOMContentLoaded", function () {
       imagesEl.style.display = "none";
     }
 
-    // Comments
+    
     const listEl = document.getElementById("ms-panel-comment-list");
     const cntEl = document.getElementById("ms-panel-comments-count");
     cntEl.textContent = comments ? comments.length : 0;
@@ -556,7 +556,7 @@ document.addEventListener("DOMContentLoaded", function () {
           ? `<span class="ms-comment-mod-badge">SK Official</span>`
           : "";
 
-        // Replies
+        
         let repliesHtml = "";
         if (c.replies && c.replies.length) {
           c.replies.forEach((r) => {
@@ -633,14 +633,14 @@ document.addEventListener("DOMContentLoaded", function () {
     loading.style.display = "none";
     content.style.display = "";
 
-    // Snap panel body to top instantly (no animation yet)
+    
     const panelBody = document.getElementById("ms-panel-body-scroll");
     if (panelBody) {
       panelBody.style.scrollBehavior = "auto";
       panelBody.scrollTop = 0;
     }
 
-    // Wait for the panel slide-in CSS transition (300ms) + reading pause, then smoothly scroll
+    
     setTimeout(() => {
       const targetEl =
         targetType === "comment"
@@ -649,7 +649,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (!targetEl || !panelBody) return;
 
-      // Calculate how far to scroll so the target is vertically centered in the panel
+      
       const panelTop = panelBody.getBoundingClientRect().top;
       const targetTop = targetEl.getBoundingClientRect().top;
       const destination =
@@ -657,18 +657,18 @@ document.addEventListener("DOMContentLoaded", function () {
         (targetTop - panelTop) -
         (panelBody.clientHeight / 2 - targetEl.clientHeight / 2);
 
-      // Smooth scroll using CSS scroll-behavior (re-enable it now that we're past the snap)
+      
       panelBody.style.scrollBehavior = "smooth";
       panelBody.scrollTop = destination;
 
-      // Pulse the highlight after the scroll has had time to visually land (~600ms for smooth)
+      
       setTimeout(() => targetEl.classList.add("ms-highlight-pulse"), 750);
-    }, 600); // 300ms panel open + 300ms comfortable pause before scroll begins
+    }, 600); 
   }
 
-  /* ══════════════════════════════════════════════════════════
-     SANCTION MODAL
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   const modal = document.getElementById("sanction-modal");
   const modalClose = document.getElementById("modal-close");
@@ -790,6 +790,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  /* ── INIT ───────────────────────────────────────────────── */
+  
   applyFilters();
 });

@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/ModGetThreadController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('moderator');
 
@@ -27,7 +26,6 @@ if (!$thread_id) {
     exit;
 }
 
-// Pass 0 as user_id — moderator doesn't need personal bookmark/support state
 $thread = $threadModel->getThreadById($thread_id, 0);
 
 if (!$thread) {

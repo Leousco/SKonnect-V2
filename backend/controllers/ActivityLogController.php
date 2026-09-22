@@ -1,25 +1,17 @@
 <?php
-/**
- * ActivityLogController.php
- *
- * GET  ?action=get_logs  → paginated, filtered log entries (admin only)
- * Static helper  ActivityLogController::log(...)  → INSERT a row from any controller
- *
- * Usage: ActivityLogController::log($conn, $userId, 'approved', 'Approved request for Juan');
- */
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
 
 class ActivityLogController
 {
-    /**
-     * @param PDO         $conn
-     * @param int|null    $userId   Null = system action
-     * @param string      $action   e.g. 'approved', 'deleted', 'login'
-     * @param string      $description
-     * @param string|null $ip       Auto-detected if null
-     */
+    
+
+
+
+
+
+
     public static function log(PDO $conn, ?int $userId, string $action, string $description, ?string $ip = null): void
     {
         try {
@@ -42,7 +34,6 @@ class ActivityLogController
     }
 }
 
-/* ── HTTP endpoint ── */
 if (basename($_SERVER['SCRIPT_FILENAME']) === basename(__FILE__)) {
 
     RoleMiddleware::requireAdmin();

@@ -9,9 +9,9 @@ $conn = $db->getConnection();
 
 $mod_id = (int)($_SESSION['user_id'] ?? 0);
 
-// ── STAT WIDGETS ─────────────────────────────────────────────────────────────
 
-// Pending reports: both thread_reports and comment_reports
+
+
 $pendingThreadReports = (int)$conn->query(
     "SELECT COUNT(*) FROM thread_reports WHERE status = 'pending'"
 )->fetchColumn();
@@ -22,22 +22,22 @@ $pendingCommentReports = (int)$conn->query(
 
 $pendingReports = $pendingThreadReports + $pendingCommentReports;
 
-// Active threads (not removed)
+
 $activeThreads = (int)$conn->query(
     "SELECT COUNT(*) FROM threads WHERE is_removed = FALSE"
 )->fetchColumn();
 
-// New threads today
+
 $newThreadsToday = (int)$conn->query(
     "SELECT COUNT(*) FROM threads WHERE is_removed = FALSE AND created_at::date = CURRENT_DATE"
 )->fetchColumn();
 
-// Removed/hidden threads (locked equivalent — moderator-hidden)
+
 $removedThreads = (int)$conn->query(
     "SELECT COUNT(*) FROM threads WHERE is_removed = TRUE AND removed_by_user = FALSE"
 )->fetchColumn();
 
-// Warnings issued this month (level = 1 sanctions)
+
 $warningsThisMonth = (int)$conn->query(
     "SELECT COUNT(*) FROM user_sanctions
      WHERE level = 1
@@ -45,12 +45,12 @@ $warningsThisMonth = (int)$conn->query(
        AND EXTRACT(YEAR FROM created_at)  = EXTRACT(YEAR FROM CURRENT_DATE)"
 )->fetchColumn();
 
-// Total active sanctions (any level)
+
 $activeSanctions = (int)$conn->query(
     "SELECT COUNT(*) FROM user_sanctions WHERE is_active = TRUE"
 )->fetchColumn();
 
-// ── PENDING REPORTS TABLE (up to 5, thread + comment mixed, newest first) ────
+
 
 $stmt = $conn->query(
     "SELECT
@@ -91,7 +91,7 @@ $stmt = $conn->query(
 );
 $pendingRows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// ── REPORTS BY REASON (all-time, both tables) ─────────────────────────────────
+
 
 $stmt = $conn->query(
     "SELECT category, COUNT(*) AS cnt
@@ -114,8 +114,8 @@ $reasonColors = [
 ];
 $maxReasonCount = max(array_values($reportsByReason) ?: [1]);
 
-// ── MODERATOR ACTIVITY LOG (this mod, last 6 entries) ────────────────────────
-// Uses the activity_logs table (action + description) filtered to the current mod
+
+
 $stmt = $conn->prepare(
     "SELECT action, description, created_at
      FROM activity_logs
@@ -126,7 +126,7 @@ $stmt = $conn->prepare(
 $stmt->execute([':uid' => $mod_id]);
 $activityLog = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// ── THREAD ACTIVITY SPARKLINE: threads created per month, last 6 months ──────
+
 
 $stmt = $conn->query(
     "SELECT
@@ -141,7 +141,7 @@ $stmt = $conn->query(
 );
 $sparkRaw = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Ensure exactly 6 slots (fill missing months with 0)
+
 $sparkMonths = [];
 for ($i = 5; $i >= 0; $i--) {
     $key   = date('Y-m', strtotime("-$i months"));
@@ -157,7 +157,7 @@ $sparkData   = array_values($sparkMonths);
 $sparkMax    = max(array_column($sparkData, 'cnt') ?: [1]);
 $sparkMax    = max($sparkMax, 1);
 
-// Build SVG polyline points (viewBox 560×120, y-axis inverted, 10px padding top/bottom)
+
 $svgPoints = [];
 $svgFill   = [];
 $svgW = 560;
@@ -174,7 +174,7 @@ $svgFill[] = "0,{$svgH}";
 $polyline  = implode(' L', $svgPoints);
 $areafill  = implode(' L', $svgFill);
 
-// Stats for sparkline footer
+
 $resolvedReports = (int)$conn->query(
     "SELECT COUNT(*) FROM (
         SELECT id FROM thread_reports  WHERE status = 'reviewed'
@@ -190,7 +190,7 @@ $removedThisMonth = (int)$conn->query(
        AND EXTRACT(YEAR FROM updated_at)  = EXTRACT(YEAR FROM CURRENT_DATE)"
 )->fetchColumn();
 
-// ── RECENT COMMUNITY POSTS (5 most recent active threads) ────────────────────
+
 
 $stmt = $conn->query(
     "SELECT
@@ -207,14 +207,14 @@ $stmt = $conn->query(
 );
 $recentThreads = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// ── UNREAD NOTIFICATIONS for topbar ──────────────────────────────────────────
+
 $notifStmt = $conn->prepare(
     "SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = FALSE AND is_dismissed = FALSE"
 );
 $notifStmt->execute([':uid' => $mod_id]);
 $notifCount = (int)$notifStmt->fetchColumn();
 
-// ── HELPERS ──────────────────────────────────────────────────────────────────
+
 
 function timeAgo(string $datetime): string
 {
@@ -268,7 +268,7 @@ function activityLabel(string $action, string $rawDescription): string
 {
     $d = json_decode($rawDescription, true);
     if (!is_array($d)) {
-        // Plain-text description — return as-is
+        
         return htmlspecialchars($rawDescription);
     }
 
@@ -301,7 +301,7 @@ function activityLabel(string $action, string $rawDescription): string
         case 'ban_issued':
             return "Issued a permanent ban to {$user}" . ($name ? " regarding {$name}" : '') . ".";
         default:
-            // Fall back to the 'notes' field if present, otherwise humanise the action key
+            
             if (!empty($d['notes'])) return htmlspecialchars($d['notes']);
             return htmlspecialchars(ucfirst(str_replace('_', ' ', $action)) . '.');
     }
@@ -349,7 +349,7 @@ function initials(string $name): string
             include __DIR__ . '/../../../components/management/moderator/mod_topbar.php';
             ?>
 
-            <!-- STAT WIDGETS -->
+            
             <section class="mod-widgets">
 
                 <div class="mod-widget-card widget-red">
@@ -416,7 +416,7 @@ function initials(string $name): string
 
             <div class="mod-lower">
 
-                <!-- COL A — PENDING REPORTS TABLE -->
+                
                 <section class="mod-reports-panel mod-col-reports">
                     <div class="panel-header">
                         <h2 class="section-label">Pending Reports</h2>
@@ -471,7 +471,7 @@ function initials(string $name): string
                     </div>
                 </section>
 
-                <!-- COL B — QUICK ACTIONS + REPORTS BY REASON -->
+                
                 <div class="mod-col-mid">
 
                     <section class="quick-actions-panel">
@@ -528,7 +528,7 @@ function initials(string $name): string
                                 </div>
                             <?php endforeach;
 
-                            // "Others" = categories not in the main four
+                            
                             $knownTotal  = array_sum(array_intersect_key($reportsByReason, array_flip($reasonOrder)));
                             $othersCount = array_sum($reportsByReason) - $knownTotal;
                             $othersPct   = $maxReasonCount > 0 ? round(($othersCount / $maxReasonCount) * 100) : 0;
@@ -545,7 +545,7 @@ function initials(string $name): string
 
                 </div>
 
-                <!-- COL C — ACTIVITY LOG -->
+                
                 <aside class="mod-col-activity">
 
                     <section class="mod-activity-panel mod-activity-panel--full">
@@ -574,7 +574,7 @@ function initials(string $name): string
 
             <div class="mod-bottom-row">
 
-                <!-- THREAD ACTIVITY CHART -->
+                
                 <section class="chart-panel chart-panel--stretch">
                     <div class="panel-header">
                         <h2 class="section-label">Thread Activity</h2>
@@ -617,7 +617,7 @@ function initials(string $name): string
                     </div>
                 </section>
 
-                <!-- RECENT COMMUNITY POSTS -->
+                
                 <section class="chart-panel chart-panel--stretch">
                     <div class="panel-header">
                         <h2 class="section-label">Recent Community Posts</h2>

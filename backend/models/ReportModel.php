@@ -1,5 +1,4 @@
 <?php
-// backend/models/ReportModel.php
 
 class ReportModel
 {
@@ -10,11 +9,6 @@ class ReportModel
         $this->conn = $conn;
     }
 
-    // ── THREAD REPORTS ────────────────────────────────────────────────────────
-
-    /**
-     * Returns true if this user has already reported this thread.
-     */
     public function hasReportedThread(int $thread_id, int $reporter_id): bool
     {
         $stmt = $this->conn->prepare(
@@ -26,9 +20,6 @@ class ReportModel
         return (bool)$stmt->fetch();
     }
 
-    /**
-     * Insert a thread report.
-     */
     public function createThreadReport(
         int     $thread_id,
         int     $reporter_id,
@@ -47,11 +38,6 @@ class ReportModel
         ]);
     }
 
-    // ── COMMENT / REPLY REPORTS ───────────────────────────────────────────────
-
-    /**
-     * Returns true if this user has already reported this comment/reply.
-     */
     public function hasReportedComment(string $target_type, int $target_id, int $reporter_id): bool
     {
         $stmt = $this->conn->prepare(
@@ -63,9 +49,6 @@ class ReportModel
         return (bool)$stmt->fetch();
     }
 
-    /**
-     * Insert a comment or reply report.
-     */
     public function createCommentReport(
         string  $target_type,
         int     $target_id,
@@ -86,12 +69,6 @@ class ReportModel
         ]);
     }
 
-    // ── MODERATION QUEUE ──────────────────────────────────────────────────────
-
-    /**
-     * Fetch all thread reports joined with thread and reporter info.
-     * Pending first, then newest within each status group.
-     */
     public function getThreadReports(): array
     {
         $stmt = $this->conn->query(
@@ -123,9 +100,6 @@ class ReportModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Update the status of a single thread report.
-     */
     public function updateThreadReportStatus(int $report_id, string $status): bool
     {
         $allowed = ['pending', 'reviewed', 'dismissed'];
@@ -137,9 +111,6 @@ class ReportModel
         return $stmt->execute([':status' => $status, ':id' => $report_id]);
     }
 
-    /**
-     * Stat counts for the widget row.
-     */
     public function getThreadReportCounts(): array
     {
         $stmt = $this->conn->query(
@@ -161,11 +132,6 @@ class ReportModel
         ]);
     }
 
-    // ── NOTIFICATIONS ─────────────────────────────────────────────────────────
-
-    /**
-     * Insert an in-app notification for a user.
-     */
     public function createNotification(
         int     $user_id,
         string  $type,

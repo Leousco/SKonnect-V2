@@ -37,14 +37,14 @@ RoleMiddleware::requireAuth();
             ?>
 
             <?php
-            /* ── LOAD SERVICES FROM DATABASE ────────────────────────── */
+            
             require_once __DIR__ . '/../../backend/config/database.php';
             require_once __DIR__ . '/../../backend/controllers/ServiceController.php';
 
             $serviceController = new ServiceController();
             $services = $serviceController->getAll();
 
-            // Sort services: active/open first, then limited, then closed/inactive
+            
             usort($services, function ($a, $b) {
                 $getPriority = function ($service) {
                     $isActive = $service['status'] === 'active';
@@ -63,7 +63,7 @@ RoleMiddleware::requireAuth();
                 $priorityB = $getPriority($b);
 
                 if ($priorityA === $priorityB) {
-                    // If same priority, sort by name alphabetically
+                    
                     return strcmp($a['name'], $b['name']);
                 }
 
@@ -90,7 +90,7 @@ RoleMiddleware::requireAuth();
                 'other'      => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>',
             ];
 
-            // service_type → display label mapping (from DB COMMENT)
+            
             $serviceTypeLabels = [
                 'document'    => 'Online Application',
                 'appointment' => 'Request-based',
@@ -100,7 +100,7 @@ RoleMiddleware::requireAuth();
             $totalActive   = count(array_filter($services, fn ($s) => $s['status'] === 'active'));
             $totalInactive = count(array_filter($services, fn ($s) => $s['status'] === 'inactive'));
 
-            // Pre-fetch resident's existing requests to show "already applied" state
+            
             $residentId = (int)($_SESSION['user_id'] ?? 0);
             $appliedServiceIds = [];
             $userEmail = '';
@@ -111,16 +111,16 @@ RoleMiddleware::requireAuth();
                     $stmt->execute([':rid' => $residentId]);
                     $appliedServiceIds = array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'service_id');
 
-                    // Fetch the user's email for auto-filling the apply modal
+                    
                     $emailStmt = $db->prepare("SELECT email FROM users WHERE id = :id LIMIT 1");
                     $emailStmt->execute([':id' => $residentId]);
                     $userEmail = $emailStmt->fetch(PDO::FETCH_ASSOC)['email'] ?? '';
-                } catch (Throwable $e) { /* silently ignore if table doesn't exist yet */
+                } catch (Throwable $e) { 
                 }
             }
             ?>
 
-            <!-- HOW IT WORKS -->
+            
             <section class="how-it-works-section">
                 <h2 class="section-label">How It Works</h2>
                 <div class="steps-row">
@@ -158,7 +158,7 @@ RoleMiddleware::requireAuth();
                 </div>
             </section>
 
-            <!-- CONTROLS BAR -->
+            
             <section class="announcements-controls">
                 <div class="controls-left">
                     <div class="search-wrap">
@@ -193,7 +193,7 @@ RoleMiddleware::requireAuth();
                 </div>
             </section>
 
-            <!-- SERVICES GRID -->
+            
             <section class="announcements-section">
                 <div class="panel-header" style="margin-bottom: 16px;">
                     <h2 class="section-label">Available Services</h2>
@@ -217,7 +217,7 @@ RoleMiddleware::requireAuth();
                             $isLimited    = $isActive && $hasCapacity && !$capacityFull
                                 && ($svc['current_count'] / $svc['max_capacity']) >= 0.7;
 
-                            // Determine display status
+                            
                             if (!$isActive || $capacityFull)    $displayStatus = 'closed';
                             elseif ($isLimited)                  $displayStatus = 'limited';
                             else                                 $displayStatus = 'open';
@@ -228,7 +228,7 @@ RoleMiddleware::requireAuth();
                             $attPaths   = $svc['attachment_path'] ? array_values(array_filter(array_map('trim', explode(',', $svc['attachment_path'])))) : [];
                             $alreadyApplied = in_array($svc['id'], $appliedServiceIds);
 
-                            // Button label & type
+                            
                             $btnLabel = match ($svc['service_type']) {
                                 'document'    => 'Apply Now',
                                 'appointment' => 'Request Service',
@@ -240,7 +240,7 @@ RoleMiddleware::requireAuth();
 
                                 <div class="ann-card-body">
 
-                                    <!-- Top row: icon + category badge | status badge -->
+                                    
                                     <div class="svc-card-top">
                                         <div class="svc-card-top-left">
                                             <div class="svc-icon-wrap svc-icon-<?= $svc['category'] ?>">
@@ -265,19 +265,19 @@ RoleMiddleware::requireAuth();
                                         </div>
                                     </div>
 
-                                    <!-- Title & description: fixed-height block, 4 states —
-                                         a 1-line title pairs with a 4-line description, a 2-line
-                                         title pairs with a 3-line description, so the combined
-                                         block is always the same total height. -->
+                                    
+
+
+
                                     <div class="svc-title-desc">
                                         <h3 class="ann-card-title"><?= htmlspecialchars($svc['name']) ?></h3>
                                         <p class="svc-card-excerpt"><?= htmlspecialchars($svc['description']) ?></p>
                                     </div>
 
-                                    <!-- Metadata: mutually exclusive —
-                                         services WITHOUT capacity show the eligibility/processing/
-                                         requirements rows; services WITH capacity show the slots
-                                         bar instead. -->
+                                    
+
+
+
                                     <ul class="svc-details-list <?= $hasCapacity ? 'svc-details-list--slots' : '' ?>">
                                         <?php if ($hasCapacity) : ?>
                                             <li class="res-capacity-box">
@@ -325,9 +325,9 @@ RoleMiddleware::requireAuth();
                                         <?php endif; ?>
                                     </ul>
 
-                                    <!-- Card actions -->
+                                    
                                     <div class="ann-card-actions res-card-actions">
-                                        <!-- Always: View Details -->
+                                        
                                         <button class="btn-ghost-portal res-view-btn" data-id="<?= $svc['id'] ?>" data-service="<?= htmlspecialchars($svc['name']) ?>" data-icon="<?= htmlspecialchars($icon) ?>" data-category="<?= htmlspecialchars($meta['label']) ?>" data-category-key="<?= htmlspecialchars($svc['category']) ?>" data-type="<?= htmlspecialchars($svc['service_type']) ?>" data-type-label="<?= htmlspecialchars($typeLabel) ?>" data-status="<?= $displayStatus ?>" data-description="<?= htmlspecialchars($svc['description']) ?>" data-eligibility="<?= htmlspecialchars($svc['eligibility'] ?? '—') ?>" data-processing="<?= htmlspecialchars($svc['processing_time'] ?? '—') ?>" data-requirements="<?= htmlspecialchars($svc['requirements'] ?? '') ?>" data-contact="<?= htmlspecialchars($svc['contact_info'] ?? '') ?>" data-capacity="<?= $hasCapacity ? $svc['current_count'] . '/' . $svc['max_capacity'] : '' ?>" data-attachment-names="<?= htmlspecialchars(implode(',', $attNames)) ?>" data-attachment-paths="<?= htmlspecialchars(implode(',', $attPaths)) ?>" aria-label="View details for <?= htmlspecialchars($svc['name']) ?>">
                                             View Details
                                         </button>
@@ -365,9 +365,9 @@ RoleMiddleware::requireAuth();
         </main>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-     DETAILS MODAL (Info & Direct Contact — read-only view)
-     ═══════════════════════════════════════════════════════ -->
+    
+
+
     <div class="modal-overlay" id="details-modal-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="details-modal-title">
         <div class="modal-box modal-box--wide">
 
@@ -383,16 +383,16 @@ RoleMiddleware::requireAuth();
             </div>
 
             <div class="modal-body">
-                <!-- Status strip -->
+                
                 <div class="details-status-strip" id="details-status-strip"></div>
 
-                <!-- Description -->
+                
                 <div class="details-section">
                     <span class="details-section-label">About This Service</span>
                     <p class="details-description" id="details-description">—</p>
                 </div>
 
-                <!-- Meta grid -->
+                
                 <div class="details-meta-grid">
                     <div class="details-meta-item" id="details-elig-wrap">
                         <span class="details-meta-label">
@@ -423,7 +423,7 @@ RoleMiddleware::requireAuth();
                     </div>
                 </div>
 
-                <!-- Requirements -->
+                
                 <div class="details-section" id="details-req-section" style="display:none;">
                     <span class="details-section-label">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -434,7 +434,7 @@ RoleMiddleware::requireAuth();
                     <ul class="details-req-list" id="details-req-list"></ul>
                 </div>
 
-                <!-- Contact info (info type only) -->
+                
                 <div class="details-section details-contact-section" id="details-contact-section" style="display:none;">
                     <span class="details-section-label">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -452,9 +452,9 @@ RoleMiddleware::requireAuth();
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-     APPLICATION / REQUEST MODAL
-     ═══════════════════════════════════════════════════════ -->
+    
+
+
     <div class="modal-overlay" id="apply-modal-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="apply-modal-title">
         <div class="modal-box">
 
@@ -469,7 +469,7 @@ RoleMiddleware::requireAuth();
                 <button class="modal-close" id="apply-modal-close" aria-label="Close">&times;</button>
             </div>
 
-            <!-- Service summary strip -->
+            
             <div class="modal-svc-summary">
                 <div class="svc-summary-item">
                     <span class="svc-summary-label">Eligibility</span>
@@ -489,7 +489,7 @@ RoleMiddleware::requireAuth();
                 <form class="concern-form" id="apply-form" enctype="multipart/form-data" novalidate>
                     <input type="hidden" id="apply-service-id" name="service_id">
 
-                    <!-- Row 1: Name + Contact -->
+                    
                     <div class="modal-row">
                         <div class="form-group">
                             <label class="modal-label" for="r-name">Full Name <span class="required-star">*</span></label>
@@ -503,7 +503,7 @@ RoleMiddleware::requireAuth();
                         </div>
                     </div>
 
-                    <!-- Row 2: Email + Address -->
+                    
                     <div class="modal-row">
                         <div class="form-group">
                             <label class="modal-label" for="r-email">Email Address <span class="required-star">*</span></label>
@@ -518,7 +518,7 @@ RoleMiddleware::requireAuth();
                         </div>
                     </div>
 
-                    <!-- Purpose / Notes -->
+                    
                     <div class="form-group">
                         <label class="modal-label" for="r-purpose">
                             Purpose / Notes
@@ -527,7 +527,7 @@ RoleMiddleware::requireAuth();
                         <textarea class="modal-input modal-textarea" id="r-purpose" name="purpose" rows="3" placeholder="Briefly explain why you are applying for this service…" maxlength="1000"></textarea>
                     </div>
 
-                    <!-- Upload Documents -->
+                    
                     <div class="form-group">
                         <label class="modal-label">Upload Required Documents <span class="required-star">*</span></label>
                         <div class="file-drop-zone" id="file-drop-zone">
@@ -545,7 +545,7 @@ RoleMiddleware::requireAuth();
                         <span class="field-error" id="err-docs"></span>
                     </div>
 
-                    <!-- Acknowledgement -->
+                    
                     <div class="form-group svc-acknowledge">
                         <label class="acknowledge-wrap">
                             <input type="checkbox" id="r-agree" name="agree" required>
@@ -569,9 +569,9 @@ RoleMiddleware::requireAuth();
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════════════
-         DISCARD CHANGES CONFIRMATION (shown when closing the apply/request form)
-    ═══════════════════════════════════════════════════════ -->
+    
+
+
     <div class="modal-overlay" id="discard-confirm-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="discard-confirm-title">
         <div class="modal-box discard-confirm-box">
             <div class="discard-confirm-body">

@@ -3,7 +3,7 @@
   padding: 18px 32px 24px;
 }
 
-/* Shrink logo */
+
 .register-card .card-logo {
   margin-bottom: 4px;
 }
@@ -13,7 +13,7 @@
   height: 48px;
 }
 
-/* Tighter title */
+
 .register-card .card-title {
   font-size: 1.25rem;
   margin-bottom: 1px;
@@ -30,7 +30,7 @@
   min-height: 14px;
 }
 
-/* ── GRID ROWS ───────────────────────────── */
+
 
 .form-row {
   display: grid;
@@ -52,7 +52,7 @@
   grid-template-columns: 1fr 1fr;
 }
 
-/* ── COMPACT INPUT GROUPS ────────────────── */
+
 
 .register-card .input-group {
   margin-bottom: 0;
@@ -74,7 +74,7 @@
   font-size: 0.75rem;
 }
 
-/* ── LABEL HELPERS ───────────────────────── */
+
 
 .req {
   color: #f5c518;
@@ -87,7 +87,7 @@
   font-weight: 400;
 }
 
-/* ── SELECT ──────────────────────────────── */
+
 
 .select-field {
   appearance: none;
@@ -104,7 +104,7 @@
   background: #fff;
 }
 
-/* ── AGE DISPLAY ─────────────────────────── */
+
 
 .age-display {
   display: flex;
@@ -131,7 +131,7 @@
   color: rgba(255, 255, 255, 0.45);
 }
 
-/* ── PASSWORD TOGGLE ─────────────────────── */
+
 
 .register-card .toggle-pw {
   position: absolute;
@@ -153,7 +153,7 @@
   color: #1a202c;
 }
 
-/* ── PASSWORD MATCH MSG ──────────────────── */
+
 
 .pw-match-msg {
   display: block;
@@ -170,7 +170,7 @@
   color: #f87171;
 }
 
-/* ── BUTTON ──────────────────────────────── */
+
 
 .register-card .login-btn {
   margin-top: 6px;
@@ -178,7 +178,7 @@
   font-size: 0.9rem;
 }
 
-/* ── BOTTOM LINK ─────────────────────────── */
+
 
 .register-block {
   text-align: center;
@@ -200,7 +200,7 @@
   color: #ffe066;
 }
 
-/* Privacy Policy Checkbox Styles */
+
 
 .privacy-policy-checkbox {
   margin: 4px 0 8px;
@@ -327,7 +327,7 @@
   }
 }
 
-/* ── RESPONSIVE ──────────────────────────── */
+
 
 @media (max-width: 600px) {
   .three-col,
@@ -341,9 +341,9 @@
   }
 }
 
-/* ── DISABLED SUBMIT BUTTON ──────────────────────────────────────────────────
-   Applied automatically by JS until all required fields are valid.
-   ─────────────────────────────────────────────────────────────────────────── */
+
+
+
 
 .register-card .login-btn:disabled {
   background: rgba(245, 197, 24, 0.35);
@@ -359,9 +359,9 @@
   box-shadow: none;
 }
 
-/* ── TOAST NOTIFICATIONS (register page supplement) ─────────────────────────
-   login.css is also loaded on this page so the full toast block lives there.
-   This ensures the toast message element from register context is hidden.
-   ─────────────────────────────────────────────────────────────────────────── */
+
+
+
+
 
 .form-message { display: none !important; }

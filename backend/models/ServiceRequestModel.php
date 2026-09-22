@@ -1,5 +1,4 @@
 <?php
-// backend/models/ServiceRequestModel.php
 
 require_once __DIR__ . '/../config/database.php';
 
@@ -12,14 +11,6 @@ class ServiceRequestModel
         $this->db = (new Database())->getConnection();
     }
 
-    // ──────────────────────────────────────────────────────────
-    //  READ
-    // ──────────────────────────────────────────────────────────
-
-    /**
-     * Get all applications with joined resident + service data.
-     * Supports filtering by status, category, search term.
-     */
     public function getAll(array $filters = []): array
     {
         $sql = "
@@ -75,9 +66,6 @@ class ServiceRequestModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get a single application with all documents and notes thread.
-     */
     public function getById(int $id): ?array
     {
         $stmt = $this->db->prepare("
@@ -103,9 +91,8 @@ class ServiceRequestModel
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$row) return null;
 
-        // Attach documents
         $row['documents'] = $this->getDocuments($id);
-        // Attach notes thread
+
         $row['notes'] = $this->getNotes($id);
         return $row;
     }
@@ -122,9 +109,6 @@ class ServiceRequestModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Get the officer notes thread for an application, newest first.
-     */
     public function getNotes(int $applicationId): array
     {
         $stmt = $this->db->prepare("
@@ -177,10 +161,6 @@ class ServiceRequestModel
         return (int)$capacity['current_count'] < (int)$capacity['max_capacity'];
     }
 
-    // ──────────────────────────────────────────────────────────
-    //  WRITE
-    // ──────────────────────────────────────────────────────────
-
     public function insert(array $data, int $residentId): int
     {
         $stmt = $this->db->prepare("
@@ -201,10 +181,6 @@ class ServiceRequestModel
         return (int)$this->db->lastInsertId();
     }
 
-    /**
-     * Update the editable fields of an existing application (used for reapply).
-     * Does NOT touch status — that is handled separately via updateStatus().
-     */
     public function updateApplication(int $id, array $data): void
     {
         $stmt = $this->db->prepare("
@@ -241,10 +217,6 @@ class ServiceRequestModel
         ]);
     }
 
-    /**
-     * Delete a specific document belonging to an application.
-     * The application_id guard prevents a resident from deleting docs on other applications.
-     */
     public function deleteDocument(int $documentId, int $applicationId): void
     {
         $stmt = $this->db->prepare("
@@ -257,11 +229,6 @@ class ServiceRequestModel
         ]);
     }
 
-    /**
-     * Insert a new officer note into the thread.
-     * If $setActionRequired is true, moves status to 'action_required' when still pending.
-     * When called from approval/rejection flows, pass false so the finalized status is preserved.
-     */
     public function insertNote(int $applicationId, int $officerId, string $note, bool $setActionRequired = true): void
     {
         $stmt = $this->db->prepare("
@@ -274,8 +241,6 @@ class ServiceRequestModel
             ':note'       => $note,
         ]);
 
-        // Only move to action_required if still pending AND the caller wants this side-effect.
-        // Approval/rejection thread messages must NOT touch the finalized status.
         if ($setActionRequired) {
             $this->db->prepare("
                 UPDATE service_applications
@@ -343,10 +308,6 @@ class ServiceRequestModel
         return $row ? $row['approval_message'] : null;
     }
 
-    // ──────────────────────────────────────────────────────────
-    //  STATS (for officer dashboard widgets)
-    // ──────────────────────────────────────────────────────────
-
     public function getStatusCounts(): array
     {
         $stmt = $this->db->query("
@@ -364,10 +325,6 @@ class ServiceRequestModel
         return $counts;
     }
 
-    /**
-     * Get all applications submitted by a specific resident, newest first.
-     * Includes notes and documents for each application.
-     */
     public function getByResident(int $residentId): array
     {
         $stmt = $this->db->prepare("
@@ -396,7 +353,6 @@ class ServiceRequestModel
         $stmt->execute([':rid' => $residentId]);
         $applications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Attach notes and documents to each application
         foreach ($applications as &$app) {
             $app['notes']     = $this->getNotes($app['id']);
             $app['documents'] = $this->getDocuments($app['id']);

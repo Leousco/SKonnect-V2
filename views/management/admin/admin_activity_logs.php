@@ -29,7 +29,7 @@ RoleMiddleware::requireAdmin();
         include __DIR__ . '/../../../components/management/admin/admin_topbar.php';
         ?>
 
-        <!-- FILTER BAR -->
+        
         <section class="log-filter-bar">
             <div class="log-search-wrap">
                 <svg class="log-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -66,7 +66,7 @@ RoleMiddleware::requireAdmin();
             </div>
         </section>
 
-        <!-- SUMMARY CHIPS -->
+        
         <div class="log-summary-row">
             <div class="log-summary-chip chip-total">
                 <strong id="totalCount">0</strong>
@@ -78,7 +78,7 @@ RoleMiddleware::requireAdmin();
             </div>
         </div>
 
-        <!-- LOG TABLE -->
+        
         <section class="log-panel">
             <div class="log-table-wrap">
                 <table class="log-table" id="logTable">
@@ -101,7 +101,7 @@ RoleMiddleware::requireAdmin();
                 </div>
             </div>
 
-            <!-- PAGINATION -->
+            
             <div class="log-pagination">
                 <span class="log-page-info" id="pageInfo">Page 1 of 1</span>
                 <div class="log-page-btns">

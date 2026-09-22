@@ -1,11 +1,11 @@
-// ── FORCE RELOAD ON BACK/FORWARD (BFCACHE) ───────────────────────────────────
+
 window.addEventListener("pageshow", (event) => {
   if (event.persisted) {
     window.location.reload();
   }
 });
 
-// ── TOAST NOTIFICATION ───────────────────────────────────────────────────────
+
 function showToast(message, type = "error") {
   const existing = document.querySelector(".sk-toast");
   if (existing) existing.remove();
@@ -26,7 +26,7 @@ function showToast(message, type = "error") {
   }, 3500);
 }
 
-// ── TOGGLE PASSWORD ───────────────────────────────────────────────────────────
+
 function togglePassword(fieldId, icon) {
   const input = document.getElementById(fieldId);
   if (input.type === "password") {
@@ -40,7 +40,7 @@ function togglePassword(fieldId, icon) {
   }
 }
 
-// ── LOCKOUT NOTICE ────────────────────────────────────────────────────────────
+
 let lockoutTimer = null;
 
 function formatTime(seconds) {
@@ -83,13 +83,13 @@ function clearLockoutNotice() {
   document.getElementById("lockout-notice").hidden = true;
 }
 
-// ── LOGIN FORM SUBMIT ─────────────────────────────────────────────────────────
+
 const form          = document.getElementById("loginForm");
 const emailInput    = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const loginBtn = document.querySelector(".login-btn");
 
-// Clear lockout notice when the user switches to a different account
+
 emailInput.addEventListener("input", clearLockoutNotice);
 
 form.addEventListener("submit", (e) => {
@@ -103,7 +103,7 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
-  // Enter loading state
+  
   loginBtn.disabled = true;
   loginBtn.textContent = "Logging in...";
 
@@ -135,7 +135,7 @@ form.addEventListener("submit", (e) => {
       showToast(data.message, data.status === "success" ? "success" : "error");
 
       if (data.status === "success" || data.status === "unverified") {
-        // keep button disabled — page is about to navigate away
+        
         setTimeout(() => {
           window.location.replace(data.redirect);
         }, 1200);
@@ -154,7 +154,7 @@ function resetLoginBtn() {
   loginBtn.textContent = "Login";
 }
 
-// ── BAN MODAL ─────────────────────────────────────────────────────────────────
+
 function showBanModal(reason) {
   const overlay = document.getElementById("ban-modal-overlay");
   document.getElementById("ban-modal-reason").textContent = reason || "No reason provided.";

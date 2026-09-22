@@ -3,7 +3,7 @@
    Mirrors admin_dashboard.css — teal moderator palette
    ============================================================ */
 
-/* ── STAT WIDGETS ────────────────────────────────────────── */
+
 
 .mod-widgets {
   display: grid;
@@ -51,7 +51,7 @@
 
 .widget-icon-wrap svg { width: 22px; height: 22px; }
 
-/* Widget color variants */
+
 .widget-red    .widget-icon-wrap { background: #fee2e2; color: #b91c1c; }
 .widget-teal   .widget-icon-wrap { background: #ccfbf1; color: #0f766e; }
 .widget-amber  .widget-icon-wrap { background: #fef3c7; color: #92400e; }
@@ -98,7 +98,7 @@
 .widget-trend.neutral { background: #e0f2fe; color: #0369a1; }
 .widget-trend.danger  { background: #fee2e2; color: #b91c1c; }
 
-/* ── MIDDLE THREE-COL LAYOUT ─────────────────────────────── */
+
 
 .mod-lower {
   display: grid;
@@ -108,25 +108,25 @@
   align-items: stretch;
 }
 
-/* Col A — Pending Reports (full-height panel) */
+
 .mod-col-reports {
   display: flex;
   flex-direction: column;
 }
 
-/* Col B — Quick Actions + Reports by Reason stacked */
+
 .mod-col-mid {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* Make the bar chart panel fill remaining space in col B */
+
 .chart-panel--fill {
   flex: 1;
 }
 
-/* Col C — Activity Log (full-height) */
+
 .mod-col-activity {
   display: flex;
   flex-direction: column;
@@ -142,7 +142,7 @@
   flex: 1;
 }
 
-/* ── REPORTS PANEL ───────────────────────────────────────── */
+
 
 .mod-reports-panel {
   background: var(--mod-surface);
@@ -209,7 +209,7 @@
   flex-shrink: 0;
 }
 
-/* Report reason badges */
+
 .req-badge {
   display: inline-flex;
   align-items: center;
@@ -241,7 +241,7 @@
   border-color: var(--mod-primary);
 }
 
-/* ── QUICK ACTIONS ───────────────────────────────────────── */
+
 
 .quick-actions-panel {
   background: var(--mod-surface);
@@ -294,7 +294,7 @@
 
 .quick-action-btn:hover svg { color: white; }
 
-/* ── ACTIVITY LOG ────────────────────────────────────────── */
+
 
 .mod-activity-panel {
   background: var(--mod-surface);
@@ -352,7 +352,7 @@
   color: var(--mod-text-muted);
 }
 
-/* ── SHARED CHART PANEL ──────────────────────────────────── */
+
 
 .chart-panel {
   background: var(--mod-surface);
@@ -371,7 +371,7 @@
   white-space: nowrap;
 }
 
-/* ── BAR CHART ───────────────────────────────────────────── */
+
 
 .bar-chart-wrap {
   display: flex;
@@ -424,7 +424,7 @@
   flex-shrink: 0;
 }
 
-/* ── BOTTOM ROW ──────────────────────────────────────────── */
+
 
 .mod-bottom-row {
   display: grid;
@@ -438,7 +438,7 @@
   flex-direction: column;
 }
 
-/* Sparkline */
+
 .sparkline-wrap--grow {
   display: flex;
   flex-direction: column;
@@ -505,7 +505,7 @@
   text-align: center;
 }
 
-/* Threads list */
+
 .mod-threads-list--grow {
   list-style: none;
   padding: 0;
@@ -574,7 +574,7 @@
   color: var(--mod-text-muted);
 }
 
-/* ── PANEL HEADER ────────────────────────────────────────── */
+
 
 .panel-header {
   display: flex;
@@ -583,7 +583,7 @@
   margin-bottom: 18px;
 }
 
-/* ── SMALL BUTTON ────────────────────────────────────────── */
+
 
 .btn-mod-sm {
   display: inline-flex;
@@ -606,7 +606,7 @@
   border-color: var(--mod-primary);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1200px) {
   .mod-lower { grid-template-columns: 1.6fr 1fr; }

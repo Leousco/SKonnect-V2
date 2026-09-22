@@ -1,5 +1,5 @@
 <?php
-// views/management/moderator/mod_feed.php
+
 require_once __DIR__ . '/../../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('moderator');
 
@@ -49,7 +49,7 @@ $cat_labels = [
             include __DIR__ . '/../../../components/management/moderator/mod_topbar.php';
             ?>
 
-            <!-- CONTROLS -->
+            
             <section class="mod-feed-controls">
                 <div class="mod-feed-controls-left">
                     <div class="mod-search-wrap">
@@ -89,7 +89,7 @@ $cat_labels = [
                 </div>
             </section>
 
-            <!-- FEED PANEL -->
+            
             <section class="mod-feed-section">
                 <div class="panel-header">
                     <h2 class="section-label">Community Threads</h2>
@@ -123,7 +123,7 @@ $cat_labels = [
 
                                 <div class="mod-feed-card-body">
 
-                                    <!-- BADGES -->
+                                    
                                     <div class="mod-feed-badges">
                                         <span class="mod-cat-badge category-<?= $cat_key ?>"><?= $cat_label ?></span>
                                         <span class="mod-status-badge status-<?= $t['status'] ?>"><?= ucfirst($t['status']) ?></span>
@@ -162,11 +162,11 @@ $cat_labels = [
                                         <?php endif; ?>
                                     </div>
 
-                                    <!-- TITLE & EXCERPT -->
+                                    
                                     <h3 class="mod-feed-title"><?= htmlspecialchars($t['subject']) ?></h3>
                                     <p class="mod-feed-excerpt"><?= htmlspecialchars(mb_substr($t['message'], 0, 140)) ?><?= mb_strlen($t['message']) > 140 ? '…' : '' ?></p>
 
-                                    <!-- META -->
+                                    
                                     <div class="mod-feed-meta">
                                         <span class="mod-feed-author">
                                             <span class="mod-feed-avatar"><?= $initials ?></span>
@@ -176,21 +176,21 @@ $cat_labels = [
                                         <span class="mod-feed-comments">💬 <?= (int)$t['comment_count'] ?></span>
                                     </div>
 
-                                </div><!-- /.mod-feed-card-body -->
+                                </div>
 
-                                <!-- CARD FOOTER -->
+                                
                                 <div class="mod-feed-card-footer">
 
-                                    <!-- STATUS TOGGLER -->
+                                    
                                     <div class="mod-status-toggler" data-thread-id="<?= (int)$t['id'] ?>">
                                         <button class="mod-status-opt <?= $t['status'] === 'pending'   ? 'active' : '' ?>" data-status="pending" title="Set Pending">Pending</button>
                                         <button class="mod-status-opt <?= $t['status'] === 'responded' ? 'active' : '' ?>" data-status="responded" title="Set Responded">Responded</button>
                                         <button class="mod-status-opt <?= $t['status'] === 'resolved'  ? 'active' : '' ?>" data-status="resolved" title="Set Resolved">Resolved</button>
                                     </div>
 
-                                    <!-- MOD ACTIONS -->
+                                    
                                     <div class="mod-thread-actions">
-                                        <!-- VIEW (slide-in) -->
+                                        
                                         <button class="mod-action-btn mod-action-view" data-thread-id="<?= (int)$t['id'] ?>" title="View Thread">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -199,7 +199,7 @@ $cat_labels = [
                                             View
                                         </button>
 
-                                        <!-- PIN / UNPIN -->
+                                        
                                         <button class="mod-action-btn mod-action-pin <?= $is_pinned ? 'mod-action-pin--active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $is_pinned ? 'Unpin Thread' : 'Pin Thread' ?>">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -207,7 +207,7 @@ $cat_labels = [
                                             <?= $is_pinned ? 'Unpin' : 'Pin' ?>
                                         </button>
 
-                                        <!-- FLAG / UNFLAG -->
+                                        
                                         <button class="mod-action-btn mod-action-flag <?= $is_flagged ? 'mod-action-flag--active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $is_flagged ? 'Unflag Thread' : 'Flag for Review' ?>">
                                             <?php if ($is_flagged) : ?>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13">
@@ -222,7 +222,7 @@ $cat_labels = [
                                             <?php endif; ?>
                                         </button>
 
-                                        <!-- REMOVE / RESTORE -->
+                                        
                                         <button class="mod-action-btn mod-action-remove <?= $is_removed ? 'mod-action-remove--active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $is_removed ? 'Restore Thread' : 'Hide Thread' ?>">
                                             <?php if ($is_removed) : ?>
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -239,16 +239,16 @@ $cat_labels = [
                                         </button>
                                     </div>
 
-                                </div><!-- /.mod-feed-card-footer -->
+                                </div>
 
                             </article>
                         <?php endforeach; ?>
 
                     <?php endif; ?>
 
-                </div><!-- /#mod-feed-grid -->
+                </div>
 
-                <!-- NO RESULTS -->
+                
                 <div class="mod-no-results" id="mod-no-results" style="display:none;">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -258,7 +258,7 @@ $cat_labels = [
 
             </section>
 
-            <!-- PAGINATION -->
+            
             <section class="mod-pagination">
                 <button class="mod-page-btn" id="mod-prev-btn" disabled>&#8249; Previous</button>
                 <div class="mod-page-numbers" id="mod-page-numbers"></div>
@@ -268,14 +268,14 @@ $cat_labels = [
         </main>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════
-     THREAD SLIDE-IN PANEL
-══════════════════════════════════════════════════════════ -->
+    
+
+
     <div class="mod-panel-backdrop" id="mod-panel-backdrop"></div>
 
     <aside class="mod-thread-panel" id="mod-thread-panel" aria-label="Thread detail panel">
 
-        <!-- PANEL HEADER -->
+        
         <div class="mod-panel-header">
             <div class="mod-panel-header-left">
                 <div class="mod-panel-badges" id="panel-badges"></div>
@@ -287,16 +287,16 @@ $cat_labels = [
             </button>
         </div>
 
-        <!-- PANEL BODY (scrollable) -->
+        
         <div class="mod-panel-body" id="mod-panel-body">
 
-            <!-- Loading state -->
+            
             <div class="mod-panel-loading" id="mod-panel-loading">
                 <div class="mod-panel-spinner"></div>
                 <span>Loading thread…</span>
             </div>
 
-            <!-- Thread content (injected by JS) -->
+            
             <div id="mod-panel-content" style="display:none;">
 
                 <h2 class="mod-panel-title" id="panel-title"></h2>
@@ -307,12 +307,12 @@ $cat_labels = [
 
                 <div class="mod-panel-body-text" id="panel-body-text"></div>
 
-                <!-- Attached images -->
+                
                 <div class="mod-panel-images" id="panel-images"></div>
 
                 <div class="mod-panel-divider"></div>
 
-                <!-- Moderator action strip (inside panel) -->
+                
                 <div class="mod-panel-actions" id="panel-actions">
                     <div class="mod-panel-status-wrap">
                         <span class="mod-panel-actions-label">Status</span>
@@ -346,10 +346,10 @@ $cat_labels = [
 
                 <div class="mod-panel-divider"></div>
 
-                <!-- Comments -->
+                
                 <div class="mod-panel-comments-section">
 
-                    <!-- MOD REPLY BOX -->
+                    
                     <div class="mod-panel-reply-box" id="mod-panel-reply-box">
                         <div class="mod-panel-reply-avatar" id="mod-panel-reply-avatar">M</div>
                         <div class="mod-panel-reply-wrap">
@@ -371,13 +371,13 @@ $cat_labels = [
                     
                 </div>
 
-            </div><!-- /#mod-panel-content -->
+            </div>
 
-        </div><!-- /.mod-panel-body -->
+        </div>
 
     </aside>
 
-    <!-- CONFIRM MODAL -->
+    
     <div class="mod-confirm-overlay" id="mod-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
         <div class="mod-confirm-box">
             <div class="mod-confirm-icon" id="mod-confirm-icon">⚠️</div>
@@ -390,16 +390,16 @@ $cat_labels = [
         </div>
     </div>
 
-    <!-- TOAST -->
+    
     <div class="mod-toast" id="mod-toast" aria-live="polite"></div>
 
-    <!-- LIGHTBOX -->
+    
     <div class="mod-lightbox-overlay" id="mod-lightbox" style="display:none;">
         <button class="mod-lightbox-close" id="mod-lightbox-close">&times;</button>
         <img class="mod-lightbox-img" id="mod-lightbox-img" src="" alt="Image preview">
     </div>
 
-    <!-- FLAG CATEGORY MODAL -->
+    
     <div class="mod-flag-modal-overlay" id="mod-flag-modal-overlay" style="display:none;" aria-modal="true" role="dialog">
         <div class="mod-flag-modal-box">
             <div class="mod-flag-modal-header">

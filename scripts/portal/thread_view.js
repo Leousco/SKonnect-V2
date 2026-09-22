@@ -1,7 +1,7 @@
-/* thread_view.js — SKonnect Thread View Page */
+
 
 document.addEventListener("DOMContentLoaded", () => {
-  /* ---- BAN MODAL HELPERS (hoisted so any future handler can reach them) ---- */
+  
 
   const banOverlay = document.getElementById('ban-modal-overlay');
   const banDismiss = document.getElementById('ban-modal-dismiss');
@@ -20,22 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   banDismiss?.addEventListener('click', hideBanModal);
 
-  /* ---- BAN ENFORCEMENT ---- */
+  
 
   if (typeof USER_IS_BANNED !== 'undefined' && USER_IS_BANNED) {
 
-    // Only auto-show once per browser session for this page.
-    // sessionStorage clears when the tab is closed, so it shows again on a fresh visit.
+    
+    
     const BAN_SHOWN_KEY = 'banShown_thread';
     if (!sessionStorage.getItem(BAN_SHOWN_KEY)) {
       showBanModal();
       sessionStorage.setItem(BAN_SHOWN_KEY, '1');
     }
 
-    // Mark globally so all handlers below can guard themselves
+    
     window.__bannedUser = true;
 
-    // Disable Thread Support button
+    
     const tSupBtn = document.getElementById('thread-support-btn');
     if (tSupBtn) {
       tSupBtn.disabled = true;
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tSupBtn.title = 'Unavailable while your account is banned.';
     }
 
-    // Disable Thread Bookmark button
+    
     const tBmBtn = document.getElementById('thread-bookmark-btn');
     if (tBmBtn) {
       tBmBtn.disabled = true;
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tBmBtn.title = 'Unavailable while your account is banned.';
     }
 
-    // Disable Report button
+    
     const tRepBtn = document.getElementById('thread-report-btn');
     if (tRepBtn) {
       tRepBtn.disabled = true;
@@ -61,28 +61,28 @@ document.addEventListener("DOMContentLoaded", () => {
       tRepBtn.style.cursor  = 'not-allowed';
     }
 
-    // Disable all comment support buttons
+    
     document.querySelectorAll('.comment-support-btn').forEach((btn) => {
       btn.disabled = true;
       btn.style.opacity = '0.45';
       btn.style.cursor  = 'not-allowed';
     });
 
-    // Disable all reply toggle buttons
+    
     document.querySelectorAll('.reply-toggle-btn').forEach((btn) => {
       btn.disabled = true;
       btn.style.opacity = '0.45';
       btn.style.cursor  = 'not-allowed';
     });
 
-    // Disable all content report buttons
+    
     document.querySelectorAll('.content-report-btn').forEach((btn) => {
       btn.disabled = true;
       btn.style.opacity = '0.45';
       btn.style.cursor  = 'not-allowed';
     });
   }
-  /* ---- DELETE MODAL ---- */
+  
 
   const deleteOverlay  = document.getElementById('delete-modal-overlay');
   const deleteCancel   = document.getElementById('delete-modal-cancel');
@@ -91,9 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteTitle    = document.getElementById('delete-modal-title');
   const deleteDesc     = document.getElementById('delete-modal-desc');
 
-  let _deleteType   = null;   // 'thread' | 'comment' | 'reply'
-  let _deleteTarget = null;   // numeric ID
-  let _deleteEl     = null;   // DOM element to replace with tombstone on success
+  let _deleteType   = null;   
+  let _deleteTarget = null;   
+  let _deleteEl     = null;   
 
   const DELETE_DESCRIPTIONS = {
     thread:  'Deleting your thread will hide it from the community feed. This cannot be undone.',
@@ -143,20 +143,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (data.status === 'success') {
-        // Snapshot state BEFORE closeDeleteModal() nulls the shared variables
+        
         const deletedType = _deleteType;
         const deletedEl   = _deleteEl;
 
         closeDeleteModal();
 
         if (deletedType === 'thread') {
-          // Redirect back to feed — thread is gone
+          
           showToast('Thread deleted. Redirecting…', 'success');
           setTimeout(() => { window.location.href = 'feed_page.php'; }, 1500);
           return;
         }
 
-        // Replace comment / reply DOM element with the author-tombstone
+        
         if (deletedEl) {
           const isReply  = deletedType === 'reply';
           const iconPath = 'M12 9.75 14.25 12m0 0 2.25 2.25M14.25 12l2.25-2.25M14.25 12 12 14.25' +
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
             ? 'This reply has been removed by the author.'
             : 'This comment has been removed by the author.';
 
-          // Clear the element's interior and inject tombstone
+          
           deletedEl.innerHTML = `
             <div class="${tombstoneClass}">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -181,10 +181,10 @@ document.addEventListener("DOMContentLoaded", () => {
               <span>${label}</span>
             </div>`;
 
-          // Mark item as removed in CSS (mirrors PHP class)
+          
           deletedEl.classList.add(isReply ? 'reply-item--removed' : 'comment-item--removed');
 
-          // Update comment count if it was a top-level comment
+          
           if (!isReply) {
             const countEl = document.getElementById('comments-count');
             if (countEl) {
@@ -208,12 +208,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /**
-   * Bind delete buttons inside a container.
-   * Safe to call multiple times — checks data-delete-bound.
-   */
+  
+
+
+
   function bindDeleteButtons(container) {
-    // Thread-level delete (the single #thread-delete-btn)
+    
     const threadDelBtn = container.querySelector?.('#thread-delete-btn') ??
                          document.getElementById('thread-delete-btn');
     if (threadDelBtn && !threadDelBtn.dataset.deleteBound) {
@@ -223,26 +223,26 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Comment / reply delete buttons
+    
     container.querySelectorAll?.('.content-delete-btn').forEach((btn) => {
       if (btn.dataset.deleteBound) return;
       btn.dataset.deleteBound = '1';
 
       btn.addEventListener('click', () => {
-        const type     = btn.dataset.deleteType;   // 'comment' | 'reply'
+        const type     = btn.dataset.deleteType;   
         const targetId = btn.dataset.targetId;
-        // Walk up to the .comment-item or .reply-item wrapper
+        
         const itemEl   = btn.closest('.comment-item, .reply-item');
         openDeleteModal(type, targetId, itemEl);
       });
     });
   }
 
-  // Bind on page load
+  
   bindDeleteButtons(document);
 
 
-  /* ---- TOAST ---- */
+  
 
   function showToast(msg, type = "success") {
     const toast = document.getElementById("feed-toast");
@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
-  /* ---- THREAD SUPPORT ---- */
+  
 
   const threadSupportBtn = document.getElementById("thread-support-btn");
   const threadSupportCount = document.getElementById("thread-support-count");
@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ---- THREAD BOOKMARK ---- */
+  
 
   const threadBookmarkBtn = document.getElementById("thread-bookmark-btn");
 
@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ---- COMMENT SUPPORT ---- */
+  
 
   function bindCommentSupportButtons(container) {
     container.querySelectorAll(".comment-support-btn").forEach((btn) => {
@@ -349,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("comment-list") ?? document
   );
 
-  /* ---- REPLY TOGGLE ---- */
+  
 
   function bindReplyUI(commentEl) {
     if (commentEl.dataset.replyBound) return;
@@ -471,16 +471,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Allow Ctrl+Enter inside reply textarea
+    
     textarea?.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) submitBtn?.click();
     });
   }
 
-  // Bind reply UI on all server-rendered comments
+  
   document.querySelectorAll(".comment-item").forEach((el) => bindReplyUI(el));
 
-  /* ---- POST COMMENT ---- */
+  
 
   const replyTextarea = document.getElementById("reply-textarea");
   const replySubmit = document.getElementById("reply-submit-btn");
@@ -537,7 +537,7 @@ document.addEventListener("DOMContentLoaded", () => {
           c.is_mod_comment ? " comment-item--mod" : ""
         }`;
         item.id = `comment-${c.id}`;
-        // Newly posted comments are always the current user's own, so no report btn
+        
         item.innerHTML = `
           <div class="comment-avatar">${initials}</div>
           <div class="comment-body">
@@ -601,23 +601,23 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `;
 
-        // Insert in correct position:
-        // Mod comments → top of the list.
-        // Resident comments → directly after the last mod comment (newest-first among residents).
+        
+        
+        
         if (commentList) {
           if (item.classList.contains("comment-item--mod")) {
             commentList.prepend(item);
           } else {
-            // Find the last mod comment currently in the list
+            
             const modItems = Array.from(
               commentList.querySelectorAll(".comment-item--mod")
             );
             if (modItems.length > 0) {
-              // Insert immediately after the last mod comment
+              
               const lastMod = modItems[modItems.length - 1];
               lastMod.insertAdjacentElement("afterend", item);
             } else {
-              // No mod comments at all — prepend so it's first
+              
               commentList.prepend(item);
             }
           }
@@ -644,12 +644,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Ctrl+Enter on main comment textarea
+  
   replyTextarea?.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) replySubmit.click();
   });
 
-  /* ---- IMAGE CAROUSEL ---- */
+  
 
   (function initCarousel() {
     const grid = document.querySelector(".thread-images-grid");
@@ -663,7 +663,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alt: item.querySelector("img")?.alt || "",
     }));
 
-    // Single image — no carousel chrome needed
+    
     if (slides.length === 1) {
       const { src, alt } = slides[0];
       const wrap = document.createElement("div");
@@ -683,7 +683,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Build peek carousel — track slides continuously, peek 20% on each side
+    
     const carousel = document.createElement("div");
     carousel.className = "thread-carousel";
     carousel.innerHTML = `
@@ -773,7 +773,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   })();
 
-  /* ---- LIGHTBOX ---- */
+  
 
   const lightbox = document.getElementById("lightbox-overlay");
   const lightboxImg = document.getElementById("lightbox-img");
@@ -798,7 +798,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lightboxImg.src = "";
   }
 
-  /* ---- REPORT MODAL ---- */
+  
 
   const reportOverlay = document.getElementById("report-modal-overlay");
   const reportClose = document.getElementById("report-modal-close");
@@ -808,7 +808,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const reportNote = document.getElementById("report-note");
   const reportCatError = document.getElementById("report-category-error");
 
-  // State: what we're currently reporting
+  
   let _reportType = null;
   let _reportTarget = null;
 
@@ -820,7 +820,7 @@ document.addEventListener("DOMContentLoaded", () => {
     _reportType = reportType;
     _reportTarget = targetId;
 
-    // Reset state
+    
     document
       .querySelectorAll("input[name='report-category']")
       .forEach((r) => (r.checked = false));
@@ -896,7 +896,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Escape key closes report modal
+  
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeLightbox();
@@ -904,13 +904,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ---- BIND REPORT BUTTONS ---- */
+  
 
-  /**
-   * Attaches click handlers to all .content-report-btn and
-   * #thread-report-btn elements inside a given container.
-   * Safe to call multiple times — checks data-report-bound.
-   */
+  
+
+
+
+
   function bindReportButtons(container) {
     container
       .querySelectorAll(
@@ -929,10 +929,10 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // Bind on page load
+  
   bindReportButtons(document);
 
-  /* ---- UTIL ---- */
+  
 
   function escapeHtml(str) {
     const d = document.createElement("div");

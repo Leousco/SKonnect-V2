@@ -1,4 +1,4 @@
-/* mod_queue.js — SKonnect Moderation Queue */
+
 
 document.addEventListener("DOMContentLoaded", function () {
   const list = document.getElementById("mq-list");
@@ -10,17 +10,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const ITEMS_PER_PAGE = 10;
   let currentPage = 1;
 
-  // Active filters
+  
   let activeCategory = "all";
   let activeStatus = "all";
 
-  /* ── FILTER BUTTONS ──────────────────────────────────── */
+  
 
   document.querySelectorAll(".mq-filter-btn").forEach((btn) => {
     btn.addEventListener("click", function () {
       const type = this.dataset.filterType;
 
-      // Deactivate siblings of same type
+      
       document
         .querySelectorAll(`.mq-filter-btn[data-filter-type="${type}"]`)
         .forEach((b) => b.classList.remove("active"));
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  /* ── SEARCH & SORT ───────────────────────────────────── */
+  
 
   searchInput?.addEventListener(
     "input",
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
     applyFilters();
   });
 
-  /* ── SORT ITEMS IN DOM ───────────────────────────────── */
+  
 
   function sortItems() {
     const order = sortSelect?.value || "newest";
@@ -65,13 +65,13 @@ document.addEventListener("DOMContentLoaded", function () {
     items.forEach((item) => list.appendChild(item));
   }
 
-  /* ── APPLY FILTERS + PAGINATION ─────────────────────── */
+  
 
   function applyFilters() {
     const query = (searchInput?.value || "").toLowerCase().trim();
     const items = Array.from(list.querySelectorAll(".mq-item"));
 
-    // First pass: mark each item as visible or not
+    
     const matching = [];
     items.forEach((item) => {
       const cat = item.dataset.category || "";
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Pagination
+    
     const totalPages = Math.max(1, Math.ceil(matching.length / ITEMS_PER_PAGE));
     if (currentPage > totalPages) currentPage = totalPages;
 
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
         i >= start && i < start + ITEMS_PER_PAGE ? "" : "none";
     });
 
-    // Empty state
+    
     if (emptyState)
       emptyState.style.display = matching.length === 0 ? "flex" : "none";
     if (shownCount) shownCount.textContent = matching.length;
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
     renderPagination(totalPages);
   }
 
-  /* ── PAGINATION ──────────────────────────────────────── */
+  
 
   function renderPagination(totalPages) {
     const numbersEl = document.getElementById("mq-page-numbers");
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  /* ── CONFIRM MODAL ───────────────────────────────────────── */
+  
 
   const overlay = document.getElementById("mq-confirm-overlay");
   const confirmIcon = document.getElementById("mq-confirm-icon");
@@ -196,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.key === "Escape") closeConfirm();
   });
 
-  /* ── LOADING TOAST ───────────────────────────────────────── */
+  
 
   let loadingToastEl = null;
 
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadingToastEl?.classList.remove("mq-toast-loading--show");
   }
 
-  /* ── SLIDE-IN PANEL ──────────────────────────────────────── */
+  
 
   const mqPanel = document.getElementById("mq-thread-panel");
   const mqBackdrop = document.getElementById("mq-panel-backdrop");
@@ -246,10 +246,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  /* ── ACTION BUTTONS ──────────────────────────────────────── */
+  
 
   list?.addEventListener("click", function (e) {
-    // Check for the View Thread panel button first (no data-action)
+    
     const viewBtn = e.target.closest(".mq-btn-view-panel");
     if (viewBtn) {
       e.preventDefault();
@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  /* ── AJAX SEND ───────────────────────────────────────────── */
+  
 
   async function sendAction(reportId, action, triggerBtn, itemEl) {
     itemEl.querySelectorAll(".mq-action-btn[data-action]").forEach((b) => {
@@ -344,16 +344,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /* ── UPDATE ITEM UI AFTER ACTION ─────────────────────── */
+  
 
   function updateItemUI(itemEl, action, data) {
     const newStatus =
       data.report_status || (action === "dismiss" ? "dismissed" : "reviewed");
 
-    // Update data-status for filter to work
+    
     itemEl.dataset.status = newStatus;
 
-    // Swap the status badge text + class
+    
     const statusBadge = itemEl.querySelector(".mq-report-status-badge");
     if (statusBadge) {
       statusBadge.className = `mq-report-status-badge status-${newStatus}`;
@@ -361,10 +361,10 @@ document.addEventListener("DOMContentLoaded", function () {
         newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
     }
 
-    // Replace action buttons with an actioned label
+    
     const actionsEl = itemEl.querySelector(".mq-item-actions");
     if (actionsEl) {
-      // Keep the View button, remove action buttons, add label
+      
       const viewBtn = actionsEl.querySelector(".mq-btn-view");
       actionsEl.innerHTML = "";
       if (viewBtn) actionsEl.appendChild(viewBtn);
@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", function () {
       actionsEl.appendChild(label);
     }
 
-    // If resolve action succeeded, show the Hidden tag
+    
     if (action === "resolve" && data.thread_hidden) {
       const titleRow = itemEl.querySelector(".mq-item-title-row");
       if (titleRow && !titleRow.querySelector(".mq-hidden-tag")) {
@@ -401,7 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
     applyFilters();
   }
 
-  /* ── TOAST ───────────────────────────────────────────── */
+  
 
   function showToast(msg, type = "success") {
     const toast = document.getElementById("mq-toast");
@@ -413,7 +413,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3200);
   }
 
-  /* ── UTILITY ─────────────────────────────────────────── */
+  
 
   function debounce(fn, delay) {
     let t;
@@ -423,7 +423,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  /* ── LOAD PANEL ──────────────────────────────────────────── */
+  
 
   async function loadMqPanel(threadId, reportId) {
     document.getElementById("mq-panel-loading").style.display = "flex";
@@ -448,7 +448,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /* ── RENDER PANEL ────────────────────────────────────────── */
+  
 
   const mqCatLabels = {
     inquiry: "Inquiry",
@@ -489,7 +489,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function renderMqPanel(thread, images, comments, reportId) {
-    // ── Badges in header ─────────────────────────────────────
+    
     const catKey = thread.category;
     document.getElementById("mq-panel-badges").innerHTML = `
       <span class="mod-cat-badge category-${mqEscHtml(catKey)}">${mqEscHtml(mqCatLabels[catKey] || "Other")}</span>
@@ -497,10 +497,10 @@ document.addEventListener("DOMContentLoaded", function () {
       ${+thread.is_removed ? `<span class="mod-remove-indicator"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>Hidden</span>` : ""}
     `;
 
-    // ── Title ─────────────────────────────────────────────────
+    
     document.getElementById("mq-panel-title").textContent = thread.subject;
 
-    // ── Meta ──────────────────────────────────────────────────
+    
     const initials = thread.author_name.substring(0, 2).toUpperCase();
     document.getElementById("mq-panel-meta").innerHTML = `
       <div class="mod-panel-author">
@@ -516,10 +516,10 @@ document.addEventListener("DOMContentLoaded", function () {
       </div>
     `;
 
-    // ── Body text ─────────────────────────────────────────────
+    
     document.getElementById("mq-panel-body-text").innerHTML = mqNl2br(mqEscHtml(thread.message));
 
-    // ── Images ────────────────────────────────────────────────
+    
     const imagesEl = document.getElementById("mq-panel-images");
     if (images && images.length) {
       imagesEl.innerHTML = images
@@ -546,8 +546,8 @@ document.addEventListener("DOMContentLoaded", function () {
       imagesEl.style.display = "none";
     }
 
-    // ── Report context banner ─────────────────────────────────
-    // Find the matching report row to get reporter info + note
+    
+    
     const reportItem = reportId
       ? document.getElementById(`mq-item-${reportId}`)
       : null;
@@ -571,8 +571,7 @@ document.addEventListener("DOMContentLoaded", function () {
       reportContextEl.style.display = "none";
     }
 
-    // ── Resolve & Notify button ───────────────────────────────
-    const resolveBtn = document.getElementById("mq-panel-resolve-btn");
+        const resolveBtn = document.getElementById("mq-panel-resolve-btn");
     const currentReportStatus = reportItem ? reportItem.dataset.status : "pending";
 
     resolveBtn.dataset.reportId = reportId || "";
@@ -580,18 +579,17 @@ document.addEventListener("DOMContentLoaded", function () {
     resolveBtn.dataset.threadSubject = thread.subject;
     resolveBtn.dataset.category = thread.category;
 
-    // If already actioned, disable the button in the panel
-    if (currentReportStatus !== "pending") {
+        if (currentReportStatus !== "pending") {
       resolveBtn.disabled = true;
       resolveBtn.classList.add("mq-panel-resolve-btn--actioned");
-      resolveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg> ${currentReportStatus === "dismissed" ? "Report Dismissed" : "Report Resolved"}`;
+      resolveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg> Resolve &amp; Notify`;
     } else {
       resolveBtn.disabled = false;
       resolveBtn.classList.remove("mq-panel-resolve-btn--actioned");
       resolveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg> Resolve &amp; Notify`;
     }
 
-    // Wire click — mirrors the row-level resolve button behaviour
+    
     resolveBtn.onclick = () => {
       const rId = resolveBtn.dataset.reportId;
       const subject = resolveBtn.dataset.threadSubject || "this thread";
@@ -607,13 +605,13 @@ document.addEventListener("DOMContentLoaded", function () {
         body: `This will hide "${subject}" from the resident feed and send an email notification to the author citing the "${category}" report. This action cannot be undone.`,
         okLabel: "Resolve & Notify",
         onConfirm: () => {
-          // Reuse the existing sendAction function — same as clicking from the row
+          
           if (rowItem) {
             sendAction(rId, "resolve", rowResolveBtn || resolveBtn, rowItem);
           } else {
             sendAction(rId, "resolve", resolveBtn, resolveBtn);
           }
-          // Disable the panel button immediately
+          
           resolveBtn.disabled = true;
           resolveBtn.classList.add("mq-panel-resolve-btn--actioned");
           resolveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg> Report Resolved`;
@@ -621,7 +619,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     };
 
-    // ── Comments (read-only) ──────────────────────────────────
+    
     const commentCount = document.getElementById("mq-panel-comments-count");
     const commentList = document.getElementById("mq-panel-comment-list");
     commentCount.textContent = comments ? comments.length : 0;
@@ -677,12 +675,12 @@ document.addEventListener("DOMContentLoaded", function () {
         .join("");
     }
 
-    // ── Show content ──────────────────────────────────────────
+    
     document.getElementById("mq-panel-loading").style.display = "none";
     document.getElementById("mq-panel-content").style.display = "";
   }
 
-  // Lightbox close
+  
   const mqLightbox = document.getElementById("mq-lightbox");
   document.getElementById("mq-lightbox-close")?.addEventListener("click", () => {
     if (mqLightbox) mqLightbox.style.display = "none";
@@ -691,7 +689,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.target === mqLightbox) mqLightbox.style.display = "none";
   });
 
-  // Init: sort then filter
+  
   sortItems();
   applyFilters();
 });

@@ -62,7 +62,7 @@ body::-webkit-scrollbar {
     line-height: 1.7;
 }
 
-/* BUTTONS */
+
 
 .btn {
     display: inline-block;
@@ -127,7 +127,7 @@ body::-webkit-scrollbar {
     margin: 0 auto;
 }
 
-/* CARDS */
+
 .card {
     background: white;
     padding: 35px 25px;
@@ -277,7 +277,7 @@ body::-webkit-scrollbar {
     font-weight: 600;
 }
 
-/* CTA */
+
 
 .cta {
     background: linear-gradient(135deg, #1E3A8A, #2563EB);
@@ -298,7 +298,7 @@ body::-webkit-scrollbar {
     line-height: 1.9;
 }
 
-/* SK OFFICE MAP ADDRESS */
+
 
 .contact-preview {
     padding: 80px 20px;

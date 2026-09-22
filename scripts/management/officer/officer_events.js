@@ -123,7 +123,7 @@
     );
   }
 
-  /* ── API ──────────────────────────────────────────────── */
+  
 
   function apiFetch(params) {
     var fd = new FormData();
@@ -154,7 +154,7 @@
     });
   }
 
-  /* ── STATS ─────────────────────────────────────────────── */
+  
 
   function updateStats() {
     var now = today;
@@ -173,7 +173,7 @@
     }).length;
   }
 
-  /* ── CALENDAR ──────────────────────────────────────────── */
+  
 
   function renderCalendar() {
     var year = current.getFullYear(),
@@ -236,7 +236,7 @@
     renderEventList();
   }
 
-  /* ── EVENT LIST ─────────────────────────────────────────── */
+  
 
   function renderEventList() {
     var filtered = eventsData.filter(function (e) {
@@ -325,7 +325,7 @@
     });
   }
 
-  /* ── ADD / EDIT MODAL ───────────────────────────────────── */
+  
 
   function openAddModal() {
     editIndexEl.value = "";
@@ -416,7 +416,7 @@
       });
   }
 
-  /* ── VIEW MODAL ─────────────────────────────────────────── */
+  
 
   function openViewModal(id) {
     var ev = findById(id);
@@ -455,7 +455,7 @@
     openModal(viewModal);
   }
 
-  /* ── DELETE MODAL ───────────────────────────────────────── */
+  
 
   function openDeleteModal(id) {
     var ev = findById(id);
@@ -490,7 +490,7 @@
       });
   }
 
-  /* ── MODAL HELPERS ──────────────────────────────────────── */
+  
 
   function getScrollbarWidth() {
     return window.innerWidth - document.documentElement.clientWidth;
@@ -523,7 +523,7 @@
     }
   });
 
-  /* ── REFRESH ────────────────────────────────────────────── */
+  
 
   function refresh() {
     updateStats();
@@ -531,7 +531,7 @@
     renderEventList();
   }
 
-  /* ── EVENT BINDINGS ─────────────────────────────────────── */
+  
 
   document
     .getElementById("openAddModal")
@@ -616,6 +616,6 @@
       });
   });
 
-  /* ── INIT ───────────────────────────────────────────────── */
+  
   loadEvents().then(refresh);
 })();

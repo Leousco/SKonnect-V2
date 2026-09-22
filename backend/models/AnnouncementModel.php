@@ -10,7 +10,7 @@ class AnnouncementModel {
         $this->conn = $db->getConnection();
     }
 
-    // CREATE
+    
 
     public function create(array $data): int|false {
         $sql = "INSERT INTO announcements
@@ -42,7 +42,7 @@ class AnnouncementModel {
         return (int) $this->conn->lastInsertId();
     }
 
-    // SAVE ATTACHMENT FILE RECORD
+    
 
     public function addFile(int $announcementId, string $filePath): void {
         $stmt = $this->conn->prepare(
@@ -50,8 +50,6 @@ class AnnouncementModel {
         );
         $stmt->execute([':aid' => $announcementId, ':fp' => $filePath]);
     }
-
-    // READ: List (officer panel - all statuses)
 
     public function getAll(array $filters = []): array {
         $where  = [];
@@ -85,13 +83,10 @@ class AnnouncementModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /* READ: LIST (public / portal — active only) */
-
     public function getActive(array $filters = []): array {
         $where  = ["a.status = 'active'"];
         $params = [];
 
-        // Auto-expire: exclude past expiry
         $where[] = "(a.expired_at IS NULL OR a.expired_at >= CURRENT_DATE)";
 
         if (!empty($filters['category'])) {
@@ -122,8 +117,6 @@ class AnnouncementModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /* READ: FEATURED (latest one) */
-
     public function getFeatured(): array|false {
         $stmt = $this->conn->prepare(
             "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) AS author_name
@@ -138,8 +131,6 @@ class AnnouncementModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /* READ: SINGLE */
-
     public function getById(int $id): array|false {
         $stmt = $this->conn->prepare(
             "SELECT a.*, CONCAT(u.first_name, ' ', u.last_name) AS author_name
@@ -151,8 +142,6 @@ class AnnouncementModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /* READ: FILES FOR AN ANNOUNCEMENT */
-
     public function getFiles(int $announcementId): array {
         $stmt = $this->conn->prepare(
             "SELECT * FROM announcement_files WHERE announcement_id = :aid"
@@ -160,8 +149,6 @@ class AnnouncementModel {
         $stmt->execute([':aid' => $announcementId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    /* UPDATE */
 
     public function update(int $id, array $data): bool {
         $allowed = ['title','content','category','featured','banner_img',
@@ -176,7 +163,6 @@ class AnnouncementModel {
             }
         }
 
-        // Auto-set featured_at when featured status changes
         if (array_key_exists('featured', $data)) {
             $sets[]              = "featured_at = :featured_at";
             $params[':featured_at'] = $data['featured'] ? date('Y-m-d H:i:s') : null;
@@ -196,8 +182,6 @@ class AnnouncementModel {
         }
     }
 
-    /* ARCHIVE (soft) */
-
     public function archive(int $id): bool {
         $stmt = $this->conn->prepare(
             "UPDATE announcements SET status = 'archived', archived_at = NOW() WHERE id = :id"
@@ -205,16 +189,12 @@ class AnnouncementModel {
         return $stmt->execute([':id' => $id]);
     }
 
-    /* RESTORE to active/published */
-
     public function restore(int $id): bool {
         $stmt = $this->conn->prepare(
             "UPDATE announcements SET status = 'active', archived_at = NULL WHERE id = :id"
         );
         return $stmt->execute([':id' => $id]);
     }
-
-    /* DELETE (hard) */
 
     public function delete(int $id): bool {
         $stmt = $this->conn->prepare(
@@ -231,7 +211,6 @@ class AnnouncementModel {
     }
 
     public function deleteFiles(int $announcementId): array {
-        // Returns file paths so controller can delete physical files
         $files = $this->getFiles($announcementId);
         $stmt  = $this->conn->prepare(
             "DELETE FROM announcement_files WHERE announcement_id = :aid"
@@ -239,8 +218,6 @@ class AnnouncementModel {
         $stmt->execute([':aid' => $announcementId]);
         return $files;
     }
-
-    /* GET ALL RESIDENT EMAILS */
 
     public function getResidentEmails(): array {
         $stmt = $this->conn->prepare(
@@ -251,8 +228,6 @@ class AnnouncementModel {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    /* STATS (for officer dashboard) */
 
     public function getStats(): array {
         $stmt = $this->conn->query(
@@ -267,8 +242,6 @@ class AnnouncementModel {
         );
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
-    /* AUTO-ARCHIVE WHEN EXPIRED */
 
     public function archiveExpired(): int {
         $stmt = $this->conn->prepare(

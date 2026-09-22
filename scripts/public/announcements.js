@@ -4,7 +4,7 @@ window.addEventListener("pageshow", function (event) {
   }
 });
 
-/* scripts/public/announcements.js */
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.display = '';
         });
 
-        // Pagination buttons
+        
         pageNumbersEl.innerHTML = '';
         for (let i = 1; i <= totalPages; i++) {
             const btn = document.createElement('button');

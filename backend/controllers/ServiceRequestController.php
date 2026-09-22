@@ -1,6 +1,4 @@
 <?php
-// backend/controllers/ServiceRequestController.php
-
 require_once __DIR__ . '/../models/ServiceRequestModel.php';
 require_once __DIR__ . '/../services/EmailService.php';
 
@@ -21,7 +19,7 @@ class ServiceRequestController
         'image/webp',
     ];
     private array $allowedExts      = ['pdf', 'doc', 'docx', 'xlsx', 'jpg', 'jpeg', 'png', 'gif', 'webp'];
-    private int   $maxFileSizeBytes = 5 * 1024 * 1024; // 5 MB
+    private int   $maxFileSizeBytes = 5 * 1024 * 1024; 
     private string $uploadDir;
 
     public function __construct()
@@ -39,10 +37,6 @@ class ServiceRequestController
         }
     }
 
-    // ──────────────────────────────────────────────────────────
-    //  READ (officer-facing)
-    // ──────────────────────────────────────────────────────────
-
     public function getAll(array $filters = []): array
     {
         return $this->model->getAll($filters);
@@ -57,10 +51,6 @@ class ServiceRequestController
     {
         return $this->model->getStatusCounts();
     }
-
-    // ──────────────────────────────────────────────────────────
-    //  SUBMIT (resident-facing, new application)
-    // ──────────────────────────────────────────────────────────
 
     public function submit(array $data, ?array $filesArray, int $residentId): array
     {
@@ -91,7 +81,6 @@ class ServiceRequestController
             }
         }
 
-        // Send confirmation email asynchronously (non-blocking failure)
         $application = $this->model->getById($applicationId);
         if ($application) {
             $residentEmail = $application['email'];
@@ -111,13 +100,6 @@ class ServiceRequestController
             'message'        => 'Your request has been submitted! You will be notified once it is reviewed.',
         ];
     }
-
-    // ──────────────────────────────────────────────────────────
-    //  REAPPLY
-    //  - Removes documents by ID if requested
-    //  - Adds new uploaded documents
-    //  - Resets status back to 'pending'
-    // ──────────────────────────────────────────────────────────
 
     public function reapply(int $applicationId, int $residentId, array $data, ?array $filesArray, array $removeDocIds = []): array
     {
@@ -183,13 +165,8 @@ class ServiceRequestController
         ];
     }
 
-    // ──────────────────────────────────────────────────────────
-    //  CANCEL (resident-facing)
-    // ──────────────────────────────────────────────────────────
-
     public function cancel(int $applicationId, int $residentId): array
     {
-        // Fetch application before cancelling so we have the service name
         $application = $this->model->getById($applicationId);
 
         $cancelled = $this->model->cancelApplication($applicationId, $residentId);
@@ -197,7 +174,6 @@ class ServiceRequestController
             return ['success' => false, 'message' => 'Unable to cancel. The application may already be finalized or not yours.'];
         }
 
-        // Send cancellation confirmation email
         if ($application) {
             $this->emailService->sendRequestCancelled(
                 $application['email'],
@@ -209,10 +185,6 @@ class ServiceRequestController
 
         return ['success' => true, 'message' => 'Your application has been cancelled.'];
     }
-
-    // ──────────────────────────────────────────────────────────
-    //  UPDATE STATUS (officer-facing)
-    // ──────────────────────────────────────────────────────────
 
     public function getApprovalMessage(int $applicationId): array
     {
@@ -255,7 +227,6 @@ class ServiceRequestController
 
         $this->model->updateStatus($id, $status, $fulfillmentPath);
 
-        // In-system notification (approved and rejected only; cancelled excluded)
         if (in_array($status, ['approved', 'rejected'], true)) {
             require_once __DIR__ . '/../services/NotificationService.php';
             NotificationService::notifyServiceStatus(
@@ -284,7 +255,6 @@ class ServiceRequestController
             $this->model->insertNote($id, $officerId, $threadNote, false);
         }
 
-        // ── Send email notification to resident ──────────────────
         $residentEmail = $existing['email'];
         $residentName  = $existing['full_name'];
         $serviceName   = $existing['service_name'];
@@ -308,8 +278,6 @@ class ServiceRequestController
                 trim($note)
             );
         }
-        // Note: officer-side "cancelled" does not send a resident email
-        // since residents receive their own email when they self-cancel.
 
         return [
             'success'     => true,
@@ -318,10 +286,6 @@ class ServiceRequestController
             'application' => $this->model->getById($id),
         ];
     }
-
-    // ──────────────────────────────────────────────────────────
-    //  ADD NOTE (officer-facing)
-    // ──────────────────────────────────────────────────────────
 
     public function addNote(int $applicationId, int $officerId, string $note): array
     {
@@ -341,7 +305,6 @@ class ServiceRequestController
 
         $this->model->insertNote($applicationId, $officerId, $note);
 
-        // In-system notification for action_required
         require_once __DIR__ . '/../services/NotificationService.php';
         NotificationService::notifyServiceStatus(
             (int) $existing['resident_id'],
@@ -350,7 +313,6 @@ class ServiceRequestController
             $existing['service_name']
         );
 
-        // Send "Action Required" email to resident
         $this->emailService->sendActionRequired(
             $existing['email'],
             $existing['full_name'],
@@ -364,10 +326,6 @@ class ServiceRequestController
             'application' => $this->model->getById($applicationId),
         ];
     }
-
-    // ──────────────────────────────────────────────────────────
-    //  PRIVATE HELPERS
-    // ──────────────────────────────────────────────────────────
 
     private function validateSubmit(array $data): array
     {

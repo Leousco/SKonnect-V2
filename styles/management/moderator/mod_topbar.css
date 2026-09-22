@@ -15,7 +15,7 @@
   letter-spacing: -0.3px;
 }
 
-/* LEFT */
+
 
 .mod-topbar-left {
   display: flex;
@@ -81,7 +81,7 @@
   border-radius: 2px;
 }
 
-/* RIGHT */
+
 
 .mod-topbar-right {
   display: flex;
@@ -97,7 +97,7 @@
   flex-shrink: 0;
 }
 
-/* DATE/TIME */
+
 
 .mod-topbar-datetime {
   display: flex;
@@ -122,7 +122,7 @@
   letter-spacing: 0.5px;
 }
 
-/* NOTIFICATIONS */
+
 
 .mod-topbar-notif {
   position: relative;
@@ -182,7 +182,7 @@
   }
 }
 
-/* NOTIF DROPDOWN */
+
 .mod-notif-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -286,7 +286,7 @@
   color: var(--mod-text-muted);
 }
 
-/* MOD USER */
+
 
 .mod-topbar-user {
   position: relative;
@@ -369,7 +369,7 @@
   transform: rotate(180deg);
 }
 
-/* USER DROPDOWN */
+
 .mod-user-dropdown {
   position: absolute;
   top: calc(100% + 10px);
@@ -481,7 +481,7 @@
   margin: 4px 0;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 900px) {
   .mod-topbar-datetime {
     display: none;
@@ -506,7 +506,7 @@
     padding: 5px;
   }
 }
-/* LOGOUT MODAL */
+
 
 .mod-logout-overlay {
   position: fixed;

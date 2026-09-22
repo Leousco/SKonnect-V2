@@ -1,9 +1,9 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Same guard as login.php: an already-logged-in visitor (including one who
-// got here via the browser's Back button) gets bounced straight to their
-// dashboard instead of seeing the public homepage.
+
+
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
@@ -41,7 +41,7 @@ if (!empty($_SESSION['user_id'])) {
     <?php include __DIR__ . '/../../components/public/navbar.php'; ?>
 
     <?php
-    /* ── LOAD SERVICES FROM DATABASE ─────────────────────── */
+    
     require_once __DIR__ . '/../../backend/config/database.php';
     require_once __DIR__ . '/../../backend/controllers/ServiceController.php';
 
@@ -89,7 +89,7 @@ if (!empty($_SESSION['user_id'])) {
 
     <main class="services-page">
 
-        <!-- HEADER -->
+        
         <section class="services-header">
             <div class="services-header-inner">
                 <div class="services-header-text">
@@ -105,7 +105,7 @@ if (!empty($_SESSION['user_id'])) {
             </div>
         </section>
 
-        <!-- HOW IT WORKS -->
+        
         <section class="pub-how-it-works">
             <div class="pub-steps">
                 <div class="pub-step">
@@ -142,7 +142,7 @@ if (!empty($_SESSION['user_id'])) {
             </div>
         </section>
 
-        <!-- CONTROLS -->
+        
         <section class="pub-controls">
             <div class="pub-controls-left">
                 <div class="pub-search-wrap">
@@ -172,7 +172,7 @@ if (!empty($_SESSION['user_id'])) {
             </div>
         </section>
 
-        <!-- SERVICES GRID -->
+        
         <section class="pub-services-section">
             <div class="pub-panel-header">
                 <h2 class="pub-section-label">Available Services</h2>
@@ -204,7 +204,7 @@ if (!empty($_SESSION['user_id'])) {
 
                             <div class="pub-card-body">
 
-                                <!-- Top row -->
+                                
                                 <div class="pub-card-top">
                                     <div class="pub-card-top-left">
                                         <div class="pub-svc-icon svc-icon-<?= $svc['category'] ?>"><?= $icon ?></div>
@@ -298,7 +298,7 @@ if (!empty($_SESSION['user_id'])) {
 
     <?php include __DIR__ . '/../../components/public/footer.php'; ?>
 
-    <!-- DETAILS MODAL (read-only) -->
+    
     <div class="pub-modal-overlay" id="pub-details-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="pub-details-title">
         <div class="pub-modal-box">
 
@@ -372,7 +372,7 @@ if (!empty($_SESSION['user_id'])) {
                     <p class="pub-details-contact-text" id="pub-details-contact"></p>
                 </div>
 
-                <!-- CTA strip (non-info services only) -->
+                
                 <div class="pub-details-cta" id="pub-details-cta" style="display:none;">
                     <div class="pub-cta-inner">
                         <div>

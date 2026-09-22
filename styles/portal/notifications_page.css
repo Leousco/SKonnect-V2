@@ -1,4 +1,4 @@
-/* ── PAGE ENTRY ANIMATION ─────────────────────── */
+
 
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(16px); }
@@ -15,7 +15,7 @@
 .announcements-controls { animation-delay: 0.15s; }
 .announcements-section  { animation-delay: 0.25s; }
 
-/* ---- LIST HEADER ---- */
+
 
 .notif-list-header {
     display: flex;
@@ -50,7 +50,7 @@
     width: 52%;
 }
 
-/* ---- NOTIFICATION LIST WRAPPER ---- */
+
 
 .announcements-section .notif-list-wrap {
     background: var(--surface);
@@ -62,7 +62,7 @@
     flex-direction: column;
 }
 
-/* ---- NOTIFICATION ITEM ROW ---- */
+
 
 .announcements-section .notif-item-row {
     display: flex;
@@ -91,7 +91,7 @@
     background: #dbeafe;
 }
 
-/* ---- LEFT: TYPE INDICATOR BAR ---- */
+
 
 .announcements-section .notif-type-indicator {
     width: 4px;
@@ -107,7 +107,7 @@
 .announcements-section .type-system       { background: #94a3b8; }
 .announcements-section .type-rejected     { background: var(--red) !important; }
 
-/* ---- ICON BUBBLE (page: 42px emoji bubble — scoped to avoid overriding topbar's 32px SVG icon) ---- */
+
 
 .announcements-section .notif-icon-wrap {
     width: 42px;
@@ -131,7 +131,7 @@
 .announcements-section .icon-rejected            { background: #fee2e2; }
 .announcements-section .icon-action-required     { background: #dcfce7; }
 
-/* ---- CONTENT ---- */
+
 
 .announcements-section .notif-content-wrap {
     flex: 1;
@@ -155,7 +155,7 @@
     flex-shrink: 0;
 }
 
-/* TYPE TAGS */
+
 
 .notif-type-tag {
     display: inline-flex;
@@ -169,14 +169,14 @@
     white-space: nowrap;
 }
 
-/* Tag colour classes are unique names — safe to leave unscoped */
+
 .tag-service      { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
 .tag-announcement { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
 .tag-new-service  { background: #cffafe; color: #0e7490; border: 1px solid #67e8f9; }
 .tag-thread       { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
 .tag-system       { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
 
-/* OFFICIAL RESPONSE BADGE */
+
 
 .notif-official-badge {
     display: inline-flex;
@@ -194,7 +194,7 @@
     white-space: nowrap;
 }
 
-/* ---- NOTIFICATION TITLE (page: 14px/max-width — must be scoped, topbar uses 12px) ---- */
+
 
 .announcements-section .notif-title {
     font-size: 14px;
@@ -213,7 +213,7 @@
     color: var(--text-body);
 }
 
-/* PREVIEW */
+
 
 .announcements-section .notif-preview {
     font-size: 13px;
@@ -227,7 +227,7 @@
     max-width: 580px;
 }
 
-/* META: time + link */
+
 
 .announcements-section .notif-meta {
     display: flex;
@@ -236,7 +236,7 @@
     flex-wrap: wrap;
 }
 
-/* Page version adds font-weight:500 — scoped so dropdown keeps its lighter weight */
+
 .announcements-section .notif-time {
     font-size: 11px;
     color: var(--text-muted);
@@ -256,7 +256,7 @@
     text-decoration: underline;
 }
 
-/* ---- RIGHT: ACTION BUTTONS ---- */
+
 
 .announcements-section .notif-actions {
     display: flex;
@@ -299,7 +299,7 @@
     color: #b91c1c;
 }
 
-/* ---- EMPTY STATE (page: has card border/shadow — scoped so dropdown's lighter empty state is unaffected) ---- */
+
 
 .announcements-section .notif-empty {
     display: flex;
@@ -332,7 +332,7 @@
     color: var(--text-muted);
 }
 
-/* ---- MODAL ---- */
+
 
 .modal-overlay {
     position: fixed;
@@ -427,7 +427,7 @@
     color: #b91c1c;
 }
 
-/* MODAL BODY */
+
 
 .notif-modal-tag-row {
     display: flex;
@@ -457,7 +457,7 @@
     flex-shrink: 0;
 }
 
-/* ---- RESPONSIVE ---- */
+
 
 @media (max-width: 768px) {
     .announcements-section .notif-title   { max-width: 240px; }

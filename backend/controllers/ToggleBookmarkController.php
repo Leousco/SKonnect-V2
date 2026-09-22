@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/ToggleBookmarkController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
 

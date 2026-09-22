@@ -1,6 +1,4 @@
 <?php
-// backend/controllers/NotificationController.php
-
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
 
@@ -25,7 +23,6 @@ if (!$userId) {
 
 switch ($action) {
 
-    // GET — return filtered notification list + stats for the current user
     case 'list':
         $filters = [];
         if (!empty($_GET['type']))   $filters['type']   = $_GET['type'];
@@ -40,19 +37,16 @@ switch ($action) {
             'stats'  => $model->getStats($userId),
         ]);
 
-    // POST — mark a single notification as read
     case 'markRead':
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) notifJson(['status' => 'error', 'message' => 'Invalid ID.'], 400);
         $model->markRead($id, $userId);
         notifJson(['status' => 'success']);
 
-    // POST — mark all notifications as read
     case 'markAllRead':
         $model->markAllRead($userId);
         notifJson(['status' => 'success']);
 
-    // POST — dismiss (soft-hide) a notification
     case 'dismiss':
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) notifJson(['status' => 'error', 'message' => 'Invalid ID.'], 400);

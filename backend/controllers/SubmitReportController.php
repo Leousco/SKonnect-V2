@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/SubmitReportController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
 
@@ -31,7 +30,7 @@ $target_id   = (int)($_POST['target_id']   ?? 0);
 $category    = trim($_POST['category']     ?? '');
 $note        = trim($_POST['note']         ?? '') ?: null;
 
-// --- Validate ---
+
 if (!in_array($report_type, $allowed_types)) {
     echo json_encode(['status' => 'error', 'message' => 'Invalid report type.']);
     exit;
@@ -45,7 +44,7 @@ if (!in_array($category, $allowed_categories)) {
     exit;
 }
 
-// --- Duplicate check & insert ---
+
 if ($report_type === 'thread') {
     if ($model->hasReportedThread($target_id, $reporter_id)) {
         echo json_encode(['status' => 'error', 'message' => 'You have already reported this thread.']);
@@ -53,7 +52,7 @@ if ($report_type === 'thread') {
     }
     $ok = $model->createThreadReport($target_id, $reporter_id, $category, $note);
 } else {
-    // 'comment' or 'reply'
+
     if ($model->hasReportedComment($report_type, $target_id, $reporter_id)) {
         echo json_encode(['status' => 'error', 'message' => 'You have already reported this ' . $report_type . '.']);
         exit;

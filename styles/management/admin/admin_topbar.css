@@ -15,7 +15,7 @@
     letter-spacing: -0.3px;
 }
 
-/* LEFT */
+
 
 .admin-topbar-left {
     display: flex;
@@ -79,7 +79,7 @@
     border-radius: 2px;
 }
 
-/* RIGHT */
+
 
 .admin-topbar-right {
     display: flex;
@@ -95,7 +95,7 @@
     flex-shrink: 0;
 }
 
-/* DATE/TIME */
+
 
 .admin-topbar-datetime {
     display: flex;
@@ -120,7 +120,7 @@
     letter-spacing: 0.5px;
 }
 
-/* NOTIFICATIONS */
+
 
 .admin-topbar-notif {
     position: relative;
@@ -173,7 +173,7 @@
     to   { transform: scale(1); }
 }
 
-/* NOTIF DROPDOWN */
+
 .admin-notif-dropdown {
     position: absolute;
     top: calc(100% + 10px);
@@ -267,7 +267,7 @@
     color: var(--admin-text-muted);
 }
 
-/* ADMIN USER */
+
 
 .admin-topbar-user {
     position: relative;
@@ -344,7 +344,7 @@
 
 .admin-topbar-user[aria-expanded="true"] .admin-user-chevron { transform: rotate(180deg); }
 
-/* USER DROPDOWN */
+
 .admin-user-dropdown {
     position: absolute;
     top: calc(100% + 10px);
@@ -429,7 +429,7 @@
 
 .admin-menu-divider { height: 1px; background: var(--admin-border); margin: 4px 0; }
 
-/* RESPONSIVE */
+
 @media (max-width: 900px) { .admin-topbar-datetime { display: none; } }
 
 @media (max-width: 680px) {

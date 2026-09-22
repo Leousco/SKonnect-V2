@@ -1,13 +1,13 @@
-/* profile_page.js
- * Depends on: window.profileData, window.profileIncomplete, window.PROFILE_CTRL
- */
+
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
     const CTRL      = window.PROFILE_CTRL;
     const NOTIF_CTRL = window.NOTIF_CTRL;
 
-    /* ─── RENDER — update all view fields from a profile object ─── */
+    
 
     function renderProfile(p) {
         const fullName = [p.first_name, p.middle_name, p.last_name].filter(Boolean).join(' ');
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (window.profileData) renderProfile(window.profileData);
 
-    /* ─── ACTIVITY SUMMARY + STATS FETCH ─── */
+    
 
     async function loadActivity() {
         try {
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const icon = categoryIcon[t.category]  ?? '💬';
             const dt   = new Date(t.created_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
             
-            // Determine category class for color coding
+            
             let categoryClass = 'thread-cat-tag';
             switch (t.category) {
                 case 'inquiry':
@@ -238,10 +238,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadActivity();
 
-    /* ─── NOTIFICATION STATS ─── */
+    
 
     async function loadNotifStats() {
-        // Seed instantly from server-rendered data, then confirm with a live fetch
+        
         const seeded = window.notifStats;
         if (seeded) applyNotifStats(seeded);
 
@@ -255,9 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyNotifStats(stats) {
-        setEl('sum-notifs', stats.total ?? 0);  // total non-dismissed; topbar badge uses unread separately
+        setEl('sum-notifs', stats.total ?? 0);  
 
-        // Update topbar badge if it exists (class used by topbar.php)
+        
         const badge = document.querySelector('.notif-badge, #notif-count, .notif-count-badge');
         if (badge) {
             const count = stats.unread ?? 0;
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadNotifStats();
 
-    /* ─── AVATAR UPLOAD ─── */
+    
 
     const avatarChangeBtn = document.getElementById('avatar-change-btn');
     const avatarFileInput = document.getElementById('avatar-file-input');
@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         avatarFileInput.value = '';
     });
 
-    /* ─── INLINE EDIT SECTIONS ─── */
+    
 
     document.querySelectorAll('.card-edit-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return {};
     }
 
-    /* ─── INCOMPLETE BADGE UPDATE ─── */
+    
 
     function updateIncompleteUI(profile) {
         const isComplete = !!(profile.mobile_number && profile.purok);
@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (badge) badge.style.display = isComplete ? 'none' : '';
     }
 
-    /* ─── PROFILE EDIT TRIGGER (hero button) ─── */
+    
 
     document.getElementById('profile-edit-trigger')?.addEventListener('click', () => {
         document.getElementById('card-personal')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 400);
     });
 
-    /* ─── PROFILE SETUP MODAL ─── */
+    
 
     const setupOverlay  = document.getElementById('setup-overlay');
     const setupSaveBtn  = document.getElementById('setup-save-btn');
@@ -541,7 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* ─── DEACTIVATE CONFIRM MODAL ─── */
+    
 
     const confirmOverlay    = document.getElementById('confirm-overlay');
     const confirmClose      = document.getElementById('confirm-close');
@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Account deactivation coming soon.', false);
     });
 
-    /* ─── TOAST ─── */
+    
 
     let toastTimer = null;
 
@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3200);
     }
 
-    /* ─── UTILITIES ─── */
+    
 
     function truncate(str, max = 35) { return str.length > max ? str.slice(0, max).trimEnd() + '…' : str; }
     function setEl(id, text)    { const el = document.getElementById(id); if (el) el.textContent = text; }

@@ -1,12 +1,12 @@
-/* ============================================================
-   services_page.js — Resident Portal Services
-   ============================================================ */
+
+
+
 
    document.addEventListener('DOMContentLoaded', () => {
 
-    /* ══════════════════════════════════════════════════════════
-       FILTER
-    ══════════════════════════════════════════════════════════ */
+    
+
+
 
     const searchInput  = document.getElementById('svc-search');
     const catSelect    = document.getElementById('svc-category');
@@ -49,15 +49,15 @@
     typeSelect?.addEventListener('change',   filterCards);
     statusSelect?.addEventListener('change', filterCards);
 
-    /* ══════════════════════════════════════════════════════════
-       CARD TITLE / DESCRIPTION STATE
-       Title is clamped to 2 lines in CSS either way. Here we just
-       measure how tall it actually rendered — 1 line or 2 — and
-       flip a class so the description clamps to 4 lines (short
-       title) or 3 lines (long title). Combined with the matched
-       21px line-heights in CSS, this keeps every card's title +
-       description block the same total height.
-    ══════════════════════════════════════════════════════════ */
+    
+
+
+
+
+
+
+
+
 
     function updateTitleStates() {
         cards.forEach(card => {
@@ -82,9 +82,9 @@
         resizeTimer = setTimeout(updateTitleStates, 150);
     });
 
-    /* ══════════════════════════════════════════════════════════
-       DETAILS MODAL (read-only)
-    ══════════════════════════════════════════════════════════ */
+    
+
+
 
     const detailsOverlay   = document.getElementById('details-modal-overlay');
     const detailsClose     = document.getElementById('details-modal-close');
@@ -227,9 +227,9 @@
     detailsCancel?.addEventListener('click', closeDetailsModal);
     detailsOverlay?.addEventListener('click', e => { if (e.target === detailsOverlay) closeDetailsModal(); });
 
-    /* ══════════════════════════════════════════════════════════
-       APPLY / REQUEST MODAL
-    ══════════════════════════════════════════════════════════ */
+    
+
+
 
     const applyOverlay = document.getElementById('apply-modal-overlay');
     const applyClose   = document.getElementById('apply-modal-close');
@@ -242,7 +242,7 @@
     const applyProc    = document.getElementById('apply-sum-processing');
     const applyReqs    = document.getElementById('apply-sum-requirements');
 
-    // Discard-changes confirmation (shown instead of closing the apply modal directly)
+    
     const discardOverlay = document.getElementById('discard-confirm-overlay');
     const discardCancel  = document.getElementById('discard-confirm-cancel');
     const discardOk      = document.getElementById('discard-confirm-ok');
@@ -260,7 +260,7 @@
         closeDiscardConfirm();
         closeApplyModal();
     });
-    // Clicking outside the confirmation dialog itself is treated as "Cancel" (keeps the form open, no data lost)
+    
     discardOverlay?.addEventListener('click', e => { if (e.target === discardOverlay) closeDiscardConfirm(); });
 
     let selectedFiles = [];
@@ -293,7 +293,7 @@
         if (fl) fl.innerHTML = '';
         selectedFiles = [];
 
-        // Restore auto-filled email after reset (readonly field cleared by reset())
+        
         const emailEl = document.getElementById('r-email');
         if (emailEl && typeof SESSION_USER_EMAIL !== 'undefined') {
             emailEl.value = SESSION_USER_EMAIL;
@@ -313,7 +313,7 @@
     document.querySelectorAll('.svc-apply-btn').forEach(btn => btn.addEventListener('click', () => openApplyModal(btn)));
     applyClose?.addEventListener('click',  openDiscardConfirm);
     applyCancel?.addEventListener('click', openDiscardConfirm);
-    // Clicking outside the request form no longer closes it — progress would otherwise be lost.
+    
 
     document.addEventListener('keydown', e => {
         if (e.key !== 'Escape') return;
@@ -322,9 +322,9 @@
         if (detailsOverlay?.style.display === 'flex') closeDetailsModal();
     });
 
-    /* ══════════════════════════════════════════════════════════
-       FORM VALIDATION
-    ══════════════════════════════════════════════════════════ */
+    
+
+
 
     function clearApplyErrors() {
         document.querySelectorAll('#apply-modal-overlay .field-error').forEach(el => el.textContent = '');
@@ -390,14 +390,14 @@
         return valid;
     }
 
-    /* ══════════════════════════════════════════════════════════
-       SUBMIT — real fetch() to backend
-    ══════════════════════════════════════════════════════════ */
+    
+
+
 
     applySubmit?.addEventListener('click', async () => {
         if (!validateApplyForm()) return;
 
-        // Build multipart FormData
+        
         const fd = new FormData();
         fd.append('action',     'submit');
         fd.append('service_id', applyServId.value);
@@ -409,7 +409,7 @@
 
         selectedFiles.forEach(file => fd.append('documents[]', file));
 
-        // Disable button & show loading state
+        
         applySubmit.disabled   = true;
         applySubmit.innerHTML  = '<span style="opacity:.7">Submitting…</span>';
         showLoadingToast('Submitting your request…');
@@ -426,7 +426,7 @@
                 closeApplyModal();
                 showToast('Your request has been submitted!', 'success');
 
-                // Mark the card as "applied" so the button becomes disabled
+                
                 const serviceId = applyServId.value;
                 document.querySelectorAll(`.svc-apply-btn[data-id="${serviceId}"]`).forEach(btn => {
                     btn.disabled = true;
@@ -446,9 +446,9 @@
         }
     });
 
-    /* ══════════════════════════════════════════════════════════
-       FILE DROP ZONE
-    ══════════════════════════════════════════════════════════ */
+    
+
+
 
     const dropZone  = document.getElementById('file-drop-zone');
     const fileInput = document.getElementById('r-docs');
@@ -505,9 +505,9 @@
         addFiles(e.dataTransfer.files);
     });
 
-    /* ══════════════════════════════════════════════════════════
-       TOAST NOTIFICATION
-    ══════════════════════════════════════════════════════════ */
+    
+
+
 
     function showToast(message, type = 'success') {
         const existing = document.getElementById('svc-toast');
@@ -585,9 +585,9 @@
         if (t) { t.style.transition = 'opacity 0.2s'; t.style.opacity = '0'; setTimeout(() => t.remove(), 220); }
     }
 
-    /* ══════════════════════════════════════════════════════════
-       UTILITY
-    ══════════════════════════════════════════════════════════ */
+    
+
+
 
     function escapeHtml(str) {
         if (!str) return '';

@@ -3,7 +3,7 @@
    Extends admin_services.css
    ============================================================ */
 
-/* ── USER TABLE ──────────────────────────────────────────── */
+
 
 .user-table-wrap {
     background: var(--ap-surface);
@@ -44,7 +44,7 @@
 .user-row:last-child td { border-bottom: none; }
 .user-row:hover td      { background: #faf8ff; }
 
-/* ── USER NAME CELL ──────────────────────────────────────── */
+
 
 .user-name-cell {
     display: flex;
@@ -93,7 +93,7 @@
     white-space: nowrap;
 }
 
-/* ── ROLE BADGES ─────────────────────────────────────────── */
+
 
 .user-role-badge {
     display: inline-flex;
@@ -109,7 +109,7 @@
 .role-officer   { background: #fef3c7; color: #92400e;  border: 1px solid #fcd34d; }
 .role-resident  { background: #d1fae5; color: #065f46;  border: 1px solid #6ee7b7; }
 
-/* ── VERIFIED BADGES ─────────────────────────────────────── */
+
 
 .user-verified-badge {
     display: inline-flex;
@@ -123,7 +123,7 @@
 .verified-yes { background: #d1fae5; color: #065f46; }
 .verified-no  { background: #fee2e2; color: #b91c1c; }
 
-/* ── USER ACTION BUTTONS ─────────────────────────────────── */
+
 
 .user-actions {
     display: flex;
@@ -153,7 +153,7 @@
 .btn-toggle:hover { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
 .btn-delete:hover { background: #fee2e2; border-color: #fca5a5; color: var(--ap-danger); }
 
-/* ── USER MODAL AVATAR ───────────────────────────────────── */
+
 
 .user-modal-avatar {
     width: 42px;
@@ -178,7 +178,7 @@
     border-radius: 8px;
 }
 
-/* ── SELECT INPUT (modal & assign table) ─────────────────── */
+
 
 .svc-select-input {
     width: 100%;
@@ -201,7 +201,7 @@
     border-color: var(--ap);
 }
 
-/* ── FIELD HINT ──────────────────────────────────────────── */
+
 
 .svc-field-hint {
     display: block;
@@ -212,7 +212,7 @@
     line-height: 1.5;
 }
 
-/* ── ROLES GRID ──────────────────────────────────────────── */
+
 
 .roles-grid {
     display: grid;
@@ -301,7 +301,7 @@
 
 .perm-icon { font-size: 12px; flex-shrink: 0; }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 900px) {
     .roles-grid { grid-template-columns: 1fr 1fr; }

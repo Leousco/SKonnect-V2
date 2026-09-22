@@ -3,7 +3,7 @@
    Fixed: Proper spacing between sections, card-based design
    ============================================================ */
 
-/* ── TOOLBAR ────────────────────────────────────────────── */
+
 .an-toolbar {
     display: flex;
     align-items: center;
@@ -16,7 +16,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* ── TOOLBAR LABEL & EXPORT BUTTON ──────────────────────── */
+
 .an-toolbar-label {
     font-size: 13px;
     color: var(--admin-text-muted);
@@ -55,7 +55,7 @@
     transform: translateY(0);
 }
 
-/* ── STAT CARDS ─────────────────────────────────────────── */
+
 .an-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -175,7 +175,7 @@
     color: var(--admin-text-muted);
 }
 
-/* ── INFO ROW — Roles · Announcements · Events · Threads ── */
+
 .an-info-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -196,7 +196,7 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* ── SERVICE ROW — Table + Status/Type ─────────────────── */
+
 .an-service-row {
     display: grid;
     grid-template-columns: 1fr 320px;
@@ -213,7 +213,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* ── REPORTS ROW ───────────────────────────────────────── */
+
 .an-reports-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -229,7 +229,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* ── CHART CANVASES ─────────────────────────────────────── */
+
 .an-chart-wrap {
     position: relative;
     height: 240px;
@@ -242,7 +242,7 @@
     justify-content: center;
 }
 
-/* ── DONUT LEGEND ───────────────────────────────────────── */
+
 .an-legend {
     list-style: none;
     display: flex;
@@ -274,7 +274,7 @@
     flex-shrink: 0;
 }
 
-/* ── ACTIVE vs INACTIVE ─────────────────────────────────── */
+
 .an-active-display {
     display: flex;
     justify-content: center;
@@ -350,7 +350,7 @@
     color: var(--admin-text-muted);
 }
 
-/* ── INFO PANEL INTERNALS ───────────────────────────────── */
+
 .an-info-header {
     display: flex;
     align-items: center;
@@ -380,7 +380,7 @@
     margin: 0;
 }
 
-/* ── ROLE GRID ──────────────────────────────────────────── */
+
 .an-role-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -413,7 +413,7 @@
     letter-spacing: 0.5px;
 }
 
-/* ── KPI LIST ───────────────────────────────────────────── */
+
 .an-kpi-list {
     display: flex;
     flex-direction: column;
@@ -453,7 +453,7 @@
     text-align: right;
 }
 
-/* ── TABLE ──────────────────────────────────────────────── */
+
 .an-table-wrap {
     overflow-x: auto;
 }
@@ -501,7 +501,7 @@
     padding: 32px !important;
 }
 
-/* ── STATUS GRID (Bar chart style) ─────────────────────── */
+
 .an-status-grid {
     display: flex;
     flex-direction: column;
@@ -544,7 +544,7 @@
     color: var(--admin-dark);
 }
 
-/* ── TYPE GRID (Bar chart style) ───────────────────────── */
+
 .an-type-grid {
     display: flex;
     flex-direction: column;
@@ -595,14 +595,14 @@
     font-size: 13px;
 }
 
-/* ── DIVIDER ────────────────────────────────────────────── */
+
 .an-divider {
     height: 1px;
     background: var(--admin-border);
     margin: 20px 0 16px;
 }
 
-/* ── REPORT STATS (Cards style) ────────────────────────── */
+
 .an-report-stats {
     display: flex;
     flex-direction: column;
@@ -638,7 +638,7 @@
 .an-report-number.reviewed { color: #10b981; }
 .an-report-number.dismissed { color: #94a3b8; }
 
-/* ── UTILITY CLASSES ───────────────────────────────────── */
+
 .icon-violet { background: #ede9fe; color: var(--admin-primary); }
 .icon-amber  { background: #fef3c7; color: #92400e; }
 .icon-green  { background: #d1fae5; color: #065f46; }
@@ -666,7 +666,7 @@
     outline: none;
 }
 
-/* ── RESPONSIVE ─────────────────────────────────────────── */
+
 @media (max-width: 1200px) {
     .an-info-row { grid-template-columns: repeat(2, 1fr); }
 }

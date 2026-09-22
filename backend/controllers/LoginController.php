@@ -48,7 +48,6 @@ class LoginController {
             exit;
         }
 
-        // Check active lockout
         if ($user->lockout_until && strtotime($user->lockout_until) > time()) {
             $remaining = strtotime($user->lockout_until) - time();
             echo json_encode([
@@ -74,7 +73,6 @@ class LoginController {
             exit;
         }
 
-        // Success — reset lockout state and open session
         $user->login_attempts = 0;
         $user->lockout_until  = null;
         $user->lockout_level  = 0;
@@ -100,7 +98,7 @@ class LoginController {
         $user->login_attempts++;
 
         if ($user->login_attempts >= self::MAX_ATTEMPTS) {
-            // Escalating lockout: 5, 10, 15, 20, 25, 30 (capped)
+
             $minutes = min(self::MAX_LOCKOUT_MIN, 5 + $user->lockout_level * 5);
 
             $user->lockout_until  = date('Y-m-d H:i:s', time() + $minutes * 60);

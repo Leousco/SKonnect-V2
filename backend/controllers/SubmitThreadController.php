@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/SubmitThreadController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
 
@@ -23,14 +22,14 @@ if (!$author_id) {
     exit;
 }
 
-// --- Sanitize ---
+
 $allowed_categories = ['inquiry', 'complaint', 'suggestion', 'event_question', 'other'];
 
 $category = trim($_POST['category'] ?? '');
 $subject  = trim($_POST['subject']  ?? '');
 $message  = trim($_POST['message']  ?? '');
 
-// --- Validate ---
+
 $errors = [];
 if (!in_array($category, $allowed_categories)) $errors[] = 'Invalid category.';
 if (strlen($subject) < 5)                      $errors[] = 'Subject must be at least 5 characters.';
@@ -41,10 +40,10 @@ if (!empty($errors)) {
     exit;
 }
 
-// --- Create thread ---
+
 $thread_id = $model->createThread((int)$author_id, $category, $subject, $message);
 
-// --- Handle image uploads ---
+
 $upload_dir = __DIR__ . '/../../uploads/threads/';
 if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
 

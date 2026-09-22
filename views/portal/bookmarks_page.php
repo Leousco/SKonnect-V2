@@ -53,7 +53,7 @@ $cat_labels = [
             include __DIR__ . '/../../components/portal/topbar.php';
             ?>
 
-            <!-- CONTROLS -->
+            
             <section class="announcements-controls bookmarks-controls">
                 <div class="controls-left">
                     <a href="feed_page.php" class="btn-back-portal">
@@ -85,7 +85,7 @@ $cat_labels = [
                 </div>
             </section>
 
-            <!-- BOOKMARKS GRID -->
+            
             <section class="announcements-section">
                 <h2 class="section-label">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="#facc15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bmp-icon">
@@ -118,7 +118,7 @@ $cat_labels = [
                             <article class="ann-card feed-card bm-card" onclick="if(!event.target.closest('button, a')){ window.location.href='thread_view.php?id=<?= (int)$t['id'] ?>'; }" style="cursor: pointer;" data-category="<?= htmlspecialchars($cat_key) ?>" data-status="<?= htmlspecialchars($t['status']) ?>">
                                 <div class="ann-card-body">
 
-                                    <!-- BADGES -->
+                                    
                                     <div class="feed-card-badges">
                                         <span class="ann-badge category-<?= $cat_key ?>"><?= $cat_label ?></span>
                                         <span class="feed-badge status-<?= $t['status'] ?>"><?= ucfirst($t['status']) ?></span>
@@ -134,13 +134,13 @@ $cat_labels = [
                                     </div>
 
                                     <div class="ann-card-actions">
-                                        <!-- LEFT: SUPPORT BUTTON (icon + count only) -->
+                                        
                                         <button class="support-btn <?= $user_supported ? 'active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $user_supported ? 'Remove support' : 'I support this' ?>">
                                             <img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon">
                                             <span class="support-count"><?= (int)$t['support_count'] ?></span>
                                         </button>
 
-                                        <!-- RIGHT: COMMENT + BOOKMARK -->
+                                        
                                         <div class="card-actions-right">
                                             <a href="thread_view.php?id=<?= (int)$t['id'] ?>" class="btn-secondary-portal">
                                                 💬 <?= (int)$t['comment_count'] ?> <?= $t['comment_count'] == 1 ? 'Comment' : 'Comments' ?>
@@ -169,7 +169,7 @@ $cat_labels = [
         </main>
     </div>
 
-    <!-- TOAST -->
+    
     <div id="feed-toast" class="feed-toast" aria-live="polite"></div>
 
     <script>

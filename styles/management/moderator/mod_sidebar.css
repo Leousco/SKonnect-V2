@@ -17,7 +17,7 @@
   z-index: 100;
 }
 
-/* HEADER */
+
 
 .mod-sidebar-header {
   padding: 28px 24px 24px;
@@ -66,7 +66,7 @@
   padding: 16px 18px 6px;
 }
 
-/* NAVIGATION */
+
 
 .mod-sidebar-nav {
   flex: 1;
@@ -119,7 +119,7 @@
   opacity: 1;
 }
 
-/* ACTIVE — teal highlight */
+
 .mod-sidebar-nav li.active a {
   background: var(--mod-accent);
   color: var(--mod-dark);
@@ -137,7 +137,7 @@
   box-shadow: 0 6px 16px rgba(45, 212, 191, 0.45);
 }
 
-/* Badge counts */
+
 .mod-sidebar-badge-count {
   margin-left: auto;
   background: var(--mod-danger);
@@ -153,7 +153,7 @@
   padding: 0 5px;
 }
 
-/* FOOTER */
+
 
 .mod-sidebar-footer {
   padding: 16px 24px;
@@ -174,7 +174,7 @@
   color: rgba(255, 255, 255, 0.25);
 }
 
-/* RESPONSIVE */
+
 
 @media (max-width: 900px) {
   .mod-sidebar {
@@ -229,7 +229,7 @@
   }
 }
 
-/* SUBMENUS */
+
 
 .submenu-toggle {
   display: flex;
@@ -285,7 +285,7 @@
   background: rgba(255, 255, 255, 0.07);
 }
 
-/* SUBMENU LIST */
+
 .submenu {
   list-style: none;
   padding: 0;
@@ -301,7 +301,7 @@
   opacity: 1;
 }
 
-/* Submenu items */
+
 .submenu li a {
   display: flex;
   align-items: center;
@@ -338,7 +338,7 @@
   background: rgba(255, 255, 255, 0.7);
 }
 
-/* Active subpage — teal */
+
 .submenu li.active a {
   color: var(--mod-accent);
   font-weight: 600;

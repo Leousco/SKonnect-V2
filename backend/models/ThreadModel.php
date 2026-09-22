@@ -1,5 +1,4 @@
 <?php
-// backend/models/ThreadModel.php
 
 class ThreadModel
 {
@@ -51,6 +50,23 @@ class ThreadModel
              LIMIT 1"
         );
         $stmt->execute([':uid1' => $user_id, ':uid2' => $user_id, ':tid' => $thread_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getThreadByIdForMod(int $thread_id): array|false
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT
+                t.*,
+                CONCAT(u.first_name, ' ', u.last_name) AS author_name,
+                (SELECT COUNT(*) FROM thread_supports ts WHERE ts.thread_id = t.id)                          AS support_count,
+                (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count
+             FROM threads t
+             JOIN users u ON u.id = t.author_id
+             WHERE t.id = :tid
+             LIMIT 1"
+        );
+        $stmt->execute([':tid' => $thread_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -166,12 +182,6 @@ class ThreadModel
         return $ok && $stmt->rowCount() > 0;
     }
 
-    // ── EMAIL + NOTIFICATION HELPERS ──────────────────────────────────────────
-
-    /**
-     * Returns author email, full name, user ID, and thread subject for a thread.
-     * Used by PostCommentController to notify the thread author.
-     */
     public function getThreadAuthor(int $thread_id): array|false
     {
         $stmt = $this->conn->prepare(
@@ -190,10 +200,6 @@ class ThreadModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Given a comment ID, returns the parent thread author's info.
-     * Used by PostReplyController to notify the thread author of a reply.
-     */
     public function getThreadAuthorByComment(int $comment_id): array|false
     {
         $stmt = $this->conn->prepare(
@@ -212,11 +218,6 @@ class ThreadModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Given a comment ID, returns the COMMENT author's user ID, the parent
-     * thread ID, and the thread subject.
-     * Used by PostReplyController to notify the comment author.
-     */
     public function getCommentAuthorAndThread(int $comment_id): array|false
     {
         $stmt = $this->conn->prepare(

@@ -6,7 +6,7 @@
   font-family: "Poppins", sans-serif;
  }
 
-/* LAYOUT */
+
 
 .thread-container {
   max-width: 780px;
@@ -17,7 +17,7 @@
   gap: 24px;
 }
 
-/* BACK LINK */
+
 
 .thread-back-link {
   display: inline-flex;
@@ -44,7 +44,7 @@
   transform: translateX(-3px);
 }
 
-/* MAIN THREAD CARD */
+
 
 .thread-main-card {
   background: var(--surface);
@@ -57,7 +57,7 @@
   gap: 18px;
 }
 
-/* TITLE */
+
 
 .thread-title {
   font-size: 22px;
@@ -67,7 +67,7 @@
   margin: 0;
 }
 
-/* META ROW */
+
 
 .thread-meta {
   display: flex;
@@ -115,7 +115,7 @@
   gap: 14px;
 }
 
-/* BODY */
+
 
 .thread-body {
   font-size: 15px;
@@ -125,7 +125,7 @@
   word-break: break-word;
 }
 
-/* IMAGES CAROUSEL */
+
 
 .thread-carousel.single-image-mode .carousel-track {
   margin: 12px 0;
@@ -171,13 +171,13 @@
   overflow: hidden;
 }
 
-/* Track — slides lay side by side, each 60% wide */
+
 .carousel-track {
   display: flex;
   will-change: transform;
 }
 
-/* Individual slide — 60% wide, fixed height */
+
 .carousel-slide {
   flex: 0 0 60%;
   height: 240px;
@@ -206,7 +206,7 @@
   pointer-events: none;
 }
 
-/* Prev / Next arrows — sit inside track-wrap */
+
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -247,7 +247,7 @@
   right: 10px;
 }
 
-/* Dot strip */
+
 .carousel-dots {
   display: flex;
   align-items: center;
@@ -279,7 +279,7 @@
   background: #94a3b8;
 }
 
-/* CAROUSEL FADE EFFECT */
+
 
 .thread-carousel {
   position: relative;
@@ -322,7 +322,7 @@
   display: none;
 }
 
-/* THREAD ACTIONS */
+
 
 .thread-actions {
   display: flex;
@@ -332,13 +332,13 @@
   flex-wrap: wrap;
 }
 
-/* Override feed_page.css support-btn border-radius for thread view only */
+
 
 .thread-actions .support-btn {
   border-radius: 20px;
 }
 
-/* THREAD BOOKMARK BUTTON — text+icon variant, distinct from feed card icon-only */
+
 
 .thread-bookmark-btn {
   font-family: "Poppins", sans-serif;
@@ -365,8 +365,8 @@
 }
 
 .thread-bookmark-btn.active {
-  /* background: #fef3c7;
-  border-color: #fcd34d; */
+  
+
   color: #92400e;
 }
 
@@ -388,7 +388,7 @@
   transition: fill 0.15s;
 }
 
-/* COMMENT SUPPORT ICON (small, inline with count) */
+
 
 .comment-support-icon {
   width: 13px;
@@ -450,7 +450,7 @@
   margin-left: 8px;
 }
 
-/* COMMENT LIST */
+
 
 .comment-list {
   display: flex;
@@ -465,7 +465,7 @@
   padding: 24px 0 8px;
 }
 
-/* COMMENT ITEM */
+
 
 .comment-item {
   display: flex;
@@ -544,7 +544,7 @@
   align-items: center;
 }
 
-/* COMMENT SUPPORT BUTTON */
+
 
 .comment-support-btn {
   display: inline-flex;
@@ -577,7 +577,7 @@
   transform: scale(0.94);
 }
 
-/* REPLY TOGGLE BUTTON */
+
 
 .reply-toggle-btn {
   display: inline-flex;
@@ -600,7 +600,7 @@
   color: #0369a1;
 }
 
-/* REPLY LIST (threaded, indented) */
+
 
 .reply-list {
   display: flex;
@@ -647,7 +647,7 @@
   gap: 4px;
 }
 
-/* INLINE REPLY BOX */
+
 
 .inline-reply-box {
   margin-top: 10px;
@@ -690,7 +690,7 @@
   font-size: 12px;
 }
 
-/* MAIN REPLY BOX */
+
 
 .reply-box {
   display: flex;
@@ -741,7 +741,7 @@
   color: var(--text-muted);
 }
 
-/* LIGHTBOX */
+
 
 .lightbox-overlay {
   position: fixed;
@@ -786,7 +786,7 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* RESPONSIVE */
+
 
 @media (max-width: 768px) {
   .thread-main-card,
@@ -809,7 +809,7 @@
   }
 }
 
-/* ── MODERATOR COMMENT BADGE ─────────────────────────────── */
+
 
 .mod-reply-badge {
   display: inline-flex;
@@ -827,7 +827,7 @@
   vertical-align: middle;
 }
 
-/* Mod comment body — Teal left accent */
+
 .comment-item--mod > .comment-body {
   border-left: 3px solid #0d9488;
   background: #f0fdfa;
@@ -838,9 +838,9 @@
   background: #f0fdfa;
 }
 
-/* ── REPORT BUTTONS ──────────────────────────────────────── */
 
-/* Thread-level report button (in .thread-actions) */
+
+
 .thread-report-btn {
   display: inline-flex;
   align-items: center;
@@ -871,7 +871,7 @@
   color: #e07014;
 }
 
-/* Comment/reply-level report button (in .comment-actions) */
+
 .content-report-btn {
   display: inline-flex;
   align-items: center;
@@ -899,12 +899,12 @@
   color: #d97706;     
 }
 
-/* Reply actions row — same layout as comment-actions but inside reply-body */
+
 .reply-actions {
   margin-top: 4px;
 }
 
-/* ── REPORT MODAL ────────────────────────────────────────── */
+
 
 .report-modal-overlay {
   position: fixed;
@@ -992,7 +992,7 @@
   line-height: 1.5;
 }
 
-/* Category radio options */
+
 .report-categories {
   display: flex;
   flex-direction: column;
@@ -1053,7 +1053,7 @@
   min-height: 16px;
 }
 
-/* Optional note */
+
 .report-note-wrap {
   display: flex;
   flex-direction: column;
@@ -1077,7 +1077,7 @@
   font-size: 13px;
 }
 
-/* Footer */
+
 .report-modal-footer {
   display: flex;
   align-items: center;
@@ -1146,14 +1146,14 @@
   color: #8d939b;
 }
 
-/* Slightly smaller for inline replies */
+
 .comment-tombstone--reply {
   font-size: 12px;
   padding: 9px 13px;
   border-radius: 8px;
 }
 
-/* ── Delete button (mirrors .thread-report-btn / .content-report-btn) ── */
+
 
 .thread-delete-btn {
   font-family: "Poppins", sans-serif;
@@ -1206,7 +1206,7 @@
   flex-shrink: 0;
 }
 
-/* ── Delete confirm modal ── */
+
 
 .delete-modal-overlay {
   position: fixed;
@@ -1215,7 +1215,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1100; /* above report modal (z-index: 1000) */
+  z-index: 1100; 
   padding: 16px;
 }
 
@@ -1267,7 +1267,7 @@
   justify-content: center;
 }
 
-/* Confirm (destructive) button */
+
 .btn-danger-delete {
   padding: 8px 22px;
   background: #ef4444;
@@ -1288,12 +1288,12 @@
   cursor: not-allowed;
 }
 
-/* ── Author-removed tombstone variant ── */
-/*
-   The mod-removed tombstone (.comment-tombstone) already exists in your
-   CSS with red/warning tones. The --self modifier gives user-deleted
-   content a neutral grey treatment to visually distinguish the two.
-*/
+
+
+
+
+
+
 
 .comment-tombstone--self {
   background: #f9fafb;

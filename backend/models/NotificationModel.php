@@ -1,5 +1,4 @@
 <?php
-// backend/models/NotificationModel.php
 
 require_once __DIR__ . '/../config/database.php';
 
@@ -11,8 +10,6 @@ class NotificationModel
     {
         $this->conn = (new Database())->getConnection();
     }
-
-    // ── CREATE ────────────────────────────────────────────────────────────────
 
     public function create(
         int     $userId,
@@ -43,12 +40,6 @@ class NotificationModel
         return (int) $this->conn->lastInsertId();
     }
 
-    // ── READ ──────────────────────────────────────────────────────────────────
-
-    /**
-     * Fetch all non-dismissed notifications for a user, newest first.
-     * Supports filtering by type, read status, and search keyword.
-     */
     public function getByUser(int $userId, array $filters = []): array
     {
         $where  = ['user_id = :uid', 'is_dismissed = FALSE'];
@@ -98,7 +89,7 @@ class NotificationModel
         ];
     }
 
-    // ── WRITE ─────────────────────────────────────────────────────────────────
+    
 
     public function markRead(int $id, int $userId): bool
     {
@@ -123,11 +114,6 @@ class NotificationModel
         return $stmt->execute([':id' => $id, ':uid' => $userId]);
     }
 
-    // ── BROADCAST HELPERS ─────────────────────────────────────────────────────
-
-    /**
-     * Returns all verified resident user IDs for broadcast notifications.
-     */
     public function getAllResidentIds(): array
     {
         $stmt = $this->conn->query(

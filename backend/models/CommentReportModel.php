@@ -1,5 +1,4 @@
 <?php
-// backend/models/CommentReportModel.php
 
 class CommentReportModel
 {
@@ -10,15 +9,9 @@ class CommentReportModel
         $this->conn = $conn;
     }
 
-    /**
-     * Fetch all comment reports with full context:
-     * - reporter info
-     * - the reported comment/reply message + author info
-     * - the parent thread subject
-     * - the reported author's current sanction level
-     *
-     * @param string $status  'pending' | 'dismissed' | 'reviewed' | 'all'
-     */
+    
+
+
     public function getReports(string $status = 'pending'): array
     {
         $whereClause = ($status === 'all')
@@ -91,9 +84,6 @@ class CommentReportModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Update a single report's status.
-     */
     public function updateStatus(int $report_id, string $status): bool
     {
         $stmt = $this->conn->prepare(
@@ -102,9 +92,6 @@ class CommentReportModel
         return $stmt->execute([':status' => $status, ':id' => $report_id]);
     }
 
-    /**
-     * Fetch a single report row (lightweight, no joins).
-     */
     public function getById(int $report_id): array|false
     {
         $stmt = $this->conn->prepare(
@@ -114,9 +101,6 @@ class CommentReportModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    /**
-     * Count of pending reports.
-     */
     public function countPending(): int
     {
         $stmt = $this->conn->query(

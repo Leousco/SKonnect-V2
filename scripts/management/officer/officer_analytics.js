@@ -1,13 +1,13 @@
-/**
- * officer_analytics.js
- * scripts/management/officer/officer_analytics.js
- */
+
+
+
+
 
  document.addEventListener('DOMContentLoaded', () => {
 
     const DATA_API = '../../../backend/routes/officer_analytics_data.php';
 
-    // ── PALETTE ──────────────────────────────────────────────────
+    
     const C = {
         primary  : '#2d7d9a', primaryLt : '#d6edf5',
         green    : '#16a34a', greenLt   : '#dcfce7',
@@ -21,20 +21,20 @@
         dark     : '#1a2e3b',
     };
 
-    // ── STATE ─────────────────────────────────────────────────────
+    
     let activePeriod = 'month';
     let chartVolume  = null;
     let chartEvents  = null;
     let chartAnn     = null;
     let lastData     = null;
 
-    // ── CHART.JS DEFAULTS ─────────────────────────────────────────
+    
     Chart.defaults.font.family            = "'Poppins', sans-serif";
     Chart.defaults.font.size              = 11;
     Chart.defaults.color                  = C.muted;
     Chart.defaults.plugins.legend.display = false;
 
-    // ── FETCH & RENDER ────────────────────────────────────────────
+    
     function loadPeriod(period) {
         setLoading(true);
         fetch(`${DATA_API}?period=${period}`, { credentials: 'same-origin' })
@@ -75,7 +75,7 @@
         }
     }
 
-    // ── RENDER ALL ────────────────────────────────────────────────
+    
     function render(d) {
         updateKPIs(d);
         renderVolumeChart(d);
@@ -87,7 +87,7 @@
         document.getElementById('an-volume-period').textContent = d.period;
     }
 
-    // ── KPIs ──────────────────────────────────────────────────────
+    
     function updateKPIs(d) {
         setKPI('total-requests', d.kpi.totalRequests);
         setKPI('approval-rate',  d.kpi.approvalRate);
@@ -110,7 +110,7 @@
         });
     }
 
-    // ── VOLUME LINE CHART ─────────────────────────────────────────
+    
     function renderVolumeChart(d) {
         const ctx = document.getElementById('chart-volume').getContext('2d');
         if (chartVolume) chartVolume.destroy();
@@ -170,7 +170,7 @@
                         grid: { color: C.border },
                         ticks: {
                             font: { size: 10 }, maxRotation: 0,
-                            // Thin out labels on daily view to avoid crowding
+                            
                             callback(val, i, ticks) {
                                 if (ticks.length > 15) return i % 3 === 0 ? this.getLabelForValue(val) : '';
                                 return this.getLabelForValue(val);
@@ -187,7 +187,7 @@
         });
     }
 
-    // ── SERVICE HORIZONTAL BARS ───────────────────────────────────
+    
     function renderServiceBars(d) {
         const container = document.getElementById('an-bar-service');
         if (!d.serviceBreakdown.length) {
@@ -208,7 +208,7 @@
         }).join('');
     }
 
-    // ── EVENTS SECTION ────────────────────────────────────────────
+    
     function renderEventsSection(d) {
         document.getElementById('an-events-grid').innerHTML = `
             <div class="an-events-stat stat-upcoming">
@@ -251,7 +251,7 @@
         });
     }
 
-    // ── ANNOUNCEMENTS DONUT ───────────────────────────────────────
+    
     function renderAnnouncementsDonut(d) {
         const { published, drafts, archived } = d.announcements;
         const ctx = document.getElementById('chart-announcements').getContext('2d');
@@ -288,7 +288,7 @@
             </div>`).join('');
     }
 
-    // ── SERVICES LIST ─────────────────────────────────────────────
+    
     const svcIcons = {
         medical:    `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>`,
         education:  `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84 51.39 51.39 0 0 0-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/></svg>`,
@@ -322,7 +322,7 @@
             </div>`).join('');
     }
 
-    // ── ACTIVITY FEED ─────────────────────────────────────────────
+    
     const activityIcons = {
         approve:  `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>`,
         decline:  `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>`,
@@ -349,7 +349,7 @@
             </li>`).join('');
     }
 
-    // ── PERIOD TABS ───────────────────────────────────────────────
+    
     document.querySelectorAll('.an-period-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.an-period-tab').forEach(t => t.classList.remove('active'));
@@ -359,7 +359,7 @@
         });
     });
 
-    // ── EXPORT PDF ────────────────────────────────────────────────
+    
     document.getElementById('an-export-btn').addEventListener('click', async () => {
         const d = lastData;
         if (!d) return;
@@ -371,18 +371,18 @@
         try {
             const { jsPDF } = window.jspdf;
             const pdf  = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-            const PW   = 210;   // A4 width  mm
-            const PH   = 297;   // A4 height mm
-            const ML   = 14;    // margin left
-            const MR   = 14;    // margin right
-            const CW   = PW - ML - MR;   // content width
+            const PW   = 210;   
+            const PH   = 297;   
+            const ML   = 14;    
+            const MR   = 14;    
+            const CW   = PW - ML - MR;   
             const now  = new Date();
             const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
             const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-            let y = 0; // current Y cursor (mm)
+            let y = 0; 
 
-            // ── helpers ──────────────────────────────────────────────
+            
             const TEAL   = [45, 125, 154];
             const DARK   = [26, 46, 59];
             const MUTED  = [122, 150, 166];
@@ -415,7 +415,7 @@
             function addPage() {
                 pdf.addPage();
                 y = 14;
-                // subtle header stripe on continuation pages
+                
                 pdf.setFillColor(...BG);
                 pdf.rect(0, 0, PW, 10, 'F');
                 setFont(7, 'normal', MUTED);
@@ -428,7 +428,7 @@
                 if (y + needed > PH - 14) addPage();
             }
 
-            // ── SECTION HEADING ───────────────────────────────────
+            
             function sectionHeading(title) {
                 checkPageBreak(12);
                 pdf.setFillColor(...TEAL);
@@ -438,11 +438,11 @@
                 y += 12;
             }
 
-            // ── CAPTURE CANVAS AS IMAGE ───────────────────────────
+            
             async function canvasToImage(canvasId) {
                 const canvas = document.getElementById(canvasId);
                 if (!canvas) return null;
-                // Use html2canvas to capture actual rendered state
+                
                 const capture = await html2canvas(canvas, {
                     backgroundColor: '#ffffff',
                     scale: 2,
@@ -452,26 +452,26 @@
                 return capture.toDataURL('image/png');
             }
 
-            // ─────────────────────────────────────────────────────
-            // PAGE 1 — COVER HEADER
-            // ─────────────────────────────────────────────────────
-            // Teal header band
+            
+            
+            
+            
             pdf.setFillColor(...TEAL);
             pdf.rect(0, 0, PW, 42, 'F');
 
-            // Logo / org name
+            
             setFont(18, 'bold', WHITE);
             pdf.text('SKonnect', ML, 18);
             setFont(10, 'normal', [180, 220, 235]);
             pdf.text('Sangguniang Kabataan Management Platform', ML, 25);
 
-            // Report title
+            
             setFont(13, 'bold', WHITE);
             pdf.text('Officer Analytics Report', ML, 34);
             setFont(8, 'normal', [180, 220, 235]);
             pdf.text(`Period: ${d.period}  ·  Exported: ${dateStr}, ${timeStr}`, ML, 39);
 
-            // Period badge (right side)
+            
             const periodLabel = { month: 'Monthly', quarter: 'Quarterly', year: 'Annual' }[activePeriod] || 'Report';
             pdf.setFillColor(255, 255, 255, 0.2);
             pdf.setFillColor(60, 150, 175);
@@ -481,9 +481,9 @@
 
             y = 52;
 
-            // ─────────────────────────────────────────────────────
-            // KPI CARDS (4-up row)
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             const kpiCards = [
                 { label: 'Total Requests',      value: d.kpi.totalRequests, unit: '',  color: TEAL   },
                 { label: 'Approval Rate',        value: d.kpi.approvalRate,  unit: '',  color: GREEN  },
@@ -493,27 +493,27 @@
             const cardW = (CW - 9) / 4;
             kpiCards.forEach((k, i) => {
                 const cx = ML + i * (cardW + 3);
-                // Card bg
+                
                 pdf.setFillColor(...BG);
                 pdf.roundedRect(cx, y, cardW, 26, 3, 3, 'F');
                 pdf.setDrawColor(...k.color);
                 pdf.setLineWidth(0.5);
                 pdf.roundedRect(cx, y, cardW, 26, 3, 3, 'S');
-                // Top accent bar
+                
                 pdf.setFillColor(...k.color);
                 pdf.roundedRect(cx, y, cardW, 3, 1.5, 1.5, 'F');
-                // Label
+                
                 setFont(6.5, 'bold', MUTED);
                 pdf.text(k.label.toUpperCase(), cx + cardW / 2, y + 9, { align: 'center' });
-                // Value
+                
                 setFont(18, 'bold', k.color);
                 pdf.text(`${k.value}${k.unit}`, cx + cardW / 2, y + 20, { align: 'center' });
             });
             y += 32;
 
-            // ─────────────────────────────────────────────────────
-            // REQUEST STATUS BREAKDOWN
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             sectionHeading('Request Status Breakdown');
 
             const statusItems = [
@@ -541,9 +541,9 @@
             });
             y += 28;
 
-            // ─────────────────────────────────────────────────────
-            // REQUEST VOLUME CHART
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             sectionHeading('Request Volume');
             const volImg = await canvasToImage('chart-volume');
             if (volImg) {
@@ -552,9 +552,9 @@
                 y += 59;
             }
 
-            // ─────────────────────────────────────────────────────
-            // SERVICE TYPE BREAKDOWN (horizontal bars)
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             checkPageBreak(14 + d.serviceBreakdown.length * 9 + 10);
             sectionHeading('Requests by Service Type');
 
@@ -568,18 +568,18 @@
                     checkPageBreak(10);
                     const pct  = Number(s.count) / maxCount;
                     const bClr = barColors[i % barColors.length];
-                    // Label
+                    
                     setFont(8, 'normal', DARK);
                     pdf.text(s.label, ML, y + barH - 0.5);
-                    // Track bg
+                    
                     pdf.setFillColor(...BORDER);
                     pdf.roundedRect(ML + 36, y, trackW, barH, 2, 2, 'F');
-                    // Fill
+                    
                     if (pct > 0) {
                         pdf.setFillColor(...bClr);
                         pdf.roundedRect(ML + 36, y, Math.max(trackW * pct, 2), barH, 2, 2, 'F');
                     }
-                    // Count
+                    
                     setFont(8, 'bold', DARK);
                     pdf.text(String(s.count), PW - MR, y + barH - 0.5, { align: 'right' });
                     y += 9;
@@ -591,13 +591,13 @@
                 y += 10;
             }
 
-            // ─────────────────────────────────────────────────────
-            // PAGE BREAK → EVENTS + ANNOUNCEMENTS
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             checkPageBreak(60);
             sectionHeading('Events Overview');
 
-            // Event stat boxes
+            
             const evItems = [
                 { label: 'Upcoming', value: d.events.upcoming, color: TEAL  },
                 { label: 'Past',     value: d.events.past,     color: GREEN  },
@@ -617,7 +617,7 @@
             });
             y += 27;
 
-            // Events bar chart
+            
             const evImg = await canvasToImage('chart-events');
             if (evImg) {
                 checkPageBreak(44);
@@ -625,13 +625,13 @@
                 y += 42;
             }
 
-            // ─────────────────────────────────────────────────────
-            // ANNOUNCEMENTS
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             checkPageBreak(60);
             sectionHeading('Announcements Breakdown');
 
-            // Donut chart
+            
             const annImg = await canvasToImage('chart-announcements');
             const annData = [
                 { label: 'Published', value: d.announcements.published, color: GREEN  },
@@ -645,7 +645,7 @@
             if (annImg) {
                 pdf.addImage(annImg, 'PNG', ML, y, chartColW, chartColW * 0.75, undefined, 'FAST');
             }
-            // Legend beside chart
+            
             let ly = y + 8;
             annData.forEach(r => {
                 pdf.setFillColor(...r.color);
@@ -659,14 +659,14 @@
             });
             y += chartColW * 0.75 + 6;
 
-            // ─────────────────────────────────────────────────────
-            // SERVICES STATUS TABLE
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             checkPageBreak(20 + d.services.length * 10);
             sectionHeading('Services Status');
 
             if (d.services.length) {
-                // Table header
+                
                 pdf.setFillColor(...TEAL);
                 pdf.roundedRect(ML, y, CW, 8, 2, 2, 'F');
                 setFont(7.5, 'bold', WHITE);
@@ -703,9 +703,9 @@
                 y += 10;
             }
 
-            // ─────────────────────────────────────────────────────
-            // RECENT ACTIVITY
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             checkPageBreak(20);
             sectionHeading('Recent Activity');
 
@@ -714,12 +714,12 @@
                 d.activity.forEach((a, i) => {
                     checkPageBreak(16);
                     const iClr = iconColors[a.type] || TEAL;
-                    // Icon circle
+                    
                     pdf.setFillColor(...iClr);
                     pdf.circle(ML + 4, y + 4, 4, 'F');
-                    // Text
+                    
                     setFont(8.5, 'normal', DARK);
-                    // Strip HTML tags from activity text
+                    
                     const plain = a.text.replace(/<[^>]+>/g, '');
                     pdf.text(plain, ML + 12, y + 4.5, { maxWidth: CW - 40 });
                     setFont(7.5, 'normal', MUTED);
@@ -733,9 +733,9 @@
                 y += 10;
             }
 
-            // ─────────────────────────────────────────────────────
-            // FOOTER on every page
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             const totalPages = pdf.getNumberOfPages();
             for (let p = 1; p <= totalPages; p++) {
                 pdf.setPage(p);
@@ -747,9 +747,9 @@
                 pdf.text(`Generated ${dateStr}, ${timeStr}`, PW / 2, footY, { align: 'center' });
             }
 
-            // ─────────────────────────────────────────────────────
-            // SAVE
-            // ─────────────────────────────────────────────────────
+            
+            
+            
             const filename = `SKonnect_Analytics_${activePeriod}_${now.toISOString().slice(0, 10)}.pdf`;
             pdf.save(filename);
 
@@ -762,6 +762,6 @@
         }
     });
 
-    // ── INIT ──────────────────────────────────────────────────────
+    
     loadPeriod(activePeriod);
 });

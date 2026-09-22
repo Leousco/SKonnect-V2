@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/IssueSanctionController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('moderator');
 
@@ -107,7 +106,6 @@ if ($report_id) {
     $reportModel->updateStatus($report_id, 'reviewed');
 }
 
-// ── Log the sanction action ───────────────────────────────────
 $logActionMap = [1 => 'warning_issued', 2 => 'mute_issued', 3 => 'ban_issued'];
 $levelLabels  = [1 => 'Warning',        2 => '7-Day Ban',   3 => 'Permanent Ban'];
 
@@ -123,7 +121,6 @@ $logModel->log($mod_id, $logActionMap[$level], [
     'target_user' => '',
     'notes'       => $notesStr,
 ]);
-// ─────────────────────────────────────────────────────────────
 
 $emailSvc  = new EmailService();
 $emailSent = $emailSvc->sendSanctionNotification(

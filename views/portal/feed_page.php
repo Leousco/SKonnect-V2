@@ -12,11 +12,11 @@ $user_id = $_SESSION['user_id'] ?? null;
 $threadModel = new ThreadModel($conn);
 $threads     = $threadModel->getFeedThreads((int)$user_id);
 
-// ── Sanction check ────────────────────────────────────────────
+
 require_once __DIR__ . '/../../backend/models/SanctionModel.php';
 $sanctionModel  = new SanctionModel($conn);
-$sanction_level = $sanctionModel->getActiveLevel((int)$user_id);   // 0, 1, 2, or 3
-$is_banned      = $sanction_level >= 2;                              // level 2 or 3
+$sanction_level = $sanctionModel->getActiveLevel((int)$user_id);   
+$is_banned      = $sanction_level >= 2;                              
 
 $sanction_meta = ['reason' => null, 'expires_at' => null, 'issued_at' => null];
 if ($is_banned) {
@@ -30,9 +30,9 @@ if ($is_banned) {
     $s_row = $s_stmt->fetch(PDO::FETCH_ASSOC);
     if ($s_row) $sanction_meta = $s_row;
 }
-// ─────────────────────────────────────────────────────────────
 
-// Category label map
+
+
 $cat_labels = [
     'inquiry'        => 'Inquiry',
     'complaint'      => 'Complaint',
@@ -72,7 +72,7 @@ $cat_labels = [
             include __DIR__ . '/../../components/portal/topbar.php';
             ?>
 
-            <!-- CONTROLS -->
+            
             <section class="announcements-controls">
                 <div class="controls-left">
                     <button class="btn-primary-portal" id="submit-concern-btn">
@@ -114,7 +114,7 @@ $cat_labels = [
                 </div>
             </section>
 
-            <!-- FEED GRID -->
+            
             <section class="announcements-section">
                 <h2 class="section-label">Community Threads</h2>
 
@@ -135,7 +135,7 @@ $cat_labels = [
                             <article class="ann-card feed-card" onclick="if(!event.target.closest('button, a')){ window.location.href='thread_view.php?id=<?= (int)$t['id'] ?>'; }" style="cursor: pointer;" data-category="<?= htmlspecialchars($cat_key) ?>" data-status="<?= htmlspecialchars($t['status']) ?>" data-date="<?= $t['created_at'] ?>" data-comments="<?= (int)$t['comment_count'] ?>" data-supports="<?= (int)$t['support_count'] ?>" data-pinned="<?= !empty($t['is_pinned']) ? '1' : '0' ?>">
                                 <div class="ann-card-body">
 
-                                    <!-- BADGES: category + status only (priority removed) -->
+                                    
                                     <div class="feed-card-badges">
                                         <?php if (!empty($t['is_pinned'])) : ?>
                                             <span class="feed-pin-badge">📌 Pinned</span>
@@ -154,13 +154,13 @@ $cat_labels = [
 
                                     <div class="ann-card-actions">
 
-                                        <!-- LEFT: SUPPORT BUTTON (icon + count only) -->
+                                        
                                         <button class="support-btn <?= $user_supported ? 'active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $user_supported ? 'Remove support' : 'I support this' ?>">
                                             <img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon">
                                             <span class="support-count"><?= (int)$t['support_count'] ?></span>
                                         </button>
 
-                                        <!-- RIGHT: COMMENT + BOOKMARK -->
+                                        
                                         <div class="card-actions-right">
                                             <a href="thread_view.php?id=<?= (int)$t['id'] ?>" class="btn-secondary-portal">
                                                 💬 <?= (int)$t['comment_count'] ?> <?= $t['comment_count'] == 1 ? 'Comment' : 'Comments' ?>
@@ -186,7 +186,7 @@ $cat_labels = [
                 </div>
             </section>
 
-            <!-- PAGINATION -->
+            
             <section class="pagination-section">
                 <button class="page-btn" id="prev-btn" disabled>&#8249; Previous</button>
                 <div class="page-numbers" id="page-numbers"></div>
@@ -196,7 +196,7 @@ $cat_labels = [
         </main>
     </div>
 
-    <!-- POST A THREAD MODAL -->
+    
     <div class="modal-overlay" id="modal-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="modal-title">
         <div class="modal-box">
 
@@ -214,7 +214,7 @@ $cat_labels = [
             <div class="modal-body">
                 <form id="thread-form" novalidate>
 
-                    <!-- Category (priority removed) -->
+                    
                     <div class="form-group">
                         <label class="modal-label" for="m-category">Category <span class="required-star">*</span></label>
                         <select class="ann-select modal-select" id="m-category" name="category" required>
@@ -228,21 +228,21 @@ $cat_labels = [
                         <span class="field-error" id="err-category"></span>
                     </div>
 
-                    <!-- Subject -->
+                    
                     <div class="form-group">
                         <label class="modal-label" for="m-subject">Subject <span class="required-star">*</span></label>
                         <input type="text" class="ann-search-input modal-input" id="m-subject" name="subject" placeholder="Enter a brief title for your thread" maxlength="120" required>
                         <span class="field-error" id="err-subject"></span>
                     </div>
 
-                    <!-- Message -->
+                    
                     <div class="form-group">
                         <label class="modal-label" for="m-message">Message <span class="required-star">*</span></label>
                         <textarea class="concern-textarea" id="m-message" name="message" rows="5" placeholder="Describe your concern in detail…" required></textarea>
                         <span class="field-error" id="err-message"></span>
                     </div>
 
-                    <!-- Image Attachments -->
+                    
                     <div class="form-group">
                         <label class="modal-label" for="m-images">
                             Images <span class="optional-tag">(optional · JPEG or PNG · max 5MB each)</span>
@@ -275,10 +275,10 @@ $cat_labels = [
         </div>
     </div>
 
-    <!-- TOAST -->
+    
     <div id="feed-toast" class="feed-toast" aria-live="polite"></div>
 
-    <!-- BAN NOTICE MODAL -->
+    
     <?php if ($is_banned) :
         $ban_level_label = $sanction_level === 3 ? 'Permanent Ban' : '7-Day Posting Ban';
         $ban_icon        = $sanction_level === 3 ? '🚫' : '⏳';

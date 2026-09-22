@@ -1,16 +1,16 @@
-/**
- * officer_services.js
- * scripts/management/officer/officer_services.js
- *
- * Handles: search/filter, multi-step Add/Edit modal, requirements live preview,
- * attachment drag & drop, capacity toggle, service type conditional fields,
- * toggle active/inactive, delete confirmation, toast notifications.
- */
+
+
+
+
+
+
+
+
 
  document.addEventListener("DOMContentLoaded", () => {
-  /* ══════════════════════════════════════════════════════════
-     ELEMENT REFS
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   const grid = document.getElementById("svc-grid");
   const noResults = document.getElementById("svc-no-results");
@@ -21,7 +21,7 @@
   const selType = document.getElementById("svc-type");
   const selStatus = document.getElementById("svc-status");
 
-  // Modal
+  
   const modalOverlay = document.getElementById("svc-modal-overlay");
   const modalTitle = document.getElementById("svc-modal-title");
   const modalClose = document.getElementById("svc-modal-close");
@@ -30,11 +30,11 @@
   const nextBtn = document.getElementById("svc-next-btn");
   const prevBtn = document.getElementById("svc-prev-btn");
 
-  // Tab elements
+  
   const tabs = document.querySelectorAll(".svc-tab");
   const panels = document.querySelectorAll(".svc-tab-panel");
 
-  // Tab 1 fields
+  
   const fieldId = document.getElementById("svc-id");
   const fieldName = document.getElementById("svc-name");
   const fieldCategory = document.getElementById("svc-category-field");
@@ -48,7 +48,7 @@
   const contactGroup = document.getElementById("svc-contact-group");
   const approvalGroup = document.getElementById("svc-approval-group");
 
-  // Tab 2 fields
+  
   const fieldRequirements = document.getElementById("svc-requirements");
   const previewToggle = document.getElementById("svc-preview-toggle");
   const reqPreviewWrap = document.getElementById("svc-req-preview-wrap");
@@ -63,12 +63,12 @@
   );
   const existingAttachment = document.getElementById("svc-existing-attachment");
 
-  // Tab 3 fields
+  
   const capacityToggle = document.getElementById("svc-capacity-toggle");
   const capacityInputWrap = document.getElementById("svc-capacity-input-wrap");
   const fieldMaxCapacity = document.getElementById("svc-max-capacity");
 
-  // Error spans
+  
   const errName = document.getElementById("err-svc-name");
   const errCategory = document.getElementById("err-svc-category");
   const errType = document.getElementById("err-svc-type");
@@ -77,7 +77,7 @@
   const errContact = document.getElementById("err-svc-contact");
   const errCapacity = document.getElementById("err-svc-capacity");
 
-  // Confirm modal (reused for delete + discard-changes)
+  
   const confirmOverlay = document.getElementById("svc-confirm-overlay");
   const confirmTitle = document.getElementById("svc-confirm-title");
   const confirmBody = document.getElementById("svc-confirm-body");
@@ -93,12 +93,12 @@
     confirmOverlay.style.display = "flex";
   }
 
-  // Toast
+  
   const toast = document.getElementById("svc-toast");
 
-  /* ══════════════════════════════════════════════════════════
-     TOAST
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   let toastTimer = null;
 
@@ -112,9 +112,9 @@
     );
   }
 
-  /* ══════════════════════════════════════════════════════════
-     FILTER / SEARCH
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   function getCards() {
     return Array.from(grid.querySelectorAll(".svc-card"));
@@ -151,9 +151,9 @@
   selType.addEventListener("change", applyFilters);
   selStatus.addEventListener("change", applyFilters);
 
-  /* ══════════════════════════════════════════════════════════
-     TAB NAVIGATION
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   let currentTab = 1;
   const TOTAL_TABS = 3;
@@ -183,7 +183,7 @@
         goToTab(target);
         return;
       }
-      // Validate before jumping forward
+      
       if (validateTab(currentTab)) goToTab(target);
     });
   });
@@ -196,9 +196,9 @@
     goToTab(currentTab - 1);
   });
 
-  /* ══════════════════════════════════════════════════════════
-     VALIDATION
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   function clearErrors() {
     [errName, errCategory, errType, errDesc, errApprovalMsg, errContact, errCapacity].forEach(
@@ -273,9 +273,9 @@
     return validateTab(1) && validateTab(3);
   }
 
-  /* ══════════════════════════════════════════════════════════
-     SERVICE TYPE → CONDITIONAL FIELDS
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   function onTypeChange() {
     const type = fieldTypeSelect.value;
@@ -294,9 +294,9 @@
 
   fieldTypeSelect.addEventListener("change", onTypeChange);
 
-  /* ══════════════════════════════════════════════════════════
-     REQUIREMENTS PREVIEW
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   function buildReqPreview(raw) {
     if (!raw.trim())
@@ -351,9 +351,9 @@
       : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg> Hide`;
   });
 
-  /* ══════════════════════════════════════════════════════════
-     MULTI-ATTACHMENT HANDLING
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   let selectedFiles = [];
   let existingFiles = [];
@@ -491,9 +491,9 @@
     if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
   });
 
-  /* ══════════════════════════════════════════════════════════
-     CAPACITY TOGGLE
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   capacityToggle.addEventListener("change", () => {
     capacityInputWrap.style.display = capacityToggle.checked ? "" : "none";
@@ -503,9 +503,9 @@
     }
   });
 
-  /* ══════════════════════════════════════════════════════════
-     MODAL OPEN / CLOSE
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   function resetModal() {
     clearErrors();
@@ -606,11 +606,11 @@
   modalClose.addEventListener("click", confirmCloseModal);
   modalCancel.addEventListener("click", confirmCloseModal);
 
-  // (card-level edit button removed; use Edit Service in the view modal)
+  
 
-  /* ══════════════════════════════════════════════════════════
-     SAVE SERVICE
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   saveBtn.addEventListener("click", async () => {
     clearErrors();
@@ -628,7 +628,7 @@
 
     const isEdit = !!fieldId.value;
 
-    // Build FormData so the file upload is included
+    
     const fd = new FormData();
     fd.append("action", isEdit ? "update" : "create");
     if (isEdit) fd.append("id", fieldId.value);
@@ -649,12 +649,12 @@
         : ""
     );
 
-    // Attach new files (key must match $_FILES['attachments'])
+    
     selectedFiles.forEach((file) => {
       fd.append("attachments[]", file);
     });
 
-    // Track existing kept files
+    
     if (existingFiles.length > 0) {
       fd.append("existing_attachments", existingFiles.join(","));
     } else if (isEdit) {
@@ -674,7 +674,7 @@
       const json = await resp.json();
 
       if (!json.success) {
-        // Show server-side validation errors on the correct fields
+        
         const errs = json.errors || [json.message || "Save failed."];
         errs.forEach((msg) => {
           const lower = msg.toLowerCase();
@@ -687,12 +687,12 @@
           else if (lower.includes("capacity")) setError(fieldMaxCapacity, errCapacity, msg);
           else showToast(msg, "danger");
         });
-        // Jump to the tab that has an error
+        
         if (!validateTab(1)) goToTab(1);
         return;
       }
 
-      // Success — update the card DOM from the server response
+      
       const svc = json.service;
       svc.current_count = svc.current_count ?? 0;
 
@@ -715,9 +715,9 @@
     }
   });
 
-  /* ══════════════════════════════════════════════════════════
-     TOGGLE ACTIVE / INACTIVE
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   grid.addEventListener("click", (e) => {
     const toggleBtn = e.target.closest(".svc-toggle-btn");
@@ -730,10 +730,10 @@
     const name =
       card.querySelector(".svc-card-title")?.textContent || "Service";
 
-    // Update card data attribute
+    
     card.dataset.status = newStatus;
 
-    // Update top border accent and badge
+    
     const badge = card.querySelector(".svc-status-badge");
     if (badge && !badge.classList.contains("svc-badge-full")) {
       badge.className = `svc-status-badge svc-badge-${newStatus}`;
@@ -743,7 +743,7 @@
           : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg><span class="svc-status-dot"></span>Inactive`;
     }
 
-    // Update toggle button
+    
     toggleBtn.dataset.status = newStatus;
     toggleBtn.className = `svc-toggle-btn svc-toggle-${newStatus}`;
     toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"/></svg> ${
@@ -756,7 +756,7 @@
       newStatus === "active" ? "success" : "warning"
     );
 
-    // Persist to DB
+    
     const fd = new FormData();
     fd.append("action", "toggle");
     fd.append("id", id);
@@ -771,9 +771,9 @@
       .catch(() => showToast("Network error on status update.", "danger"));
   });
 
-  /* ══════════════════════════════════════════════════════════
-     DELETE
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   let pendingDeleteId = null;
   let pendingDeleteCard = null;
@@ -838,9 +838,9 @@
     confirmAction = null;
   }
 
-  /* ══════════════════════════════════════════════════════════
-     BUILD NEW CARD (client-side for Add/Edit)
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   const categoryIcons = {
     medical: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>`,
@@ -1071,9 +1071,9 @@
     return article;
   }
 
-  /* ══════════════════════════════════════════════════════════
-     ESCAPE HELPERS
-  ══════════════════════════════════════════════════════════ */
+  
+
+
 
   function escHtml(str) {
     return String(str)
@@ -1087,9 +1087,9 @@
     return String(str).replace(/'/g, "&#39;");
   }
 
-  /* ══════════════════════════════════════════════════════════
-     VIEW SERVICE MODAL
-  ══════════════════════════════════════════════════════════ */
+
+
+
 
   const viewOverlay = document.getElementById("svc-view-overlay");
   const viewClose = document.getElementById("svc-view-close");
@@ -1150,15 +1150,13 @@
 
     let bodyHtml = "";
 
-    // Description
-    bodyHtml += `
+        bodyHtml += `
       <div class="svc-view-section">
         <span class="svc-view-section-label">Description</span>
         <p class="svc-view-section-text">${escHtml(data.description)}</p>
       </div>`;
 
-    // Meta grid: type + eligibility + processing time + status
-    let metaItems = `
+        let metaItems = `
       <div class="svc-view-meta-item">
         <span class="svc-view-meta-key">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z"/></svg>
@@ -1193,8 +1191,7 @@
 
     bodyHtml += `<div class="svc-view-meta-grid">${metaItems}</div>`;
 
-    // Requirements
-    if (data.requirements && data.requirements.trim()) {
+        if (data.requirements && data.requirements.trim()) {
       const lines = data.requirements
         .split("\n")
         .map((l) => l.trim())
@@ -1219,8 +1216,7 @@
       }
     }
 
-    // Contact info
-    if (data.service_type === "info" && data.contact_info) {
+        if (data.service_type === "info" && data.contact_info) {
       bodyHtml += `
         <div class="svc-view-section">
           <span class="svc-view-section-label">Contact Information</span>
@@ -1231,8 +1227,7 @@
         </div>`;
     }
 
-    // Attachments
-    const attachNames = data.attachment_name
+        const attachNames = data.attachment_name
       ? Array.isArray(data.attachment_name)
         ? data.attachment_name
         : data.attachment_name
@@ -1279,8 +1274,7 @@
         </div>`;
     }
 
-    // Capacity bar
-    if (hasCapacity) {
+        if (hasCapacity) {
       const fillClass = capPct >= 100 ? "full" : capPct >= 80 ? "warning" : "";
       bodyHtml += `
         <div class="svc-view-capacity">
@@ -1322,8 +1316,7 @@
     }
   });
 
-  // Delegated click for view buttons on cards
-  grid.addEventListener("click", (e) => {
+    grid.addEventListener("click", (e) => {
     const viewBtn = e.target.closest(".svc-view-btn");
     if (viewBtn) {
       try {
@@ -1347,9 +1340,9 @@
     }
   });
 
-  /* ══════════════════════════════════════════════════════════
-     INIT
-  ══════════════════════════════════════════════════════════ */
+
+
+
 
   applyFilters();
   goToTab(1);
@@ -1360,15 +1353,10 @@ function initAutoResizeTextarea(id) {
   const tx = typeof id === 'string' ? document.getElementById(id) : id;
   if (!tx) return;
 
-  // 1. Function to perform the resize
-  const resize = () => {
-      tx.style.height = 'auto'; // Reset height
-      tx.style.height = tx.scrollHeight + 'px'; // Set to content height
-  };
+    const resize = () => {
+      tx.style.height = 'auto';       tx.style.height = tx.scrollHeight + 'px';   };
 
-  // 2. Run whenever the user types
-  tx.addEventListener('input', resize);
+    tx.addEventListener('input', resize);
 
-  // 3. Run immediately (in case there is existing text, like when editing)
-  resize();
+    resize();
 }

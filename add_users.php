@@ -1,7 +1,7 @@
 <?php
 
-// DO NOT RUN THIS UNLESS INTENDED
-// THIS FILE ADDS ADMIN USERS TO THE DATABASE FOR TESTING PURPOSES.
+
+
 
 $host    = '127.0.0.1';
 $db      = 'skonnect';

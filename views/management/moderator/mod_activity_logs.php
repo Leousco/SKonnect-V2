@@ -20,7 +20,7 @@ $logs        = $logModel->getLogs($filters);
 $stats       = $logModel->getStats();
 $moderators  = $logModel->getModerators();
 
-/* ── helpers ── */
+
 function actionBadge(string $action): string
 {
     $map = [
@@ -111,7 +111,7 @@ function modInitials(string $name): string
     include __DIR__ . '/../../../components/management/moderator/mod_topbar.php';
     ?>
 
-        <!-- STAT WIDGETS -->
+        
         <section class="mod-widgets">
 
             <div class="mod-widget-card widget-teal">
@@ -160,7 +160,7 @@ function modInitials(string $name): string
 
         </section>
 
-        <!-- FILTERS -->
+        
         <section class="log-filters-bar">
 
             <div class="log-search-wrap">
@@ -220,7 +220,7 @@ function modInitials(string $name): string
 
         </section>
 
-        <!-- LOG TABLE -->
+        
         <div class="log-table-panel">
 
             <div class="panel-header">
@@ -319,7 +319,7 @@ function modInitials(string $name): string
 
         </div>
 
-        <!-- PAGINATION -->
+        
         <section class="mod-pagination">
             <button class="mod-page-btn" id="log-prev-btn" disabled>&#8249; Previous</button>
             <div class="mod-page-numbers" id="log-page-numbers"></div>

@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/AdminGetThreadController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAdmin();
 
@@ -27,8 +26,7 @@ if (!$thread_id) {
     exit;
 }
 
-// Pass 0 as user_id — moderator doesn't need personal bookmark/support state
-$thread = $threadModel->getThreadById($thread_id, 0);
+$thread = $threadModel->getThreadByIdForMod($thread_id);
 
 if (!$thread) {
     echo json_encode(['status' => 'error', 'message' => 'Thread not found.']);

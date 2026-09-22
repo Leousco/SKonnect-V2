@@ -15,7 +15,7 @@ if (!$thread_id) {
     exit;
 }
 
-// Pass user_id = 0 (no login state needed)
+
 $thread = $threadModel->getThreadById($thread_id, 0);
 if (!$thread) {
     header('Location: community.php');
@@ -25,7 +25,7 @@ if (!$thread) {
 $images   = $threadModel->getThreadImages($thread_id);
 $comments = $commentModel->getCommentsByThread($thread_id, 0);
 
-// Mod / SK Official comments always appear first; within each group, newest first
+
 usort($comments, function ($a, $b) {
     $a_mod = (int)!empty($a['is_mod_comment']);
     $b_mod = (int)!empty($b['is_mod_comment']);
@@ -66,7 +66,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
     <main class="pub-thread-page">
         <div class="pub-thread-container">
 
-            <!-- BACK LINK -->
+            
             <a href="community.php" class="pub-thread-back-link">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -74,10 +74,10 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                 Back to Community Feed
             </a>
 
-            <!-- THREAD CARD -->
+            
             <article class="pub-thread-main-card">
 
-                <!-- BADGES -->
+                
                 <div class="pub-thread-badges">
                     <?php if (!empty($thread['is_pinned'])) : ?>
                         <span class="pub-pin-badge">📌 Pinned</span>
@@ -86,10 +86,10 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                     <span class="status-badge <?= $thread['status'] ?>"><?= ucfirst($thread['status']) ?></span>
                 </div>
 
-                <!-- TITLE -->
+                
                 <h1 class="pub-thread-title"><?= htmlspecialchars($thread['subject']) ?></h1>
 
-                <!-- META -->
+                
                 <div class="pub-thread-meta">
                     <div class="pub-thread-avatar">
                         <?= strtoupper(substr($thread['author_name'], 0, 1)) ?>
@@ -107,16 +107,16 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                     </div>
                 </div>
 
-                <!-- BODY -->
+                
                 <div class="pub-thread-body">
                     <?= nl2br(htmlspecialchars($thread['message'])) ?>
                 </div>
 
-                <!--
-                    IMAGES — hidden data grid.
-                    JS (community.js → initCarousel) reads these items and
-                    builds the carousel identically to thread_view.js.
-                -->
+                
+
+
+
+
                 <?php if (!empty($images)) : ?>
                     <div class="thread-images-grid">
                         <?php foreach ($images as $img) : ?>
@@ -127,7 +127,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                     </div>
                 <?php endif; ?>
 
-                <!-- READ-ONLY NOTICE -->
+                
                 <div class="pub-readonly-notice">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -147,7 +147,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                     <span class="pub-comments-count"><?= count($comments) ?></span>
                 </h2>
 
-                <!-- COMMENT LIST -->
+                
                 <div class="pub-comment-list">
 
                     <?php if (empty($comments)) : ?>
@@ -192,7 +192,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                                     </div>
                                     <div class="pub-comment-text"><?= nl2br(htmlspecialchars($c['message'])) ?></div>
 
-                                    <!-- REPLIES -->
+                                    
                                     <?php if (!empty($c['replies'])) : ?>
                                         <div class="pub-reply-list">
                                             <?php foreach ($c['replies'] as $r) :
@@ -241,7 +241,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
 
                 </div>
 
-                <!-- LOGIN CTA -->
+                
                 <div class="pub-comment-cta">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
@@ -254,10 +254,10 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
         </div>
     </main>
 
-    <!--
-        LIGHTBOX — uses the same IDs as the resident thread_view
-        so the shared initCarousel() in community.js can call openLightbox().
-    -->
+    
+
+
+
     <div class="lightbox-overlay" id="lightbox-overlay" style="display:none;">
         <button class="lightbox-close" id="lightbox-close">&times;</button>
         <img class="lightbox-img" id="lightbox-img" src="" alt="Image preview">

@@ -1,9 +1,9 @@
 <?php
-/**
- * announcements_list.php
- * Returns paginated announcements for the admin panel.
- * Place at: /backend/routes/announcements_list.php
- */
+
+
+
+
+
 
 header('Content-Type: application/json');
 
@@ -42,12 +42,12 @@ if ($status !== '') {
 
 $whereSQL = implode(' AND ', $where);
 
-// Total count
+
 $countStmt = $conn->prepare("SELECT COUNT(*) FROM announcements a WHERE $whereSQL");
 $countStmt->execute($params);
 $total = (int) $countStmt->fetchColumn();
 
-// Rows
+
 $stmt = $conn->prepare("
     SELECT
         a.id,
@@ -77,7 +77,7 @@ $stmt->bindValue(':offset', $offset,  PDO::PARAM_INT);
 $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Stats
+
 $statsStmt = $conn->query("
     SELECT
         COUNT(*)                                          AS total,

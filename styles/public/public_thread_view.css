@@ -2,7 +2,7 @@
    public_thread_view.css — SKonnect Public Thread View
    ============================================================ */
 
-/* PAGE LAYOUT */
+
 
 .pub-thread-page {
     background: var(--bg);
@@ -18,7 +18,7 @@
     gap: 24px;
 }
 
-/* BACK LINK */
+
 
 .pub-thread-back-link {
     display: inline-flex;
@@ -45,7 +45,7 @@
     transform: translateX(-3px);
 }
 
-/* MAIN THREAD CARD */
+
 
 .pub-thread-main-card {
     background: var(--surface);
@@ -58,7 +58,7 @@
     gap: 18px;
 }
 
-/* BADGES */
+
 
 .pub-thread-badges {
     display: flex;
@@ -80,7 +80,7 @@
     border: 1px solid #c4b5fd;
 }
 
-/* TITLE */
+
 
 .pub-thread-title {
     font-size: 22px;
@@ -91,7 +91,7 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* META ROW */
+
 
 .pub-thread-meta {
     display: flex;
@@ -154,7 +154,7 @@
     margin-right: 2px;
 }
 
-/* BODY */
+
 
 .pub-thread-body {
     font-size: 15px;
@@ -170,19 +170,19 @@
    the same carousel from the same JS logic.
    ============================================================ */
 
-/* Hidden data grid — JS reads this and builds the carousel */
+
 .thread-images-grid {
     display: none;
 }
 
-/* Outer wrapper */
+
 .thread-carousel {
     position: relative;
     overflow: hidden;
     user-select: none;
 }
 
-/* Side fade edges */
+
 .thread-carousel::before,
 .thread-carousel::after {
     content: "";
@@ -214,25 +214,25 @@
     );
 }
 
-/* No fades on single-image mode */
+
 .thread-carousel.single-image-mode::before,
 .thread-carousel.single-image-mode::after {
     display: none;
 }
 
-/* Track wrapper — clips overflow */
+
 .carousel-track-wrap {
     position: relative;
     overflow: hidden;
 }
 
-/* Track — slides sit side by side */
+
 .carousel-track {
     display: flex;
     will-change: transform;
 }
 
-/* Individual slide — 60 % wide, fixed height */
+
 .carousel-slide {
     flex: 0 0 60%;
     height: 240px;
@@ -261,7 +261,7 @@
     pointer-events: none;
 }
 
-/* Single-image mode overrides */
+
 .thread-carousel.single-image-mode .carousel-track {
     margin: 12px 0;
     justify-content: center;
@@ -288,7 +288,7 @@
     border-radius: var(--radius);
 }
 
-/* Prev / Next arrow buttons */
+
 .carousel-btn {
     position: absolute;
     top: 50%;
@@ -325,7 +325,7 @@
 .carousel-btn-prev { left: 10px; }
 .carousel-btn-next { right: 10px; }
 
-/* Dot strip */
+
 .carousel-dots {
     display: flex;
     align-items: center;
@@ -411,7 +411,7 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* READ-ONLY NOTICE */
+
 
 .pub-readonly-notice {
     display: flex;
@@ -483,7 +483,7 @@
     line-height: 1;
 }
 
-/* COMMENT LIST */
+
 
 .pub-comment-list {
     display: flex;
@@ -498,7 +498,7 @@
     padding: 24px 0 8px;
 }
 
-/* COMMENT ITEM */
+
 
 .pub-comment-item {
     display: flex;
@@ -536,7 +536,7 @@
     background: #f0fdfa;
 }
 
-/* COMMENT HEADER */
+
 
 .pub-comment-header {
     display: flex;
@@ -572,7 +572,7 @@
     word-break: break-word;
 }
 
-/* MOD BADGE */
+
 
 .pub-mod-badge {
     display: inline-flex;
@@ -588,7 +588,7 @@
     flex-shrink: 0;
 }
 
-/* REPLIES */
+
 
 .pub-reply-list {
     display: flex;
@@ -639,7 +639,7 @@
     background: #f0fdfa;
 }
 
-/* LOGIN CTA */
+
 
 .pub-comment-cta {
     display: flex;
@@ -673,7 +673,7 @@
     text-decoration: underline;
 }
 
-/* RESPONSIVE */
+
 
 @media (max-width: 768px) {
     .pub-thread-page {
@@ -739,7 +739,7 @@
     color: #8d939b;
 }
 
-/* Slightly smaller for inline replies */
+
 .comment-tombstone--reply {
     font-size: 12px;
     padding: 9px 13px;

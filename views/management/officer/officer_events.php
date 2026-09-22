@@ -20,7 +20,7 @@ RoleMiddleware::requireRole('sk_officer');
 
     <?php include __DIR__ . '/../../../components/management/officer/officer_sidebar.php'; ?>
 
-    <!-- MAIN CONTENT -->
+    
     <main class="off-content">
 
     <?php
@@ -32,7 +32,7 @@ RoleMiddleware::requireRole('sk_officer');
     include __DIR__ . '/../../../components/management/officer/officer_topbar.php';
     ?>
 
-        <!-- PAGE HEADER -->
+        
         <div class="evmgmt-page-header">
             <div class="evmgmt-header-left">
                 <h1 class="evmgmt-page-title">
@@ -51,7 +51,7 @@ RoleMiddleware::requireRole('sk_officer');
             </button>
         </div>
 
-        <!-- STAT STRIP -->
+        
         <div class="evmgmt-stat-strip">
             <div class="evmgmt-stat-card" id="stat-total">
                 <span class="evmgmt-stat-num" id="stat-num-total">0</span>
@@ -71,10 +71,10 @@ RoleMiddleware::requireRole('sk_officer');
             </div>
         </div>
 
-        <!-- MAIN GRID: CALENDAR + EVENT LIST -->
+        
         <div class="evmgmt-main-grid">
 
-            <!-- LEFT: CALENDAR -->
+            
             <section class="evmgmt-calendar-panel">
                 <div class="evmgmt-panel-header">
                     <h2 class="section-label">Calendar</h2>
@@ -91,11 +91,11 @@ RoleMiddleware::requireRole('sk_officer');
                         <div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
                     </div>
                     <div class="evmgmt-cal-dates" id="cal-dates">
-                        <!-- Populated by JS -->
+                        
                     </div>
                 </div>
 
-                <!-- CALENDAR LEGEND -->
+                
                 <div class="evmgmt-cal-legend">
                     <div class="evmgmt-legend-item">
                         <div class="evmgmt-legend-dot evmgmt-legend-today"></div>
@@ -112,7 +112,7 @@ RoleMiddleware::requireRole('sk_officer');
                 </div>
             </section>
 
-            <!-- RIGHT: EVENT LIST -->
+            
             <section class="evmgmt-list-panel">
                 <div class="evmgmt-panel-header">
                     <h2 class="section-label">All Events</h2>
@@ -124,7 +124,7 @@ RoleMiddleware::requireRole('sk_officer');
                 </div>
 
                 <ul class="evmgmt-event-list" id="event-list">
-                    <!-- Populated by JS -->
+                    
                 </ul>
                 <p class="evmgmt-list-empty" id="list-empty" style="display:none;">No events found.</p>
             </section>
@@ -134,7 +134,7 @@ RoleMiddleware::requireRole('sk_officer');
     </main>
 </div>
 
-<!-- ===================== ADD / EDIT MODAL ===================== -->
+
 <div class="evmgmt-modal-overlay" id="eventModal">
     <div class="evmgmt-modal">
         <div class="evmgmt-modal-header">
@@ -183,7 +183,7 @@ RoleMiddleware::requireRole('sk_officer');
     </div>
 </div>
 
-<!-- ===================== VIEW MODAL ===================== -->
+
 <div class="evmgmt-modal-overlay" id="viewModal">
     <div class="evmgmt-modal evmgmt-modal--view">
         <div class="evmgmt-modal-header">
@@ -191,7 +191,7 @@ RoleMiddleware::requireRole('sk_officer');
             <button class="evmgmt-modal-close" id="closeViewModal" aria-label="Close">&times;</button>
         </div>
         <div class="evmgmt-modal-body" id="viewModalBody">
-            <!-- Populated by JS -->
+            
         </div>
         <div class="evmgmt-modal-footer">
             <button class="evmgmt-btn-ghost" id="closeViewModalBtn">Close</button>
@@ -200,7 +200,7 @@ RoleMiddleware::requireRole('sk_officer');
     </div>
 </div>
 
-<!-- ===================== DELETE CONFIRM MODAL ===================== -->
+
 <div class="evmgmt-modal-overlay" id="deleteModal">
     <div class="evmgmt-modal evmgmt-modal--sm">
         <div class="evmgmt-modal-header">

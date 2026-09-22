@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Wire up all bookmark buttons
+    
     document.querySelectorAll('.bookmark-btn').forEach(btn => {
         applyBookmarkState(btn);
 

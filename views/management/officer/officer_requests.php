@@ -8,7 +8,7 @@ $controller = new ServiceRequestController();
 $requests   = $controller->getAll();   
 $counts     = $controller->getStatusCounts();
 
-// Helper: build initials from full_name or first+last name
+
 function getInitials(array $req): string {
     $name = trim($req['full_name'] ?? '');
     if (!$name) $name = trim(($req['first_name'] ?? '') . ' ' . ($req['last_name'] ?? ''));
@@ -20,7 +20,7 @@ function getInitials(array $req): string {
     return $out ?: '?';
 }
 
-// Map DB status → display label
+
 function statusLabel(string $status): string {
     return match($status) {
         'pending'          => 'Pending',
@@ -32,7 +32,7 @@ function statusLabel(string $status): string {
     };
 }
 
-// Map DB status → CSS class used in the stylesheet
+
 function statusCss(string $status): string {
     return match($status) {
         'action_required' => 'action-required',
@@ -70,7 +70,7 @@ function statusCss(string $status): string {
     include __DIR__ . '/../../../components/management/officer/officer_topbar.php';
     ?>
 
-        <!-- STAT WIDGETS -->
+        
         <!-- <section class="off-widgets">
 
             <div class="off-widget-card widget-amber">
@@ -119,7 +119,7 @@ function statusCss(string $status): string {
 
         </section> -->
 
-        <!-- STATUS TABS + CONTROLS -->
+        
         <div class="req-controls-wrap">
 
             <div class="req-tabs" role="tablist">
@@ -154,7 +154,7 @@ function statusCss(string $status): string {
             </select>
         </div>
 
-        <!-- REQUESTS TABLE -->
+        
         <div class="req-table-panel">
 
             <div class="panel-header">
@@ -265,7 +265,7 @@ function statusCss(string $status): string {
 
         </div>
 
-        <!-- PAGINATION -->
+        
         <section class="off-pagination">
             <button class="off-page-btn" id="req-prev-btn" disabled>&#8249; Previous</button>
             <div class="off-page-numbers" id="req-page-numbers">
@@ -277,7 +277,7 @@ function statusCss(string $status): string {
     </main>
 </div>
 
-<!-- ── VIEW / DETAIL MODAL ──────────────────────────────────── -->
+
 <div class="req-modal-overlay" id="req-drawer-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-modal" id="req-drawer">
 
@@ -294,14 +294,14 @@ function statusCss(string $status): string {
             <button class="req-drawer-close" id="req-drawer-close" aria-label="Close modal">&times;</button>
         </div>
 
-        <!-- Loading state -->
+        
         <div class="req-modal-body req-drawer-body" id="drawer-loading" style="display:none;">
             <p style="text-align:center;padding:40px 0;color:var(--text-muted);">Loading details…</p>
         </div>
 
         <div class="req-modal-body req-drawer-body" id="drawer-content">
 
-            <!-- Resident info -->
+            
             <div class="drawer-section">
                 <p class="drawer-section-label">Resident</p>
                 <div class="drawer-resident-row">
@@ -313,7 +313,7 @@ function statusCss(string $status): string {
                 </div>
             </div>
 
-            <!-- Contact details row -->
+            
             <div class="drawer-row-2">
                 <div class="drawer-section">
                     <p class="drawer-section-label">Contact Number</p>
@@ -330,7 +330,7 @@ function statusCss(string $status): string {
                 <p class="drawer-value" id="drawer-address">—</p>
             </div>
 
-            <!-- Service + Status -->
+            
             <div class="drawer-row-2">
                 <div class="drawer-section">
                     <p class="drawer-section-label">Service Requested</p>
@@ -353,19 +353,19 @@ function statusCss(string $status): string {
                 </div>
             </div>
 
-            <!-- Purpose -->
+            
             <div class="drawer-section">
                 <p class="drawer-section-label">Purpose / Details</p>
                 <p class="drawer-value drawer-value--purpose" id="drawer-purpose">—</p>
             </div>
 
-            <!-- Submitted Documents -->
+            
             <div class="drawer-section" id="drawer-files-section">
                 <p class="drawer-section-label">Submitted Documents</p>
                 <div id="drawer-files">—</div>
             </div>
 
-            <!-- Fulfillment File (shown only when approved and a file was attached) -->
+            
             <div class="drawer-section" id="drawer-fulfillment-section" style="display:none;">
                 <p class="drawer-section-label">
                     Fulfillment File
@@ -373,13 +373,13 @@ function statusCss(string $status): string {
                 <div id="drawer-fulfillment-file">—</div>
             </div>
 
-            <!-- Officer Notes Thread -->
+            
             <div class="drawer-section" id="drawer-notes-thread-section" style="display:none;">
                 <p class="drawer-section-label">Officer Notes Thread</p>
                 <div id="drawer-notes-thread"></div>
             </div>
 
-            <!-- Add Note textarea (hidden once approved/rejected) -->
+            
             <div class="drawer-section drawer-section--response" id="drawer-note-input-section">
                 <p class="drawer-section-label">
                     Add Officer Note
@@ -392,13 +392,13 @@ function statusCss(string $status): string {
         </div>
 
         <div class="req-modal-footer req-drawer-footer" id="req-drawer-footer">
-            <!-- Buttons injected by JS based on status -->
+            
         </div>
 
     </div>
 </div>
 
-<!-- CONFIRM MODAL -->
+
 <div class="req-confirm-overlay" id="req-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-confirm-box">
         <div class="req-confirm-icon" id="req-confirm-icon">⚠️</div>
@@ -411,7 +411,7 @@ function statusCss(string $status): string {
     </div>
 </div>
 
-<!-- APPROVE MODAL -->
+
 <div class="req-action-modal-overlay" id="req-approve-modal-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-action-modal">
         <div class="req-action-modal-header">
@@ -456,7 +456,7 @@ function statusCss(string $status): string {
     </div>
 </div>
 
-<!-- DECLINE MODAL -->
+
 <div class="req-action-modal-overlay" id="req-decline-modal-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-action-modal">
         <div class="req-action-modal-header">
@@ -490,7 +490,7 @@ function statusCss(string $status): string {
     </div>
 </div>
 
-<!-- FILE PREVIEW MODAL -->
+
 <div class="req-file-preview-overlay" id="req-file-preview-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-file-preview-container">
         <div class="req-file-preview-header">
@@ -503,7 +503,7 @@ function statusCss(string $status): string {
     </div>
 </div>
 
-<!-- TOAST -->
+
 <div class="req-toast" id="req-toast" aria-live="polite"></div>
 
 <script src="../../../scripts/management/officer/officer_requests.js"></script>

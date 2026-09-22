@@ -1,9 +1,9 @@
 <?php
-/**
- * notifications_list.php
- * Returns notifications for the current admin user for the topbar dropdown.
- * Place at: /backend/routes/notifications_list.php
- */
+
+
+
+
+
 
 header('Content-Type: application/json');
 
@@ -25,7 +25,7 @@ try {
         exit;
     }
 
-    // Fetch latest 8 notifications
+    
     $stmt = $conn->prepare("
         SELECT id, type, title, message, is_read::int AS is_read, created_at
         FROM notifications
@@ -36,12 +36,12 @@ try {
     $stmt->execute([':uid' => $userId]);
     $notifs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Unread count
+    
     $unreadStmt = $conn->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = FALSE");
     $unreadStmt->execute([':uid' => $userId]);
     $unreadCount = (int)$unreadStmt->fetchColumn();
 
-    // Also build system-level alerts (pending requests, flagged reports)
+    
     $pendingStmt = $conn->query("SELECT COUNT(*) FROM service_applications WHERE status IN ('pending','action_required')");
     $pendingCount = (int)$pendingStmt->fetchColumn();
 

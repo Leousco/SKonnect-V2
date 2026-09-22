@@ -3,7 +3,7 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
 
 :root {
-  /* Brand */
+  
   --admin-primary: #5b21b6;
   --admin-primary-mid: #6d28d9;
   --admin-primary-lt: #7c3aed;
@@ -14,29 +14,29 @@
   --admin-danger: #dc2626;
   --admin-surface: #ffffff;
 
-  /* Neutrals */
+  
   --admin-bg: #f4f3fb;
   --admin-surface-2: #f9f8ff;
   --admin-border: #ddd6fe;
   --admin-border-mid: #c4b5fd;
 
-  /* Text */
+  
   --admin-text-head: #1e1b4b;
   --admin-text-body: #374151;
   --admin-text-muted: #6b7280;
 
-  /* Semantic */
+  
   --admin-green: #059669;
   --admin-teal: #0891b2;
 
-  /* Shadows */
+  
   --admin-shadow: 0 2px 12px rgba(91, 33, 182, 0.08);
   --admin-shadow-md: 0 4px 24px rgba(91, 33, 182, 0.14);
 
-  /* Misc */
+  
   --admin-radius: 10px;
 
-  /* Subpages */
+  
   --ap: #5b21b6;
   --ap-mid: #6d28d9;
   --ap-lt: #7c3aed;
@@ -74,11 +74,13 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
   background: var(--admin-bg);
   color: var(--admin-text-body);
+  scrollbar-gutter: stable;
 }
 
 ::-webkit-scrollbar {
@@ -92,7 +94,7 @@ body {
   border-radius: 4px;
 }
 
-/* ── LAYOUT ─────────────────────────────────────────────── */
+
 
 .admin-layout {
   display: flex;
@@ -102,6 +104,7 @@ body {
 .admin-content {
   margin-left: 250px;
   flex: 1;
+  min-width: 0;
   padding: 36px 40px 60px;
   max-width: 1300px;
 }
@@ -130,7 +133,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── PANEL HEADER ───────────────────────────────────────── */
+
 
 .panel-header {
   display: flex;
@@ -139,7 +142,7 @@ body {
   margin-bottom: 18px;
 }
 
-/* ── SMALL BUTTON ───────────────────────────────────────── */
+
 
 .btn-admin-sm {
   display: inline-flex;
@@ -162,7 +165,7 @@ body {
   border-color: var(--admin-primary);
 }
 
-/* ── RESPONSIVE ─────────────────────────────────────────── */
+
 
 @media (max-width: 900px) {
   .admin-content {

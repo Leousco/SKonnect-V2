@@ -28,10 +28,6 @@ class UserProfileModel
         $stmt->execute([':uid' => $userId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            // PDO's pgsql driver returns BOOLEAN columns as the literal
-            // string 't'/'f', not a real bool — normalize it here so every
-            // caller (this page, and every action in ProfileController that
-            // echoes this array back to the frontend) gets a clean boolean.
             $row['is_registered_voter'] = $row['is_registered_voter'] === 't';
         }
         return $row;

@@ -176,7 +176,7 @@ body::-webkit-scrollbar {
   flex-wrap: wrap;
 }
 
-/* BADGES */
+
 
 .badge {
   display: inline-block;
@@ -233,7 +233,7 @@ body::-webkit-scrollbar {
   margin-bottom: 10px;
 }
 
-/* GRID */
+
 
 .announcements-grid {
   display: grid;
@@ -247,7 +247,7 @@ body::-webkit-scrollbar {
   }
 }
 
-/* CARDS */
+
 
 .announcement-card {
   background: white;
@@ -264,7 +264,7 @@ body::-webkit-scrollbar {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* Colored left border per badge type — mirrors the featured announcement style */
+
 .announcement-card.card-program {
   border-left: 6px solid #2563eb;
 }
@@ -329,7 +329,7 @@ body::-webkit-scrollbar {
   align-items: center;
 }
 
-/* BUTTONS */
+
 
 .btn-primary {
   background: #2563eb;
@@ -366,7 +366,7 @@ body::-webkit-scrollbar {
   font-size: 16px;
 }
 
-/* PAGINATION */
+
 
 .pagination {
   margin-top: 50px;

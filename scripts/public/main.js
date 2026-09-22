@@ -1,7 +1,7 @@
-// ── FORCE RELOAD ON BACK/FORWARD (BFCACHE) ───────────────────────────────────
-// If this page is restored from the browser's cache instead of being freshly
-// requested, force a reload so the server-side session check in main.php
-// runs and redirects to the dashboard if the user is already logged in.
+
+
+
+
 window.addEventListener("pageshow", function (event) {
   if (event.persisted) {
     window.location.reload();
@@ -10,7 +10,7 @@ window.addEventListener("pageshow", function (event) {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Navbar toggle
+    
     const navbarToggle = document.getElementById("navbarToggle");
     const navbarMenu = document.getElementById("navbarMenu");
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Counter animation
+    
     const counters = document.querySelectorAll(".counter");
     counters.forEach(counter => {
         const updateCount = () => {

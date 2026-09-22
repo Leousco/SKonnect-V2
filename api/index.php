@@ -8,14 +8,14 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $path = rtrim($path, '/');
 $path = preg_replace('/\.php$/', '', $path);
 
-// Homepage
+
 if ($path === '' || $path === '/index') {
     header('Location: /public/main');
     exit;
 }
 
 if (strpos($path, '/backend/') === 0) {
-    $file = __DIR__ . '/..' . $path . '.php';   // maps to backend/routes/auth.php
+    $file = __DIR__ . '/..' . $path . '.php';   
 } else {
     $file = __DIR__ . '/../views' . $path . '.php';
 }

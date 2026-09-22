@@ -1,26 +1,10 @@
 <?php
-// backend/services/NotificationService.php
 
 require_once __DIR__ . '/../models/NotificationModel.php';
 
-/**
- * NotificationService
- *
- * Static helper class.  Every controller that needs to create a notification
- * calls one of these methods — no direct DB work in the callers.
- *
- * Usage (anywhere after session + DB are available):
- *   require_once __DIR__ . '/../services/NotificationService.php';
- *   NotificationService::notifyServiceStatus($residentId, $appId, 'approved', $serviceName);
- */
 class NotificationService
 {
-    // ── SERVICE REQUEST ───────────────────────────────────────────────────────
 
-    /**
-     * Notify the resident when their service request status changes.
-     * Supported statuses: 'approved' | 'rejected' | 'action_required'
-     */
     public static function notifyServiceStatus(
         int    $residentId,
         int    $applicationId,
@@ -66,12 +50,6 @@ class NotificationService
         }
     }
 
-    // ── NEW ANNOUNCEMENT (broadcast) ──────────────────────────────────────────
-
-    /**
-     * Notify all verified residents when a new announcement is published.
-     * @param string $snippet  Plain-text excerpt of the announcement content.
-     */
     public static function notifyNewAnnouncement(
         int    $announcementId,
         string $title,
@@ -96,11 +74,6 @@ class NotificationService
         }
     }
 
-    // ── NEW SERVICE (broadcast) ───────────────────────────────────────────────
-
-    /**
-     * Notify all verified residents when a new service is published.
-     */
     public static function notifyNewService(
         int    $serviceId,
         string $serviceName,
@@ -126,12 +99,6 @@ class NotificationService
         }
     }
 
-    // ── THREAD COMMENT ────────────────────────────────────────────────────────
-
-    /**
-     * Notify the thread author when someone comments on their thread.
-     * When $isMod = true, the notification is flagged as an official response.
-     */
     public static function notifyThreadComment(
         int    $threadAuthorId,
         int    $commentAuthorId,
@@ -167,12 +134,6 @@ class NotificationService
         );
     }
 
-    // ── COMMENT REPLY ─────────────────────────────────────────────────────────
-
-    /**
-     * Notify the comment author when someone replies to their comment.
-     * When $isMod = true, the notification is flagged as an official response.
-     */
     public static function notifyCommentReply(
         int    $commentAuthorId,
         int    $replyAuthorId,

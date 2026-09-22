@@ -1,4 +1,4 @@
-<!-- PORTAL ANNOUNCEMENT VIEW -->
+
 
 <?php
 require_once __DIR__ . '/../../backend/middleware/RoleMiddleware.php';
@@ -11,7 +11,7 @@ $annModel = new AnnouncementModel();
 $id  = (int) ($_GET['id'] ?? 0);
 $ann = $id ? $annModel->getById($id) : null;
 
-// 404 if not found or archived
+
 if (!$ann || $ann['status'] === 'archived') {
     header('Location: announcements_page.php');
     exit;
@@ -19,7 +19,7 @@ if (!$ann || $ann['status'] === 'archived') {
 
 $files = $annModel->getFiles($id);
 
-// Meta for topbar
+
 $pageTitle      = htmlspecialchars($ann['title']);
 $pageBreadcrumb = [
     ['Home',          '../../views/portal/dashboard.php'],
@@ -30,7 +30,7 @@ $userName       = $_SESSION['user_name']  ?? 'Guest';
 $userRole       = 'Resident';
 $notifCount = 3;
 
-// Helpers
+
 $catColors = [
     'event'   => ['bg' => '#d1fae5', 'color' => '#065f46', 'border' => '#6ee7b7', 'accent' => '#059669'],
     'program' => ['bg' => '#dbeafe', 'color' => '#1d4ed8', 'border' => '#93c5fd', 'accent' => '#2563eb'],
@@ -97,10 +97,10 @@ function fileLabel(string $path): string
 
             <div class="av-layout">
 
-                <!-- MAIN CONTENT -->
+                
                 <article class="av-main">
 
-                    <!-- Banner -->
+                    
                     <?php if ($ann['banner_img']) : ?>
                         <div class="av-banner">
                             <img src="<?= htmlspecialchars($ann['banner_img']) ?>" alt="<?= htmlspecialchars($ann['title']) ?>">
@@ -108,7 +108,7 @@ function fileLabel(string $path): string
                         </div>
                     <?php endif; ?>
 
-                    <!-- Header block/Headline -->
+                    
                     <div class="av-header" style="--cat-bg: <?= $theme['bg'] ?>; --cat-border: <?= $theme['border'] ?>; --cat-accent: <?= $theme['accent'] ?>;">
                         <div class="av-badges">
                             <span class="av-cat-badge">
@@ -150,15 +150,15 @@ function fileLabel(string $path): string
                         </div>
                     </div>
 
-                    <!-- Divider -->
+                    
                     <div class="av-divider" style="background: linear-gradient(90deg, <?= $theme['accent'] ?>, transparent);"></div>
 
-                    <!-- Body content -->
+                    
                     <div class="av-body">
                         <?= $ann['content'] ?>
                     </div>
 
-                    <!-- Attachments -->
+                    
                     <?php if (!empty($files)) : ?>
                         <div class="av-attachments">
                             <h3 class="av-attachments-title">
@@ -185,10 +185,10 @@ function fileLabel(string $path): string
 
                 </article>
 
-                <!-- SIDEBAR -->
+                
                 <aside class="av-sidebar">
 
-                    <!-- Info card -->
+                    
                     <div class="av-info-card">
                         <h3 class="av-info-title">Announcement Info</h3>
                         <dl class="av-info-list">
@@ -223,7 +223,7 @@ function fileLabel(string $path): string
                         </dl>
                     </div>
 
-                    <!-- Back button -->
+                    
                     <a href="announcements_page.php" class="av-back-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />

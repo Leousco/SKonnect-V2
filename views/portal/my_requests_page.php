@@ -75,11 +75,11 @@ function resStatusCss(string $s): string {
     $pageBreadcrumb = [['Home', '#'], ['My Requests', null]];
     $userName       = $_SESSION['user_name']  ?? 'Guest';
     $userRole       = 'Resident';
-    // $notifCount     = 3;
+    
     include __DIR__ . '/../../components/portal/topbar.php';
     ?>
 
-        <!-- STAT WIDGETS -->
+        
         <section class="dashboard-widgets">
             <div class="widget-card">
                 <h3>Total Requests</h3>
@@ -103,7 +103,7 @@ function resStatusCss(string $s): string {
             </div>
         </section>
 
-        <!-- CONTROLS -->
+        
         <section class="announcements-controls">
             <div class="controls-left">
                 <div class="search-wrap">
@@ -140,7 +140,7 @@ function resStatusCss(string $s): string {
             </div>
         </section>
 
-        <!-- REQUESTS TABLE -->
+        
         <section class="announcements-section">
             <h2 class="section-label">My Service Requests</h2>
             <div class="req-table-wrap">
@@ -185,10 +185,10 @@ function resStatusCss(string $s): string {
 
                             $notesJson = htmlspecialchars(json_encode($req['notes'] ?? []), ENT_QUOTES);
 
-                            // Encode documents as JSON for JavaScript access
+                            
                             $docsJson  = htmlspecialchars(json_encode($req['documents'] ?? []), ENT_QUOTES);
 
-                            // Fulfillment file (optional, for approved digital services)
+                            
                             $fulfillmentFile = htmlspecialchars($req['fulfillment_file'] ?? '', ENT_QUOTES);
                         ?>
                         <tr class="req-row"
@@ -225,7 +225,7 @@ function resStatusCss(string $s): string {
                 </div>
             </div>
 
-            <!-- PAGINATION -->
+            
             <div class="pagination-section" style="margin-top: 24px;">
                 <button class="page-btn" id="prev-btn" disabled>&#8249; Previous</button>
                 <div class="page-numbers" id="page-numbers"></div>
@@ -235,7 +235,7 @@ function resStatusCss(string $s): string {
     </main>
 </div>
 
-<!-- VIEW DETAILS MODAL -->
+
 <div class="modal-overlay" id="modal-overlay" style="display:none;" aria-modal="true" role="dialog" aria-labelledby="modal-title">
     <div class="modal-box modal-box-lg">
 
@@ -249,7 +249,7 @@ function resStatusCss(string $s): string {
             <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
         </div>
 
-        <!-- STATUS STRIP -->
+        
         <div class="modal-status-strip" id="modal-status-strip">
             <div class="strip-item">
                 <span class="strip-label">Status</span>
@@ -269,7 +269,7 @@ function resStatusCss(string $s): string {
             </div>
         </div>
 
-        <!-- ACTION REQUIRED BANNER -->
+        
         <div class="action-required-banner" id="action-required-banner" style="display:none;">
             <span class="ar-banner-icon">⚠️</span>
             <div class="ar-banner-body">
@@ -280,7 +280,7 @@ function resStatusCss(string $s): string {
 
         <div class="modal-body" id="modal-body-content">
 
-            <!-- MY SUBMISSION (READ VIEW) -->
+            
             <div id="submission-read-view">
                 <div class="req-detail-block">
                     <h4 class="req-detail-heading">📝 My Submission</h4>
@@ -307,7 +307,7 @@ function resStatusCss(string $s): string {
                         <p class="req-detail-text" id="detail-purpose">—</p>
                     </div>
 
-                    <!-- DOCUMENTS LIST -->
+                    
                     <div class="submission-field submission-field--full" style="margin-top:12px;" id="docs-read-block">
                         <span class="submission-label">Submitted Documents</span>
                         <div id="detail-documents-list" class="detail-docs-list">—</div>
@@ -315,7 +315,7 @@ function resStatusCss(string $s): string {
                 </div>
             </div>
 
-            <!-- EDIT FORM (only shown when status = action_required and user clicks Edit) -->
+            
             <div id="submission-edit-view" style="display:none;">
                 <div class="req-detail-block">
                     <h4 class="req-detail-heading"> Edit Your Submission</h4>
@@ -350,14 +350,14 @@ function resStatusCss(string $s): string {
                         <textarea class="modal-input modal-textarea" id="edit-purpose" rows="3" placeholder="Describe the reason for your request…"></textarea>
                     </div>
 
-                    <!-- EXISTING DOCUMENTS -->
+                    
                     <div class="form-group" id="existing-docs-section">
                         <label class="modal-label">Current Documents</label>
                         <div id="existing-docs-list" class="existing-docs-list"></div>
                         <p class="edit-form-hint" style="margin-top:6px;">Uncheck a file to remove it upon resubmission.</p>
                     </div>
 
-                    <!-- ADD NEW DOCUMENTS -->
+                    
                     <div class="form-group">
                         <label class="modal-label">Add New Documents</label>
                         <div class="file-drop-zone" id="edit-file-drop-zone">
@@ -377,25 +377,25 @@ function resStatusCss(string $s): string {
                 </div>
             </div>
 
-            <!-- TIMELINE -->
+            
             <div class="req-detail-block">
                 <h4 class="req-detail-heading">📋 Request Timeline</h4>
                 <div class="req-timeline" id="req-timeline"></div>
             </div>
 
-            <!-- FULFILLMENT FILE (shown for approved digital services) -->
+            
             <div class="req-detail-block" id="fulfillment-block" style="display:none;">
                 <h4 class="req-detail-heading">📎 Attached File from SK Officer</h4>
                 <div id="fulfillment-file-wrap"></div>
             </div>
 
-            <!-- SK RESPONSE THREAD (shown if notes exist) -->
+            
             <div class="req-detail-block" id="sk-response-block" style="display:none;">
                 <h4 class="req-detail-heading">💬 SK Officer Updates</h4>
                 <div id="sk-notes-thread"></div>
             </div>
 
-            <!-- NO RESPONSE YET -->
+            
             <div class="req-detail-block" id="no-response-block" style="display:none;">
                 <h4 class="req-detail-heading">💬 SK Officer Updates</h4>
                 <div class="no-response-yet">
@@ -406,13 +406,13 @@ function resStatusCss(string $s): string {
         </div>
 
         <div class="modal-footer" id="modal-footer">
-            <!-- Buttons rendered by JS depending on status + edit mode -->
+            
             <button class="btn-secondary-portal" id="modal-close-btn" type="button">Close</button>
         </div>
     </div>
 </div>
 
-<!-- CANCEL CONFIRM MODAL -->
+
 <div class="modal-overlay" id="cancel-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="modal-box" style="max-width:420px;">
         <div class="modal-header">
@@ -433,7 +433,7 @@ function resStatusCss(string $s): string {
     </div>
 </div>
 
-<!-- RESUBMIT CONFIRM MODAL -->
+
 <div class="modal-overlay" id="resubmit-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="modal-box" style="max-width:420px;">
         <div class="modal-header">
@@ -454,7 +454,7 @@ function resStatusCss(string $s): string {
     </div>
 </div>
 
-<!-- FILE PREVIEW MODAL -->
+
 <div class="req-file-preview-overlay" id="req-file-preview-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-file-preview-container">
         <div class="req-file-preview-header">
@@ -465,7 +465,7 @@ function resStatusCss(string $s): string {
     </div>
 </div>
 
-<!-- TOAST -->
+
 <div id="req-toast" class="req-toast" aria-live="polite" style="display:none;"></div>
 
 <script src="../../scripts/portal/my_requests_page.js"></script>

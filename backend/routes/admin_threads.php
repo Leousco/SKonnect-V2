@@ -1,5 +1,5 @@
 <?php
-// backend/routes/admin_threads.php
+
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
@@ -12,7 +12,7 @@ $db     = (new Database())->getConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
 
-/* ── helpers ────────────────────────────────────────────── */
+
 
 function jsonSuccess($data = [], string $message = 'OK'): void {
     echo json_encode(['status' => 'success', 'message' => $message, 'data' => $data]);
@@ -25,7 +25,7 @@ function jsonError(string $message, int $code = 400): void {
     exit;
 }
 
-/* ── GET ?action=list ───────────────────────────────────── */
+
 
 if ($method === 'GET' && $action === 'list') {
 
@@ -75,7 +75,7 @@ if ($method === 'GET' && $action === 'list') {
     $stmt->execute($params);
     $threads = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Cast types
+    
     foreach ($threads as &$t) {
         $t['pinned']     = (bool) $t['pinned'];
         $t['flagged']    = (bool) $t['flagged'];
@@ -87,7 +87,7 @@ if ($method === 'GET' && $action === 'list') {
     jsonSuccess($threads);
 }
 
-/* ── POST ?action=pin ───────────────────────────────────── */
+
 
 if ($method === 'POST' && $action === 'pin') {
 
@@ -95,7 +95,7 @@ if ($method === 'POST' && $action === 'pin') {
     $id   = (int) ($body['id'] ?? 0);
     if ($id === 0) jsonError('Invalid thread ID.');
 
-    // Toggle
+    
     $stmt = $db->prepare('UPDATE threads SET is_pinned = NOT is_pinned WHERE id = :id');
     $stmt->execute([':id' => $id]);
 
@@ -106,7 +106,7 @@ if ($method === 'POST' && $action === 'pin') {
     jsonSuccess(['pinned' => $pinned], $pinned ? 'Thread pinned.' : 'Thread unpinned.');
 }
 
-/* ── POST ?action=delete ────────────────────────────────── */
+
 
 if ($method === 'POST' && $action === 'delete') {
 
@@ -118,7 +118,7 @@ if ($method === 'POST' && $action === 'delete') {
     $check->execute([':id' => $id]);
     if (!$check->fetch()) jsonError('Thread not found.', 404);
 
-    // Soft-delete
+    
     $stmt = $db->prepare('UPDATE threads SET is_removed = 1 WHERE id = :id');
     $stmt->execute([':id' => $id]);
 

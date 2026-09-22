@@ -1,6 +1,6 @@
-/* ═══════════════════════════════════════════════════════════
-   announcement_view.css  —  Public single-announcement view
-   ══════════════════════════════════════════════════════════ */
+
+
+
 body::-webkit-scrollbar {
     display: none;
 }
@@ -11,7 +11,7 @@ body::-webkit-scrollbar {
   min-height: 100vh;
 }
 
-/* ── LAYOUT ──────────────────────────────────────────────── */
+
 
 .pub-av-layout {
   display: grid;
@@ -31,7 +31,7 @@ body::-webkit-scrollbar {
   }
 }
 
-/* ── MAIN ARTICLE ────────────────────────────────────────── */
+
 
 .pub-av-main {
   background: #ffffff;
@@ -40,7 +40,7 @@ body::-webkit-scrollbar {
   overflow: hidden;
 }
 
-/* ── BANNER ──────────────────────────────────────────────── */
+
 
 .pub-av-banner {
   position: relative;
@@ -57,7 +57,7 @@ body::-webkit-scrollbar {
   display: block;
 }
 
-/* ── HEADER ──────────────────────────────────────────────── */
+
 
 .pub-av-header {
   padding: 28px 32px 22px;
@@ -141,7 +141,7 @@ body::-webkit-scrollbar {
   color: #d97706 !important;
 }
 
-/* ── ACCENT LINE ─────────────────────────────────────────── */
+
 
 .pub-av-accent-line {
   background-color: black;
@@ -151,7 +151,7 @@ body::-webkit-scrollbar {
   opacity: 0.6;
 }
 
-/* ── BODY ────────────────────────────────────────────────── */
+
 
 .pub-av-body {
   padding: 28px 32px 32px;
@@ -160,7 +160,7 @@ body::-webkit-scrollbar {
   overflow-wrap: break-word;
 }
 
-/* All child elements inherit the font size set here — !important beats global * reset */
+
 .pub-av-body,
 .pub-av-body p,
 .pub-av-body li,
@@ -212,14 +212,14 @@ body::-webkit-scrollbar {
   margin-bottom: 0;
 }
 
-/* ── ATTACHMENTS ─────────────────────────────────────────── */
+
 
 .pub-av-attachments {
   margin: 0 10px 32px;
   padding: 20px 24px;
-  /* background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px; */
+  
+
+
 }
 
 .pub-av-attach-title {
@@ -317,7 +317,7 @@ body::-webkit-scrollbar {
   color: white;
 }
 
-/* ── FOOTER NAV ──────────────────────────────────────────── */
+
 
 .pub-av-footer-nav {
   padding: 20px 32px 28px;
@@ -348,7 +348,7 @@ body::-webkit-scrollbar {
   transform: translateX(-3px);
 }
 
-/* ── SIDEBAR ─────────────────────────────────────────────── */
+
 
 .pub-av-sidebar {
   display: flex;

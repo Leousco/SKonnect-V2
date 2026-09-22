@@ -12,7 +12,7 @@ $reportModel = new ReportModel($conn);
 $reports = $reportModel->getThreadReports();
 $counts  = $reportModel->getThreadReportCounts();
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+
 function time_ago(string $datetime): string
 {
     $diff = time() - strtotime($datetime);
@@ -67,7 +67,7 @@ $status_badge = [
             include __DIR__ . '/../../../components/management/moderator/mod_topbar.php';
             ?>
 
-            <!-- STAT WIDGETS -->
+            
             <section class="mod-widgets">
 
                 <div class="mod-widget-card widget-red">
@@ -126,10 +126,10 @@ $status_badge = [
 
             </section>
 
-            <!-- FILTERS BAR -->
+            
             <section class="mq-filters-bar">
 
-                <!-- Row 1: Category filters -->
+                
                 <div class="mq-filter-row">
                     <span class="mq-filter-group-label">Category</span>
                     <div class="mq-filters-left">
@@ -141,7 +141,7 @@ $status_badge = [
                     </div>
                 </div>
 
-                <!-- Row 2: Status filters + search + sort -->
+                
                 <div class="mq-filter-row mq-filter-row-bottom">
                     <div class="mq-filters-left">
                         <span class="mq-filter-group-label">Status</span>
@@ -166,7 +166,7 @@ $status_badge = [
 
             </section>
 
-            <!-- REPORTS LIST -->
+            
             <section class="mq-panel">
 
                 <div class="panel-header">
@@ -196,14 +196,14 @@ $status_badge = [
                         ?>
                             <div class="mq-item" data-category="<?= $cat ?>" data-status="<?= htmlspecialchars($r['report_status']) ?>" data-date="<?= $r['reported_at'] ?>" data-report-id="<?= (int)$r['report_id'] ?>" data-thread-id="<?= (int)$r['thread_id'] ?>" id="mq-item-<?= (int)$r['report_id'] ?>">
 
-                                <!-- Accent bar (CSS colours it via data-category) -->
+                                
                                 <div class="mq-item-left"></div>
 
-                                <!-- BODY -->
+                                
                                 <div class="mq-item-body">
                                     <div class="mq-item-header">
                                         <div class="mq-item-title-row">
-                                            <!-- Category tag — inline, readable -->
+                                            
                                             <span class="mq-category-tag <?= $badge['class'] ?>"><?= $badge['label'] ?></span>
                                             <span class="mq-item-title">
                                                 "<?= htmlspecialchars($r['thread_subject']) ?>"
@@ -226,10 +226,10 @@ $status_badge = [
                                         </span>
                                     </div>
 
-                                    <!-- Thread excerpt -->
+                                    
                                     <p class="mq-item-excerpt"><?= $excerpt ?></p>
 
-                                    <!-- Reporter's note (if any) -->
+                                    
                                     <?php if ($note) : ?>
                                         <div class="mq-item-note">
                                             <span class="mq-note-label"></span>
@@ -237,10 +237,10 @@ $status_badge = [
                                         </div>
                                     <?php endif; ?>
 
-                                    <!-- ACTION BUTTONS -->
+                                    
                                     <div class="mq-item-actions">
 
-                                        <!-- View thread (slide-in panel) -->
+                                        
                                         <button class="mq-action-btn mq-btn-view mq-btn-view-panel" data-thread-id="<?= (int)$r['thread_id'] ?>" data-report-id="<?= (int)$r['report_id'] ?>">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.641 0-8.573-3.007-9.964-7.178Z" />
@@ -251,7 +251,7 @@ $status_badge = [
 
                                         <?php if ($r['report_status'] === 'pending') : ?>
 
-                                            <!-- Dismiss -->
+                                            
                                             <button class="mq-action-btn mq-btn-dismiss" data-report-id="<?= (int)$r['report_id'] ?>" data-action="dismiss" title="Mark as dismissed — report was invalid">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -259,7 +259,7 @@ $status_badge = [
                                                 Dismiss
                                             </button>
 
-                                            <!-- Resolve & Notify -->
+                                            
                                             <button class="mq-action-btn mq-btn-resolve" data-report-id="<?= (int)$r['report_id'] ?>" data-action="resolve" data-thread-subject="<?= htmlspecialchars($r['thread_subject']) ?>" data-category="<?= $cat ?>" title="Hide the thread and notify the author via email">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
@@ -268,7 +268,7 @@ $status_badge = [
                                             </button>
 
                                         <?php else : ?>
-                                            <!-- Already actioned — show a muted label -->
+                                            
                                             <span class="mq-actioned-label">
                                                 <?= $r['report_status'] === 'dismissed' ? 'Dismissed — no action taken' : 'Reviewed — action taken' ?>
                                             </span>
@@ -281,9 +281,9 @@ $status_badge = [
 
                     <?php endif; ?>
 
-                </div><!-- /mq-list -->
+                </div>
 
-                <!-- Empty state (shown by JS when filters produce no results) -->
+                
                 <div class="mq-empty" id="mq-empty" style="<?= empty($reports) ? 'display:flex' : 'display:none' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -293,7 +293,7 @@ $status_badge = [
 
             </section>
 
-            <!-- PAGINATION -->
+            
             <div class="mq-pagination">
                 <button class="mq-page-btn" id="mq-prev" disabled>&#8249; Prev</button>
                 <div class="mq-page-numbers" id="mq-page-numbers"></div>
@@ -303,7 +303,7 @@ $status_badge = [
         </main>
     </div>
 
-    <!-- CONFIRM MODAL -->
+    
     <div class="mq-confirm-overlay" id="mq-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
         <div class="mq-confirm-box">
             <div class="mq-confirm-icon" id="mq-confirm-icon">⚠️</div>
@@ -316,17 +316,17 @@ $status_badge = [
         </div>
     </div>
 
-    <!-- TOAST -->
+    
     <div id="mq-toast" class="mq-toast" aria-live="polite"></div>
 
-    <!-- ══════════════════════════════════════════════════════════
-     THREAD SLIDE-IN PANEL (Queue)
-══════════════════════════════════════════════════════════ -->
+    
+
+
     <div class="mod-panel-backdrop" id="mq-panel-backdrop"></div>
 
     <aside class="mod-thread-panel" id="mq-thread-panel" aria-label="Thread detail panel">
 
-        <!-- PANEL HEADER -->
+        
         <div class="mod-panel-header">
             <div class="mod-panel-header-left">
                 <div class="mod-panel-badges" id="mq-panel-badges"></div>
@@ -338,16 +338,16 @@ $status_badge = [
             </button>
         </div>
 
-        <!-- PANEL BODY (scrollable) -->
+        
         <div class="mod-panel-body" id="mq-panel-body">
 
-            <!-- Loading state -->
+            
             <div class="mod-panel-loading" id="mq-panel-loading">
                 <div class="mod-panel-spinner"></div>
                 <span>Loading thread…</span>
             </div>
 
-            <!-- Thread content (injected by JS) -->
+            
             <div id="mq-panel-content" style="display:none;">
 
                 <h2 class="mod-panel-title" id="mq-panel-title"></h2>
@@ -358,15 +358,15 @@ $status_badge = [
 
                 <div class="mod-panel-body-text" id="mq-panel-body-text"></div>
 
-                <!-- Attached images -->
+                
                 <div class="mod-panel-images" id="mq-panel-images"></div>
 
                 <div class="mod-panel-divider"></div>
 
-                <!-- Report context banner -->
+                
                 <div class="mq-panel-report-context" id="mq-panel-report-context"></div>
 
-                <!-- Moderator action strip — Resolve & Notify only -->
+                
                 <div class="mod-panel-actions mq-panel-actions-strip" id="mq-panel-actions">
                     <div class="mq-panel-resolve-wrap">
                         <button class="mq-panel-resolve-btn" id="mq-panel-resolve-btn" data-report-id="" data-thread-id="" data-thread-subject="" data-category="">
@@ -381,7 +381,7 @@ $status_badge = [
 
                 <div class="mod-panel-divider"></div>
 
-                <!-- Comments (read-only view) -->
+                
                 <div class="mod-panel-comments-section">
                     <h3 class="mod-panel-comments-heading">
                         Comments
@@ -390,13 +390,13 @@ $status_badge = [
                     <div class="mod-panel-comment-list" id="mq-panel-comment-list"></div>
                 </div>
 
-            </div><!-- /#mq-panel-content -->
+            </div>
 
-        </div><!-- /.mod-panel-body -->
+        </div>
 
     </aside>
 
-    <!-- LIGHTBOX -->
+    
     <div class="mod-lightbox-overlay" id="mq-lightbox" style="display:none;">
         <button class="mod-lightbox-close" id="mq-lightbox-close">&times;</button>
         <img class="mod-lightbox-img" id="mq-lightbox-img" src="" alt="Image preview">

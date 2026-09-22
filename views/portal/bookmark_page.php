@@ -5,7 +5,7 @@ RoleMiddleware::requireAuth();
 require_once __DIR__ . '/../../backend/models/BookmarkModel.php';
 require_once __DIR__ . '/../../backend/models/AnnouncementModel.php';
 
-// Auto-archive expired before we fetch bookmarks
+
 $annModel = new AnnouncementModel();
 $annModel->archiveExpired();
 
@@ -14,7 +14,7 @@ $userId   = (int) ($_SESSION['user_id'] ?? 0);
 $bookmarks = $bmModel->getByUser($userId);
 $bookmarkedIds = array_column($bookmarks, 'id');
 
-// Meta
+
 $pageTitle      = 'My Bookmarks';
 $pageBreadcrumb = [
     ['Home',          '../../views/portal/dashboard.php'],
@@ -49,7 +49,7 @@ $notifCount = 3;
 
             <?php include __DIR__ . '/../../components/portal/topbar.php'; ?>
 
-            <!-- PAGE HEADER -->
+            
             <div class="bmp-header">
                 <div class="bmp-header-left">
                     <div class="bmp-icon-wrap">
@@ -76,7 +76,7 @@ $notifCount = 3;
                 </a>
             </div>
 
-            <!-- CONTROLS -->
+            
             <?php if (!empty($bookmarks)) : ?>
                 <section class="announcements-controls bmp-controls">
                     <div class="controls-left">
@@ -104,14 +104,14 @@ $notifCount = 3;
                 </section>
             <?php endif; ?>
 
-            <!-- BOOKMARKS GRID -->
+            
             <section class="announcements-section">
 
                 <div class="announcements-grid" id="bm-grid">
 
                     <?php if (empty($bookmarks)) : ?>
 
-                        <!-- EMPTY STATE -->
+                        
                         <div class="bmp-empty-state">
                             <div class="bmp-empty-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -157,7 +157,7 @@ $notifCount = 3;
                                         </time>
                                     </div>
 
-                                    <!-- Saved-on label -->
+                                    
                                     <div class="bmp-saved-on">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
                                             <path fill-rule="evenodd" d="M8 .975 6.323 4.793l-4.098.328c-.717.058-1.01.953-.462 1.423l3.121 2.673-.953 3.997c-.168.7.595 1.25 1.211.879L8 11.992l3.858 2.101c.616.371 1.379-.18 1.211-.879l-.953-3.997 3.121-2.673c.548-.47.255-1.365-.462-1.423L10.677 4.793 8 .975Z" clip-rule="evenodd" />
@@ -181,14 +181,14 @@ $notifCount = 3;
 
                 </div>
 
-                <!-- No search results -->
+                
                 <div class="no-results" id="bm-no-results" style="display:none;">
                     <p>No saved announcements match your search.</p>
                 </div>
 
             </section>
 
-            <!-- PAGINATION -->
+            
             <?php if (!empty($bookmarks)) : ?>
                 <section class="pagination-section">
                     <button class="page-btn" id="bm-prev-btn" disabled>&#8249; Previous</button>

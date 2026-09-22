@@ -1,8 +1,8 @@
-/**
- * admin_activity_logs.js
- * Fetches activity log data from ActivityLogController.php.
- * Supports: search, filter by action/date range, pagination, CSV export.
- */
+
+
+
+
+
 
  document.addEventListener('DOMContentLoaded', function () {
 
@@ -39,7 +39,7 @@
         login:       { cls: 'act-login',     icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"/>' },
     };
 
-    // ── Helpers ───────────────────────────────────────────
+    
 
     function getRoleCls(role) {
         return { admin: 'role-admin', moderator: 'role-staff', sk_officer: 'role-staff', resident: 'role-member', system: 'role-member' }[role] ?? 'role-member';
@@ -74,26 +74,23 @@
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    /**
-     * Converts a description string to human-readable HTML.
-     * Handles both plain text and JSON-encoded meta objects produced by ActivityLogModel.
-     *
-     * JSON shape: { target_type, target_id, target_name, target_user, notes, ... }
-     */
+
+
+
+
+
+
     function formatDescription(raw) {
         if (!raw) return '—';
 
-        // Try to parse as JSON (descriptions logged by ActivityLogModel are JSON-encoded)
-        let meta;
-        try { meta = JSON.parse(raw); } catch { /* not JSON */ }
+                let meta;
+        try { meta = JSON.parse(raw); } catch {  }
 
         if (!meta || typeof meta !== 'object') {
-            // Plain-text description — render as-is (may contain safe HTML from ActivityLogController)
-            return `<span class="log-desc">${raw}</span>`;
+                        return `<span class="log-desc">${raw}</span>`;
         }
 
-        // Build a readable sentence from known meta keys
-        const parts = [];
+                const parts = [];
 
         if (meta.target_type && meta.target_name) {
             const type = capitalize(meta.target_type.replace(/_/g, ' '));
@@ -110,8 +107,7 @@
             parts.push(escHtml(meta.notes));
         }
 
-        // Fallback: show all remaining keys if nothing matched
-        if (!parts.length) {
+                if (!parts.length) {
             const fallback = Object.entries(meta)
                 .filter(([k]) => !['target_id'].includes(k))
                 .map(([k, v]) => `${capitalize(k.replace(/_/g, ' '))}: ${escHtml(String(v))}`)
@@ -122,11 +118,11 @@
         return `<span class="log-desc">${parts.join(' — ')}</span>`;
     }
 
-    /** Plain-text version of formatDescription for CSV export */
+    
     function formatDescriptionPlain(raw) {
         if (!raw) return '';
         let meta;
-        try { meta = JSON.parse(raw); } catch { /* not JSON */ }
+        try { meta = JSON.parse(raw); } catch {  }
 
         if (!meta || typeof meta !== 'object') {
             return raw.replace(/<[^>]+>/g, '');
@@ -141,8 +137,7 @@
         return parts.length ? parts.join(' — ') : raw.replace(/<[^>]+>/g, '');
     }
 
-    // ── Fetch ─────────────────────────────────────────────
-
+    
     async function fetchLogs(page = 1) {
         const params = new URLSearchParams({
             action:        'get_logs',
@@ -173,8 +168,7 @@
         }
     }
 
-    // ── Render ────────────────────────────────────────────
-
+    
     function render(logs, total, pages, page) {
         totalCount.textContent    = total;
         filteredCount.textContent = total;
@@ -240,8 +234,7 @@
         return [1, '…', current-1, current, current+1, '…', total];
     }
 
-    // ── Loading / error states ────────────────────────────
-
+    
     function setLoadingState(loading) {
         if (loading) {
             logBody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;
@@ -255,8 +248,7 @@
             color:#f87171;font-size:13px;">${escHtml(msg)}</td></tr>`;
     }
 
-    // ── Events ────────────────────────────────────────────
-
+    
     let searchTimer;
     searchInput.addEventListener('input', () => {
         clearTimeout(searchTimer);
@@ -277,8 +269,7 @@
         fetchLogs(1);
     });
 
-    // ── CSV Export ────────────────────────────────────────
-
+    
     exportBtn.addEventListener('click', async () => {
         exportBtn.disabled    = true;
         exportBtn.textContent = 'Exporting…';
@@ -329,6 +320,5 @@
         }
     });
 
-    // ── Init ──────────────────────────────────────────────
-    fetchLogs(1);
+        fetchLogs(1);
 });

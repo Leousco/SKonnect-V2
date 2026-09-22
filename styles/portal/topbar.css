@@ -1,4 +1,4 @@
-/* WRAPPER */
+
 .topbar {
     display: flex;
     justify-content: space-between;
@@ -6,6 +6,13 @@
     margin-bottom: 36px;
     padding-bottom: 20px;
     border-bottom: 2px solid var(--border);
+    
+    
+
+
+
+
+
 }
 
 .topbar h1 {
@@ -16,7 +23,7 @@
     letter-spacing: -0.3px;
 }
 
-/* LEFT SIDE - PAGE TITLE */
+
 
 .topbar-left {
     display: flex;
@@ -80,7 +87,7 @@
     border-radius: 2px;
 }
 
-/* RIGHT - UTILITIES */
+
 
 .topbar-right {
     display: flex;
@@ -89,7 +96,7 @@
     flex-shrink: 0;
 }
 
-/* Divider */
+
 .topbar-divider {
     width: 1px;
     height: 28px;
@@ -97,7 +104,7 @@
     flex-shrink: 0;
 }
 
-/* DATE/TIME */
+
 .topbar-datetime {
     display: flex;
     flex-direction: column;
@@ -121,7 +128,7 @@
     letter-spacing: 0.5px;
 }
 
-/* NOTIFICATIONS */
+
 
 .topbar-notif {
     position: relative;
@@ -173,7 +180,7 @@
     transition: opacity 0.2s, transform 0.2s;
 }
 
-/* Hide badge when count is 0 — JS toggles this class */
+
 .notif-badge--hidden {
     opacity: 0;
     transform: scale(0);
@@ -185,7 +192,7 @@
     to   { transform: scale(1); }
 }
 
-/* NOTIF DROPDOWN */
+
 .notif-dropdown {
     position: absolute;
     top: calc(100% + 10px);
@@ -227,7 +234,7 @@
     letter-spacing: 0.7px;
 }
 
-/* Header right-side actions (mark-all + view-all) */
+
 .notif-header-actions {
     display: flex;
     align-items: center;
@@ -266,7 +273,7 @@
     overflow-y: auto;
 }
 
-/* ── Notification items ─────────────────────────────────── */
+
 
 .notif-item {
     transition: background 0.12s;
@@ -289,13 +296,13 @@ a.notif-item-inner:hover { text-decoration: none; }
 .notif-item.unread         { background: #f0f6ff; }
 .notif-item.unread:hover   { background: #e3eeff; }
 
-/* Official mod response — subtle gold-tinted background */
+
 .notif-item--official                { background: #fffbf0; }
 .notif-item--official:hover          { background: #fff3d0; }
 .notif-item--official.unread         { background: #fff8e1; }
 .notif-item--official.unread:hover   { background: #fff0c0; }
 
-/* Type icon wrapper */
+
 .notif-icon-wrap {
     width: 32px;
     height: 32px;
@@ -319,7 +326,7 @@ a.notif-item-inner:hover { text-decoration: none; }
     color: #92400e;
 }
 
-/* Content */
+
 .notif-content {
     flex: 1;
     min-width: 0;
@@ -352,7 +359,7 @@ a.notif-item-inner:hover { text-decoration: none; }
     display: block;
 }
 
-/* Unread dot */
+
 .notif-dot {
     width: 7px;
     height: 7px;
@@ -363,14 +370,18 @@ a.notif-item-inner:hover { text-decoration: none; }
     align-self: flex-start;
 }
 
-/* ── Skeleton loader ────────────────────────────────────── */
+
 
 @keyframes shimmer {
     0%   { background-position: -300px 0; }
     100% { background-position:  300px 0; }
 }
 
-.notif-skeleton .notif-item-inner { cursor: default; pointer-events: none; }
+.notif-skeleton .notif-item-inner {
+    padding: 18px 14px; 
+    cursor: default; 
+    pointer-events: none; 
+}
 
 .notif-skeleton-icon,
 .notif-skeleton-line {
@@ -397,7 +408,7 @@ a.notif-item-inner:hover { text-decoration: none; }
 .notif-skeleton-line--body  { width: 90%;  height: 10px; }
 .notif-skeleton-line--time  { width: 35%;  height: 9px;  margin-bottom: 0; }
 
-/* ── Empty state ────────────────────────────────────────── */
+
 
 .notif-empty {
     display: flex;
@@ -428,7 +439,7 @@ a.notif-item-inner:hover { text-decoration: none; }
     color: var(--text-muted);
 }
 
-/* USER PROFILE */
+
 
 .topbar-user {
     position: relative;
@@ -451,7 +462,7 @@ a.notif-item-inner:hover { text-decoration: none; }
     box-shadow: 0 2px 10px rgba(15,37,69,0.08);
 }
 
-/* Avatar */
+
 .user-avatar {
     width: 34px;
     height: 34px;
@@ -486,7 +497,7 @@ a.notif-item-inner:hover { text-decoration: none; }
 
 .user-avatar--lg .user-initials { font-size: 16px; }
 
-/* Text */
+
 .user-text {
     display: flex;
     flex-direction: column;
@@ -513,7 +524,7 @@ a.notif-item-inner:hover { text-decoration: none; }
     max-width: 120px;
 }
 
-/* Chevron */
+
 .user-chevron {
     width: 14px;
     height: 14px;
@@ -526,7 +537,7 @@ a.notif-item-inner:hover { text-decoration: none; }
     transform: rotate(180deg);
 }
 
-/* USER DROPDOWN */
+
 .user-dropdown {
     position: absolute;
     top: calc(100% + 10px);
@@ -624,7 +635,7 @@ a.notif-item-inner:hover { text-decoration: none; }
     margin: 4px 0;
 }
 
-/* RESPONSIVE */
+
 
 @media (max-width: 900px) {
     .topbar-datetime { display: none; }
@@ -637,7 +648,7 @@ a.notif-item-inner:hover { text-decoration: none; }
     .user-chevron { display: none; }
     .topbar-user { padding: 5px; }
 }
-/* LOGOUT MODAL */
+
 
 .logout-modal-overlay {
     position: fixed;

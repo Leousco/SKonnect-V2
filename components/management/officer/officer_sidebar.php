@@ -14,18 +14,18 @@ function offIsGroupOpen(array $pages): string {
 
 <aside class="off-sidebar">
 
-    <!-- Sidebar Header -->
+    
     <div class="off-sidebar-header">
         <div class="off-sidebar-badge">SK Officer</div>
         <h2>SKonnect</h2>
         <p>Officer Panel</p>
     </div>
 
-    <!-- Navigation -->
+    
     <nav class="off-sidebar-nav" aria-label="SK Officer navigation">
         <ul>
 
-            <!-- Dashboard -->
+            
             <li class="<?= offIsActive('officer_dashboard.php') ?>">
                 <a href="officer_dashboard.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -41,11 +41,11 @@ function offIsGroupOpen(array $pages): string {
 
         </ul>
 
-        <!-- MANAGEMENT -->
+        
         <div class="sidebar-section-title">Operations</div>
         <ul>
 
-            <!-- Announcements -->
+            
             <li class="<?= offIsActive('officer_announcements.php') ?>">
                 <a href="officer_announcements.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -56,7 +56,7 @@ function offIsGroupOpen(array $pages): string {
                 </a>
             </li>
 
-            <!-- Services -->
+            
             <li class="<?= offIsActive('officer_services.php') ?>">
                 <a href="officer_services.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -70,7 +70,7 @@ function offIsGroupOpen(array $pages): string {
                 </a>
             </li>
 
-            <!-- Requests -->
+            
             <li class="<?= offIsActive('officer_requests.php') ?>">
                 <a href="officer_requests.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -81,7 +81,7 @@ function offIsGroupOpen(array $pages): string {
                 </a>
             </li>
 
-            <!-- Events -->
+            
             <li class="<?= offIsActive('officer_events.php') ?>">
                 <a href="officer_events.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -94,11 +94,11 @@ function offIsGroupOpen(array $pages): string {
 
         </ul>
 
-        <!-- INSIGHTS -->
+        
         <div class="sidebar-section-title">Insights</div>
         <ul>
 
-            <!-- Analytics -->
+            
             <li class="<?= offIsActive('officer_analytics.php') ?>">
                 <a href="officer_analytics.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -111,11 +111,11 @@ function offIsGroupOpen(array $pages): string {
 
         </ul>
 
-        <!-- ACCOUNT -->
+        
         <div class="sidebar-section-title">User Management</div>
         <ul>
 
-            <!-- Profile -->
+            
             <li class="<?= offIsActive('officer_users.php') ?>">
                 <a href="officer_users.php">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -129,7 +129,7 @@ function offIsGroupOpen(array $pages): string {
         </ul>
     </nav>
 
-    <!-- Sidebar Footer -->
+    
     <div class="off-sidebar-footer">
         <div class="off-sidebar-footer-text">Sangguniang Kabataan</div>
         <div class="off-sidebar-footer-sub">&copy; <?= date('Y') ?> SKonnect</div>

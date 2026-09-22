@@ -2,7 +2,7 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-/* HEADER */
+
 
 #navbar {
   background: linear-gradient(135deg, var(--primary-blue) 0%, #1e40af 100%);
@@ -142,7 +142,7 @@ body::-webkit-scrollbar {
   }
 }
 
-/* HERO / WRAPPER */
+
 
 .hero {
   position: relative;
@@ -174,7 +174,7 @@ body::-webkit-scrollbar {
   z-index: 1;
 }
 
-/* LOGIN FORM */
+
 
 .login-card {
   position: relative;
@@ -219,7 +219,7 @@ body::-webkit-scrollbar {
   margin-bottom: 20px;
 }
 
-/* FORM ELEMENTS */
+
 
 .input-group {
   margin-bottom: 14px;
@@ -271,7 +271,7 @@ body::-webkit-scrollbar {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #4a5568; /* darker gray, visible on light input */
+  color: #4a5568; 
   transition: color 0.2s;
 }
 
@@ -307,7 +307,7 @@ body::-webkit-scrollbar {
   transform: scale(1.1);
 }
 
-/* FORM FOOTER */
+
 
 .form-footer {
   display: flex;
@@ -350,7 +350,7 @@ body::-webkit-scrollbar {
   color: #ffe066;
 }
 
-/* LOGIN BUTTON */
+
 
 .login-btn {
   width: 100%;
@@ -389,10 +389,10 @@ body::-webkit-scrollbar {
   box-shadow: none;
 }
 
-/* ── TOAST NOTIFICATIONS ─────────────────────────────────────────────────────
-  Shared across login / register / verify_email pages.
-  The .sk-toast block is appended to <body> by JS.
-  ─────────────────────────────────────────────────────────────────────────── */
+
+
+
+
 
 .sk-toast {
   position: fixed;
@@ -413,7 +413,7 @@ body::-webkit-scrollbar {
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
   pointer-events: none;
 
-  /* Hidden state */
+  
   opacity: 0;
   transition:
     opacity 0.3s ease,
@@ -442,14 +442,14 @@ body::-webkit-scrollbar {
   line-height: 1.4;
 }
 
-/* Remove the old inline form message element if still present */
+
 .form-message {
   display: none !important;
 }
 .otp-message {
   display: none !important;
 }
-/* ── BAN MODAL ───────────────────────────────────────────────────────────────*/
+
 
 .ban-modal-overlay {
   position: fixed;
@@ -586,7 +586,7 @@ body::-webkit-scrollbar {
   transform: translateY(0);
 }
 
-/* ── LOCKOUT NOTICE ──────────────────────────────────────────────────────────*/
+
 
 .lockout-notice {
   display: none;

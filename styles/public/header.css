@@ -1,4 +1,4 @@
-/* NAVBAR */
+
 #navbar {
   background: linear-gradient(135deg, var(--primary-blue) 0%, #1e40af 100%);
   box-shadow: 0 4px 20px rgba(30, 58, 138, 0.15);
@@ -50,16 +50,16 @@
   transform: translateY(-2px);
 }
 
-/* .navbar-logo::before {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: var(--accent-yellow);
-    border-radius: 50%;
-    top: -2px;
-    right: -8px;
-} */
+
+
+
+
+
+
+
+
+
+
 
 @keyframes pulse {
   0%,
@@ -110,7 +110,7 @@
 .navbar-menu a.active {
   color: #1e40af;
   background: #ffd700;
-  /* font-weight: 600; */
+  
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
 }
 
@@ -120,7 +120,7 @@
   box-shadow: 0 6px 16px rgba(250, 204, 21, 0.4);
 }
 
-/* Login button special styling */
+
 .navbar-menu li:last-child a {
   background: transparent;
   color: var(--white);
@@ -161,7 +161,7 @@
   background: var(--accent-yellow);
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 20px;

@@ -2,7 +2,7 @@ html {
   overflow-y: scroll;
 }
 
-/* Store scrollbar width as CSS variable */
+
 html {
   --scrollbar-w: 0px;
 }
@@ -12,7 +12,7 @@ html.modal-open {
   padding-right: var(--scrollbar-w);
 }
 
-/* PAGE HEADER */
+
 
 .evmgmt-page-header {
   display: flex;
@@ -53,7 +53,7 @@ html.modal-open {
   padding-left: 34px;
 }
 
-/* BUTTONS */
+
 
 .evmgmt-btn-primary {
   display: inline-flex;
@@ -129,7 +129,7 @@ html.modal-open {
   box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
 }
 
-/* STAT STRIP */
+
 
 .evmgmt-stat-strip {
   display: grid;
@@ -176,7 +176,7 @@ html.modal-open {
   color: var(--off-text-muted);
 }
 
-/* MAIN GRID */
+
 
 .evmgmt-main-grid {
   display: grid;
@@ -185,7 +185,7 @@ html.modal-open {
   align-items: start;
 }
 
-/* PANELS */
+
 
 .evmgmt-calendar-panel,
 .evmgmt-list-panel {
@@ -209,7 +209,7 @@ html.modal-open {
   margin-bottom: 0;
 }
 
-/* CALENDAR NAV */
+
 
 .evmgmt-cal-nav {
   display: flex;
@@ -247,7 +247,7 @@ html.modal-open {
   border-color: var(--off-primary);
 }
 
-/* CALENDAR GRID */
+
 
 .evmgmt-cal-days {
   display: grid;
@@ -329,7 +329,7 @@ html.modal-open {
 .ecal-day.past-event .evmgmt-cal-dot { background: var(--off-text-muted); }
 .ecal-day.today .evmgmt-cal-dot      { background: rgba(255,255,255,0.8); }
 
-/* CALENDAR LEGEND */
+
 
 .evmgmt-cal-legend {
   display: flex;
@@ -359,7 +359,7 @@ html.modal-open {
 .evmgmt-legend-event { background: #dbeafe; border: 1px solid #93c5fd; }
 .evmgmt-legend-past  { background: var(--off-surface-2); border: 1px solid var(--off-border); }
 
-/* FILTER BUTTONS */
+
 
 .evmgmt-filter-row {
   display: flex;
@@ -391,7 +391,7 @@ html.modal-open {
   border-color: var(--off-primary);
 }
 
-/* EVENT LIST */
+
 
 .evmgmt-event-list {
   list-style: none;
@@ -409,7 +409,7 @@ html.modal-open {
 .evmgmt-event-list::-webkit-scrollbar-track { background: transparent; }
 .evmgmt-event-list::-webkit-scrollbar-thumb { background: var(--off-border); border-radius: 4px; }
 
-/* EVENT ITEM */
+
 
 .evmgmt-event-item {
   display: flex;
@@ -449,7 +449,7 @@ html.modal-open {
   gap: 16px;
 }
 
-/* DATE BADGE */
+
 
 .evmgmt-date-badge {
   flex-shrink: 0;
@@ -492,7 +492,7 @@ html.modal-open {
   color: var(--off-text-muted);
 }
 
-/* EVENT INFO */
+
 
 .evmgmt-event-info {
   padding: 8px;
@@ -579,7 +579,7 @@ html.modal-open {
   color: var(--off-text-muted);
 }
 
-/* ACTION BUTTONS — row layout */
+
 
 .evmgmt-event-actions {
   display: flex;
@@ -639,7 +639,7 @@ html.modal-open {
   text-align: center;
 }
 
-/* MODALS */
+
 
 .evmgmt-modal-overlay {
   position: fixed;
@@ -723,7 +723,7 @@ html.modal-open {
   border-top: 1px solid var(--off-border);
 }
 
-/* FORM FIELDS */
+
 
 .evmgmt-field-row {
   display: grid;
@@ -796,7 +796,7 @@ html.modal-open {
   min-height: 14px;
 }
 
-/* VIEW MODAL */
+
 
 .evmgmt-view-title {
   font-size: 18px;
@@ -846,7 +846,7 @@ html.modal-open {
   border: 1px solid var(--off-border);
 }
 
-/* DELETE MODAL */
+
 
 .evmgmt-delete-msg {
   font-size: 14px;
@@ -855,7 +855,7 @@ html.modal-open {
   margin: 0;
 }
 
-/* RESPONSIVE */
+
 
 @media (max-width: 1100px) {
   .evmgmt-main-grid {

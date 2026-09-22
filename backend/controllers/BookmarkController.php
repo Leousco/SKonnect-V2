@@ -11,7 +11,6 @@ class BookmarkController
         $this->model = new BookmarkModel();
     }
 
-    /* POST — toggle a bookmark on/off */
     public function toggle(): void
     {
         RoleMiddleware::requireAuth();
@@ -31,7 +30,6 @@ class BookmarkController
         ]);
     }
 
-    /* GET — return just the bookmarked IDs (lightweight, used for page init) */
     public function ids(): void
     {
         RoleMiddleware::requireAuth();
@@ -45,7 +43,7 @@ class BookmarkController
         ]);
     }
 
-    // Helpers
+    
 
     private function json(array $payload, int $httpCode = 200): never
     {

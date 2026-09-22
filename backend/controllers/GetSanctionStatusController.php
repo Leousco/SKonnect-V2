@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/GetSanctionStatusController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAuth();
 
@@ -14,7 +13,6 @@ $conn = $db->getConnection();
 $user_id      = (int)($_SESSION['user_id'] ?? 0);
 $sanctionModel = new SanctionModel($conn);
 
-// This also auto-expires any elapsed level-2 bans
 $level = $sanctionModel->getActiveLevel($user_id);
 
 $expires_at   = null;
@@ -22,7 +20,6 @@ $reason       = null;
 $issued_at    = null;
 
 if ($level >= 2) {
-    // Pull the most recent active sanction at this level for display details
     $stmt = $conn->prepare(
         "SELECT reason, expires_at, created_at
          FROM user_sanctions
@@ -41,8 +38,8 @@ if ($level >= 2) {
 
 echo json_encode([
     'status'     => 'success',
-    'level'      => $level,          // 0 = none, 1 = warning only, 2 = 7-day ban, 3 = permanent
-    'expires_at' => $expires_at,     // ISO string or null
+    'level'      => $level,          
+    'expires_at' => $expires_at,    
     'reason'     => $reason,
     'issued_at'  => $issued_at,
 ]);

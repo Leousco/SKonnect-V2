@@ -1,5 +1,4 @@
 <?php
-// backend/models/ActivityLogModel.php
 
 class ActivityLogModel
 {
@@ -21,10 +20,6 @@ class ActivityLogModel
         $this->conn = $conn;
     }
 
-    /**
-     * Insert a moderator activity log entry.
-     * $meta keys: target_type, target_id, target_name, target_user, notes
-     */
     public function log(int $user_id, string $action, array $meta, ?string $ip = null): bool
     {
         $stmt = $this->conn->prepare(
@@ -39,17 +34,12 @@ class ActivityLogModel
         ]);
     }
 
-    /**
-     * Fetch paginated mod logs with optional filters.
-     * Filters: action, moderator_id, date_from (Y-m-d), date_to (Y-m-d), search
-     */
     public function getLogs(array $filters = [], int $page = 1, int $per_page = 100): array
     {
         [$where, $params] = $this->buildWhere($filters);
 
         $offset   = ($page - 1) * $per_page;
 
-        // Build the query with placeholders
         $sql = "SELECT al.id, al.user_id, al.action, al.description, al.created_at,
                    CONCAT(u.first_name, ' ', u.last_name) AS moderator_name
             FROM activity_logs al
@@ -60,7 +50,6 @@ class ActivityLogModel
 
         $stmt = $this->conn->prepare($sql);
 
-        // Bind parameters explicitly with types
         $paramIndex = 1;
         foreach ($params as $param) {
             $stmt->bindValue($paramIndex++, $param);

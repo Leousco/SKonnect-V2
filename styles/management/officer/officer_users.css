@@ -4,7 +4,7 @@
    Fully self-contained. No dependency on officer_requests.css.
    ============================================================ */
 
-/* ── STAT WIDGETS ────────────────────────────────────────── */
+
 
 .off-widgets {
   display: grid;
@@ -138,17 +138,17 @@
   color: #b83232;
 }
 
-/* ── PAGE-LEVEL CONTAINMENT ──────────────────────────────── */
-/* Constrain the content area to never exceed visible viewport.
-   Sidebar is 250 px fixed. Scoped here so officer_mgmt.css is
-   left completely untouched. */
+
+
+
+
 
 .off-content {
   max-width: calc(100vw - 250px);
   overflow-x: hidden;
 }
 
-/* ── CONTROLS WRAP ───────────────────────────────────────── */
+
 
 .usr-controls-wrap {
   display: flex;
@@ -160,7 +160,7 @@
   min-width: 0;
 }
 
-/* ── SEARCH ──────────────────────────────────────────────── */
+
 
 .usr-search-wrap {
   position: relative;
@@ -195,7 +195,7 @@
   box-shadow: 0 0 0 3px rgba(45, 125, 154, 0.12);
 }
 
-/* ── FILTERS ROW ─────────────────────────────────────────── */
+
 
 .usr-filters {
   display: flex;
@@ -229,7 +229,7 @@
   box-shadow: 0 0 0 3px rgba(45, 125, 154, 0.12);
 }
 
-/* ── RESULT COUNT ────────────────────────────────────────── */
+
 
 .usr-count {
   font-size: 12px;
@@ -238,7 +238,7 @@
   margin-left: auto;
 }
 
-/* ── TABLE PANEL ─────────────────────────────────────────── */
+
 
 .usr-table-panel {
   background: var(--off-surface);
@@ -257,7 +257,7 @@
   width: 100%;
 }
 
-/* ── TABLE ───────────────────────────────────────────────── */
+
 
 .usr-table {
   width: 100%;
@@ -294,7 +294,7 @@
   background: var(--off-surface-2);
 }
 
-/* ── COLUMN WIDTHS ───────────────────────────────────────── */
+
 
 .col-usr-name {
   width: 190px;
@@ -325,7 +325,7 @@
   text-align: center;
 }
 
-/* ── EMPTY STATE ─────────────────────────────────────────── */
+
 
 .usr-empty {
   font-size: 13px;
@@ -336,7 +336,7 @@
   margin: 0;
 }
 
-/* ── USER NAME CELL ──────────────────────────────────────── */
+
 
 .usr-name-cell {
   display: flex;
@@ -383,7 +383,7 @@
   line-height: 1.3;
 }
 
-/* ── CONTACT CELL ────────────────────────────────────────── */
+
 
 .usr-contact-cell {
   display: flex;
@@ -405,7 +405,7 @@
   color: var(--off-text-muted);
 }
 
-/* ── ADDRESS CELL ────────────────────────────────────────── */
+
 
 .usr-address-text {
   font-size: 12.5px;
@@ -418,7 +418,7 @@
   display: block;
 }
 
-/* ── AGE CELL ────────────────────────────────────────────── */
+
 
 .usr-age-val {
   font-size: 13px;
@@ -428,7 +428,7 @@
   display: block;
 }
 
-/* ── VERIFICATION PILL ───────────────────────────────────── */
+
 
 .usr-status-pill {
   display: inline-flex;
@@ -457,7 +457,7 @@
   color: var(--off-slate-text);
 }
 
-/* ── REQUEST COUNT BADGE ─────────────────────────────────── */
+
 
 .usr-req-badge {
   display: inline-flex;
@@ -479,7 +479,7 @@
   color: white;
 }
 
-/* ── VIEW BUTTON ─────────────────────────────────────────── */
+
 
 .usr-view-btn {
   display: inline-flex;
@@ -506,7 +506,7 @@
   color: var(--off-primary);
 }
 
-/* ── DRAWER OVERLAY ──────────────────────────────────────── */
+
 
 .usr-drawer-overlay {
   position: fixed;
@@ -525,7 +525,7 @@
   pointer-events: auto;
 }
 
-/* ── DRAWER PANEL ────────────────────────────────────────── */
+
 
 .usr-drawer {
   width: 420px;
@@ -545,7 +545,7 @@
   transform: translateX(0);
 }
 
-/* ── DRAWER HEADER ───────────────────────────────────────── */
+
 
 .usr-drawer-header {
   display: flex;
@@ -611,7 +611,7 @@
   color: var(--off-dark);
 }
 
-/* ── DRAWER BODY ─────────────────────────────────────────── */
+
 
 .usr-drawer-body {
   flex: 1;
@@ -650,7 +650,7 @@
   margin: 0 0 14px;
 }
 
-/* ── INFO GRID ───────────────────────────────────────────── */
+
 
 .usr-info-grid {
   display: grid;
@@ -684,7 +684,7 @@
   word-break: break-word;
 }
 
-/* ── REQUEST SUMMARY ─────────────────────────────────────── */
+
 
 .usr-req-summary {
   display: grid;
@@ -738,7 +738,7 @@
   border-top: 3px solid var(--off-violet);
 }
 
-/* ── ACTIVITY LIST ───────────────────────────────────────── */
+
 
 .usr-activity-list {
   list-style: none;
@@ -803,7 +803,7 @@
   color: var(--off-text-muted);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 1100px) {
   .usr-controls-wrap {

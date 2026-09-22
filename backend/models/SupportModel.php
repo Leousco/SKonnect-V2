@@ -1,5 +1,4 @@
 <?php
-// backend/models/SupportModel.php
 
 class SupportModel
 {
@@ -10,10 +9,6 @@ class SupportModel
         $this->conn = $conn;
     }
 
-    /**
-     * Toggle support on a thread.
-     * Returns ['supported' => bool, 'total' => int]
-     */
     public function toggleThread(int $thread_id, int $user_id): array
     {
         $check = $this->conn->prepare(
@@ -41,10 +36,6 @@ class SupportModel
         return ['supported' => $supported, 'total' => (int)$count->fetchColumn()];
     }
 
-    /**
-     * Toggle support on a comment.
-     * Returns ['supported' => bool, 'total' => int]
-     */
     public function toggleComment(int $comment_id, int $user_id): array
     {
         $check = $this->conn->prepare(

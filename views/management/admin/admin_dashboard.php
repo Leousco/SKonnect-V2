@@ -40,7 +40,7 @@ $upcomingEvents = array_slice(
     include __DIR__ . '/../../../components/management/admin/admin_topbar.php';
     ?>
 
-        <!-- STAT WIDGETS -->
+        
         <section class="admin-widgets">
 
             <div class="admin-widget-card widget-violet">
@@ -93,7 +93,7 @@ $upcomingEvents = array_slice(
 
             <div class="admin-left-col">
 
-                <!-- PENDING SERVICE REQUESTS -->
+                
                 <section class="admin-requests-panel">
                     <div class="panel-header">
                         <h2 class="section-label">Pending Service Requests</h2>
@@ -115,7 +115,7 @@ $upcomingEvents = array_slice(
                     </div>
                 </section>
 
-                <!-- REQUESTS BY SERVICE TYPE -->
+                
                 <section class="chart-panel">
                     <div class="panel-header">
                         <h2 class="section-label">Requests by Service Type</h2>
@@ -202,7 +202,7 @@ $upcomingEvents = array_slice(
 
         <div class="admin-bottom-row">
 
-            <!-- MEMBER REGISTRATIONS -->
+            
             <section class="chart-panel chart-panel--stretch">
                 <div class="panel-header">
                     <h2 class="section-label">Member Registrations</h2>
@@ -232,11 +232,11 @@ $upcomingEvents = array_slice(
                 </div>
             </section>
 
-            <!-- UPCOMING EVENTS -->
+            
             <section class="chart-panel chart-panel--stretch">
                 <div class="panel-header">
                     <h2 class="section-label">Upcoming Events</h2>
-                    <!-- <a href="admin_events.php" class="btn-admin-sm">Manage &rsaquo;</a> -->
+                    
                 </div>
                 <ul class="admin-events-list admin-events-list--grow">
                     <?php if (empty($upcomingEvents)): ?>

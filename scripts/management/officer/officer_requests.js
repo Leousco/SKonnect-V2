@@ -1,10 +1,10 @@
 
 
    document.addEventListener("DOMContentLoaded", () => {
-    /* ── BACKEND ROUTE ─────────────────────────────────────── */
+    
     const API = "../../../backend/routes/officer_service_requests.php";
   
-    /* ── REFS ──────────────────────────────────────────────── */
+    
     const tbody = document.getElementById("req-tbody");
     const noResults = document.getElementById("req-no-results");
     const countLabel = document.getElementById("req-count");
@@ -14,7 +14,7 @@
     const selSort = document.getElementById("req-sort");
     const tabs = document.querySelectorAll(".req-tab");
   
-    // Drawer
+    
     const drawerOverlay = document.getElementById("req-drawer-overlay");
     const drawerClose = document.getElementById("req-drawer-close");
     const drawerTitle = document.getElementById("drawer-title");
@@ -43,7 +43,7 @@
     const drawerResponse = document.getElementById("drawer-response");
     const drawerFooter = document.getElementById("req-drawer-footer");
   
-    // Confirm modal
+    
     const confirmOverlay = document.getElementById("req-confirm-overlay");
     const confirmIcon = document.getElementById("req-confirm-icon");
     const confirmTitle = document.getElementById("req-confirm-title");
@@ -51,24 +51,24 @@
     const confirmOk = document.getElementById("req-confirm-ok");
     const confirmCancel = document.getElementById("req-confirm-cancel");
   
-    // Toast
+    
     const toast = document.getElementById("req-toast");
 
-    // Pagination
+    
     const pagePrevBtn     = document.getElementById("req-prev-btn");
     const pageNextBtn     = document.getElementById("req-next-btn");
     const pageNumbersWrap = document.getElementById("req-page-numbers");
     const PAGE_SIZE = 10;
   
-    /* ── STATE ─────────────────────────────────────────────── */
+    
     let activeTab = "all";
     let sortDir = "desc";
     let pendingAction = null;
-    let activeAppId = null; // currently open application id
+    let activeAppId = null; 
     let toastTimer = null;
     let currentPage = 1;
   
-    /* ── TOAST ─────────────────────────────────────────────── */
+    
     function showToast(msg, type = "info") {
       clearTimeout(toastTimer);
       toast.innerHTML = escapeHtml(msg);
@@ -91,12 +91,12 @@
       toast.classList.remove("req-toast--show");
     }
   
-    /* ── ROWS HELPER ───────────────────────────────────────── */
+    
     function getRows() {
       return Array.from(tbody.querySelectorAll("tr"));
     }
   
-    /* ── FILTER ────────────────────────────────────────────── */
+    
     function applyFilters() {
       const q = searchInput.value.toLowerCase().trim();
       const category = selCategory.value;
@@ -118,7 +118,7 @@
       renderPage(matched);
     }
 
-    /* ── PAGINATION ────────────────────────────────────────── */
+    
     function renderPage(matchedRows) {
       const total = matchedRows.length;
       const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -208,7 +208,7 @@
     searchInput.addEventListener("input", () => { currentPage = 1; applyFilters(); });
     selCategory.addEventListener("change", () => { currentPage = 1; applyFilters(); });
   
-    /* ── TABS ──────────────────────────────────────────────── */
+    
     tabs.forEach((tab) => {
       tab.addEventListener("click", () => {
         tabs.forEach((t) => t.classList.remove("active"));
@@ -219,7 +219,7 @@
       });
     });
   
-    /* ── SORT ──────────────────────────────────────────────── */
+    
     selSort.addEventListener("change", () => {
       sortDir = selSort.value === "newest" ? "desc" : "asc";
       currentPage = 1;
@@ -249,7 +249,7 @@
       applyFilters();
     }
   
-    /* ── DRAWER — open & fetch full details from API ───────── */
+    
     tbody.addEventListener("click", (e) => {
       const viewBtn = e.target.closest(".req-btn-view");
       if (!viewBtn) return;
@@ -276,11 +276,11 @@
       await fetchAndPopulate(activeAppId);
     }
   
-    /**
-     * Fetch fresh data from the server and re-populate the drawer.
-     * Called on open AND after every successful mutation so the UI
-     * always reflects what's actually in the database.
-     */
+    
+
+
+
+
     async function fetchAndPopulate(id) {
       try {
         const res = await fetch(`${API}?action=view&id=${id}`);
@@ -328,30 +328,30 @@
   
       drawerStatusWrap.innerHTML = `<span class="req-status-pill status-${statusCls}">${statusLbl}</span>`;
   
-      // Notes thread
+      
       renderNotesThread(app.notes || [], finalized);
   
-      // Documents
+      
       renderDocuments(app.documents || []);
 
-      // Fulfillment file (approved applications only)
+      
       renderFulfillmentFile(app.fulfillment_file || null, app.status);
   
-      // Note textarea — hide when finalized
+      
       drawerNoteInput.style.display = finalized ? "none" : "";
       drawerResponse.value = "";
   
-      // Footer action buttons
+      
       buildDrawerFooter(statusDb, app.id);
   
-      // Also sync the table row so the list stays accurate
+      
       syncTableRow(app.id, statusDb);
   
       drawerLoading.style.display = "none";
       drawerContent.style.display = "block";
     }
   
-    /* ── NOTES THREAD RENDERER ─────────────────────────────── */
+    
     function renderNotesThread(notes, finalized) {
       if (!notes || notes.length === 0) {
         drawerNotesSection.style.display = "none";
@@ -384,7 +384,7 @@
       drawerNotesThread.innerHTML = `<div class="drawer-notes-list">${items}</div>`;
     }
   
-    /* ── DOCUMENTS RENDERER ────────────────────────────────── */
+    
     const MAX_DOC_NAME = 42;
   
     function truncateDocName(name) {
@@ -444,9 +444,9 @@
       drawerFiles.innerHTML = `<div class="drawer-files-list">${items}</div>`;
     }
   
-    /* ── FULFILLMENT FILE RENDERER ─────────────────────────── */
+    
     function renderFulfillmentFile(filePath, status) {
-      // Only show for approved applications that have a fulfillment file attached
+      
       if (status !== "approved" || !filePath) {
         drawerFulfillmentSection.style.display = "none";
         drawerFulfillmentFile.innerHTML = "—";
@@ -459,7 +459,7 @@
       const fileName   = filePath.split("/").pop() || "fulfillment_file";
       const ext        = fileName.split(".").pop().toLowerCase();
 
-      // Infer mime from extension for preview button
+      
       const mimeMap = {
         pdf: "application/pdf",
         jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png",
@@ -498,7 +498,7 @@
         </div>`;
     }
 
-    /* ── DRAWER FOOTER BUTTONS ─────────────────────────────── */
+    
     function buildDrawerFooter(statusDb, id) {
       drawerFooter.innerHTML = "";
 
@@ -554,14 +554,14 @@
       return btn;
     }
   
-    /* ── DRAWER FOOTER DELEGATION ──────────────────────────── */
+    
     drawerFooter.addEventListener("click", (e) => {
       const btn = e.target.closest("button[data-action]");
       if (!btn) return;
       handleAction(btn.dataset.action, btn.dataset.id);
     });
   
-    /* ── ACTION HANDLER ────────────────────────────────────── */
+    
     function handleAction(action, id) {
       const row = tbody.querySelector(`tr[data-id="${id}"]`);
       const residentName =
@@ -598,7 +598,7 @@
       }
     }
   
-    /* ── SUBMIT: ADD NOTE ──────────────────────────────────── */
+    
     async function submitNote(id, note) {
       const fd = new FormData();
       fd.append("action", "add_note");
@@ -620,7 +620,7 @@
   
         showToast('Note sent. Status set to "Action Required".', "success");
   
-        // Re-fetch from server to get updated notes thread + status
+        
         if (activeAppId == id) {
           drawerLoading.style.display = "block";
           drawerContent.style.display = "none";
@@ -632,7 +632,7 @@
       }
     }
   
-    /* ── SUBMIT: STATUS UPDATE (approve / reject only) ─────── */
+    
     async function submitStatusUpdate(id, newStatus, note = "", fileInput = null) {
       const fd = new FormData();
       fd.append("action", "update_status");
@@ -666,14 +666,14 @@
           newStatus === "approved" ? "success" : "info"
         );
 
-        // Re-fetch to get authoritative data, then close
+        
         if (activeAppId == id) {
           drawerLoading.style.display = "block";
           drawerContent.style.display = "none";
           await fetchAndPopulate(id);
         }
 
-        // Close the drawer after finalization
+        
         closeDrawer();
         return true;
       } catch (err) {
@@ -683,7 +683,7 @@
       }
     }
 
-    /* ── APPROVE MODAL ─────────────────────────────────────── */
+    
     const approveModalOverlay = document.getElementById("req-approve-modal-overlay");
     const approveModalClose   = document.getElementById("req-approve-modal-close");
     const approveNoteTextarea = document.getElementById("approve-modal-note");
@@ -748,7 +748,7 @@
       }
     });
 
-    /* ── DECLINE MODAL ─────────────────────────────────────── */
+    
     const declineModalOverlay  = document.getElementById("req-decline-modal-overlay");
     const declineModalClose    = document.getElementById("req-decline-modal-close");
     const declineNoteTextarea  = document.getElementById("decline-modal-note");
@@ -800,12 +800,12 @@
       }
     });
   
-    /* ── SYNC TABLE ROW FROM SERVER DATA ───────────────────── */
-    /**
-     * After any mutation, we get fresh data from the server.
-     * This updates the corresponding table row so the list stays
-     * in sync without a full page reload.
-     */
+    
+    
+
+
+
+
     function syncTableRow(id, statusDb) {
       const row = tbody.querySelector(`tr[data-id="${id}"]`);
       if (!row) return;
@@ -825,7 +825,7 @@
       applyFilters();
     }
   
-    /* ── UPDATE TAB COUNTS ─────────────────────────────────── */
+    
     function updateTabCounts() {
       const rows = getRows();
       const countMap = {
@@ -847,7 +847,7 @@
       });
     }
   
-    /* ── CLOSE DRAWER ──────────────────────────────────────── */
+    
     function closeDrawer() {
       drawerOverlay.style.display = "none";
       activeAppId = null;
@@ -858,15 +858,15 @@
       if (e.target === drawerOverlay) closeDrawer();
     });
   
-    /* ── CONFIRM MODAL ─────────────────────────────────────── */
+    
     confirmOk.addEventListener("click", async () => {
-      // 1. Save the function to a local constant so it survives the reset
+      
       const actionToExecute = pendingAction;
   
-      // 2. Now it's safe to close the modal and reset the global variable
+      
       closeConfirm();
   
-      // 3. Execute the saved function
+      
       if (typeof actionToExecute === "function") {
         await actionToExecute();
       }
@@ -882,9 +882,9 @@
       pendingAction = null;
     }
   
-    /* ── HELPERS ───────────────────────────────────────────── */
+    
   
-    // Map DB status value → CSS class used in the stylesheet
+    
     function dbStatusToCss(status) {
       const map = {
         action_required: "action-required",
@@ -894,7 +894,7 @@
       return map[status] ?? status;
     }
   
-    // Map DB status value → human label
+    
     function dbStatusToLabel(status) {
       const map = {
         pending: "Pending",
@@ -929,7 +929,7 @@
       });
     }
 
-    /* ── FILE PREVIEW MODAL ────────────────────────────────── */
+    
     const filePreviewOverlay = document.getElementById("req-file-preview-overlay");
     const filePreviewClose = document.getElementById("req-file-preview-close");
     const filePreviewName = document.getElementById("file-preview-name");
@@ -980,18 +980,17 @@
       if (e.target === filePreviewOverlay) closeFilePreview();
     });
 
-    /* ── KEYBOARD ──────────────────────────────────────────── */
+    
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape") return;
-      // Close modals from innermost outward
-      if (filePreviewOverlay.style.display !== "none") { closeFilePreview(); return; }
+            if (filePreviewOverlay.style.display !== "none") { closeFilePreview(); return; }
       if (approveModalOverlay.style.display !== "none") { closeApproveModal(); return; }
       if (declineModalOverlay.style.display !== "none") { closeDeclineModal(); return; }
       closeConfirm();
       closeDrawer();
     });
 
-    /* ── INIT ──────────────────────────────────────────────── */
+    
     sortRows();
     applyFilters();
     updateTabCounts();

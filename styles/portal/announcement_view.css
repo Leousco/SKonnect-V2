@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════════════════════
-   announcement_view.css  —  Portal single-announcement view
-   ══════════════════════════════════════════════════════════ */
 
-/* ── BACK ROW ────────────────────────────────────────────── */
+
+
+
+
 
 .av-back-row {
     margin-bottom: 20px;
@@ -33,7 +33,7 @@
     transform: translateX(-3px);
 }
 
-/* ── TWO-COLUMN LAYOUT ───────────────────────────────────── */
+
 
 .av-layout {
     display: grid;
@@ -51,7 +51,7 @@
     }
 }
 
-/* ── MAIN ARTICLE ────────────────────────────────────────── */
+
 
 .av-main {
     background: var(--surface);
@@ -61,7 +61,7 @@
     overflow: hidden;
 }
 
-/* ── BANNER ──────────────────────────────────────────────── */
+
 
 .av-banner {
     position: relative;
@@ -79,7 +79,7 @@
     display: block;
 }
 
-/* ── HEADER BLOCK ────────────────────────────────────────── */
+
 
 .av-header {
     padding: 28px 32px 22px;
@@ -167,7 +167,7 @@
     color: #d97706;
 }
 
-/* ── DIVIDER ─────────────────────────────────────────────── */
+
 
 .av-divider {
     height: 3px;
@@ -176,7 +176,7 @@
     opacity: 0.6;
 }
 
-/* ── BODY TEXT ───────────────────────────────────────────── */
+
 
 .av-body {
     padding: 28px 32px 32px;
@@ -185,7 +185,7 @@
     overflow-wrap: break-word;
 }
 
-/* Rich text content rendering */
+
 .av-body,
 .av-body p,
 .av-body li,
@@ -207,7 +207,7 @@
 .av-body p { margin: 0 0 10px; }
 .av-body p:last-child { margin-bottom: 0; }
 
-/* ── ATTACHMENTS ─────────────────────────────────────────── */
+
 
 .av-attachments {
     margin: 0 10px 32px;
@@ -309,7 +309,7 @@
     color: white;
 }
 
-/* ── SIDEBAR ─────────────────────────────────────────────── */
+
 
 .av-sidebar {
     display: flex;

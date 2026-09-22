@@ -1,9 +1,9 @@
 <?php
-/**
- * analytics_stats.php
- * Delegates ALL data aggregation to AnalyticsController.
- * Place at: /backend/routes/analytics_stats.php
- */
+
+
+
+
+
 
 header('Content-Type: application/json');
 

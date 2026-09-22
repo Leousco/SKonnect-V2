@@ -1,9 +1,9 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Same guard as login.php: an already-logged-in visitor (including one who
-// got here via the browser's Back button) gets bounced straight to their
-// dashboard instead of seeing the public homepage.
+
+
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
@@ -79,7 +79,7 @@ $annList  = $annModel->getActive();
         </div>
     </section>
 
-    <!-- FEATURED ANNOUNCEMENT -->
+    
     <?php if ($featured): ?>
     <section class="featured-section">
         <article class="featured-announcement">
@@ -92,7 +92,7 @@ $annList  = $annModel->getActive();
 
             <h2><?= htmlspecialchars($featured['title']) ?></h2>
 
-            <!-- Featured Excerpt -->
+            
             <p><?= htmlspecialchars(mb_substr(strip_tags($featured['content']), 0, 150)) ?>…</p>
 
             <div class="meta">
@@ -107,7 +107,7 @@ $annList  = $annModel->getActive();
     </section>
     <?php endif; ?>
 
-    <!-- ANNOUNCEMENTS GRID -->
+    
     <section class="announcements-list">
         <div class="announcements-grid" id="pub-grid">
 
@@ -164,13 +164,13 @@ $annList  = $annModel->getActive();
 
         </div>
 
-        <!-- No results message -->
+        
         <div id="pub-no-results" style="display:none; text-align:center; padding:2rem; color:#64748b;">
             No announcements match your search.
         </div>
     </section>
 
-    <!-- PAGINATION -->
+    
     <section class="pagination">
         <button class="page-btn" id="pub-prev" disabled>&#8249; Previous</button>
         <div id="pub-page-numbers" style="display:flex;gap:.5rem;align-items:center;"></div>

@@ -1,4 +1,4 @@
-// officer_announcements.js - full backend integration for announcement feature.
+
 
 const API = "../../../backend/routes/announcements.php";
 const ROWS_PER_PAGE = 10;
@@ -6,7 +6,7 @@ const ROWS_PER_PAGE = 10;
 document.addEventListener("DOMContentLoaded", function () {
 
 
-  //  TAB SWITCHING
+  
   const tabs = document.querySelectorAll(".ann-tab");
   const panels = {
     list: document.getElementById("panel-list"),
@@ -36,12 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
     })
   );
 
-  //  PAGINATION HELPER
+  
   function buildPagination(containerEl, allRows, state, renderFn) {
     const total = allRows.length;
     const totalPages = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
 
-    // Clamp page
+    
     if (state.page < 1) state.page = 1;
     if (state.page > totalPages) state.page = totalPages;
 
@@ -52,9 +52,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!containerEl) return;
     containerEl.innerHTML = "";
 
-    if (totalPages <= 1) return; // no paginator needed if rows are <= 10
+    if (totalPages <= 1) return; 
 
-    // Prev button
+    
     const prev = document.createElement("button");
     prev.className = "ann-page-btn";
     prev.innerHTML = "&#8249; Prev";
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     containerEl.appendChild(prev);
 
-    // Page number buttons (max 5 visible around current)
+    
     const numWrap = document.createElement("div");
     numWrap.className = "ann-page-numbers";
 
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     containerEl.appendChild(numWrap);
 
-    // Next button
+    
     const next = document.createElement("button");
     next.className = "ann-page-btn";
     next.innerHTML = "Next &#8250;";
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     containerEl.appendChild(next);
   }
 
-  //  LOAD PUBLISHED ANNOUNCEMENT LIST
+  
   const listTbody = document.getElementById("list-tbody");
   const listPagEl = document.getElementById("list-pagination");
   const listState = { page: 1 };
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const listCatSelect = document.getElementById("list-filter-cat");
   const listSortSelect = document.getElementById("list-filter-sort");
 
-  //  Client-side sorting
+  
   function sortRows(rows, sortVal, dateField) {
     const field = dateField || "published_at";
     return [...rows].sort((a, b) => {
@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadList();
   });
 
-  //  LOAD DRAFTS ANNOUNCEMENTS
+  
   const draftsTbody = document.getElementById("drafts-tbody");
   const draftsPagEl = document.getElementById("drafts-pagination");
   const draftsState = { page: 1 };
@@ -327,7 +327,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     draftsTbody.innerHTML = rows
       .map((a) => {
-        // Use updated_at if available, fall back to published_at (which is the created date for drafts)
+        
         const savedDate = formatDate(a.updated_at || a.published_at);
         return `
              <tr class="ann-row" data-id="${a.id}">
@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadDrafts();
   });
 
-  //  LOAD ARCHIVED ANNOUNCEMENTS
+  
   const archiveTbody = document.getElementById("archive-tbody");
   const archivePagEl = document.getElementById("archive-pagination");
   const archiveState = { page: 1 };
@@ -458,14 +458,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     archiveTbody.innerHTML = rows
       .map((a) => {
-        // Archived reason: if expired_at is set AND is in the past, it is "expired";
-        // otherwise it was "manually" archived by an officer.
+        
+        
         const wasExpired = a.expired_at && new Date(a.expired_at) < new Date();
         const reason = wasExpired ? "Expired" : "Manual";
         const reasonClass = wasExpired ? "reason-expired" : "reason-manual";
 
-        // archived_at = the actual date it was archived (stored by archive() now)
-        // Fall back to updated_at if archived_at column is empty
+        
+        
         const archivedOnDate = a.archived_at
           ? formatDate(a.archived_at)
           : a.updated_at
@@ -545,11 +545,11 @@ document.addEventListener("DOMContentLoaded", function () {
     loadArchive();
   });
 
-  //  CREATE ANNOUNCEMENT FORM: PUBLISH, DRAFT, CANCEL
+  
   const btnPublish = document.querySelector(".btn-ann-primary");
   const btnDraft = document.querySelector(".btn-ann-secondary");
 
-  // Inject Cancel button
+  
   const formActionsEl = document.querySelector(".ann-form-actions");
   let btnCancel = null;
   if (formActionsEl) {
@@ -611,7 +611,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (json.status === "success") {
         showToast(json.message, "success");
         resetCreateForm();
-        // Go to 'drafts' tab if saved as draft, else go to 'published' tab
+        
         switchTab(status === "draft" ? "drafts" : "list");
       } else {
         showToast(json.message, "error");
@@ -724,7 +724,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (charCount) charCount.textContent = "0 / 120";
   }
 
-  // EDIT FORM
+  
   let editingId = null;
   let existingBannerPath = null;
   let savedAttachments = [];
@@ -898,7 +898,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (btnPublish) btnPublish.textContent = "Publish Now";
   }
 
-  //  PREVIEW MODAL
+  
   const catThemes = {
     event: {
       bg: "#d1fae5",
@@ -1168,7 +1168,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.style.overflow = "";
   }
 
-  //  ACTIONS: ARCHIVE, RESTORE, DELETE
+  
   async function archiveAnnouncement(id) {
     if (!confirm("Archive this announcement?")) return;
     const fd = new FormData();
@@ -1212,7 +1212,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // LIVE PREVIEW FUNCTIONS
+  
   const titleInput = document.getElementById("ann-title");
   const previewTitle = document.getElementById("preview-title");
   const charCount = document.getElementById("title-char");
@@ -1468,7 +1468,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Publish date default
+  
   const publishDateInput = document.getElementById("ann-publish-date");
   if (publishDateInput) {
     publishDateInput.value = new Date().toISOString().split("T")[0];
@@ -1493,7 +1493,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  //  TEXT EDITOR TOOLS FUNCTION
+  
   (function initRichEditor() {
     const toolbar = document.getElementById("ann-toolbar");
     const editor = document.getElementById("ann-body");
@@ -1574,7 +1574,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   })();
 
-  //  TOAST
+  
   function showToast(message, type = "success") {
     let toast = document.getElementById("ann-toast");
     if (!toast) {
@@ -1592,7 +1592,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3500);
   }
 
-  //  UTILITIES
+  
   function toggleCheck(el, done) {
     if (!el) return;
     el.classList.toggle("is-done", done);
@@ -1657,7 +1657,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  //  INITIAL LOAD
+  
   loadList();
   renderAttachments();
 });

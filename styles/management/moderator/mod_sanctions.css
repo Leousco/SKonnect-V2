@@ -2,7 +2,7 @@
    mod_sanctions.css — SKonnect Moderator · User Sanctions
    ============================================================ */
 
-/* ── STAT WIDGETS ────────────────────────────────────────── */
+
 
 .mod-widgets {
   display: grid;
@@ -139,7 +139,7 @@
   color: #b91c1c;
 }
 
-/* ── PANEL SHARED ────────────────────────────────────────── */
+
 
 .ms-form-panel,
 .ms-list-panel {
@@ -197,7 +197,7 @@
   line-height: 1.6;
 }
 
-/* ── DIRECT SANCTION FORM ────────────────────────────────── */
+
 
 .ms-form-body {
   transition: opacity 0.2s;
@@ -320,7 +320,7 @@
   color: var(--mod-dark);
 }
 
-/* ── TABS ────────────────────────────────────────────────── */
+
 
 .ms-tab-nav {
   display: flex;
@@ -374,7 +374,7 @@
   background: #64748b;
 }
 
-/* ── FILTER BAR ──────────────────────────────────────────── */
+
 
 .ms-filter-bar {
   display: flex;
@@ -454,7 +454,7 @@
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
 }
 
-/* ── REPORT LIST ITEMS ───────────────────────────────────── */
+
 
 .ms-list {
   display: flex;
@@ -494,7 +494,7 @@
   width: 58px;
 }
 
-/* ── SANCTION LEVEL BADGE ────────────────────────────────── */
+
 
 .ms-sanction-level {
   display: inline-flex;
@@ -537,7 +537,7 @@
   border: 1px solid #cbd5e1;
 }
 
-/* ── AVATARS ─────────────────────────────────────────────── */
+
 
 .ms-avatar {
   width: 40px;
@@ -557,7 +557,7 @@
   background: #94a3b8;
 }
 
-/* ── ITEM BODY ───────────────────────────────────────────── */
+
 
 .ms-item-body {
   flex: 1;
@@ -597,7 +597,7 @@
   flex-shrink: 0;
 }
 
-/* ── CATEGORY TAGS ───────────────────────────────────────── */
+
 
 .ms-report-cat {
   display: inline-flex;
@@ -660,7 +660,7 @@
   color: #475569;
 }
 
-/* ── REPORTED CONTENT BLOCK ──────────────────────────────── */
+
 
 .ms-reported-content {
   background: var(--mod-surface-2);
@@ -693,7 +693,7 @@
   margin: 0;
 }
 
-/* ── THREAD CONTEXT ──────────────────────────────────────── */
+
 
 .ms-thread-context {
   display: flex;
@@ -715,7 +715,7 @@
   color: var(--mod-text-body);
 }
 
-/* ── REPORTER NOTE ───────────────────────────────────────── */
+
 
 .ms-reporter-note {
   font-size: 12px;
@@ -730,7 +730,7 @@
   margin-right: 5px;
 }
 
-/* ── ACTION BUTTONS ──────────────────────────────────────── */
+
 
 .ms-item-actions {
   display: flex;
@@ -807,7 +807,7 @@
   margin-left: 2px;
 }
 
-/* ── EMPTY STATE ─────────────────────────────────────────── */
+
 
 .ms-empty {
   display: flex;
@@ -831,7 +831,7 @@
   font-weight: 500;
 }
 
-/* ── SANCTION MODAL ──────────────────────────────────────── */
+
 
 .ms-modal-overlay {
   position: fixed;
@@ -1063,7 +1063,7 @@
   flex-shrink: 0;
 }
 
-/* ── TOAST ───────────────────────────────────────────────── */
+
 
 .ms-toast {
   position: fixed;
@@ -1095,7 +1095,7 @@
   background: #991b1b;
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 900px) {
   .ms-form-grid {
@@ -1136,7 +1136,7 @@
   }
 }
 
-/* ── OPTIONAL LABEL ──────────────────────────────────────── */
+
 
 .ms-label-optional {
   font-size: 10px;
@@ -1147,7 +1147,7 @@
   margin-left: 4px;
 }
 
-/* ── PANEL BACKDROP ──────────────────────────────────────── */
+
 
 .ms-panel-backdrop {
   position: fixed;
@@ -1164,7 +1164,7 @@
   pointer-events: all;
 }
 
-/* ── SLIDE-IN PANEL ──────────────────────────────────────── */
+
 
 .ms-comment-panel {
   position: fixed;
@@ -1187,12 +1187,12 @@
   transform: translateX(0);
 }
 
-/* Prevent main content scroll when panel is open */
+
 body.ms-panel-open {
   overflow: hidden;
 }
 
-/* ── PANEL HEADER ────────────────────────────────────────── */
+
 
 .ms-panel-header {
   display: flex;
@@ -1229,7 +1229,7 @@ body.ms-panel-open {
   border: 1px solid;
 }
 
-/* reuse existing cat-* colour classes already in the file */
+
 
 .ms-panel-status-badge {
   display: inline-flex;
@@ -1295,7 +1295,7 @@ body.ms-panel-open {
   height: 16px;
 }
 
-/* ── PANEL BODY ──────────────────────────────────────────── */
+
 
 .ms-panel-body {
   flex: 1;
@@ -1307,7 +1307,7 @@ body.ms-panel-open {
   scroll-behavior: smooth;
 }
 
-/* ── LOADING SPINNER ─────────────────────────────────────── */
+
 
 .ms-panel-loading {
   display: flex;
@@ -1335,7 +1335,7 @@ body.ms-panel-open {
   }
 }
 
-/* ── PANEL CONTENT ───────────────────────────────────────── */
+
 
 .ms-panel-title {
   font-size: 18px;
@@ -1430,7 +1430,7 @@ body.ms-panel-open {
   display: block;
 }
 
-/* ── PANEL COMMENTS ──────────────────────────────────────── */
+
 
 .ms-panel-comments-section {
   display: flex;
@@ -1482,7 +1482,7 @@ body.ms-panel-open {
   padding: 20px 0 8px;
 }
 
-/* Comment items — mirrors mod_feed panel style */
+
 
 .ms-panel-comment-item {
   display: flex;
@@ -1558,7 +1558,7 @@ body.ms-panel-open {
   letter-spacing: 0.3px;
 }
 
-/* Reply thread indent */
+
 
 .ms-panel-replies {
   display: flex;
@@ -1575,23 +1575,23 @@ body.ms-panel-open {
   align-items: flex-start;
 }
 
-/* ── REPORTED HIGHLIGHT ───────────────────────────────────── */
 
-/* The comment/reply that was reported gets this class */
+
+
 .ms-reported-highlight > .ms-panel-comment-body {
   border-color: #fbbf24;
   background: #fffbeb;
   box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
 }
 
-/* For replies, the highlight wraps the whole reply item */
+
 .ms-panel-reply-item.ms-reported-highlight > .ms-panel-comment-body {
   border-color: #fbbf24;
   background: #fffbeb;
   box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
 }
 
-/* "Reported Comment / Reply" inline tag */
+
 .ms-reported-tag {
   font-size: 9px;
   font-weight: 700;
@@ -1604,7 +1604,7 @@ body.ms-panel-open {
   border-radius: 4px;
 }
 
-/* AUTO SCROLL STYLE */
+
 @keyframes ms-highlight-glow {
   0% {
     box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.4);
@@ -1629,7 +1629,7 @@ body.ms-panel-open {
   animation: ms-highlight-glow 1.2s ease-out;
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 600px) {
   .ms-comment-panel {

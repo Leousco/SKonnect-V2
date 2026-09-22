@@ -73,7 +73,7 @@ function reltime(string $dt): string
             include __DIR__ . '/../../../components/management/moderator/mod_topbar.php';
             ?>
 
-            <!-- ── STAT WIDGETS ──────────────────────────────────────── -->
+            
             <section class="mod-widgets">
 
                 <div class="mod-widget-card widget-amber">
@@ -130,7 +130,7 @@ function reltime(string $dt): string
 
             </section>
 
-            <!-- ── ISSUE DIRECT SANCTION FORM ───────────────────────── -->
+            
             <section class="ms-form-panel">
                 <div class="panel-header">
                     <div class="panel-header-left">
@@ -184,7 +184,7 @@ function reltime(string $dt): string
                 </div>
             </section>
 
-            <!-- ── REPORT TABS ────────────────────────────────────────── -->
+            
             <section class="ms-list-panel">
 
                 <div class="panel-header">
@@ -196,7 +196,7 @@ function reltime(string $dt): string
                     </div>
                 </div>
 
-                <!-- Tab nav -->
+                
                 <div class="ms-tab-nav">
                     <button class="ms-tab-btn active" data-tab="pending">
                         Pending
@@ -218,7 +218,7 @@ function reltime(string $dt): string
                     </button>
                 </div>
 
-                <!-- Filter bar -->
+                
                 <div class="ms-filter-bar">
                     <div class="ms-filters-left">
                         <button class="ms-filter-btn active" data-filter="all">All Reports</button>
@@ -237,7 +237,7 @@ function reltime(string $dt): string
                     </div>
                 </div>
 
-                <!-- ── PENDING TAB ──────────────────────────────────── -->
+                
                 <div class="ms-tab-panel" id="tab-pending">
 
                     <?php if (empty($pendingReports)) : ?>
@@ -336,7 +336,7 @@ function reltime(string $dt): string
                     </div>
                 </div>
 
-                <!-- ── REVIEWED TAB ─────────────────────────────────── -->
+                
                 <div class="ms-tab-panel" id="tab-reviewed" style="display:none;">
                     <?php if (empty($reviewedReports)) : ?>
                         <div class="ms-empty">
@@ -391,7 +391,7 @@ function reltime(string $dt): string
                     <?php endif; ?>
                 </div>
 
-                <!-- ── DISMISSED TAB ────────────────────────────────── -->
+                
                 <div class="ms-tab-panel" id="tab-dismissed" style="display:none;">
                     <?php if (empty($dismissedReports)) : ?>
                         <div class="ms-empty">
@@ -441,12 +441,12 @@ function reltime(string $dt): string
                     <?php endif; ?>
                 </div>
 
-            </section><!-- /ms-list-panel -->
+            </section>
 
         </main>
     </div>
 
-    <!-- ── SANCTION MODAL ──────────────────────────────────────────── -->
+    
     <div class="ms-modal-overlay" id="sanction-modal" style="display:none;" aria-modal="true" role="dialog">
         <div class="ms-modal-box">
             <div class="ms-modal-header">
@@ -522,9 +522,9 @@ function reltime(string $dt): string
         </div>
     </div>
 
-    <!-- ══════════════════════════════════════════════════════════
-     COMMENT SLIDE-IN PANEL
-══════════════════════════════════════════════════════════ -->
+    
+
+
     <div class="ms-panel-backdrop" id="ms-panel-backdrop"></div>
 
     <aside class="ms-comment-panel" id="ms-comment-panel" aria-label="Comment detail panel">
@@ -572,7 +572,7 @@ function reltime(string $dt): string
 
     </aside>
 
-    <!-- TOAST -->
+    
     <div id="ms-toast" class="ms-toast" aria-live="polite"></div>
 
     <script>

@@ -2,21 +2,21 @@
 require_once __DIR__ . '/../../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('sk_officer');
 
-// ── DEPENDENCIES ──────────────────────────────────────────────
+
 require_once __DIR__ . '/../../../backend/config/database.php';
 require_once __DIR__ . '/../../../backend/models/ServiceRequestModel.php';
 require_once __DIR__ . '/../../../backend/models/AnnouncementModel.php';
 require_once __DIR__ . '/../../../backend/models/ServiceModel.php';
 
-// ── DB + MODEL INSTANCES ──────────────────────────────────────
+
 $db   = (new Database())->getConnection();
 $srm  = new ServiceRequestModel();
 $annM = new AnnouncementModel();
 $svcM = new ServiceModel();
 
-// ─────────────────────────────────────────────────────────────
-// HELPER FUNCTIONS
-// ─────────────────────────────────────────────────────────────
+
+
+
 
 function dashInitials(string $name): string {
     $parts = array_values(array_filter(explode(' ', trim($name))));
@@ -111,11 +111,11 @@ function dashActivityMeta(array $entry): array {
     ];
 }
 
-// ─────────────────────────────────────────────────────────────
-// DATA FETCHING
-// ─────────────────────────────────────────────────────────────
 
-// ── 1. WIDGET COUNTS ──────────────────────────────────────────
+
+
+
+
 $statusCounts        = $srm->getStatusCounts();
 $pendingCount        = $statusCounts['pending'] + $statusCounts['action_required'];
 $actionRequiredCount = $statusCounts['action_required'];
@@ -140,7 +140,7 @@ $newResidentsMonth = (int)$db->query("
       AND EXTRACT(YEAR FROM created_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
 ")->fetchColumn();
 
-// ── 2. RECENT PENDING REQUESTS TABLE ─────────────────────────
+
 $stmtReq = $db->prepare("
     SELECT
         sa.id,
@@ -158,7 +158,7 @@ $stmtReq = $db->prepare("
 $stmtReq->execute();
 $recentRequests = $stmtReq->fetchAll(PDO::FETCH_ASSOC);
 
-// ── 3. BAR CHART: Requests by Service Name (current month) ────
+
 $stmtBar = $db->prepare("
     SELECT sv.name AS service_name, COUNT(*) AS cnt
     FROM service_applications sa
@@ -174,7 +174,7 @@ $barData   = $stmtBar->fetchAll(PDO::FETCH_ASSOC);
 $barMax    = $barData ? max(array_column($barData, 'cnt')) : 1;
 $barColors = ['bar-cyan', 'bar-indigo', 'bar-green', 'bar-amber', 'bar-muted'];
 
-// ── 4. SPARKLINE: Monthly request volume (last 6 months) ──────
+
 $stmtSpark = $db->query("
     SELECT TO_CHAR(submitted_at, 'YYYY-MM') AS ym, COUNT(*) AS cnt
     FROM service_applications
@@ -195,7 +195,7 @@ for ($i = 5; $i >= 0; $i--) {
     $sparkValues[] = $sparkRaw[$key] ?? 0;
 }
 
-// Build SVG path (ViewBox: 560×120, 10px top/bottom padding)
+
 $svgW   = 560; $svgH = 120; $padT = 10; $padB = 10;
 $maxVal = max(array_merge($sparkValues, [1]));
 $n      = count($sparkValues);
@@ -211,7 +211,7 @@ $lastParts     = explode(',', end($pts));
 $lastX         = $lastParts[0];
 $sparkAreaPath = $sparkPath . " L{$lastX},{$svgH} L0,{$svgH} Z";
 
-// Sparkline bottom stats
+
 $thisMonthCount = $sparkValues[count($sparkValues) - 1] ?? 0;
 $resolvedMonth  = (int)$db->query("
     SELECT COUNT(*) FROM service_applications
@@ -227,7 +227,7 @@ $decidedMonth = (int)$db->query("
 ")->fetchColumn();
 $approvalRate = $decidedMonth > 0 ? round(($resolvedMonth / $decidedMonth) * 100) . '%' : 'N/A';
 
-// ── 5. RECENT ACTIVITY FEED ───────────────────────────────────
+
 $stmtActivity = $db->query("
     (
         SELECT
@@ -270,13 +270,13 @@ $stmtActivity = $db->query("
 ");
 $recentActivity = $stmtActivity->fetchAll(PDO::FETCH_ASSOC);
 
-// ── 6. RECENT ANNOUNCEMENTS (active, latest 4) ────────────────
+
 $recentAnn = array_slice($annM->getAll(['status' => 'active']), 0, 4);
 if (empty($recentAnn)) {
     $recentAnn = array_slice($annM->getAll(), 0, 4);
 }
 
-// ── Encode data for JS chart interactivity ────────────────────
+
 $jsData = json_encode([
     'sparkline' => ['labels' => $sparkLabels, 'values' => $sparkValues],
     'barChart'  => array_map(fn($r) => [
@@ -308,7 +308,7 @@ $jsData = json_encode([
 
     <?php include __DIR__ . '/../../../components/management/officer/officer_sidebar.php'; ?>
 
-    <!-- MAIN CONTENT -->
+    
     <main class="off-content">
 
     <?php
@@ -320,10 +320,10 @@ $jsData = json_encode([
     include __DIR__ . '/../../../components/management/officer/officer_topbar.php';
     ?>
 
-        <!-- ── STAT WIDGETS ──────────────────────────────────────── -->
+        
         <section class="off-widgets">
 
-            <!-- Pending Requests -->
+            
             <div class="off-widget-card widget-amber">
                 <div class="widget-icon-wrap">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -349,7 +349,7 @@ $jsData = json_encode([
                 </div>
             </div>
 
-            <!-- Active Announcements -->
+            
             <div class="off-widget-card widget-cyan">
                 <div class="widget-icon-wrap">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -372,7 +372,7 @@ $jsData = json_encode([
                 </div>
             </div>
 
-            <!-- Available Services -->
+            
             <div class="off-widget-card widget-green">
                 <div class="widget-icon-wrap">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -396,7 +396,7 @@ $jsData = json_encode([
                 </div>
             </div>
 
-            <!-- Total Residents -->
+            
             <div class="off-widget-card widget-indigo">
                 <div class="widget-icon-wrap">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -422,21 +422,21 @@ $jsData = json_encode([
 
         </section>
 
-        <!--
-        ══════════════════════════════════════════════════════════════
-         NEWSPAPER GRID
-         Single two-column flow — no separate bottom row.
-         Every panel stacks naturally; no height-matching needed.
-         Left: Requests → Bar chart → Sparkline
-         Right: Quick Actions → Activity → Announcements
-        ══════════════════════════════════════════════════════════════
-        -->
+        
+
+
+
+
+
+
+
+
         <div class="off-lower">
 
-            <!-- ── LEFT COLUMN ───────────────────────────────────── -->
+            
             <div class="off-left-col">
 
-                <!-- PENDING SERVICE REQUESTS TABLE -->
+                
                 <section class="off-requests-panel">
                     <div class="panel-header">
                         <h2 class="section-label">Pending Service Requests</h2>
@@ -496,7 +496,7 @@ $jsData = json_encode([
                     </div>
                 </section>
 
-                <!-- SERVICE ANALYTICS BAR CHART -->
+                
                 <section class="chart-panel">
                     <div class="panel-header">
                         <h2 class="section-label">Requests by Service Type</h2>
@@ -534,7 +534,7 @@ $jsData = json_encode([
                     </div>
                 </section>
 
-                <!-- REQUEST VOLUME SPARKLINE CHART -->
+                
                 <section class="chart-panel">
                     <div class="panel-header">
                         <h2 class="section-label">Request Volume</h2>
@@ -603,12 +603,12 @@ $jsData = json_encode([
                     </div>
                 </section>
 
-            </div><!-- /.off-left-col -->
+            </div>
 
-            <!-- ── RIGHT COLUMN ──────────────────────────────────── -->
+            
             <aside class="off-right-col">
 
-                <!-- QUICK ACTIONS -->
+                
                 <section class="quick-actions-panel">
                     <h2 class="section-label">Quick Actions</h2>
                     <div class="quick-actions-grid">
@@ -646,7 +646,7 @@ $jsData = json_encode([
                     </div>
                 </section>
 
-                <!-- RECENT ANNOUNCEMENTS -->
+                
                 <section class="chart-panel">
                     <div class="panel-header">
                         <h2 class="section-label">Recent Announcements</h2>
@@ -688,7 +688,7 @@ $jsData = json_encode([
                     </ul>
                 </section>
 
-                <!-- RECENT ACTIVITY -->
+                
                 <section class="off-activity-panel">
                     <h2 class="section-label">Recent Activity</h2>
                     <div class="activity-feed">
@@ -719,12 +719,12 @@ $jsData = json_encode([
                 
 
             </aside>
-        </div><!-- /.off-lower -->
+        </div>
 
     </main>
-</div><!-- /.off-layout -->
+</div>
 
-<!-- Embed data for JS -->
+
 <script>
     window.__dashboardData = <?= $jsData ?>;
 </script>

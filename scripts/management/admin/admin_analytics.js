@@ -1,13 +1,13 @@
-/**
- * admin_analytics.js
- * Chart.js charts — all data from analytics_stats.php
- * FIXED: All statistics panels now properly populated
- */
+
+
+
+
+
 
  document.addEventListener("DOMContentLoaded", function () {
     const API_URL = "../../../backend/routes/analytics_stats.php";
   
-    /* ── Chart defaults ──────────────────────────────────── */
+    
     Chart.defaults.font.family = "'Segoe UI', Tahoma, sans-serif";
     Chart.defaults.color = "#64748b";
   
@@ -46,14 +46,14 @@
       "Dec",
     ];
   
-    /* ── Chart instances ─────────────────────────────── */
+    
     let barChart = null;
     let donutChart = null;
     let growthChart = null;
     let activeChart = null;
     let selectedYear = new Date().getFullYear();
   
-    /* ── Count-up helper ─────────────────────────────────── */
+    
     function countUp(el, target, suffix = "") {
       if (!el) return;
       let current = 0;
@@ -65,7 +65,7 @@
       }, 16);
     }
   
-    /* ── Load data ───────────────────────────────────────── */
+    
     function load(year) {
       fetch(`${API_URL}?year=${year}`)
         .then((r) => r.json())
@@ -82,7 +82,7 @@
           renderGrowthChart(d.growthLabels, d.growthData);
           renderActiveChart(d.activeUsers, d.inactiveUsers, d.activePct);
   
-          /* ── NEW: Render all missing sections ── */
+          
           renderUserRoles(d.usersByRole);
           renderAnnouncementStats(d.announcementStats);
           renderEventStats(d.eventStats);
@@ -95,7 +95,7 @@
         .catch((err) => console.error("Analytics fetch failed:", err));
     }
   
-    /* ── Stat Cards (already worked) ─────────────────────── */
+    
     function renderStatCards(d) {
       const totalEl = document.getElementById("stat-total-users");
       countUp(totalEl, d.totalUsers);
@@ -123,7 +123,7 @@
       if (inactEl) inactEl.textContent = `${d.inactiveUsers} inactive`;
     }
   
-    /* ── User Roles Panel (NEW) ─────────────────────────── */
+    
     function renderUserRoles(roles) {
       const roleResident = document.getElementById("role-resident");
       const roleSkOfficer = document.getElementById("role-sk_officer");
@@ -140,7 +140,7 @@
         roleAdmin.textContent = roles?.admin?.toLocaleString() || "0";
     }
   
-    /* ── Announcement Stats Panel (NEW) ─────────────────── */
+    
     function renderAnnouncementStats(stats) {
       if (!stats) return;
       const total = document.getElementById("ann-total");
@@ -161,7 +161,7 @@
         featured.textContent = stats.featured?.toLocaleString() || "0";
     }
   
-    /* ── Event Stats Panel (NEW) ────────────────────────── */
+    
     function renderEventStats(stats) {
       if (!stats) return;
       const total = document.getElementById("evt-total");
@@ -177,7 +177,7 @@
         thisMonth.textContent = stats.this_month?.toLocaleString() || "0";
     }
   
-    /* ── Thread Stats Panel (NEW) ───────────────────────── */
+    
     function renderThreadStats(stats) {
       if (!stats) return;
       const total = document.getElementById("thr-total");
@@ -198,11 +198,11 @@
         resolved.textContent = stats.resolved?.toLocaleString() || "0";
     }
   
-    /* ── Report Stats Panels (NEW) ──────────────────────── */
+    
     function renderReportStats(reportStats) {
       if (!reportStats) return;
   
-      // Thread Reports
+      
       const threadReports = reportStats.threads || {};
       const threadTotal = document.getElementById("thread-report-total");
       const threadPending = document.getElementById("thread-report-pending");
@@ -221,7 +221,7 @@
         threadDismissed.textContent =
           threadReports.dismissed?.toLocaleString() || "0";
   
-      // Comment Reports
+      
       const commentReports = reportStats.comments || {};
       const commentTotal = document.getElementById("comment-report-total");
       const commentPending = document.getElementById("comment-report-pending");
@@ -243,7 +243,7 @@
           commentReports.dismissed?.toLocaleString() || "0";
     }
   
-    /* ── Services Table (NEW) ───────────────────────────── */
+    
     function renderServicesTable(services) {
       const tbody = document.getElementById("servicesTableBody");
       if (!tbody) return;
@@ -277,7 +277,7 @@
         .join("");
     }
   
-    /* ── Request Status Grid (NEW) ──────────────────────── */
+    
     function renderRequestStatus(statusCounts) {
       const container = document.getElementById("statusGrid");
       if (!container) return;
@@ -327,7 +327,7 @@
       container.innerHTML = html;
     }
   
-    /* ── Service Type Grid (NEW) ────────────────────────── */
+    
     function renderServiceTypes(typeCounts) {
       const container = document.getElementById("typeGrid");
       if (!container) return;
@@ -373,12 +373,12 @@
       container.innerHTML = html;
     }
   
-    /* ── Year filter ─────────────────────────────────────── */
+    
     function renderYearFilter(years, selected) {
       const sel = document.getElementById("reqYearFilter");
       if (!sel) return;
   
-      // Clear existing options first
+      
       sel.innerHTML = "";
   
       years.forEach((yr) => {
@@ -389,7 +389,7 @@
         sel.appendChild(opt);
       });
   
-      // Remove old listener and add new one
+      
       const newSel = sel.cloneNode(true);
       sel.parentNode.replaceChild(newSel, sel);
   
@@ -399,7 +399,7 @@
       });
     }
   
-    /* ── Bar chart ───────────────────────────────────────── */
+    
     function renderBarChart(data, year) {
       const currentMonth =
         new Date().getFullYear() == year ? new Date().getMonth() : 11;
@@ -457,7 +457,7 @@
       });
     }
   
-    /* ── Service donut ───────────────────────────────────── */
+    
     function renderDonutChart(breakdown) {
       const labels = breakdown.map((b) => CAT_LABELS[b.category] || b.category);
       const values = breakdown.map((b) => parseInt(b.cnt));
@@ -523,7 +523,7 @@
       });
     }
   
-    /* ── Growth line chart ───────────────────────────────── */
+    
     function renderGrowthChart(labels, data) {
       if (!labels || !labels.length) return;
   
@@ -581,7 +581,7 @@
       });
     }
   
-    /* ── Active donut ────────────────────────────────────── */
+    
     function renderActiveChart(active, inactive, pct) {
       const pctEl = document.getElementById("active-pct");
       const activeEl = document.getElementById("active-count");
@@ -626,7 +626,7 @@
       });
     }
   
-    /* ── Helper: Escape HTML ────────────────────────────── */
+    
     function escapeHtml(str) {
       if (!str) return "";
       return String(str)
@@ -636,7 +636,7 @@
         .replace(/"/g, "&quot;");
     }
   
-    /* ── Script loader ───────────────────────────────────── */
+    
     function loadScript(src) {
       return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${src}"]`)) return resolve();
@@ -648,7 +648,7 @@
       });
     }
   
-    /* ── PDF Export ──────────────────────────────────────── */
+    
     async function exportToPDF() {
       const btn = document.getElementById("exportPdfBtn");
       const origHTML = btn.innerHTML;
@@ -669,8 +669,7 @@
         const pageH = pdf.internal.pageSize.getHeight();
         const margin = 12;
   
-        // Header
-        pdf.setFont("helvetica", "bold");
+                pdf.setFont("helvetica", "bold");
         pdf.setFontSize(18);
         pdf.setTextColor(30, 30, 60);
         pdf.text("SKonnect Analytics Report", margin, 16);
@@ -714,8 +713,7 @@
           yPos += imgH + 5;
         }
   
-        // Footer on every page
-        const totalPages = pdf.internal.getNumberOfPages();
+                const totalPages = pdf.internal.getNumberOfPages();
         for (let i = 1; i <= totalPages; i++) {
           pdf.setPage(i);
           pdf.setFontSize(8);
@@ -741,6 +739,6 @@
   
     document.getElementById("exportPdfBtn")?.addEventListener("click", exportToPDF);
   
-    /* ── Init ────────────────────────────────────────────── */
+    
     load(selectedYear);
   });

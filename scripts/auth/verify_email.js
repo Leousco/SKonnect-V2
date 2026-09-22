@@ -1,4 +1,4 @@
-// ── TOAST NOTIFICATION ───────────────────────────────────────────────────────
+
 function showToast(message, type = "error") {
     const existing = document.querySelector(".sk-toast");
     if (existing) existing.remove();
@@ -19,7 +19,7 @@ function showToast(message, type = "error") {
     }, 3500);
   }
   
-  // ── OTP INPUT BEHAVIOUR ───────────────────────────────────────────────────────
+  
   const inputs    = document.querySelectorAll(".otp-input");
   const otpValue  = document.getElementById("otpValue");
   const form      = document.getElementById("otpForm");
@@ -27,7 +27,7 @@ function showToast(message, type = "error") {
   const resendBtn = document.getElementById("resendBtn");
   const countdownEl = document.getElementById("countdown");
   
-  // Auto-advance / backspace / paste
+  
   inputs.forEach((input, i) => {
     input.addEventListener("input", (e) => {
       const val = e.target.value.replace(/\D/g, "");
@@ -60,7 +60,7 @@ function showToast(message, type = "error") {
     otpValue.value = Array.from(inputs).map((i) => i.value).join("");
   }
   
-  // ── AJAX VERIFY ───────────────────────────────────────────────────────────────
+  
   form.addEventListener("submit", function (e) {
     e.preventDefault();
   
@@ -101,21 +101,21 @@ function showToast(message, type = "error") {
       .catch(() => showToast("Server error. Please try again."));
   });
   
-  // ── RESEND OTP — timer only runs AFTER first resend ──────────────────────────
+  
   let countdownInterval = null;
   
-  // Button starts fully enabled — no timer on first load
+  
   resendBtn.disabled = false;
   countdownEl.textContent = "";
   
   resendBtn.addEventListener("click", () => {
     if (resendBtn.disabled) return;
   
-    // Disable immediately and start 60 s countdown
+    
     resendBtn.disabled = true;
     startCountdown(60);
   
-    // AJAX resend request
+    
     fetch("../../backend/routes/auth.php", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },

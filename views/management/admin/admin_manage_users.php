@@ -111,7 +111,7 @@ RoleMiddleware::requireAdmin();
     </main>
 </div>
 
-<!-- ADD USER MODAL -->
+
 <div class="svc-modal-overlay" id="add-user-modal-overlay">
     <div class="svc-modal-box">
         <div class="svc-modal-header">
@@ -189,7 +189,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- VIEW / EDIT USER MODAL -->
+
 <div class="svc-modal-overlay" id="user-modal-overlay">
     <div class="svc-modal-box">
         <div class="svc-modal-header">
@@ -297,7 +297,7 @@ RoleMiddleware::requireAdmin();
             </div>
         </div>
 
-        <!-- Default footer: shown when not in edit mode -->
+        
         <div class="svc-modal-footer" id="footer-default">
             <div class="mu-footer-left">
                 <button class="btn-svc-primary btn-svc-edit" id="btn-toggle-edit">Edit Info</button>
@@ -309,7 +309,7 @@ RoleMiddleware::requireAdmin();
             </div>
         </div>
 
-        <!-- Edit footer: shown when editing -->
+        
         <div class="svc-modal-footer" id="footer-edit" style="display:none;">
             <div class="mu-footer-left">
                 <button class="btn-svc-secondary" id="btn-cancel-edit">✕ Cancel</button>
@@ -321,7 +321,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- CONFIRM: SAVE ROLE -->
+
 <div class="svc-modal-overlay mu-confirm-overlay" id="confirm-role-overlay">
     <div class="svc-modal-box mu-confirm-box">
         <div class="mu-confirm-icon mu-confirm-icon--info">💾</div>
@@ -334,7 +334,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- CONFIRM: SAVE EDIT -->
+
 <div class="svc-modal-overlay mu-confirm-overlay" id="confirm-edit-overlay">
     <div class="svc-modal-box mu-confirm-box">
         <div class="mu-confirm-icon mu-confirm-icon--warn">⚠️</div>
@@ -347,7 +347,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- CONFIRM: BAN USER (with reason input) -->
+
 <div class="svc-modal-overlay mu-confirm-overlay" id="confirm-ban-overlay">
     <div class="svc-modal-box mu-confirm-box">
         <div class="mu-confirm-icon mu-confirm-icon--danger">⛔</div>
@@ -364,7 +364,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- CONFIRM: UNBAN USER -->
+
 <div class="svc-modal-overlay mu-confirm-overlay" id="confirm-unban-overlay">
     <div class="svc-modal-box mu-confirm-box">
         <div class="mu-confirm-icon mu-confirm-icon--success">🔓</div>
@@ -377,7 +377,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- CONFIRM: DELETE USER (step 1) -->
+
 <div class="svc-modal-overlay mu-confirm-overlay" id="confirm-delete-overlay">
     <div class="svc-modal-box mu-confirm-box">
         <div class="mu-confirm-icon mu-confirm-icon--danger">❌</div>
@@ -390,7 +390,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
-<!-- CONFIRM: DELETE USER (step 2 — final) -->
+
 <div class="svc-modal-overlay mu-confirm-overlay" id="confirm-delete2-overlay">
     <div class="svc-modal-box mu-confirm-box">
         <div class="mu-confirm-icon mu-confirm-icon--danger">⚠️</div>

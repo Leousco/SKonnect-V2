@@ -4,10 +4,10 @@ window.addEventListener("pageshow", function (event) {
   }
 });
 
-/* community.js — SKonnect Public Community Feed & Thread View */
+
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Navbar toggle
+  
   const navbarToggle = document.getElementById("navbarToggle");
   const navbarMenu = document.getElementById("navbarMenu");
   if (navbarToggle && navbarMenu) {
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Init feed only on community.php
+  
   const feedGrid = document.getElementById("pub-feed-grid");
   if (feedGrid) initFeed();
 
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     statusSelect?.addEventListener("change", filterCards);
     sortSelect?.addEventListener("change", sortCards);
 
-    // Pagination
+    
     const CARDS_PER_PAGE = 9;
     let currentPage = 1;
 
@@ -157,10 +157,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    sortCards(); // triggers filterCards → applyPage on load
+    sortCards(); 
   }
 
-  // Carousel — runs only on public_thread_view.php
+  
   (function initCarousel() {
     const grid = document.querySelector(".thread-images-grid");
     if (!grid) return;
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alt: item.querySelector("img")?.alt || "",
     }));
 
-    // Single image
+    
     if (slides.length === 1) {
       const { src, alt } = slides[0];
       const wrap = document.createElement("div");
@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Multi-image carousel
+    
     const carousel = document.createElement("div");
     carousel.className = "thread-carousel";
     carousel.innerHTML = `
@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   })();
 
-  // Lightbox
+  
   const lightbox = document.getElementById("lightbox-overlay");
   const lightboxImg = document.getElementById("lightbox-img");
   const lightboxClose = document.getElementById("lightbox-close");

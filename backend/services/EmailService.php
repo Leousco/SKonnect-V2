@@ -15,8 +15,6 @@ class EmailService
         $this->mail = new PHPMailer(true);
     }
 
-    /* ── PRIVATE: SMTP SETUP ───────────────────────────────────── */
-
     private function configureSMTP(): void
     {
         $this->mail = new PHPMailer(true);
@@ -31,22 +29,20 @@ class EmailService
         $this->mail->setFrom('skonnect.system@gmail.com', 'SKonnect - Barangay Sauyo');
     }
 
-    /* ── PRIVATE: SHARED EMAIL WRAPPER ────────────────────────── */
+    
 
-    /**
-     * Builds and sends a styled notification email.
-     *
-     * @param string $email       Recipient email
-     * @param string $name        Recipient display name
-     * @param string $subject     Email subject line
-     * @param string $badge       Small label above the title (e.g. "New Comment")
-     * @param string $badgeColor  CSS hex color for the badge text
-     * @param string $title       Main heading inside the card
-     * @param string $bodyHtml    Body paragraph(s) as HTML
-     * @param string $bodyPlain   Plain-text fallback body
-     * @param string $ctaLabel    Call-to-action button label (pass '' to omit)
-     * @param string $ctaUrl      Call-to-action button URL
-     */
+
+
+
+
+
+
+
+
+
+
+
+
     private function sendNotification(
         string $email,
         string $name,
@@ -109,7 +105,6 @@ class EmailService
         }
     }
 
-    /* ── OTP VERIFICATION EMAIL ────────────────────────────────── */
 
     public function sendOTP(string $email, string $otp, string $name): bool
     {
@@ -127,8 +122,6 @@ class EmailService
             return false;
         }
     }
-
-    /* ── ANNOUNCEMENT NOTIFICATION EMAIL ──────────────────────── */
 
     public function sendAnnouncementNotification(string $email, string $name, array $announcement): bool
     {
@@ -151,16 +144,14 @@ class EmailService
         );
     }
 
-    /* ── THREAD NOTIFICATION EMAILS ───────────────────────────── */
+    
 
-    /**
-     * Notify thread author that a moderator posted a comment on their thread.
-     *
-     * @param string $email         Author's email
-     * @param string $name          Author's full name
-     * @param string $threadSubject The thread subject/title
-     * @param string $commentSnippet First ~180 chars of the moderator's comment
-     */
+
+
+
+
+
+
     public function sendModCommentNotification(
         string $email,
         string $name,
@@ -215,14 +206,14 @@ class EmailService
         );
     }
 
-    /**
-     * Notify thread author that a moderator replied to a comment on their thread.
-     *
-     * @param string $email         Author's email
-     * @param string $name          Author's full name
-     * @param string $threadSubject The thread subject/title
-     * @param string $replySnippet  First ~180 chars of the moderator's reply
-     */
+    
+
+
+
+
+
+
+
     public function sendModReplyNotification(
         string $email,
         string $name,
@@ -250,14 +241,14 @@ class EmailService
         );
     }
 
-    /**
-     * Notify thread author of a status change (responded / resolved / pending).
-     *
-     * @param string $email         Author's email
-     * @param string $name          Author's full name
-     * @param string $threadSubject The thread subject/title
-     * @param string $newStatus     The new status string
-     */
+    
+
+
+
+
+
+
+
     public function sendStatusChangeNotification(
         string $email,
         string $name,
@@ -284,14 +275,14 @@ class EmailService
         );
     }
 
-    /**
-     * Notify thread author that their thread was pinned or unpinned.
-     *
-     * @param string $email         Author's email
-     * @param string $name          Author's full name
-     * @param string $threadSubject The thread subject/title
-     * @param bool   $isPinned      true = pinned, false = unpinned
-     */
+    
+
+
+
+
+
+
+
     public function sendPinStatusNotification(
         string $email,
         string $name,
@@ -316,14 +307,14 @@ class EmailService
         );
     }
 
-    /**
-     * Notify thread author that their thread was removed or restored.
-     *
-     * @param string $email         Author's email
-     * @param string $name          Author's full name
-     * @param string $threadSubject The thread subject/title
-     * @param bool   $isRemoved     true = removed/hidden, false = restored
-     */
+    
+
+
+
+
+
+
+
     public function sendRemovalStatusNotification(
         string $email,
         string $name,
@@ -370,12 +361,10 @@ class EmailService
         </html>
         ";
 
-        // Set content-type header for sending HTML email
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         $headers .= "From: noreply@skonnect-qcu.com" . "\r\n";
 
-        // The mail() function returns true if accepted for delivery
         return mail($email, $subject, $message, $headers);
     }
 
@@ -397,7 +386,6 @@ class EmailService
 
         $safeReason  = $reason ? htmlspecialchars($reason) : null;
 
-        // ── Build the "your message" block ───────────────────────
         $contentBlock = '';
         if ($safeContent) {
             $contextLine = $safeThread
@@ -420,7 +408,6 @@ class EmailService
             $contentBlock = "<p>A moderator has reviewed your activity in the community feed.</p>";
         }
 
-        // ── Optional moderator note ───────────────────────────────
         $reasonBlock = $safeReason
             ? "<p style='margin-top:14px;font-size:12.5px;color:rgba(255,255,255,0.6);'>
                    <strong style='color:rgba(255,255,255,0.8);'>Moderator note:</strong>
@@ -428,7 +415,6 @@ class EmailService
                </p>"
             : '';
 
-        // ── Level-specific content ────────────────────────────────
         $levelMeta = [
             1 => [
                 'badge'      => '⚠️ Community Warning — Level 1',
@@ -497,11 +483,7 @@ class EmailService
             ctaUrl: ''
         );
     }
-/* ── SERVICE REQUEST NOTIFICATIONS ────────────────────────── */
 
-    /**
-     * Notify resident that their service request was successfully submitted.
-     */
     public function sendRequestSubmitted(
         string $email,
         string $name,
@@ -530,9 +512,6 @@ class EmailService
         );
     }
 
-    /**
-     * Notify resident that they cancelled their service request.
-     */
     public function sendRequestCancelled(
         string $email,
         string $name,
@@ -561,9 +540,6 @@ class EmailService
         );
     }
 
-    /**
-     * Notify resident that their application requires action (officer sent a note).
-     */
     public function sendActionRequired(
         string $email,
         string $name,
@@ -601,11 +577,6 @@ class EmailService
         );
     }
 
-    /**
-     * Notify resident that their application has been approved.
-     * If a fulfillment file was attached, we do NOT send it — instead we
-     * prompt the resident to pick it up via the portal.
-     */
     public function sendRequestApproved(
         string $email,
         string $name,
@@ -659,9 +630,6 @@ class EmailService
         );
     }
 
-    /**
-     * Notify resident that their application has been rejected.
-     */
     public function sendRequestRejected(
         string $email,
         string $name,
@@ -700,8 +668,6 @@ class EmailService
             ctaUrl:     'http://localhost/SKonnect/views/portal/my_requests_page.php'
         );
     }
-
-    /* ── ADMIN ACTION NOTIFICATION (User Management) ───────────── */
  
     public function sendVerificationLinkEmail(
         string $email,

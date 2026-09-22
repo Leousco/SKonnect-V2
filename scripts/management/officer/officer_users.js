@@ -43,7 +43,7 @@
   const drawerReqSummary = document.getElementById('drawerReqSummary');
   const drawerActivity   = document.getElementById('drawerActivity');
 
-  /* ── Helpers ─────────────────────────────────────────────── */
+  
 
   function fullName(u) {
       return [u.first_name, u.last_name].filter(Boolean).join(' ');
@@ -80,7 +80,7 @@
       return [u.purok, u.street_address].filter(Boolean).join(', ') || '—';
   }
 
-  /* ── Stats ───────────────────────────────────────────────── */
+  
 
   function updateStats(stats) {
       statTotal.textContent    = stats.total;
@@ -89,7 +89,7 @@
       statActive.textContent   = stats.active_requestors;
   }
 
-  /* ── Filter + Sort ───────────────────────────────────────── */
+  
 
   function getFiltered() {
       let list = usersData.slice();
@@ -123,7 +123,7 @@
       return list;
   }
 
-  /* ── Render table ────────────────────────────────────────── */
+  
 
   function renderTable() {
       const list = getFiltered();
@@ -172,7 +172,7 @@
       });
   }
 
-  /* ── Scroll lock (preserves scrollbar gutter) ────────────── */
+  
 
   function lockScroll() {
       const sbw = window.innerWidth - document.documentElement.clientWidth;
@@ -185,7 +185,7 @@
       document.body.style.overflow = '';
   }
 
-  /* ── Drawer ──────────────────────────────────────────────── */
+  
 
   function resetDrawer() {
       const dash = '—';
@@ -289,7 +289,7 @@
       openUserId = null;
   }
 
-  /* ── Event listeners ─────────────────────────────────────── */
+  
 
   searchEl.addEventListener('input',  function () { searchQuery  = this.value.trim(); renderTable(); });
   filterStatusEl.addEventListener('change', function () { filterStatus = this.value; renderTable(); });
@@ -306,7 +306,7 @@
   drawerOverlay.addEventListener('click', e => { if (e.target === drawerOverlay) closeDrawer(); });
   document.addEventListener('keydown',   e => { if (e.key === 'Escape' && drawerOverlay.classList.contains('is-open')) closeDrawer(); });
 
-  /* ── Init ────────────────────────────────────────────────── */
+  
 
   function loadUsers() {
       tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px 0;color:var(--off-text-muted);font-size:13px;">Loading residents…</td></tr>`;

@@ -4,7 +4,7 @@
 
 
 :root {
-  /* Brand — teal replaces violet/indigo */
+  
   --mod-primary:     #0f766e;  
   --mod-primary-mid: #0d9488;   
   --mod-primary-lt:  #14b8a6;   
@@ -15,22 +15,22 @@
   --mod-danger:      #dc2626;   
   --mod-surface:     #ffffff;
 
-  /* Neutrals */
+  
   --mod-bg:          #f0fdfa;   
   --mod-surface-2:   #f8fffe;
   --mod-border:      #99f6e4;   
   --mod-border-mid:  #5eead4;   
 
-  /* Text */
+  
   --mod-text-head:   #022c22;
   --mod-text-body:   #374151;
   --mod-text-muted:  #6b7280;
 
-  /* Semantic */
+  
   --mod-green:  #059669;
   --mod-amber:  #d97706;
 
-  /* Shadows */
+  
   --mod-shadow:    0 2px 12px rgba(15, 118, 110, 0.08);
   --mod-shadow-md: 0 4px 24px rgba(15, 118, 110, 0.14);
 
@@ -67,9 +67,10 @@ html {
 body {
   background: var(--mod-bg);
   color: var(--mod-text-body);
+  scrollbar-gutter: stable;
 }
 
-/* ── LAYOUT ── */
+
 .mod-layout {
   display: flex;
   min-height: 100vh;
@@ -105,7 +106,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── PANEL HEADER ── */
+
 .panel-header {
   display: flex;
   align-items: center;
@@ -113,7 +114,7 @@ body {
   margin-bottom: 18px;
 }
 
-/* ── SMALL BUTTON ── */
+
 .btn-mod-sm {
   display: inline-flex;
   align-items: center;
@@ -135,7 +136,7 @@ body {
   border-color: var(--mod-primary);
 }
 
-/* ── RESPONSIVE ── */
+
 @media (max-width: 900px) {
   .mod-content {
     margin-left: 0;

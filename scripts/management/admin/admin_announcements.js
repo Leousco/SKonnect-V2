@@ -1,4 +1,4 @@
-/* admin_announcements.js — fully connected to DB */
+
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let attachmentFiles = [];
     let editingId = null;
 
-    /* ══════════════════════════════════════════════════════════
-       TAB SWITCHING
-       ══════════════════════════════════════════════════════════ */
+    
+
+
     const tabs   = document.querySelectorAll('.ann-tab');
     const panels = {
         list:    document.getElementById('panel-list'),
@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
         switchTab(tab.dataset.tab);
     }));
 
-    /* ══════════════════════════════════════════════════════════
-       SHARED TABLE HELPERS
-       ══════════════════════════════════════════════════════════ */
+    
+
+
     const CAT_COLORS = {
         event:   { bg: '#d1fae5', color: '#065f46', cls: 'cat-event' },
         program: { bg: '#dbeafe', color: '#1d4ed8', cls: 'cat-program' },
@@ -111,9 +111,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    /* ══════════════════════════════════════════════════════════
-       GENERIC LIST CONTROLLER (one per tab)
-       ══════════════════════════════════════════════════════════ */
+    
+
+
     function createListController(opts) {
         const els = {
             tbody:   document.getElementById(`${opts.prefix}-table-body`),
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return { load };
     }
 
-    /* ── PUBLISHED TAB ─────────────────────────────────────── */
+    
     const listCtrl = createListController({
         prefix: 'list', status: 'active', colspan: 6, emptyMsg: 'No published announcements found.',
         renderRow: (row) => {
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
     });
 
-    /* ── DRAFTS TAB ────────────────────────────────────────── */
+    
     const draftsCtrl = createListController({
         prefix: 'drafts', status: 'draft', colspan: 5, emptyMsg: 'No drafts found.',
         renderRow: (row) => `
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </tr>`,
     });
 
-    /* ── ARCHIVED TAB ──────────────────────────────────────── */
+    
     const archiveCtrl = createListController({
         prefix: 'archive', status: 'archived', colspan: 6, emptyMsg: 'Archive is empty.',
         renderRow: (row) => `
@@ -274,11 +274,11 @@ document.addEventListener('DOMContentLoaded', function () {
             </tr>`,
     });
 
-    /* ══════════════════════════════════════════════════════════
-       CREATE / EDIT FORM
-       ══════════════════════════════════════════════════════════ */
+    
 
-    /* ── LIVE PREVIEW: TITLE ──────────────────────────────── */
+
+
+    
     const titleInput   = document.getElementById('ann-title');
     const previewTitle = document.getElementById('preview-title');
     const charCount    = document.getElementById('title-char');
@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleCheck(checkTitle, val.length > 0);
     });
 
-    /* ── LIVE PREVIEW: BODY (contenteditable) ─────────────── */
+    
     const bodyEl         = document.getElementById('ann-body');
     const previewExcerpt = document.getElementById('preview-excerpt');
     const checkBody      = document.getElementById('check-body');
@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    /* ── LIVE PREVIEW: CATEGORY ───────────────────────────── */
+    
     const catPillColors = {
         event:   'background:#d1fae5;color:#065f46;',
         program: 'background:#dbeafe;color:#1d4ed8;',
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    /* ── FEATURED TOGGLE ──────────────────────────────────── */
+    
     const featuredCheckbox   = document.getElementById('featured-checkbox');
     const featuredToggleCard = document.getElementById('featured-toggle-card');
     const previewFeatBadge   = document.getElementById('preview-featured-badge');
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (previewFeatBadge) previewFeatBadge.style.display = this.checked ? 'inline-flex' : 'none';
     });
 
-    /* ── BANNER UPLOAD ─────────────────────────────────────── */
+    
     const bannerFile       = document.getElementById('banner-file');
     const bannerDropZone   = document.getElementById('banner-drop-zone');
     const bannerDropInner  = document.getElementById('banner-drop-inner');
@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', function () {
     bannerDropZone?.addEventListener('dragleave', () => bannerDropZone.classList.remove('drag-over'));
     bannerDropZone?.addEventListener('drop', e => { e.preventDefault(); bannerDropZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) loadBanner(e.dataTransfer.files[0]); });
 
-    /* ── ATTACHMENTS ───────────────────────────────────────── */
+    
     const attachFileInput = document.getElementById('attach-files');
     const attachList      = document.getElementById('attach-list');
     const attachDropZone  = document.getElementById('attach-drop-zone');
@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
     attachDropZone?.addEventListener('dragleave', () => { attachDropZone.style.borderColor = ''; });
     attachDropZone?.addEventListener('drop', e => { e.preventDefault(); attachDropZone.style.borderColor = ''; addFiles(e.dataTransfer.files); });
 
-    /* ── PUBLISH DATE DEFAULT ──────────────────────────────── */
+    
     const publishDateInput = document.getElementById('ann-publish-date');
     const previewDate      = document.getElementById('preview-date');
     if (publishDateInput) {
@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    /* ── CANCEL BUTTON (injected, mirrors officer) ────────── */
+    
     const btnPublish    = document.getElementById('btn-publish');
     const btnDraft      = document.getElementById('btn-save-draft');
     const formActionsEl = document.querySelector('.ann-form-actions');
@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (btnCancel)  btnCancel.title = editingId ? 'Cancel editing and go back' : 'Cancel and go back';
     }
 
-    /* ── SUBMIT: CREATE ────────────────────────────────────── */
+    
     function submitAnnouncement(isDraft) {
         const title    = titleInput?.value.trim() ?? '';
         const content  = bodyEl?.innerHTML.trim() ?? '';
@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    /* ── SUBMIT: EDIT ──────────────────────────────────────── */
+    
     function submitEdit(status) {
         if (!editingId) return;
         const title    = titleInput?.value.trim() ?? '';
@@ -570,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function () {
     btnPublish?.addEventListener('click', () => editingId ? submitEdit('active') : submitAnnouncement(false));
     btnDraft?.addEventListener('click',   () => editingId ? submitEdit('draft')  : submitAnnouncement(true));
 
-    /* ── OPEN EDIT FORM ────────────────────────────────────── */
+    
     async function openEditForm(id) {
         resetEditState();
         resetForm();
@@ -639,9 +639,9 @@ document.addEventListener('DOMContentLoaded', function () {
         ['check-banner','check-title','check-body','check-category'].forEach(id => toggleCheck(document.getElementById(id), false));
     }
 
-    /* ══════════════════════════════════════════════════════════
-       CONFIRM MODAL
-       ══════════════════════════════════════════════════════════ */
+    
+
+
     const confirmOverlay = document.getElementById('ann-confirm-overlay');
     const confirmTitle   = document.getElementById('confirm-title');
     const confirmMsg     = document.getElementById('confirm-msg');
@@ -663,9 +663,9 @@ document.addEventListener('DOMContentLoaded', function () {
     confirmCancel?.addEventListener('click', () => { confirmOverlay.style.display = 'none'; });
     confirmOverlay?.addEventListener('click', e => { if (e.target === confirmOverlay) confirmOverlay.style.display = 'none'; });
 
-    /* ══════════════════════════════════════════════════════════
-       HELPERS
-       ══════════════════════════════════════════════════════════ */
+    
+
+
     function toggleCheck(el, done) {
         if (!el) return;
         el.classList.toggle('is-done', done);
@@ -692,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
     }
 
-    /* ── INIT ──────────────────────────────────────────────── */
+    
     listCtrl.load(1);
     renderAttachments();
 });

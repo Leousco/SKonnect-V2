@@ -12,7 +12,7 @@ body::-webkit-scrollbar {
     min-height: 100vh;
 }
 
-/* ── HEADER ─────────────────────────────────────────────── */
+
 
 .services-header {
     padding: 28px 8%;
@@ -66,7 +66,7 @@ body::-webkit-scrollbar {
     transform: translateY(-1px);
 }
 
-/* ── HOW IT WORKS ───────────────────────────────────────── */
+
 
 .pub-how-it-works {
     padding: 40px 8% 0;
@@ -135,7 +135,7 @@ body::-webkit-scrollbar {
     flex-shrink: 0;
 }
 
-/* ── CONTROLS ───────────────────────────────────────────── */
+
 
 .pub-controls {
     display: flex;
@@ -250,7 +250,7 @@ body::-webkit-scrollbar {
     font-weight: 500;
 }
 
-/* ── GRID ───────────────────────────────────────────────── */
+
 
 .pub-services-grid {
     display: grid;
@@ -258,7 +258,7 @@ body::-webkit-scrollbar {
     gap: 20px;
 }
 
-/* ── SERVICE CARD ───────────────────────────────────────── */
+
 
 .pub-svc-card {
     background: var(--surface, #fff);
@@ -291,7 +291,7 @@ body::-webkit-scrollbar {
     gap: 0;
 }
 
-/* Card top row */
+
 .pub-card-top {
     display: flex;
     align-items: flex-start;
@@ -308,7 +308,7 @@ body::-webkit-scrollbar {
     min-width: 0;
 }
 
-/* Icon */
+
 .pub-svc-icon {
     width: 44px;
     height: 44px;
@@ -321,7 +321,7 @@ body::-webkit-scrollbar {
 
 .pub-svc-icon svg { width: 22px; height: 22px; }
 
-/* reuse portal icon colours */
+
 .svc-icon-medical    { background: #fee2e2; color: #b91c1c; }
 .svc-icon-education  { background: #dbeafe; color: #1d4ed8; }
 .svc-icon-scholarship{ background: #fef3c7; color: #92400e; }
@@ -330,7 +330,7 @@ body::-webkit-scrollbar {
 .svc-icon-legal      { background: #e0f2fe; color: #0369a1; }
 .svc-icon-other      { background: #f1f5f9; color: #475569; }
 
-/* Category tag */
+
 .pub-cat-tag {
     font-size: 10px;
     font-weight: 700;
@@ -342,7 +342,7 @@ body::-webkit-scrollbar {
     flex-shrink: 0;
 }
 
-/* reuse portal res-cat colours */
+
 .res-cat-medical    { background: #fee2e2; color: #b91c1c; }
 .res-cat-education  { background: #dbeafe; color: #1d4ed8; }
 .res-cat-scholarship{ background: #fef3c7; color: #92400e; }
@@ -351,7 +351,7 @@ body::-webkit-scrollbar {
 .res-cat-legal      { background: #e0f2fe; color: #0369a1; }
 .res-cat-other      { background: #f1f5f9; color: #475569; }
 
-/* Status badges (reuse portal feed-badge) */
+
 .feed-badge {
     margin-top: 10px;
     display: inline-flex;
@@ -380,7 +380,7 @@ body::-webkit-scrollbar {
 .feed-badge.status-closed  { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
 .feed-badge.status-closed .feed-badge-dot { background: #ef4444; }
 
-/* Card title & excerpt — matched line-heights keep total height fixed */
+
 .pub-title-desc {
     margin-bottom: 6px;
 }
@@ -413,7 +413,7 @@ body::-webkit-scrollbar {
     -webkit-line-clamp: 3;
 }
 
-/* Details list — eligibility/processing/requirements, or the slots box */
+
 .pub-details-list {
     list-style: none;
     padding-top: 10px;
@@ -421,7 +421,7 @@ body::-webkit-scrollbar {
     margin-top: 10px;
     display: flex;
     flex-direction: column;
-    /* min-height: 96px; */
+    
 }
 
 .pub-details-list--slots {
@@ -474,7 +474,7 @@ body::-webkit-scrollbar {
     text-overflow: ellipsis;
 }
 
-/* Capacity — boxed to match the Figma slots design */
+
 .pub-details-list li.pub-capacity-box {
     display: flex;
     flex-direction: column;
@@ -526,7 +526,7 @@ body::-webkit-scrollbar {
 .pub-capacity-fill.bar-warn { background: #f59e0b; }
 .pub-capacity-fill.bar-full { background: #dc2626; }
 
-/* Card actions */
+
 .pub-card-actions {
     display: flex;
     align-items: center;
@@ -555,7 +555,7 @@ body::-webkit-scrollbar {
     color: var(--navy, #0f2545);
 }
 
-/* No results */
+
 .pub-no-results {
     grid-column: 1 / -1;
     text-align: center;
@@ -568,7 +568,7 @@ body::-webkit-scrollbar {
     gap: 8px;
 }
 
-/* ── MODAL ──────────────────────────────────────────────── */
+
 
 .pub-modal-overlay {
     position: fixed;
@@ -630,7 +630,7 @@ body::-webkit-scrollbar {
 
 .pub-modal-icon svg { width: 22px; height: 22px; }
 
-/* Category colours on modal icon */
+
 .pub-modal-icon.svc-icon-medical    { background: #fee2e2; color: #b91c1c; }
 .pub-modal-icon.svc-icon-education  { background: #dbeafe; color: #1d4ed8; }
 .pub-modal-icon.svc-icon-scholarship{ background: #fef3c7; color: #92400e; }
@@ -675,7 +675,7 @@ body::-webkit-scrollbar {
     flex: 1;
 }
 
-/* Status strip */
+
 .pub-details-status-strip {
     display: flex;
     align-items: center;
@@ -739,7 +739,7 @@ body::-webkit-scrollbar {
     margin: 0;
 }
 
-/* Meta grid */
+
 .pub-details-meta-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -780,7 +780,7 @@ body::-webkit-scrollbar {
 .pub-details-meta-value.slots-full    { color: #b91c1c; font-weight: 700; }
 .pub-details-meta-value.slots-limited { color: #b45309; font-weight: 700; }
 
-/* Requirements list */
+
 .pub-details-req-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
 
 .pub-details-req-list li {
@@ -817,7 +817,7 @@ body::-webkit-scrollbar {
     white-space: pre-line;
 }
 
-/* CTA strip */
+
 .pub-details-cta {
     margin-top: 20px;
     background: linear-gradient(135deg, #f0f6ff, #fafcff);
@@ -871,7 +871,7 @@ body::-webkit-scrollbar {
     transform: translateY(-1px); 
 }
 
-/* Modal footer */
+
 .pub-modal-footer {
     display: flex;
     align-items: center;
@@ -898,7 +898,7 @@ body::-webkit-scrollbar {
 
 .pub-modal-cancel-btn:hover { background: var(--bg); border-color: var(--navy); color: var(--navy); }
 
-/* ── RESPONSIVE ─────────────────────────────────────────── */
+
 
 @media (max-width: 900px) {
     .pub-steps { flex-direction: column; align-items: flex-start; }

@@ -31,7 +31,7 @@ RoleMiddleware::requireRole('sk_officer');
     include __DIR__ . '/../../../components/management/officer/officer_topbar.php';
     ?>
 
-        <!-- ── PERIOD SELECTOR ──────────────────────────────── -->
+        
         <div class="an-period-bar">
             <div class="an-period-tabs">
                 <button class="an-period-tab active" data-period="month">This Month</button>
@@ -47,7 +47,7 @@ RoleMiddleware::requireRole('sk_officer');
             </div>
         </div>
 
-        <!-- ── KPI WIDGETS ──────────────────────────────────── -->
+        
         <section class="off-widgets">
 
             <div class="off-widget-card widget-cyan">
@@ -96,10 +96,10 @@ RoleMiddleware::requireRole('sk_officer');
 
         </section>
 
-        <!-- ── ROW 1: REQUEST VOLUME + REQUEST BREAKDOWN ────── -->
+        
         <div class="an-row">
 
-            <!-- Request volume sparkline -->
+            
             <section class="an-panel an-panel--grow">
                 <div class="panel-header">
                     <h2 class="section-label">Request Volume</h2>
@@ -128,36 +128,36 @@ RoleMiddleware::requireRole('sk_officer');
                 </div>
             </section>
 
-            <!-- Requests by service type — horizontal bars -->
+            
             <section class="an-panel an-panel--side">
                 <div class="panel-header">
                     <h2 class="section-label">By Service Type</h2>
                 </div>
                 <div class="an-bar-list" id="an-bar-service">
-                    <!-- Injected by JS -->
+                    
                 </div>
             </section>
 
         </div>
 
-        <!-- ── ROW 2: EVENTS SUMMARY + ANNOUNCEMENTS BREAKDOWN -->
+        
         <div class="an-row">
 
-            <!-- Events summary -->
+            
             <section class="an-panel">
                 <div class="panel-header">
                     <h2 class="section-label">Events Overview</h2>
                     <a href="officer_events.php" class="btn-off-sm">Manage &rsaquo;</a>
                 </div>
                 <div class="an-events-grid" id="an-events-grid">
-                    <!-- Injected by JS -->
+                    
                 </div>
                 <div class="an-events-chart-wrap">
                     <canvas id="chart-events"></canvas>
                 </div>
             </section>
 
-            <!-- Announcements breakdown -->
+            
             <section class="an-panel">
                 <div class="panel-header">
                     <h2 class="section-label">Announcements</h2>
@@ -166,34 +166,34 @@ RoleMiddleware::requireRole('sk_officer');
                 <div class="an-donut-wrap">
                     <canvas id="chart-announcements" height="180"></canvas>
                     <div class="an-donut-legend" id="an-ann-legend">
-                        <!-- Injected by JS -->
+                        
                     </div>
                 </div>
             </section>
 
         </div>
 
-        <!-- ── ROW 3: SERVICES STATUS + RECENT ACTIVITY ─────── -->
+        
         <div class="an-row">
 
-            <!-- Services status -->
+            
             <section class="an-panel">
                 <div class="panel-header">
                     <h2 class="section-label">Services Status</h2>
                     <a href="officer_services.php" class="btn-off-sm">Manage &rsaquo;</a>
                 </div>
                 <div class="an-services-list" id="an-services-list">
-                    <!-- Injected by JS -->
+                    
                 </div>
             </section>
 
-            <!-- Recent activity feed -->
+            
             <section class="an-panel an-panel--grow">
                 <div class="panel-header">
                     <h2 class="section-label">Recent Activity</h2>
                 </div>
                 <ul class="an-activity-feed" id="an-activity-feed">
-                    <!-- Injected by JS -->
+                    
                 </ul>
             </section>
 

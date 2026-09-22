@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/AdminUpdateThreadStatusController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireAdmin();
 
@@ -45,8 +44,7 @@ if ($result) {
         'message'    => 'Thread status updated.',
     ]);
 
-    // ── EMAIL NOTIFICATION ────────────────────────────────────────────────────
-    // Notify the thread author on every status change so they stay informed.
+    
     $author = $model->getThreadAuthor($thread_id);
     if ($author && !empty($author['email'])) {
         $emailService = new EmailService();
@@ -57,9 +55,7 @@ if ($result) {
             newStatus: $new_status
         );
     }
-    // ─────────────────────────────────────────────────────────────────────────
 
-    // ── ACTIVITY LOG ──────────────────────────────────────────────────────────
     $author ??= $model->getThreadAuthor($thread_id);
     $logModel->log($admin_id, 'thread_status_updated', [
         'target_type' => 'thread',
@@ -68,7 +64,6 @@ if ($result) {
         'target_user' => $author['name']    ?? '',
         'notes'       => "Status changed to \"{$new_status}\".",
     ]);
-    // ─────────────────────────────────────────────────────────────────────────
 
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Failed to update status.']);

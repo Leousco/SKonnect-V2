@@ -1,25 +1,25 @@
-/* notifications_page.js — Portal Notifications */
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
     const ROUTE = '../../backend/routes/notifications.php';
 
-    /* ---- ELEMENTS ---- */
+    
     const searchInput = document.getElementById('notif-search');
     const typeSelect  = document.getElementById('notif-type');
     const readSelect  = document.getElementById('notif-read');
     const markAllBtn  = document.getElementById('mark-all-btn');
-    // Scope to .announcements-section to avoid colliding with #notif-list inside the topbar dropdown
+    
     const pageSection = document.querySelector('.announcements-section');
     const notifList   = pageSection ? pageSection.querySelector('#notif-list') : null;
     const notifEmpty  = document.getElementById('notif-empty');
     const unreadLabel = document.getElementById('unread-count-label');
 
-    /* ---- PAGINATION CONFIG ---- */
+    
     const ITEMS_PER_PAGE = 10;
     let currentPage = 1;
 
-    /* ---- UNREAD COUNT ---- */
+    
 
     function updateUnreadLabel() {
         const count = document.querySelectorAll('.notif-item-row.notif-unread').length;
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateUnreadLabel();
 
-    /* ---- FILTER + PAGINATION ---- */
+    
 
     function getVisibleItems() {
         const query      = searchInput.value.toLowerCase().trim();
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
         const end   = start + ITEMS_PER_PAGE;
 
-        // Show/hide all items
+        
         Array.from(document.querySelectorAll('.notif-item-row')).forEach(item => {
             item.style.display = 'none';
         });
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderPage();
 
-    /* ---- SERVER HELPERS ---- */
+    
 
     function persist(action, id = null) {
         const body = new URLSearchParams({ action });
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(ROUTE, { method: 'POST', body }).catch(() => {});
     }
 
-    /* ---- MARK AS READ (individual) ---- */
+    
 
     function markAsRead(item) {
         if (!item.classList.contains('notif-unread')) return;
@@ -149,14 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (item) markAsRead(item);
     });
 
-    /* ---- MARK ALL READ ---- */
+    
 
     markAllBtn?.addEventListener('click', () => {
         document.querySelectorAll('.notif-item-row.notif-unread').forEach(item => markAsRead(item));
         persist('markAllRead');
     });
 
-    /* ---- DISMISS ---- */
+    
 
     notifList?.addEventListener('click', e => {
         const dismissBtn = e.target.closest('.dismiss-btn');
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 320);
     });
 
-    /* ---- ROW CLICK → OPEN MODAL ---- */
+    
 
     notifList?.addEventListener('click', e => {
         if (e.target.closest('.notif-action-btn') || e.target.closest('.notif-link')) return;
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (row) { markAsRead(row); openModal(row); }
     });
 
-    /* ---- MODAL ---- */
+    
 
     const modalOverlay    = document.getElementById('modal-overlay');
     const modalClose      = document.getElementById('modal-close');

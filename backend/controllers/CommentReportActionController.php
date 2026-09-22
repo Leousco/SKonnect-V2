@@ -1,5 +1,4 @@
 <?php
-// backend/controllers/CommentReportActionController.php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('moderator');
 

@@ -1,9 +1,9 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Same guard as login.php: an already-logged-in visitor (including one who
-// got here via the browser's Back button) gets bounced straight to their
-// dashboard instead of seeing the public homepage.
+
+
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
@@ -26,7 +26,7 @@ require_once __DIR__ . '/../../backend/models/ThreadModel.php';
 $db   = new Database();
 $conn = $db->getConnection();
 
-// Public viewer has no user_id — pass 0 so no bookmark/support state is loaded
+
 $threadModel = new ThreadModel($conn);
 $threads     = $threadModel->getFeedThreads(0);
 
@@ -65,7 +65,7 @@ $cat_labels = [
             </button>
         </section>
 
-        <!-- CONTROLS -->
+        
         <section class="community-controls">
             <div class="community-search-wrap">
                 <svg xmlns="http://www.w3.org/2000/svg" class="community-search-icon" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -97,7 +97,7 @@ $cat_labels = [
             </div>
         </section>
 
-        <!-- COMMUNITY FEED -->
+        
         <section class="community-feed" id="pub-feed-grid">
 
             <?php if (empty($threads)) : ?>
@@ -143,7 +143,7 @@ $cat_labels = [
             <p>No threads found matching your search.</p>
         </div>
 
-        <!-- PAGINATION -->
+        
         <div class="pagination-wrapper">
             <section class="pagination">
                 <button class="page-btn" id="pub-prev-btn" disabled>&#8249; Previous</button>

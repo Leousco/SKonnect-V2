@@ -1,9 +1,9 @@
 <?php
-// ── Prevent back-button access to the login page after a session exists ────
+
 if (session_status() === PHP_SESSION_NONE) session_start();
 
-// Never let the browser (or an intermediate cache) serve a stale copy of
-// this page from history/back-forward cache. Forces a real request every time.
+
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
@@ -108,7 +108,7 @@ if (!empty($_SESSION['user_id'])) {
     </div>
 </main>
 
-<!-- BAN MODAL -->
+
 <div class="ban-modal-overlay" id="ban-modal-overlay" aria-hidden="true">
     <div class="ban-modal" role="dialog" aria-modal="true" aria-labelledby="ban-modal-title">
         <div class="ban-modal-icon">⛔</div>

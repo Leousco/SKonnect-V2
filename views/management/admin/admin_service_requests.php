@@ -67,7 +67,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
         include __DIR__ . '/../../../components/management/admin/admin_topbar.php';
         ?>
 
-        <!-- STAT WIDGETS -->
+        
         <!-- <section class="off-widgets">
 
             <div class="off-widget-card widget-amber">
@@ -116,7 +116,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
         </section> -->
 
-        <!-- STATUS TABS + FILTERS -->
+        
         <div class="req-controls-wrap">
             <div class="req-tabs" role="tablist">
                 <button class="req-tab active" data-status="all"             role="tab">All <span class="req-tab-count"><?= count($requests) ?></span></button>
@@ -149,7 +149,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
             </select>
         </div>
 
-        <!-- REQUESTS TABLE -->
+        
         <div class="req-table-panel">
 
             <div class="panel-header">
@@ -250,7 +250,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
         </div>
 
-        <!-- PAGINATION -->
+        
         <section class="req-pagination" id="req-pagination">
             <button class="req-page-btn" id="req-prev-btn" disabled>&#8249; Previous</button>
             <div class="req-page-numbers" id="req-page-numbers">
@@ -262,7 +262,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
     </main>
 </div>
 
-<!-- VIEW / DETAIL MODAL -->
+
 <div class="req-modal-overlay" id="req-drawer-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-modal" id="req-drawer">
 
@@ -370,7 +370,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
     </div>
 </div>
 
-<!-- CONFIRM MODAL -->
+
 <div class="req-confirm-overlay" id="req-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-confirm-box">
         <div class="req-confirm-icon" id="req-confirm-icon">⚠️</div>
@@ -383,7 +383,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
     </div>
 </div>
 
-<!-- APPROVE MODAL -->
+
 <div class="req-action-modal-overlay" id="req-approve-modal-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-action-modal">
         <div class="req-action-modal-header">
@@ -428,7 +428,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
     </div>
 </div>
 
-<!-- REJECT MODAL -->
+
 <div class="req-action-modal-overlay" id="req-decline-modal-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-action-modal">
         <div class="req-action-modal-header">
@@ -462,7 +462,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
     </div>
 </div>
 
-<!-- FILE PREVIEW MODAL -->
+
 <div class="req-file-preview-overlay" id="req-file-preview-overlay" style="display:none;" aria-modal="true" role="dialog">
     <div class="req-file-preview-container">
         <div class="req-file-preview-header">
@@ -475,10 +475,10 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
     </div>
 </div>
 
-<!-- TOAST -->
+
 <div class="req-toast" id="req-toast" aria-live="polite"></div>
 
-<!-- Pass focus ID to JS (opened via ?id= link) -->
+
 <script>window.FOCUS_REQUEST_ID = <?= $focusId ? $focusId : 'null' ?>;</script>
 <script src="../../../scripts/management/admin/admin_service_requests.js?v=<?= time() ?>"></script>
 

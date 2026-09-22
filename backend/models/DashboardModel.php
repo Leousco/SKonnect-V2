@@ -48,7 +48,6 @@ class DashboardModel
     {
         $activities = [];
 
-        // Threads created by user
         $stmt = $this->db->prepare("
             SELECT
                 'thread' AS type,
@@ -63,7 +62,6 @@ class DashboardModel
         $stmt->execute([':uid' => $userId]);
         $activities = array_merge($activities, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
-        // Service applications submitted by user
         $stmt = $this->db->prepare("
             SELECT
                 'request_submitted' AS type,
@@ -79,7 +77,6 @@ class DashboardModel
         $stmt->execute([':uid' => $userId]);
         $activities = array_merge($activities, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
-        // Comments posted by user
         $stmt = $this->db->prepare("
             SELECT
                 'comment' AS type,
@@ -95,7 +92,6 @@ class DashboardModel
         $stmt->execute([':uid' => $userId]);
         $activities = array_merge($activities, $stmt->fetchAll(PDO::FETCH_ASSOC));
 
-        // Replies posted by user
         $stmt = $this->db->prepare("
             SELECT
                 'reply' AS type,

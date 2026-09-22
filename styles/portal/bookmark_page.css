@@ -1,9 +1,9 @@
-/* ═══════════════════════════════════════════════════════════
-   bookmark_page.css  —  My Bookmarks portal page
-   Also contains .btn-bookmarks-portal used in announcements_page
-   ══════════════════════════════════════════════════════════ */
 
-/* ── MY BOOKMARKS BUTTON (announcements_page) ────────────── */
+
+
+
+
+
 
 .btn-bookmarks-portal {
     display: inline-flex;
@@ -53,7 +53,7 @@
     margin-left: 2px;
 }
 
-/* ── BOOKMARK BUTTON ICON STYLE (announcements_page cards) ── */
+
 
 .bookmark-btn {
     background: none;
@@ -92,7 +92,7 @@
     cursor: not-allowed;
 }
 
-/* ── PAGE HEADER ─────────────────────────────────────────── */
+
 
 .bmp-header {
     display: flex;
@@ -177,13 +177,13 @@
     transform: translateX(-3px);
 }
 
-/* ── CONTROLS SPACING ────────────────────────────────────── */
+
 
 .bmp-controls {
     margin-bottom: 24px;
 }
 
-/* ── SAVED-ON LABEL ──────────────────────────────────────── */
+
 
 .bmp-saved-on {
     display: inline-flex;
@@ -206,7 +206,7 @@
     flex-shrink: 0;
 }
 
-/* ── EMPTY STATE ─────────────────────────────────────────── */
+
 
 .bmp-empty-state {
     grid-column: 1 / -1;
@@ -253,7 +253,7 @@
     margin: 0;
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+
 
 @media (max-width: 768px) {
     .bmp-header {

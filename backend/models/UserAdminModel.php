@@ -16,7 +16,10 @@ class UserAdminModel
             SELECT u.id, u.first_name, u.last_name, u.middle_name, u.gender,
                    u.birth_date, u.age, u.email, u.role, u.is_verified, u.created_at,
                    us.is_active, us.is_banned, us.banned_reason,
-                   up.mobile_number, up.purok, up.street_address
+                   up.mobile_number, up.purok, up.street_address,
+                   up.civil_status, up.nationality, up.religion,
+                   up.educational_attainment, up.school_institution, up.course_strand,
+                   up.employment_status, up.is_registered_voter
             FROM users u
             JOIN user_status us ON us.user_id = u.id
             LEFT JOIN user_profiles up ON up.user_id = u.id
@@ -26,9 +29,10 @@ class UserAdminModel
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as &$row) {
-            $row['is_verified'] = $row['is_verified'] === 't';
-            $row['is_active']   = $row['is_active']   === 't';
-            $row['is_banned']   = $row['is_banned']   === 't';
+            $row['is_verified'] = $this->toBoolean($row['is_verified']);
+            $row['is_active']   = $this->toBoolean($row['is_active']);
+            $row['is_banned']   = $this->toBoolean($row['is_banned']);
+            $row['is_registered_voter'] = $this->toBoolean($row['is_registered_voter']);
         }
         unset($row);
         return $rows;
@@ -38,7 +42,10 @@ class UserAdminModel
     {
         $stmt = $this->db->prepare("
             SELECT u.*, us.is_active, us.is_banned, us.is_deleted,
-                   up.mobile_number, up.purok, up.street_address
+                   up.mobile_number, up.purok, up.street_address,
+                   up.civil_status, up.nationality, up.religion,
+                   up.educational_attainment, up.school_institution, up.course_strand,
+                   up.employment_status, up.is_registered_voter
             FROM users u
             JOIN user_status us ON us.user_id = u.id
             LEFT JOIN user_profiles up ON up.user_id = u.id
@@ -47,10 +54,11 @@ class UserAdminModel
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            $row['is_verified'] = $row['is_verified'] === 't';
-            $row['is_active']   = $row['is_active']   === 't';
-            $row['is_banned']   = $row['is_banned']   === 't';
-            $row['is_deleted']  = $row['is_deleted']  === 't';
+            $row['is_verified'] = $this->toBoolean($row['is_verified']);
+            $row['is_active']   = $this->toBoolean($row['is_active']);
+            $row['is_banned']   = $this->toBoolean($row['is_banned']);
+            $row['is_deleted']  = $this->toBoolean($row['is_deleted']);
+            $row['is_registered_voter'] = $this->toBoolean($row['is_registered_voter']);
         }
         return $row;
     }
@@ -83,18 +91,62 @@ class UserAdminModel
         return (int) $this->db->lastInsertId();
     }
 
-    public function update(int $id, array $d): void
+    public function update(int $id, array $d, array $profile): void
     {
-        $this->db->prepare("
-            UPDATE users
-            SET first_name = ?, last_name = ?, middle_name = ?,
-                email = ?, gender = ?, birth_date = ?, age = ?
-            WHERE id = ?
-        ")->execute([
-            $d['first_name'], $d['last_name'], $d['middle_name'],
-            $d['email'],      $d['gender'],    $d['birth_date'],
-            $d['age'],        $id,
-        ]);
+        $this->db->beginTransaction();
+        try {
+            $this->db->prepare("
+                UPDATE users
+                SET first_name = ?, last_name = ?, middle_name = ?,
+                    email = ?, gender = ?, birth_date = ?, age = ?
+                WHERE id = ?
+            ")->execute([
+                $d['first_name'], $d['last_name'], $d['middle_name'],
+                $d['email'],      $d['gender'],    $d['birth_date'],
+                $d['age'],        $id,
+            ]);
+
+            $this->db->prepare("
+                INSERT INTO user_profiles (
+                    user_id, mobile_number, purok, street_address, civil_status,
+                    nationality, religion, educational_attainment, school_institution,
+                    course_strand, employment_status, is_registered_voter
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT (user_id) DO UPDATE SET
+                    mobile_number = EXCLUDED.mobile_number,
+                    purok = EXCLUDED.purok,
+                    street_address = EXCLUDED.street_address,
+                    civil_status = EXCLUDED.civil_status,
+                    nationality = EXCLUDED.nationality,
+                    religion = EXCLUDED.religion,
+                    educational_attainment = EXCLUDED.educational_attainment,
+                    school_institution = EXCLUDED.school_institution,
+                    course_strand = EXCLUDED.course_strand,
+                    employment_status = EXCLUDED.employment_status,
+                    is_registered_voter = EXCLUDED.is_registered_voter,
+                    updated_at = NOW()
+            ")->execute([
+                $id,
+                $profile['mobile_number'],
+                $profile['purok'],
+                $profile['street_address'],
+                $profile['civil_status'],
+                $profile['nationality'],
+                $profile['religion'],
+                $profile['educational_attainment'],
+                $profile['school_institution'],
+                $profile['course_strand'],
+                $profile['employment_status'],
+                $profile['is_registered_voter'] ? 1 : 0,
+            ]);
+            $this->db->commit();
+        } catch (Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
     }
 
     public function updateRole(int $id, string $role): void
@@ -149,5 +201,10 @@ class UserAdminModel
         ")->execute([$row['id']]);
 
         return true;
+    }
+
+    private function toBoolean(mixed $value): bool
+    {
+        return $value === true || in_array(strtolower((string) $value), ['1', 't', 'true', 'yes', 'on'], true);
     }
 }

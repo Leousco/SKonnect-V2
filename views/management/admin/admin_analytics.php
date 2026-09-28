@@ -42,6 +42,7 @@ RoleMiddleware::requireAdmin();
                     Export PDF Report
                 </button>
             </div>
+            <div class="an-load-error" id="analytics-error" role="status" aria-live="polite" hidden></div>
 
             <!-- ═══════════════════════════════════════════════════
              SECTION 1 · STAT CARDS

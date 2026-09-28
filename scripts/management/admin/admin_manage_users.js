@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_URL = '../../../backend/controllers/UserController.php';
 
     const roleLabels = {
-        admin:      '🔑 Admin',
-        moderator:  '💬 Moderator',
-        sk_officer: '🌟 SK Officer',
-        resident:   '👤 Resident',
+        admin:      'Admin',
+        moderator:  'Moderator',
+        sk_officer: 'SK Officer',
+        resident:   'Resident',
     };
 
     const roleColorClass = {
@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let allUsers    = [];
     let currentUser = null;
+    const confirmCleanups = new Map();
 
     async function loadUsers() {
         try {
@@ -35,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
             renderTable(allUsers);
             updateStats(allUsers);
         } catch (err) {
+            document.getElementById('user-tbody').innerHTML =
+                '<tr><td colspan="7" class="mu-loading-row">Unable to load users. Please try again.</td></tr>';
             showToast('Failed to load users: ' + err.message, 'error');
         }
     }
@@ -51,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         noResults.style.display = 'none';
 
         users.forEach(user => {
-            const initials = (user.first_name[0] + user.last_name[0]).toUpperCase();
+            const initials = `${user.first_name[0] || ''}${user.last_name[0] || ''}`.toUpperCase();
             const fullName = [user.first_name, user.middle_name, user.last_name].filter(Boolean).join(' ');
             const joined   = new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
@@ -59,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.className        = 'user-row';
             tr.dataset.role     = user.role;
             tr.dataset.gender   = user.gender;
-            tr.dataset.verified = user.is_verified;
+            tr.dataset.verified = isTrue(user.is_verified) ? '1' : '0';
             tr.dataset.name     = fullName.toLowerCase();
             tr.dataset.email    = user.email.toLowerCase();
 
@@ -76,12 +79,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="user-email">${esc(user.email)}</td>
                 <td><span class="user-role-badge ${roleColorClass[user.role] || ''}">${roleLabels[user.role] || user.role}</span></td>
                 <td>${cap(user.gender)}</td>
-                <td>${user.age}</td>
                 <td>${statusBadge(user)}</td>
                 <td class="user-date">${joined}</td>
                 <td>
                     <div class="user-actions">
-                        <button class="btn-user-action btn-view" data-id="${user.id}">View</button>
+                        <button class="btn-user-action btn-view" data-id="${user.id}" aria-label="View ${esc(fullName)}" title="View user">
+                            <svg class="mu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.5-6.25 9.75-6.25S21.75 12 21.75 12s-3.5 6.25-9.75 6.25S2.25 12 2.25 12Z"/><circle cx="12" cy="12" r="2.75"/></svg>
+                            View
+                        </button>
                     </div>
                 </td>
             `;
@@ -94,15 +99,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function statusBadge(user) {
-        if (user.is_banned)   return '<span class="user-verified-badge verified-no">⛔ Banned</span>';
-        if (user.is_verified) return '<span class="user-verified-badge verified-yes">✅ Verified</span>';
-        return '<span class="user-verified-badge verified-no">❌ Unverified</span>';
+        if (isTrue(user.is_banned)) return `<span class="user-verified-badge verified-no">${iconSvg('warning')}Banned</span>`;
+        if (isTrue(user.is_verified)) return `<span class="user-verified-badge verified-yes">${iconSvg('check')}Verified</span>`;
+        return `<span class="user-verified-badge verified-no">${iconSvg('close')}Unverified</span>`;
     }
 
     function updateStats(users) {
         const counts = {
             total:      users.length,
-            verified:   users.filter(u => u.is_verified == 1).length,
+            verified:   users.filter(u => isTrue(u.is_verified)).length,
             admin:      users.filter(u => u.role === 'admin').length,
             moderator:  users.filter(u => u.role === 'moderator').length,
             sk_officer: users.filter(u => u.role === 'sk_officer').length,
@@ -133,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return (!query    || name.includes(query) || u.email.toLowerCase().includes(query))
                 && (role     === 'all' || u.role === role)
                 && (gender   === 'all' || u.gender === gender)
-                && (verified === 'all' || String(u.is_verified) === verified);
+                && (verified === 'all' || String(isTrue(u.is_verified) ? 1 : 0) === verified);
         });
 
         renderTable(filtered);
@@ -222,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 gender:      vals['add-gender'],
                 birth_date:  vals['add-birth-date'],
             });
-            loading.resolve('✅ ' + res.message, 'success');
+            loading.resolve(res.message, 'success');
             closeAddModal();
             await loadUsers();
         } catch (err) {
@@ -233,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     const viewOverlay   = document.getElementById('user-modal-overlay');
+    const profileBody   = document.getElementById('user-modal-body');
     const footerDefault = document.getElementById('footer-default');
     const footerEdit    = document.getElementById('footer-edit');
     const banBtn        = document.getElementById('user-modal-ban');
@@ -241,9 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!user) return;
         currentUser = user;
 
-        const initials = (user.first_name[0] + user.last_name[0]).toUpperCase();
+        const initials = `${user.first_name[0] || ''}${user.last_name[0] || ''}`.toUpperCase();
         const fullName = [user.first_name, user.middle_name, user.last_name].filter(Boolean).join(' ');
-        const isBanned = parseInt(user.is_banned);
+        const isBanned = isTrue(user.is_banned);
 
         const avatar = document.getElementById('user-modal-avatar');
         avatar.textContent      = initials;
@@ -254,25 +260,34 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('user-modal-role-disp').textContent   = roleLabels[user.role] || user.role;
         document.getElementById('user-modal-gender-disp').textContent = cap(user.gender);
         document.getElementById('user-modal-status-disp').textContent =
-            isBanned ? '⛔ Banned' : (user.is_verified ? '✅ Verified' : '❌ Unverified');
+            isBanned ? 'Banned' : (isTrue(user.is_verified) ? 'Verified' : 'Unverified');
 
-        document.getElementById('user-modal-age').textContent    = user.age + ' years old';
+        document.getElementById('user-modal-age').textContent    = user.age ? user.age + ' years old' : '—';
         document.getElementById('user-modal-joined').textContent = new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         document.getElementById('user-modal-id').textContent     = '#' + user.id;
 
-        const address = [user.purok, user.street_address].filter(Boolean).join(', ');
-        document.getElementById('user-modal-mobile').textContent  = user.mobile_number || '—';
-        document.getElementById('user-modal-address').textContent = address || '—';
+        setDetail('first-name', user.first_name);
+        setDetail('middle-name', user.middle_name);
+        setDetail('last-name', user.last_name);
+        setDetail('email', user.email);
+        setDetail('gender', genderLabel(user.gender));
+        setDetail('birth-date', formatDate(user.birth_date));
+        setDetail('mobile', user.mobile_number);
+        setDetail('purok', user.purok);
+        setDetail('street-address', user.street_address);
+        setDetail('civil-status', civilStatusLabel(user.civil_status));
+        setDetail('nationality', user.nationality);
+        setDetail('religion', user.religion);
+        setDetail('education', educationLabel(user.educational_attainment));
+        setDetail('employment', employmentLabel(user.employment_status));
+        setDetail('voter', isTrue(user.is_registered_voter) ? 'Yes' : 'No');
+        setDetail('school', user.school_institution);
+        setDetail('course', user.course_strand);
 
-        document.getElementById('edit-first-name').value  = user.first_name;
-        document.getElementById('edit-last-name').value   = user.last_name;
-        document.getElementById('edit-middle-name').value = user.middle_name ?? '';
-        document.getElementById('edit-email').value       = user.email;
-        document.getElementById('edit-gender').value      = user.gender;
-        document.getElementById('edit-birth-date').value  = user.birth_date ?? '';
+        populateEditFields(user);
         document.getElementById('user-modal-role-select').value = user.role;
 
-        banBtn.textContent = isBanned ? '🔓 Unban User' : '⛔ Ban User';
+        banBtn.innerHTML = `${iconSvg(isBanned ? 'unlock' : 'warning')}${isBanned ? 'Unban User' : 'Ban User'}`;
         banBtn.classList.toggle('btn-svc-danger',   !isBanned);
         banBtn.classList.toggle('btn-svc-activate', !!isBanned);
 
@@ -288,15 +303,88 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function collapseEditMode() {
-        document.getElementById('edit-section').style.display = 'none';
+        profileBody.classList.remove('is-editing');
+        if (currentUser) populateEditFields(currentUser);
         footerDefault.style.display = '';
         footerEdit.style.display    = 'none';
     }
 
     function expandEditMode() {
-        document.getElementById('edit-section').style.display = 'block';
+        profileBody.classList.add('is-editing');
         footerDefault.style.display = 'none';
         footerEdit.style.display    = '';
+    }
+
+    function setDetail(name, value) {
+        document.getElementById(`user-modal-${name}`).textContent = value || '—';
+    }
+
+    function populateEditFields(user) {
+        const values = {
+            'edit-first-name': user.first_name,
+            'edit-middle-name': user.middle_name,
+            'edit-last-name': user.last_name,
+            'edit-email': user.email,
+            'edit-gender': user.gender,
+            'edit-birth-date': user.birth_date,
+            'edit-mobile-number': user.mobile_number,
+            'edit-purok': user.purok,
+            'edit-street-address': user.street_address,
+            'edit-civil-status': user.civil_status,
+            'edit-nationality': user.nationality,
+            'edit-religion': user.religion,
+            'edit-education': user.educational_attainment,
+            'edit-employment': user.employment_status,
+            'edit-registered-voter': isTrue(user.is_registered_voter) ? '1' : '0',
+            'edit-school': user.school_institution,
+            'edit-course': user.course_strand,
+        };
+        Object.entries(values).forEach(([id, value]) => {
+            document.getElementById(id).value = value ?? '';
+        });
+    }
+
+    function formatDate(value) {
+        if (!value) return '';
+        const date = new Date(`${value}T00:00:00`);
+        return Number.isNaN(date.getTime())
+            ? value
+            : date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    function genderLabel(value) {
+        return value === 'other' ? 'Prefer not to say' : cap(value);
+    }
+
+    function civilStatusLabel(value) {
+        return ({
+            single: 'Single',
+            married: 'Married',
+            widowed: 'Widowed',
+            separated: 'Separated',
+            annulled: 'Annulled',
+        })[value] || '';
+    }
+
+    function educationLabel(value) {
+        return ({
+            elementary: 'Elementary',
+            high_school: 'High School Graduate',
+            senior_high: 'Senior High School Graduate',
+            vocational: 'Vocational / Technical',
+            college_level: 'College Level',
+            college_graduate: 'College Graduate',
+            post_graduate: 'Post-Graduate',
+        })[value] || '';
+    }
+
+    function employmentLabel(value) {
+        return ({
+            student: 'Student',
+            employed: 'Employed',
+            unemployed: 'Unemployed',
+            self_employed: 'Self-Employed',
+        })[value] || '';
     }
 
     document.getElementById('user-modal-close')?.addEventListener('click', closeViewModal);
@@ -337,6 +425,17 @@ document.addEventListener('DOMContentLoaded', () => {
             email:       document.getElementById('edit-email').value.trim(),
             gender:      document.getElementById('edit-gender').value,
             birth_date:  document.getElementById('edit-birth-date').value,
+            mobile_number: document.getElementById('edit-mobile-number').value.trim(),
+            purok: document.getElementById('edit-purok').value.trim(),
+            street_address: document.getElementById('edit-street-address').value.trim(),
+            civil_status: document.getElementById('edit-civil-status').value,
+            nationality: document.getElementById('edit-nationality').value.trim(),
+            religion: document.getElementById('edit-religion').value.trim(),
+            educational_attainment: document.getElementById('edit-education').value,
+            school_institution: document.getElementById('edit-school').value.trim(),
+            course_strand: document.getElementById('edit-course').value.trim(),
+            employment_status: document.getElementById('edit-employment').value,
+            is_registered_voter: document.getElementById('edit-registered-voter').value,
         };
 
         if (!payload.first_name || !payload.last_name || !payload.email) {
@@ -364,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = getUser(id);
         if (!user) return;
         const name     = `${user.first_name} ${user.last_name}`;
-        const isBanned = parseInt(user.is_banned);
+        const isBanned = isTrue(user.is_banned);
 
         if (!isBanned) {
             document.getElementById('confirm-ban-body').textContent = `You are about to ban "${name}". They will lose access to their account immediately.`;
@@ -375,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const loading = showLoadingToast('Banning user account…');
                 try {
                     const res = await apiFetch({ action: 'ban_user', id, reason });
-                    loading.resolve(res.message + ' Notification email sent.', 'error');
+                    loading.resolve(res.message + ' Notification email sent.', 'success');
                     closeViewModal();
                     await loadUsers();
                 } catch (err) { loading.resolve(err.message, 'error'); }
@@ -409,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const loading = showLoadingToast('Deleting user account…');
                 try {
                     const res = await apiFetch({ action: 'delete_user', id });
-                    loading.resolve(res.message + ' Notification email sent.', 'error');
+                    loading.resolve(res.message + ' Notification email sent.', 'success');
                     closeViewModal();
                     await loadUsers();
                 } catch (err) { loading.resolve(err.message, 'error'); }
@@ -422,6 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openConfirm(overlayId, bodyHtml, onConfirm) {
         const overlay = document.getElementById(overlayId);
         if (!overlay) return;
+        confirmCleanups.get(overlay)?.();
 
         if (bodyHtml !== null) {
             const bodyEl = overlay.querySelector('.mu-confirm-body');
@@ -433,22 +533,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const okBtn     = overlay.querySelector('[id$="-ok"]');
         const cancelBtn = overlay.querySelector('[id$="-cancel"]');
 
+        function handleOverlayClick(e) {
+            if (e.target === overlay) handleCancel();
+        }
+
         function cleanup() {
             overlay.classList.remove('is-open');
             okBtn?.removeEventListener('click', handleOk);
             cancelBtn?.removeEventListener('click', handleCancel);
+            overlay.removeEventListener('click', handleOverlayClick);
+            confirmCleanups.delete(overlay);
         }
 
         function handleOk()     { cleanup(); onConfirm(); }
         function handleCancel() { cleanup(); }
 
+        confirmCleanups.set(overlay, cleanup);
         okBtn?.addEventListener('click',     handleOk);
         cancelBtn?.addEventListener('click', handleCancel);
-        overlay.addEventListener('click', e => { if (e.target === overlay) handleCancel(); }, { once: true });
+        overlay.addEventListener('click', handleOverlayClick);
     }
 
     function closeAllConfirms() {
-        document.querySelectorAll('.mu-confirm-overlay.is-open').forEach(o => o.classList.remove('is-open'));
+        confirmCleanups.forEach(cleanup => cleanup());
     }
 
     
@@ -469,7 +576,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function showLoadingToast(msg) {
         const t = document.createElement('div');
         t.className = 'svc-toast toast-loading';
-        t.innerHTML = `<span class="toast-spinner"></span><span>${msg}</span>`;
+        const spinner = document.createElement('span');
+        spinner.className = 'toast-spinner';
+        const message = document.createElement('span');
+        message.textContent = msg;
+        t.append(spinner, message);
         document.body.appendChild(t);
         setTimeout(() => t.classList.add('toast-visible'), 10);
 
@@ -498,6 +609,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return String(s)
             .replace(/&/g, '&amp;').replace(/</g, '&lt;')
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function isTrue(value) {
+        return value === true || value === 1 || ['1', 't', 'true', 'yes', 'on'].includes(String(value).toLowerCase());
+    }
+
+    function iconSvg(name) {
+        const paths = {
+            check: '<path stroke-linecap="round" stroke-linejoin="round" d="m5 12 4 4L19 6"/>',
+            close: '<path stroke-linecap="round" stroke-linejoin="round" d="m6 6 12 12M18 6 6 18"/>',
+            warning: '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>',
+            unlock: '<rect x="5.5" y="10.5" width="13" height="10" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 10.5V7a4 4 0 1 1 8 0"/>',
+        };
+        return `<svg class="mu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">${paths[name] || ''}</svg>`;
     }
 
     function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }

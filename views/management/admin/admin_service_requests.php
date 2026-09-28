@@ -164,7 +164,6 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
                             <th class="col-resident">Resident</th>
                             <th class="col-service">Service</th>
                             <th class="col-category">Category</th>
-                            <th class="col-purpose">Purpose / Details</th>
                             <th class="col-date sortable" data-col="date">Date Submitted <span class="sort-icon">↕</span></th>
                             <th class="col-files">Files</th>
                             <th class="col-status">Status</th>
@@ -204,10 +203,6 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
                             <td class="col-category">
                                 <span class="req-category-text"><?= htmlspecialchars(ucfirst($req['service_category'])) ?></span>
-                            </td>
-
-                            <td class="col-purpose">
-                                <span class="req-purpose-text"><?= htmlspecialchars($req['purpose'] ?? '—') ?></span>
                             </td>
 
                             <td class="col-date">

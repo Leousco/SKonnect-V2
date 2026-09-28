@@ -65,7 +65,7 @@
 .adm-feed-select {
   padding: 8px 32px 8px 12px;
   font-size: 13px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Poppins", sans-serif;
   color: var(--ap-text-body);
   background: var(--ap-surface);
   border: 1.5px solid var(--ap-border);

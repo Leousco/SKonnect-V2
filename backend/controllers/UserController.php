@@ -102,23 +102,87 @@ try {
             $newFirst   = trim($data['first_name']  ?? $user['first_name']);
             $newLast    = trim($data['last_name']   ?? $user['last_name']);
             $newMiddle  = trim($data['middle_name'] ?? $user['middle_name']);
+            $mobile     = trim($data['mobile_number'] ?? $user['mobile_number'] ?? '');
+            $purok      = trim($data['purok'] ?? $user['purok'] ?? '');
+            $street     = trim($data['street_address'] ?? $user['street_address'] ?? '');
+            $civilStatus = trim($data['civil_status'] ?? $user['civil_status'] ?? '');
+            $nationality = trim($data['nationality'] ?? $user['nationality'] ?? '');
+            $religion = trim($data['religion'] ?? $user['religion'] ?? '');
+            $education = trim($data['educational_attainment'] ?? $user['educational_attainment'] ?? '');
+            $school = trim($data['school_institution'] ?? $user['school_institution'] ?? '');
+            $course = trim($data['course_strand'] ?? $user['course_strand'] ?? '');
+            $employment = trim($data['employment_status'] ?? $user['employment_status'] ?? '');
+            $voter = array_key_exists('is_registered_voter', $data)
+                ? filter_var($data['is_registered_voter'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
+                : (bool)$user['is_registered_voter'];
+
+            if (!in_array($civilStatus, ['', 'single', 'married', 'widowed', 'separated', 'annulled'], true)) {
+                respond(400, 'Invalid civil status value.');
+            }
+            if (!in_array($education, ['', 'elementary', 'high_school', 'senior_high', 'vocational', 'college_level', 'college_graduate', 'post_graduate'], true)) {
+                respond(400, 'Invalid educational attainment value.');
+            }
+            if (!in_array($employment, ['', 'student', 'employed', 'unemployed', 'self_employed'], true)) {
+                respond(400, 'Invalid employment status value.');
+            }
+            if ($voter === null) {
+                respond(400, 'Invalid registered voter value.');
+            }
+            $profileValues = [
+                'Contact number' => [$mobile, 20],
+                'Purok / zone' => [$purok, 100],
+                'Street address' => [$street, 255],
+                'Nationality' => [$nationality, 100],
+                'Religion' => [$religion, 100],
+                'School / institution' => [$school, 255],
+                'Course / strand' => [$course, 255],
+            ];
+            foreach ($profileValues as $label => [$value, $maxLength]) {
+                if (strlen($value) > $maxLength) {
+                    respond(400, "{$label} exceeds the maximum length of {$maxLength} characters.");
+                }
+            }
             $age        = (int)(new DateTime())->diff(new DateTime($birth_date))->y;
 
             $model->update((int)$data['id'], compact('email', 'gender', 'birth_date', 'age') + [
                 'first_name'  => $newFirst,
                 'last_name'   => $newLast,
                 'middle_name' => $newMiddle,
+            ], [
+                'mobile_number' => $mobile !== '' ? $mobile : null,
+                'purok' => $purok !== '' ? $purok : null,
+                'street_address' => $street !== '' ? $street : null,
+                'civil_status' => $civilStatus !== '' ? $civilStatus : null,
+                'nationality' => $nationality !== '' ? $nationality : null,
+                'religion' => $religion !== '' ? $religion : null,
+                'educational_attainment' => $education !== '' ? $education : null,
+                'school_institution' => $school !== '' ? $school : null,
+                'course_strand' => $course !== '' ? $course : null,
+                'employment_status' => $employment !== '' ? $employment : null,
+                'is_registered_voter' => $voter,
             ]);
 
             $changes = [];
-            if ($newFirst   !== $user['first_name'])  $changes[] = "First name → <strong>{$newFirst}</strong>";
-            if ($newLast    !== $user['last_name'])   $changes[] = "Last name → <strong>{$newLast}</strong>";
-            if ($newMiddle  !== $user['middle_name']) $changes[] = "Middle name → <strong>{$newMiddle}</strong>";
+            if ($newFirst   !== $user['first_name'])  $changes[] = "First name → <strong>" . htmlspecialchars($newFirst) . "</strong>";
+            if ($newLast    !== $user['last_name'])   $changes[] = "Last name → <strong>" . htmlspecialchars($newLast) . "</strong>";
+            if ($newMiddle  !== ($user['middle_name'] ?? '')) $changes[] = "Middle name → <strong>" . htmlspecialchars($newMiddle) . "</strong>";
             if ($email      !== $user['email'])       $changes[] = "Email → <strong>" . htmlspecialchars($email) . "</strong>";
             if ($gender     !== $user['gender'])      $changes[] = "Gender → <strong>" . ucfirst($gender) . "</strong>";
             if ($birth_date !== $user['birth_date'])  $changes[] = "Birth date → <strong>{$birth_date}</strong>";
+            if ($mobile !== ($user['mobile_number'] ?? '')) $changes[] = 'Contact number updated';
+            if ($purok !== ($user['purok'] ?? '')) $changes[] = 'Purok / zone updated';
+            if ($street !== ($user['street_address'] ?? '')) $changes[] = 'Street address updated';
+            if ($civilStatus !== ($user['civil_status'] ?? '')) $changes[] = 'Civil status updated';
+            if ($nationality !== ($user['nationality'] ?? '')) $changes[] = 'Nationality updated';
+            if ($religion !== ($user['religion'] ?? '')) $changes[] = 'Religion updated';
+            if ($education !== ($user['educational_attainment'] ?? '')) $changes[] = 'Educational attainment updated';
+            if ($school !== ($user['school_institution'] ?? '')) $changes[] = 'School / institution updated';
+            if ($course !== ($user['course_strand'] ?? '')) $changes[] = 'Course / strand updated';
+            if ($employment !== ($user['employment_status'] ?? '')) $changes[] = 'Employment status updated';
+            if ($voter !== (bool)$user['is_registered_voter']) $changes[] = 'Registered voter status updated';
 
             $fullName    = $newFirst . ' ' . $newLast;
+            $safeFullName = htmlspecialchars($fullName);
             $changesList = $changes
                 ? '<ul style="margin:8px 0 0;padding-left:18px;">'
                     . implode('', array_map(fn($c) => "<li style='margin-bottom:4px;'>{$c}</li>", $changes))
@@ -127,7 +191,7 @@ try {
 
             ActivityLogController::log(
                 $db, $actorId, 'updated',
-                "Updated profile of <strong>{$fullName}</strong>: "
+                "Updated profile of <strong>{$safeFullName}</strong>: "
                     . ($changes ? implode(', ', array_map('strip_tags', $changes)) : 'minor details')
             );
 

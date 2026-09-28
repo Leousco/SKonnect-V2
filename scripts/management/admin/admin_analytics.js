@@ -7,9 +7,13 @@
  document.addEventListener("DOMContentLoaded", function () {
     const API_URL = "../../../backend/routes/analytics_stats.php";
   
-    
-    Chart.defaults.font.family = "'Segoe UI', Tahoma, sans-serif";
-    Chart.defaults.color = "#64748b";
+    const analyticsError = document.getElementById("analytics-error");
+    const hasChart = typeof Chart !== "undefined";
+    if (hasChart) {
+      Chart.defaults.font.family = "'Segoe UI', Tahoma, sans-serif";
+      Chart.defaults.color = "#64748b";
+    }
+    const countUpTimers = new WeakMap();
   
     const VIOLET = "#7c3aed";
     const VIOLET_LT = "#8b5cf6";
@@ -52,47 +56,157 @@
     let growthChart = null;
     let activeChart = null;
     let selectedYear = new Date().getFullYear();
-  
+    let loadSequence = 0;
+
+    const skeletonTargets = [
+      [".an-stats", "stats"],
+      [".an-charts-row .an-chart-panel", "panel"],
+      [".an-info-panel", "info"],
+      [".an-service-table-panel", "table"],
+      [".an-status-panel", "status"],
+      [".an-report-panel", "report"],
+    ];
+
+    function createSkeletonLayer(type) {
+      const layer = document.createElement("div");
+      layer.className = `an-skeleton-layer an-skeleton-${type}`;
+      layer.setAttribute("aria-hidden", "true");
+
+      const templates = {
+        stats: `
+          <div class="an-skeleton-stat-card"><i class="an-skeleton-icon"></i><div class="an-skeleton-stat-body"><i></i><i></i><i></i></div></div>
+          <div class="an-skeleton-stat-card"><i class="an-skeleton-icon"></i><div class="an-skeleton-stat-body"><i></i><i></i><i></i></div></div>
+          <div class="an-skeleton-stat-card"><i class="an-skeleton-icon"></i><div class="an-skeleton-stat-body"><i></i><i></i><i></i></div></div>
+          <div class="an-skeleton-stat-card"><i class="an-skeleton-icon"></i><div class="an-skeleton-stat-body"><i></i><i></i><i></i></div></div>`,
+        panel: `
+          <div class="an-skeleton-heading"><i></i><i></i></div>
+          <div class="an-skeleton-chart">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>`,
+        info: `
+          <div class="an-skeleton-heading"><i class="an-skeleton-icon"></i><i></i></div>
+          <div class="an-skeleton-rows"><i></i><i></i><i></i><i></i><i></i><i></i></div>`,
+        table: `
+          <div class="an-skeleton-heading"><i></i><i></i></div>
+          <div class="an-skeleton-table-head">
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="an-skeleton-table-row">
+            <span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span>
+          </div>
+          <div class="an-skeleton-table-row">
+            <span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span>
+          </div>
+          <div class="an-skeleton-table-row">
+            <span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span>
+          </div>`,
+        status: `
+          <div class="an-skeleton-heading"><i></i><i></i></div>
+          <div class="an-skeleton-rows"><i></i><i></i><i></i><i></i></div>
+          <div class="an-skeleton-divider"></div>
+          <div class="an-skeleton-heading"><i></i><i></i></div>
+          <div class="an-skeleton-rows"><i></i><i></i><i></i></div>`,
+        report: `
+          <div class="an-skeleton-heading"><i></i><i></i></div>
+          <div class="an-skeleton-rows"><i></i><i></i><i></i><i></i></div>`,
+      };
+
+      layer.innerHTML = templates[type];
+      return layer;
+    }
+
+    function setLoadingState(isLoading) {
+      skeletonTargets.forEach(([selector, type]) => {
+        document.querySelectorAll(selector).forEach((target) => {
+          if (isLoading) {
+            if (target.classList.contains("an-loading")) return;
+            target.classList.add("an-loading");
+            target.setAttribute("aria-busy", "true");
+            target.appendChild(createSkeletonLayer(type));
+            return;
+          }
+
+          target.classList.remove("an-loading");
+          target.removeAttribute("aria-busy");
+          target.querySelector(":scope > .an-skeleton-layer")?.remove();
+        });
+      });
+    }
+
     
     function countUp(el, target, suffix = "") {
       if (!el) return;
+      const previousTimer = countUpTimers.get(el);
+      if (previousTimer) clearInterval(previousTimer);
+
+      target = Number(target) || 0;
       let current = 0;
       const step = Math.max(1, Math.ceil(target / (900 / 16)));
       const timer = setInterval(() => {
         current = Math.min(current + step, target);
         el.textContent = current.toLocaleString() + suffix;
-        if (current >= target) clearInterval(timer);
+        if (current >= target) {
+          clearInterval(timer);
+          countUpTimers.delete(el);
+        }
       }, 16);
+      countUpTimers.set(el, timer);
     }
   
     
-    function load(year) {
-      fetch(`${API_URL}?year=${year}`)
-        .then((r) => r.json())
-        .then((json) => {
-          if (json.status !== "success") {
-            console.error("Analytics API:", json.message);
-            return;
-          }
-          const d = json.data;
-          renderStatCards(d);
-          renderYearFilter(d.availableYears, d.selectedYear);
+    async function load(year) {
+      const sequence = ++loadSequence;
+      setLoadingState(true);
+      try {
+        const response = await fetch(`${API_URL}?year=${encodeURIComponent(year)}`, {
+          headers: { Accept: "application/json" },
+        });
+        const json = await response.json();
+        if (sequence !== loadSequence) return;
+        if (!response.ok || json.status !== "success") {
+          throw new Error(json.message || `Analytics request failed (${response.status}).`);
+        }
+
+        const d = json.data;
+        clearError();
+        renderStatCards(d);
+        renderYearFilter(d.availableYears, d.selectedYear);
+        if (hasChart) {
           renderBarChart(d.requestsByMonth, d.selectedYear);
           renderDonutChart(d.serviceBreakdown);
           renderGrowthChart(d.growthLabels, d.growthData);
           renderActiveChart(d.activeUsers, d.inactiveUsers, d.activePct);
-  
-          
-          renderUserRoles(d.usersByRole);
-          renderAnnouncementStats(d.announcementStats);
-          renderEventStats(d.eventStats);
-          renderThreadStats(d.threadStats);
-          renderReportStats(d.reportStats);
-          renderServicesTable(d.requestsByService);
-          renderRequestStatus(d.requestStatusCounts);
-          renderServiceTypes(d.requestsByType);
-        })
-        .catch((err) => console.error("Analytics fetch failed:", err));
+        } else {
+          showError("Analytics data loaded, but charts could not be displayed because the chart library did not load.");
+        }
+
+        renderUserRoles(d.usersByRole);
+        renderAnnouncementStats(d.announcementStats);
+        renderEventStats(d.eventStats);
+        renderThreadStats(d.threadStats);
+        renderReportStats(d.reportStats);
+        renderServicesTable(d.requestsByService);
+        renderRequestStatus(d.requestStatusCounts);
+        renderServiceTypes(d.requestsByType);
+      } catch (err) {
+        if (sequence !== loadSequence) return;
+        console.error("Analytics load failed:", err);
+        showError(`Unable to load analytics data. ${err.message || "Please try again."}`);
+      } finally {
+        if (sequence === loadSequence) setLoadingState(false);
+      }
+    }
+
+    function showError(message) {
+      if (!analyticsError) return;
+      analyticsError.textContent = message;
+      analyticsError.hidden = false;
+    }
+
+    function clearError() {
+      if (!analyticsError) return;
+      analyticsError.textContent = "";
+      analyticsError.hidden = true;
     }
   
     
@@ -111,11 +225,13 @@
       const topEl = document.getElementById("stat-top-service");
       if (topEl) topEl.textContent = d.topService.name || "N/A";
       const topCntEl = document.getElementById("stat-top-service-cnt");
-      if (topCntEl)
+      if (topCntEl) {
         topCntEl.textContent =
           d.topService.cnt > 0
             ? `${d.topService.cnt} requests this month`
             : "No requests this month";
+        topCntEl.classList.add("an-stat-sub--service");
+      }
   
       const activeEl = document.getElementById("stat-active-users");
       countUp(activeEl, d.activeUsers);
@@ -459,6 +575,25 @@
   
     
     function renderDonutChart(breakdown) {
+      const canvas = document.getElementById("serviceDonutChart");
+      const chartWrap = canvas?.parentElement;
+      if (!breakdown.length) {
+        if (donutChart) {
+          donutChart.destroy();
+          donutChart = null;
+        }
+        if (canvas) canvas.hidden = true;
+        if (chartWrap && !chartWrap.querySelector(".an-chart-empty")) {
+          const empty = document.createElement("p");
+          empty.className = "an-chart-empty";
+          empty.textContent = "No requests this month.";
+          chartWrap.appendChild(empty);
+        }
+      } else {
+        chartWrap?.querySelector(".an-chart-empty")?.remove();
+        if (canvas) canvas.hidden = false;
+      }
+
       const labels = breakdown.map((b) => CAT_LABELS[b.category] || b.category);
       const values = breakdown.map((b) => parseInt(b.cnt));
       const colors = breakdown.map((_, i) => PALETTE[i % PALETTE.length]);
@@ -491,7 +626,6 @@
         return;
       }
   
-      const canvas = document.getElementById("serviceDonutChart");
       if (!canvas || !breakdown.length) return;
   
       donutChart = new Chart(canvas, {

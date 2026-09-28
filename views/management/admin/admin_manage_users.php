@@ -6,7 +6,7 @@ RoleMiddleware::requireAdmin();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin | Manage Users</title>
+    <title>Admin | Users</title>
     <link rel="stylesheet" href="../../../styles/management/mgmt.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_sidebar.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_topbar.css">

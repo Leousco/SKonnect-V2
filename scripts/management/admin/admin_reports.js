@@ -37,8 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmOk             = document.getElementById('rpt-confirm-ok');
     const confirmCancel           = document.getElementById('rpt-confirm-cancel');
 
-    const reasonIcons = { spam: '🚫', inappropriate: '⚠️', harassment: '😡', misinformation: '❌', other: '📋' };
-
     function escHtml(str) {
         return String(str ?? '')
             .replace(/&/g, '&amp;')
@@ -101,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         noResults.style.display = 'none';
 
         reports.forEach((r, idx) => {
-            const icon = reasonIcons[r.reason] ?? '📋';
             const badgeType = r.type === 'reply' ? 'comment' : r.type;
 
             const tr = document.createElement('tr');
@@ -116,12 +113,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </td>
                 <td>${escHtml(r.reported_by || '—')}</td>
                 <td>${escHtml(r.author || '—')}</td>
-                <td><span class="rpt-reason-badge reason-${r.reason}">${icon} ${capitalize(r.reason)}</span></td>
+                <td><span class="rpt-reason-badge reason-${r.reason}">${capitalize(r.reason)}</span></td>
                 <td class="rpt-td-date">${formatDate(r.date)}</td>
                 <td><span class="rpt-status-badge status-${r.status}">${capitalize(r.status)}</span></td>
                 <td>
                     <button class="btn-rpt-review" data-id="${r.id}" data-type="${r.type}">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
@@ -399,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleLvl3Warning() {
         const selected = document.querySelector('input[name="arp-level"]:checked').value;
         modalWarnLvl3.style.display = selected === '3' ? 'flex' : 'none';
-        modalSubmitLabel.textContent = selected === '3' ? 'Confirm Permanent Ban' : 'Confirm Sanction';
+        modalSubmitLabel.textContent = selected === '3' ? 'Confirm Sanction' : 'Confirm Sanction';
     }
 
     document.querySelectorAll('input[name="arp-level"]').forEach(input => {

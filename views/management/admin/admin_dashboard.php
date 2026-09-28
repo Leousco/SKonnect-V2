@@ -17,7 +17,7 @@ $upcomingEvents = array_slice(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKonnect Admin | Dashboard</title>
+    <title>Admin | Dashboard</title>
     <link rel="stylesheet" href="../../../styles/management/admin/admin_dashboard.css">
     <link rel="stylesheet" href="../../../styles/management/mgmt.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_sidebar.css">

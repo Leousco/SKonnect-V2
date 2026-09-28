@@ -8,7 +8,7 @@ RoleMiddleware::requireAdmin();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin | Manage Services</title>
+    <title>Admin | Services</title>
     <link rel="stylesheet" href="../../../styles/management/admin/admin_dashboard.css">
     <link rel="stylesheet" href="../../../styles/management/mgmt.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_sidebar.css">

@@ -7,7 +7,7 @@ RoleMiddleware::requireAdmin();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKonnect Admin | Announcements</title>
+    <title>Admin | Announcements</title>
     <link rel="stylesheet" href="../../../styles/management/admin/admin_announcements.css">
     <link rel="stylesheet" href="../../../styles/management/mgmt.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_sidebar.css">

@@ -20,9 +20,9 @@ A community portal that connects residents with their SK officers: announcements
 | Role     | Description |
 | --- | --- |
 | **Residents** | Standard users. Can view announcements, interact with community posts, apply to offered services, view their request status, and receive in-system and email notifications about their services status, community posts, and event developments. |
-| **SK Officer** | Focuses on posting, editing, and managing announcements. Also manages services as well as service requests (approve, reject, respond). Handles events, and views analytics, reports, and users. |
+| **Officer** | Focuses on posting, editing, and managing announcements. Also manages services as well as service requests (approve, reject, respond). Handles events, and views analytics, reports, and users. |
 | **Moderator** | Focuses on community control. Can remove or reply to threads. Handles reports such as spam and harassment, sends warnings to users, and updates the status of threads. |
-| **System Admin** | Has full authority, control, and access to everything. Can manage, create, delete, or configure users, change system configs, and access system logs. Can do everything the system offers. |
+| **Admin** | Has full authority, control, and access to everything. Can manage, create, delete, or configure users, change system configs, and access system logs. Can do everything the system offers. |
 
 ---
 
@@ -126,8 +126,6 @@ Completed:
 
 ## Known Issues
 
-> ✔️ / `[x]` = fixed, `[ ]` = still open
-
 ### General
 
 - [x] Design inconsistencies for buttons, dropdowns, etc.
@@ -210,7 +208,7 @@ Completed:
 - [ ] Add sections for other modules (threads, reports, recent announcements)
 
 
-## Features Backlog
+### Features Backlog
 
 - [ ] Reactions system to the announcement module
 - [ ] Services page: make the request submission confirmation a modal instead of a toast notification

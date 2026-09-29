@@ -4,8 +4,6 @@ A community portal that connects residents with their SK officers: announcements
 
 > **Last Update:** 9/29/26
 
----
-
 ## Table of Contents
 
 - [System Users](#system-users)
@@ -17,11 +15,9 @@ A community portal that connects residents with their SK officers: announcements
 - [Known Issues](#known-issues)
 - [Features Backlog](#features-backlog)
 
----
-
 ## System Users
 
-| Role | Description |
+| Role     | Description |
 | --- | --- |
 | **Residents** | Standard users. Can view announcements, interact with community posts, apply to offered services, view their request status, and receive in-system and email notifications about their services status, community posts, and event developments. |
 | **SK Officer** | Focuses on posting, editing, and managing announcements. Also manages services as well as service requests (approve, reject, respond). Handles events, and views analytics, reports, and users. |
@@ -38,7 +34,6 @@ A community portal that connects residents with their SK officers: announcements
 | `moderator@skonnect.com` | `passwords` |
 | `officer@skonnect.com` | `passwords` |
 
----
 
 ## Features
 
@@ -112,7 +107,6 @@ A community portal that connects residents with their SK officers: announcements
 
 </details>
 
----
 
 ## Refactoring for Database Migration
 
@@ -129,7 +123,6 @@ Completed:
 - [x] Dashboard (resident, officer, moderator, admin)
 - [x] Admin module
 
----
 
 ## Known Issues
 
@@ -145,40 +138,34 @@ Completed:
 - [ ] Make the notifications on admin users (officer, moderator, admin) a modal.
 - [ ] Make a 404 page.
 
-### Public side
+### PUBLIC SIDE
 
-**Login page**
+- Login page
 
 - [x] No loading visualization when clicking the "Login" button
 - [ ] Forgot Password non functional
 
-**Registration**
-
+- Registration
 - [ ] No password restrictions
 
-**Services**
-
+- Services
 - [ ] Bug with modal appearing and the navbar
 
-### Portal side
+### PORTAL SIDE
 
-**Dashboard**
-
+- Dashboard
 - [x] Event in calendar shows "Tomorrow" even though the event is still 2 days from now
 - [x] Include a services section for easy viewing
 - [x] Include latest community discussions (trending threads)
 
-**Notifications**
-
+- Notifications
 - [x] Color and icon of "action require" service requests
 - [x] Viewing a notification doesn't auto "mark as read" it
 
-**Profile**
-
+- Profile
 - [ ] User info improvements
 
-**Services**
-
+- Services
 - [x] Clicking outside the modal closes the modal resulting in loss of progress
 - [x] Make the "Submit Request" button unclickable if all fields are not complete yet
 - [x] On the request modal, make the info strip non-sticky to allow more space for viewing the form
@@ -186,51 +173,42 @@ Completed:
 
 <!-- - Maybe add a confirmation modal or something before submitting an application -->
 
-**Notif Badge**
-
+- Notif Badge
 - [x] Counter appears without any new notifications when opening "view" pages (`thread_view.php`, `announcement_view.php`)
 
-### Officer side
+### OFFICER SIDE
 
-**Events Page**
-
+- Events Page
 - [x] Clicking outside the add event modal closes the modal resulting in loss of progress
 - [ ] Past events don't auto delete *(to be evaluated)*
 - [ ] New events appear at the bottom of the list
 
-**Notification badge**
-
+- Notification badge
 - [ ] Notification badge non functional
 
-**Services**
-
+- Services
 - [ ] No confirmation modal when deactivating or activating a service
 
-### Moderator side
+### MODERATOR SIDE
 
-**Dashboard**
-
+- Dashboard
 - [ ] Styles for containers
 - [ ] Fix the layouts of each section
 
-**Community Feed**
-
+- Community Feed
 - [ ] Commenting or replying auto updates the status of the thread to 'responded' but it is not shown immediately because the page needs to refresh first.
 
-**Notifications**
-
+- Notifications
 - [ ] Notifications non functional
 
-### Admin side
+### ADMIN SIDE
 
 - [x] Mostly non functional, styles are inconsistent with other related modules on different users
 
-**Dashboard**
-
+- Dashboard
 - [ ] Update the sections
 - [ ] Add sections for other modules (threads, reports, recent announcements)
 
----
 
 ## Features Backlog
 

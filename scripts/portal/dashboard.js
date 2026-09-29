@@ -14,8 +14,10 @@
     const MONTHS       = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   
-    const today   = new Date();
-    let current   = new Date(today.getFullYear(), today.getMonth(), 1);
+    const PHILIPPINE_TIME_ZONE = 'Asia/Manila';
+    const todayParts = getPhilippineDateParts();
+    let todayKey = formatDateKey(todayParts.year, todayParts.month, todayParts.day);
+    let current = new Date(Date.UTC(todayParts.year, todayParts.month - 1, 1));
     let eventsMap = {};
   
     const ACTIVITY_ICONS = {
@@ -26,10 +28,38 @@
     };
   
     function pad(n) { return String(n).padStart(2, '0'); }
-  
+
+    function getPhilippineDateParts() {
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: PHILIPPINE_TIME_ZONE,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        }).formatToParts(new Date());
+        const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+        return {
+            year: Number(values.year),
+            month: Number(values.month),
+            day: Number(values.day),
+        };
+    }
+
+    function formatDateKey(year, month, day) {
+        return `${year}-${pad(month)}-${pad(day)}`;
+    }
+
+    function getDateKey(dateStr) {
+        return String(dateStr).slice(0, 10);
+    }
+
+    function dateOrdinal(dateStr) {
+        const [year, month, day] = getDateKey(dateStr).split('-').map(Number);
+        return Date.UTC(year, month - 1, day) / 86400000;
+    }
+
     function formatDate(dateStr) {
-        const [y, m, d] = dateStr.split('-').map(Number);
-        return `${MONTHS_SHORT[m - 1]} ${d}, ${y}`;
+        const [year, month, day] = getDateKey(dateStr).split('-').map(Number);
+        return `${MONTHS_SHORT[month - 1]} ${day}, ${year}`;
     }
   
     function timeAgo(dateStr) {
@@ -43,9 +73,9 @@
     }
   
     function daysUntil(dateStr) {
-        const [y, m, d] = dateStr.split('-').map(Number);
-        const target = new Date(y, m - 1, d);
-        const diff = Math.round((target - today) / 86400000);
+        const now = getPhilippineDateParts();
+        const today = formatDateKey(now.year, now.month, now.day);
+        const diff = dateOrdinal(dateStr) - dateOrdinal(today);
         if (diff === 0) return 'Today';
         if (diff === 1) return 'Tomorrow';
         if (diff < 0)  return `${Math.abs(diff)}d ago`;
@@ -221,9 +251,13 @@
 
         eventsMap = {};
         data.data.forEach((ev, i) => {
-            eventsMap[ev.event_date] = {
+            const eventDate = getDateKey(ev.event_date);
+            eventsMap[eventDate] = {
                 ...ev,
+                event_date: eventDate,
                 title: decodeHtml(ev.title),
+                description: decodeHtml(ev.description || ''),
+                location: decodeHtml(ev.location || ''),
                 color: EVENT_COLORS[i % EVENT_COLORS.length],
             };
         });
@@ -236,16 +270,17 @@
     }
   
     function renderCalendar() {
-        const year  = current.getFullYear();
-        const month = current.getMonth();
+        const year  = current.getUTCFullYear();
+        const month = current.getUTCMonth();
+        const today = getPhilippineDateParts();
   
         document.querySelector('.month-year').textContent = `${MONTHS[month]} ${year}`;
   
         const datesEl = document.querySelector('.calendar-dates');
         datesEl.innerHTML = '';
   
-        const firstDay = new Date(year, month, 1).getDay();
-        const lastDate = new Date(year, month + 1, 0).getDate();
+        const firstDay = new Date(Date.UTC(year, month, 1)).getUTCDay();
+        const lastDate = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
   
         for (let i = 0; i < firstDay; i++) {
             const empty = document.createElement('div');
@@ -254,8 +289,8 @@
         }
   
         for (let d = 1; d <= lastDate; d++) {
-            const key     = `${year}-${pad(month + 1)}-${pad(d)}`;
-            const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+            const key     = formatDateKey(year, month + 1, d);
+            const isToday = d === today.day && month + 1 === today.month && year === today.year;
             const ev      = eventsMap[key];
   
             const cell = document.createElement('div');
@@ -286,6 +321,8 @@
         const listEl  = document.getElementById('events-list');
         const emptyEl = document.getElementById('events-empty');
         const skeletonEl = document.getElementById('events-list-skeleton');
+        const today = getPhilippineDateParts();
+        const todayDateKey = formatDateKey(today.year, today.month, today.day);
         listEl.innerHTML = '';
 
         if (skeletonEl) skeletonEl.style.display = 'none';
@@ -305,9 +342,8 @@
         emptyEl.style.display = 'none';
   
         monthEvents.forEach(([dateStr, ev]) => {
-            const [, , d] = dateStr.split('-').map(Number);
-            const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-            const isPast  = new Date(dateStr) < today && !isToday;
+            const isToday = dateStr === todayDateKey;
+            const isPast  = dateOrdinal(dateStr) < dateOrdinal(todayDateKey);
   
             const timeStr = ev.event_time
                 ? formatTime(ev.event_time) + (ev.event_time_end ? ' – ' + formatTime(ev.event_time_end) : '')
@@ -482,22 +518,36 @@
         document.body.style.overflow = '';
     }
   
-        document.querySelector('.prev-month').addEventListener('click', () => {
-        current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
+    document.querySelector('.prev-month').addEventListener('click', () => {
+        current = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth() - 1, 1));
         renderCalendar();
     });
   
     document.querySelector('.next-month').addEventListener('click', () => {
-        current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+        current = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth() + 1, 1));
         renderCalendar();
     });
   
-        buildModal();
+    buildModal();
     loadStats();
     loadActivity();
     loadAnnouncements();
     loadDiscussions();
     loadServices();
     loadEvents();
+
+    setInterval(() => {
+        const today = getPhilippineDateParts();
+        const newTodayKey = formatDateKey(today.year, today.month, today.day);
+        if (newTodayKey === todayKey) return;
+
+        const previousToday = todayKey;
+        todayKey = newTodayKey;
+        if (current.getUTCFullYear() === Number(previousToday.slice(0, 4)) &&
+            current.getUTCMonth() === Number(previousToday.slice(5, 7)) - 1) {
+            current = new Date(Date.UTC(today.year, today.month - 1, 1));
+        }
+        renderCalendar();
+    }, 60000);
   
   })();

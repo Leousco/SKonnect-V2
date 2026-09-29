@@ -1,12 +1,5 @@
 
-
-
-
    document.addEventListener('DOMContentLoaded', () => {
-
-    
-
-
 
     const searchInput  = document.getElementById('svc-search');
     const catSelect    = document.getElementById('svc-category');
@@ -102,6 +95,20 @@
     const detailsReqList   = document.getElementById('details-req-list');
     const detailsContSec   = document.getElementById('details-contact-section');
     const detailsCont      = document.getElementById('details-contact');
+
+    let bodyScrollState = null;
+
+    function lockPageScroll() {
+        if (bodyScrollState) return;
+        bodyScrollState = { overflow: document.body.style.overflow };
+        document.body.style.overflow = 'hidden';
+    }
+
+    function unlockPageScroll() {
+        if (!bodyScrollState) return;
+        document.body.style.overflow = bodyScrollState.overflow;
+        bodyScrollState = null;
+    }
 
     function openDetailsModal(btn) {
         const service         = btn.dataset.service        || 'Service';
@@ -214,12 +221,12 @@
         }
 
         detailsOverlay.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
+        lockPageScroll();
     }
 
     function closeDetailsModal() {
         detailsOverlay.style.display = 'none';
-        document.body.style.overflow = '';
+        unlockPageScroll();
     }
 
     document.querySelectorAll('.res-view-btn').forEach(btn => btn.addEventListener('click', () => openDetailsModal(btn)));
@@ -241,6 +248,11 @@
     const applyElig    = document.getElementById('apply-sum-eligibility');
     const applyProc    = document.getElementById('apply-sum-processing');
     const applyReqs    = document.getElementById('apply-sum-requirements');
+    const applyName    = document.getElementById('r-name');
+    const applyContact = document.getElementById('r-contact');
+    const applyEmail   = document.getElementById('r-email');
+    const applyAddress = document.getElementById('r-address');
+    const applyAgree   = document.getElementById('r-agree');
 
     
     const discardOverlay = document.getElementById('discard-confirm-overlay');
@@ -264,6 +276,27 @@
     discardOverlay?.addEventListener('click', e => { if (e.target === discardOverlay) closeDiscardConfirm(); });
 
     let selectedFiles = [];
+    let isSubmitting = false;
+
+    function isApplyFormReady() {
+        return Boolean(
+            applyName?.value.trim() &&
+            applyContact?.value.trim() &&
+            applyEmail?.value.trim() &&
+            applyAddress?.value.trim() &&
+            selectedFiles.length > 0 &&
+            applyAgree?.checked
+        );
+    }
+
+    function updateApplySubmitState() {
+        if (applySubmit) applySubmit.disabled = isSubmitting || !isApplyFormReady();
+    }
+
+    [applyName, applyContact, applyAddress].forEach(field => {
+        field?.addEventListener('input', updateApplySubmitState);
+    });
+    applyAgree?.addEventListener('change', updateApplySubmitState);
 
     function openApplyModal(btn) {
         const id           = btn.dataset.id          || '';
@@ -292,6 +325,7 @@
         const fl = document.getElementById('file-list');
         if (fl) fl.innerHTML = '';
         selectedFiles = [];
+        updateApplySubmitState();
 
         
         const emailEl = document.getElementById('r-email');
@@ -301,13 +335,13 @@
         clearApplyErrors();
 
         applyOverlay.style.display   = 'flex';
-        document.body.style.overflow = 'hidden';
+        lockPageScroll();
         setTimeout(() => document.getElementById('r-name')?.focus(), 100);
     }
 
     function closeApplyModal() {
         applyOverlay.style.display   = 'none';
-        document.body.style.overflow = '';
+        unlockPageScroll();
     }
 
     document.querySelectorAll('.svc-apply-btn').forEach(btn => btn.addEventListener('click', () => openApplyModal(btn)));
@@ -410,9 +444,10 @@
         selectedFiles.forEach(file => fd.append('documents[]', file));
 
         
-        applySubmit.disabled   = true;
+        isSubmitting = true;
+        updateApplySubmitState();
         applySubmit.innerHTML  = '<span style="opacity:.7">Submitting…</span>';
-        showLoadingToast('Submitting your request…');
+        showLoadingToast('Submitting request…');
 
         try {
             const res  = await fetch('../../backend/routes/service_requests.php', {
@@ -424,7 +459,7 @@
 
             if (json.success) {
                 closeApplyModal();
-                showToast('Your request has been submitted!', 'success');
+                showToast('Request submitted!', 'success');
 
                 
                 const serviceId = applyServId.value;
@@ -441,8 +476,9 @@
             dismissToast();
             showToast('Network error. Please check your connection and try again.', 'error');
         } finally {
-            applySubmit.disabled  = false;
+            isSubmitting = false;
             applySubmit.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg> Submit Request`;
+            updateApplySubmitState();
         }
     });
 
@@ -477,8 +513,10 @@
             btn.addEventListener('click', () => {
                 selectedFiles.splice(parseInt(btn.dataset.index), 1);
                 renderFileList();
+                updateApplySubmitState();
             });
         });
+        updateApplySubmitState();
     }
 
     function addFiles(files) {
@@ -493,6 +531,7 @@
             }
         });
         renderFileList();
+        updateApplySubmitState();
     }
 
     fileInput?.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
@@ -525,11 +564,17 @@
             animation:toast-in 0.3s cubic-bezier(0.16,1,0.3,1);
             max-width:380px; line-height:1.5; white-space:pre-line;
             ${type === 'success'
-                ? 'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;'
-                : 'background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;'}
+                ? 'background:#15803d;color:#fff;border:1px solid #15803d;'
+                : 'background:#b91c1c;color:#fff;border:1px solid #b91c1c;'}
         `;
         toast.innerHTML = `
-            <span style="font-size:16px;">${type === 'success' ? '✓' : '⚠'}</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                style="width:18px;height:18px;flex-shrink:0;">
+                ${type === 'success'
+                    ? '<path d="m5 12 4 4L19 6"/>'
+                    : '<circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>'}
+            </svg>
             <span>${escapeHtml(message)}</span>
         `;
 
@@ -569,11 +614,11 @@
             box-shadow:0 8px 32px rgba(15,37,69,0.18);
             animation:toast-in 0.3s cubic-bezier(0.16,1,0.3,1);
             max-width:380px; line-height:1.5;
-            background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe;
+            background:#1d4ed8; color:#fff; border:1px solid #1d4ed8;
         `;
         toast.innerHTML = `
-            <span style="display:inline-block;width:16px;height:16px;border:2px solid #93c5fd;
-                border-top-color:#1d4ed8;border-radius:50%;
+            <span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.45);
+                border-top-color:#fff;border-radius:50%;
                 animation:spin 0.7s linear infinite;flex-shrink:0;"></span>
             <span>${escapeHtml(message)}</span>
         `;

@@ -1308,7 +1308,8 @@
 }
 
 .event-modal-meta-icon {
-  width: 344px;
+  width: 34px;
+  min-width: 34px;
   height: 34px;
   border-radius: 9px;
   background: #f1f5f9;
@@ -1321,6 +1322,7 @@
 
 .event-modal-meta-text {
   flex: 1;
+  min-width: 0;
   padding-top: 2px;
 }
 

@@ -96,7 +96,6 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
             $pageBreadcrumb = [['Home', '#'], ['Community Feed', 'feed_page.php'], [$thread['subject'], null]];
             $userName       = $_SESSION['user_name'] ?? 'Guest';
             $userRole       = 'Resident';
-            $notifCount     = 3;
             include __DIR__ . '/../../components/portal/topbar.php';
             ?>
 

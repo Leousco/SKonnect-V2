@@ -13,38 +13,69 @@ class ServiceModel
 
     public function getAll(array $filters = []): array
     {
-        $sql    = "SELECT * FROM services WHERE 1=1";
+        $sql    = "
+            SELECT s.*,
+                   (
+                       SELECT COUNT(*)
+                       FROM service_applications sa
+                       WHERE sa.service_id = s.id
+                         AND sa.status NOT IN ('rejected', 'cancelled')
+                   ) AS active_application_count
+            FROM services s
+            WHERE 1=1
+        ";
         $params = [];
 
         if (!empty($filters['category'])) {
-            $sql .= " AND category = :category";
+            $sql .= " AND s.category = :category";
             $params[':category'] = $filters['category'];
         }
         if (!empty($filters['service_type'])) {
-            $sql .= " AND service_type = :service_type";
+            $sql .= " AND s.service_type = :service_type";
             $params[':service_type'] = $filters['service_type'];
         }
         if (!empty($filters['status'])) {
-            $sql .= " AND status = :status";
+            $sql .= " AND s.status = :status";
             $params[':status'] = $filters['status'];
         }
         if (!empty($filters['search'])) {
-            $sql .= " AND name LIKE :search";
+            $sql .= " AND s.name LIKE :search";
             $params[':search'] = '%' . $filters['search'] . '%';
         }
 
-        $sql .= " ORDER BY created_at DESC";
+        $sql .= " ORDER BY s.created_at DESC";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $services = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($services as &$service) {
+            $service['current_count'] = (int) $service['active_application_count'];
+            unset($service['active_application_count']);
+        }
+        unset($service);
+        return $services;
     }
 
     public function getById(int $id): ?array
     {
-        $stmt = $this->db->prepare("SELECT * FROM services WHERE id = :id LIMIT 1");
+        $stmt = $this->db->prepare("
+            SELECT s.*,
+                   (
+                       SELECT COUNT(*)
+                       FROM service_applications sa
+                       WHERE sa.service_id = s.id
+                         AND sa.status NOT IN ('rejected', 'cancelled')
+                   ) AS active_application_count
+            FROM services s
+            WHERE s.id = :id
+            LIMIT 1
+        ");
         $stmt->execute([':id' => $id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            $row['current_count'] = (int) $row['active_application_count'];
+            unset($row['active_application_count']);
+        }
         return $row ?: null;
     }
 

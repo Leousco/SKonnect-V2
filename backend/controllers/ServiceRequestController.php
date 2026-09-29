@@ -69,16 +69,26 @@ class ServiceRequestController
             return ['success' => false, 'errors' => ['You already have an active application for this service.']];
         }
 
-        $applicationId = $this->model->insert($data, $residentId);
+        $uploadValidation = $this->validateApplicationUploads($filesArray);
+        if (!$uploadValidation['ok']) {
+            return ['success' => false, 'errors' => $uploadValidation['errors']];
+        }
 
-        $uploadedFiles = $this->normaliseFilesArray($filesArray);
-        foreach ($uploadedFiles as $file) {
-            if ($file['error'] !== UPLOAD_ERR_OK) continue;
-            $upload = $this->handleUpload($file, $applicationId);
-            if (!$upload['ok']) {
-                $this->model->updateStatus($applicationId, 'rejected');
-                return ['success' => false, 'errors' => [$upload['error']]];
+        $storedUploads = [];
+        try {
+            foreach ($uploadValidation['files'] as $file) {
+                $upload = $this->storeApplicationUpload($file);
+                if (!$upload['ok']) {
+                    $this->removeStoredUploads($storedUploads);
+                    return ['success' => false, 'errors' => [$upload['error']]];
+                }
+                $storedUploads[] = $upload['file'];
             }
+
+            $applicationId = $this->model->insertWithDocuments($data, $residentId, $storedUploads);
+        } catch (Throwable $e) {
+            $this->removeStoredUploads($storedUploads);
+            throw $e;
         }
 
         $application = $this->model->getById($applicationId);
@@ -398,6 +408,103 @@ class ServiceRequestController
         }
 
         return [$files];
+    }
+
+    private function validateApplicationUploads(?array $filesArray): array
+    {
+        $files = $this->normaliseFilesArray($filesArray);
+        $validFiles = [];
+
+        foreach ($files as $file) {
+            $error = (int) ($file['error'] ?? UPLOAD_ERR_NO_FILE);
+            if ($error === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            if ($error !== UPLOAD_ERR_OK) {
+                $message = match ($error) {
+                    UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'A document exceeds the upload size limit.',
+                    UPLOAD_ERR_PARTIAL => 'A document was only partially uploaded. Please try again.',
+                    UPLOAD_ERR_NO_TMP_DIR => 'The server is missing its temporary upload folder.',
+                    UPLOAD_ERR_CANT_WRITE => 'The server could not write an uploaded document.',
+                    UPLOAD_ERR_EXTENSION => 'A server extension stopped a document upload.',
+                    default => 'A document could not be uploaded. Please try again.',
+                };
+                return ['ok' => false, 'errors' => [$message]];
+            }
+
+            if ((int) ($file['size'] ?? 0) > $this->maxFileSizeBytes) {
+                return [
+                    'ok' => false,
+                    'errors' => ["\"{$file['name']}\" exceeds the 5 MB file size limit."],
+                ];
+            }
+
+            $extension = strtolower(pathinfo((string) $file['name'], PATHINFO_EXTENSION));
+            if (!in_array($extension, $this->allowedExts, true)) {
+                return [
+                    'ok' => false,
+                    'errors' => ["File type \".{$extension}\" is not allowed."],
+                ];
+            }
+
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo === false) {
+                throw new RuntimeException('Unable to inspect uploaded document types.');
+            }
+            $mimeType = finfo_file($finfo, (string) $file['tmp_name']);
+            finfo_close($finfo);
+
+            if ($mimeType === false || !in_array($mimeType, $this->allowedMimes, true)) {
+                return [
+                    'ok' => false,
+                    'errors' => ["Invalid file type detected for \"{$file['name']}\"."],
+                ];
+            }
+
+            $file['mime_type'] = $mimeType;
+            $validFiles[] = $file;
+        }
+
+        if (!$validFiles) {
+            return ['ok' => false, 'errors' => ['Please upload at least one valid required document.']];
+        }
+
+        return ['ok' => true, 'files' => $validFiles];
+    }
+
+    private function storeApplicationUpload(array $file): array
+    {
+        $safeName = preg_replace('/[^A-Za-z0-9._-]/', '_', basename((string) $file['name']));
+        $uniqueName = 'app_' . bin2hex(random_bytes(16)) . '_' . $safeName;
+        $destination = $this->uploadDir . $uniqueName;
+
+        if (!move_uploaded_file((string) $file['tmp_name'], $destination)) {
+            return [
+                'ok' => false,
+                'error' => "Failed to save \"{$file['name']}\". Please try again.",
+            ];
+        }
+
+        return [
+            'ok' => true,
+            'file' => [
+                'file_name' => (string) $file['name'],
+                'file_path' => '/uploads/applications/' . $uniqueName,
+                'absolute_path' => $destination,
+                'file_size' => (int) $file['size'],
+                'mime_type' => (string) $file['mime_type'],
+            ],
+        ];
+    }
+
+    private function removeStoredUploads(array $files): void
+    {
+        foreach ($files as $file) {
+            $path = $file['absolute_path'] ?? '';
+            if ($path !== '' && is_file($path) && !unlink($path)) {
+                error_log('Failed to remove an uncommitted service request upload: ' . $path);
+            }
+        }
     }
 
     private function handleFulfillmentUpload(array $file): array

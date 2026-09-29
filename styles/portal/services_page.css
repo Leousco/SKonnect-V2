@@ -1,5 +1,4 @@
 
-
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -94,8 +93,6 @@
   flex-shrink: 0;
 }
 
-
-
 .panel-header {
   display: flex;
   align-items: center;
@@ -107,9 +104,6 @@
   color: var(--text-muted);
   font-weight: 500;
 }
-
-
-
 
 .res-svc-card .ann-card-body {
   padding: 18px 20px 14px;
@@ -662,6 +656,7 @@
   background: #cbd5e1;
   color: #94a3b8;
   cursor: not-allowed;
+  opacity: 0.65;
   transform: none !important;
   box-shadow: none !important;
 }
@@ -889,6 +884,7 @@
   background: var(--bg);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  margin: -24px -24px 24px;
 }
 
 .svc-summary-item {
@@ -1667,6 +1663,9 @@
   }
   .modal-body {
     padding: 18px;
+  }
+  .modal-svc-summary {
+    margin: -18px -18px 18px;
   }
   .modal-footer {
     padding: 14px 18px;

@@ -23,7 +23,6 @@ $pageBreadcrumb = [
 ];
 $userName       = $_SESSION['user_name']  ?? 'Guest';
 $userRole       = 'Resident';
-$notifCount = 3;
 ?>
 <!DOCTYPE html>
 <html lang="en">

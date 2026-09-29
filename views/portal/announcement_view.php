@@ -28,9 +28,6 @@ $pageBreadcrumb = [
 ];
 $userName       = $_SESSION['user_name']  ?? 'Guest';
 $userRole       = 'Resident';
-$notifCount = 3;
-
-
 $catColors = [
     'event'   => ['bg' => '#d1fae5', 'color' => '#065f46', 'border' => '#6ee7b7', 'accent' => '#059669'],
     'program' => ['bg' => '#dbeafe', 'color' => '#1d4ed8', 'border' => '#93c5fd', 'accent' => '#2563eb'],

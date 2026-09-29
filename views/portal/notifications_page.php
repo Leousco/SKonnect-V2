@@ -64,7 +64,6 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
     $pageBreadcrumb = [['Home', '#'], ['Notifications', null]];
     $userName       = $_SESSION['user_name'] ?? 'Guest';
     $userRole       = 'Resident';
-    $notifCount     = $stats['unread'];
     include __DIR__ . '/../../components/portal/topbar.php';
     ?>
 

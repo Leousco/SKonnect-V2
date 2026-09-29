@@ -7,20 +7,12 @@ $userAvatar     = $userAvatar     ?? null;
 
 
 
-if (!isset($notifCount)) {
-    $notifCount = 0;
-    if (!empty($_SESSION['user_id'])) {
-        try {
-            require_once __DIR__ . '/../../backend/config/database.php';
-            require_once __DIR__ . '/../../backend/models/NotificationModel.php';
-            $notifModel = new NotificationModel();
-            $stats      = $notifModel->getStats((int) $_SESSION['user_id']);
-            $notifCount = (int) ($stats['unread'] ?? 0);
-        } catch (Throwable $e) {
-            
-            $notifCount = 0;
-        }
-    }
+$notifCount = 0;
+if (!empty($_SESSION['user_id'])) {
+    require_once __DIR__ . '/../../backend/models/NotificationModel.php';
+    $topbarNotifModel = new NotificationModel();
+    $topbarNotifStats = $topbarNotifModel->getStats((int) $_SESSION['user_id']);
+    $notifCount       = (int) ($topbarNotifStats['unread'] ?? 0);
 }
 
 

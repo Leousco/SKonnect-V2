@@ -10,7 +10,6 @@ $pageTitle      = 'Dashboard';
 $pageBreadcrumb = [['Home', '#'], ['Dashboard', null]];
 $userName       = $_SESSION['user_name'] ?? 'Guest';
 $userRole       = 'Resident';
-$notifCount     = 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">

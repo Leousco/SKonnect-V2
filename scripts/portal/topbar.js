@@ -148,10 +148,16 @@
 
         
         list.querySelectorAll('.notif-item[data-id]').forEach(function (item) {
-            item.addEventListener('click', function () {
+            item.addEventListener('click', function (event) {
                 const id = parseInt(item.dataset.id, 10);
-                if (item.classList.contains('unread')) {
-                    markRead(id, item);
+                const link = item.querySelector('a[href]');
+                if (link && item.classList.contains('unread')) {
+                    event.preventDefault();
+                    markRead(id, item)
+                        .catch(function (error) { console.error(error); })
+                        .finally(function () { window.location.assign(link.href); });
+                } else if (item.classList.contains('unread')) {
+                    markRead(id, item).catch(function (error) { console.error(error); });
                 }
             });
         });
@@ -191,18 +197,22 @@
         const fd = new FormData();
         fd.append('action', 'markRead');
         fd.append('id', id);
-        fetch(NOTIF_API, { method: 'POST', credentials: 'same-origin', body: fd })
-            .then(function (r) { return r.json(); })
+        return fetch(NOTIF_API, { method: 'POST', credentials: 'same-origin', body: fd })
+            .then(function (response) {
+                if (!response.ok) throw new Error('Unable to mark notification as read.');
+                return response.json();
+            })
             .then(function (res) {
-                if (res.status === 'success' && itemEl) {
+                if (res.status !== 'success') {
+                    throw new Error(res.message || 'Unable to mark notification as read.');
+                }
+                if (itemEl) {
                     itemEl.classList.remove('unread');
                     const dot = itemEl.querySelector('.notif-dot');
                     if (dot) dot.remove();
-                                        const newCount = (res.stats && res.stats.unread != null)
-                        ? res.stats.unread
-                        : Math.max(0, unreadCount - 1);
-                    setBadge(newCount);
                 }
+                setBadge(Math.max(0, unreadCount - 1));
+                return res;
             });
     }
 
@@ -210,17 +220,22 @@
         const fd = new FormData();
         fd.append('action', 'markAllRead');
         fetch(NOTIF_API, { method: 'POST', credentials: 'same-origin', body: fd })
-            .then(function (r) { return r.json(); })
+            .then(function (response) {
+                if (!response.ok) throw new Error('Unable to mark notifications as read.');
+                return response.json();
+            })
             .then(function (res) {
-                if (res.status === 'success') {
-                    list.querySelectorAll('.notif-item.unread').forEach(function (el) {
-                        el.classList.remove('unread');
-                        const dot = el.querySelector('.notif-dot');
-                        if (dot) dot.remove();
-                    });
-                    setBadge(0);
+                if (res.status !== 'success') {
+                    throw new Error(res.message || 'Unable to mark notifications as read.');
                 }
-            });
+                list.querySelectorAll('.notif-item.unread').forEach(function (el) {
+                    el.classList.remove('unread');
+                    const dot = el.querySelector('.notif-dot');
+                    if (dot) dot.remove();
+                });
+                setBadge(0);
+            })
+            .catch(function (error) { console.error(error); });
     }
 
         if (markAllBtn) {

@@ -143,9 +143,16 @@ class ServiceRequestModel
     public function getServiceCapacity(int $serviceId): ?array
     {
         $stmt = $this->db->prepare("
-            SELECT max_capacity, current_count, status
-            FROM services
-            WHERE id = :id
+            SELECT s.max_capacity,
+                   (
+                       SELECT COUNT(*)
+                       FROM service_applications sa
+                       WHERE sa.service_id = s.id
+                         AND sa.status NOT IN ('rejected', 'cancelled')
+                   ) AS current_count,
+                   s.status
+            FROM services s
+            WHERE s.id = :id
             LIMIT 1
         ");
         $stmt->execute([':id' => $serviceId]);
@@ -179,6 +186,30 @@ class ServiceRequestModel
             ':purpose'     => isset($data['purpose']) ? trim($data['purpose']) : null,
         ]);
         return (int)$this->db->lastInsertId();
+    }
+
+    public function insertWithDocuments(array $data, int $residentId, array $documents): int
+    {
+        $this->db->beginTransaction();
+        try {
+            $applicationId = $this->insert($data, $residentId);
+            foreach ($documents as $document) {
+                $this->insertDocument(
+                    $applicationId,
+                    $document['file_name'],
+                    $document['file_path'],
+                    $document['file_size'],
+                    $document['mime_type']
+                );
+            }
+            $this->db->commit();
+            return $applicationId;
+        } catch (Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
     }
 
     public function updateApplication(int $id, array $data): void
@@ -270,9 +301,8 @@ class ServiceRequestModel
     public function cancelApplication(int $applicationId, int $residentId): bool
     {
         $stmt = $this->db->prepare("
-            SELECT sa.status, sv.max_capacity
+            SELECT sa.status
             FROM service_applications sa
-            INNER JOIN services sv ON sv.id = sa.service_id
             WHERE sa.id = :id AND sa.resident_id = :rid
             LIMIT 1
         ");
@@ -286,14 +316,6 @@ class ServiceRequestModel
         $this->db->prepare("
             UPDATE service_applications SET status = 'cancelled' WHERE id = :id
         ")->execute([':id' => $applicationId]);
-
-        if ($row['max_capacity'] !== null) {
-            $this->db->prepare("
-                UPDATE services
-                SET current_count = GREATEST(0, current_count - 1)
-                WHERE id = (SELECT service_id FROM service_applications WHERE id = :id)
-            ")->execute([':id' => $applicationId]);
-        }
 
         return true;
     }

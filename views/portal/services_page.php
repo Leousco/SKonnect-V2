@@ -470,22 +470,22 @@ RoleMiddleware::requireAuth();
             </div>
 
             
-            <div class="modal-svc-summary">
-                <div class="svc-summary-item">
-                    <span class="svc-summary-label">Eligibility</span>
-                    <span id="apply-sum-eligibility">—</span>
-                </div>
-                <div class="svc-summary-item">
-                    <span class="svc-summary-label">Processing Time</span>
-                    <span id="apply-sum-processing">—</span>
-                </div>
-                <div class="svc-summary-item">
-                    <span class="svc-summary-label">Requirements</span>
-                    <span id="apply-sum-requirements">—</span>
-                </div>
-            </div>
-
             <div class="modal-body">
+                <div class="modal-svc-summary">
+                    <div class="svc-summary-item">
+                        <span class="svc-summary-label">Eligibility</span>
+                        <span id="apply-sum-eligibility">—</span>
+                    </div>
+                    <div class="svc-summary-item">
+                        <span class="svc-summary-label">Processing Time</span>
+                        <span id="apply-sum-processing">—</span>
+                    </div>
+                    <div class="svc-summary-item">
+                        <span class="svc-summary-label">Requirements</span>
+                        <span id="apply-sum-requirements">—</span>
+                    </div>
+                </div>
+
                 <form class="concern-form" id="apply-form" enctype="multipart/form-data" novalidate>
                     <input type="hidden" id="apply-service-id" name="service_id">
 
@@ -559,7 +559,7 @@ RoleMiddleware::requireAuth();
 
             <div class="modal-footer">
                 <button class="btn-close-portal" id="apply-modal-cancel" type="button">Cancel</button>
-                <button class="btn-primary-portal" id="apply-modal-submit" type="button">
+                <button class="btn-primary-portal" id="apply-modal-submit" type="button" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:16px;height:16px;">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                     </svg>

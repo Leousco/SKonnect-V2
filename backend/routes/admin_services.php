@@ -37,26 +37,30 @@ if ($method === 'GET' && $action === 'list') {
     $status   = $_GET['status']   ?? 'all';
     $search   = trim($_GET['search'] ?? '');
 
-    $sql    = 'SELECT id, name, category, service_type, description,
-                      eligibility, processing_time, requirements, status,
-                      max_capacity, current_count, created_at, updated_at
-               FROM services WHERE 1=1';
+    $sql    = "SELECT s.id, s.name, s.category, s.service_type, s.description,
+                      s.eligibility, s.processing_time, s.requirements, s.status,
+                      s.max_capacity,
+                      (SELECT COUNT(*) FROM service_applications sa
+                       WHERE sa.service_id = s.id
+                         AND sa.status NOT IN ('rejected', 'cancelled')) AS current_count,
+                      s.created_at, s.updated_at
+               FROM services s WHERE 1=1";
     $params = [];
 
     if ($category !== 'all') {
-        $sql      .= ' AND category = :category';
+        $sql      .= ' AND s.category = :category';
         $params[':category'] = $category;
     }
     if ($status !== 'all') {
-        $sql      .= ' AND status = :status';
+        $sql      .= ' AND s.status = :status';
         $params[':status'] = $status;
     }
     if ($search !== '') {
-        $sql      .= ' AND name LIKE :search';
+        $sql      .= ' AND s.name LIKE :search';
         $params[':search'] = '%' . $search . '%';
     }
 
-    $sql .= ' ORDER BY created_at DESC';
+    $sql .= ' ORDER BY s.created_at DESC';
 
     $stmt = $db->prepare($sql);
     $stmt->execute($params);

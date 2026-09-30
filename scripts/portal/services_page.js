@@ -1,7 +1,19 @@
 
    document.addEventListener('DOMContentLoaded', () => {
+       const loadingSections = Array.from(document.querySelectorAll('.services-loading'));
+       const skeletonTimer = window.setTimeout(() => {
+           loadingSections.forEach(section => section.classList.add('services-skeleton-active'));
+       }, 150);
 
-    const searchInput  = document.getElementById('svc-search');
+       const finishLoading = () => {
+           window.clearTimeout(skeletonTimer);
+           loadingSections.forEach(section => {
+               section.classList.remove('services-loading', 'services-skeleton-active');
+               section.setAttribute('aria-busy', 'false');
+           });
+       };
+
+       const searchInput    = document.getElementById('svc-search');
     const catSelect    = document.getElementById('svc-category');
     const typeSelect   = document.getElementById('svc-type');
     const statusSelect = document.getElementById('svc-status');
@@ -637,6 +649,12 @@
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    if (document.readyState === 'complete') {
+        finishLoading();
+    } else {
+        window.addEventListener('load', finishLoading, { once: true });
     }
 
 });

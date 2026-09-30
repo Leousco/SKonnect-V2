@@ -121,7 +121,21 @@ RoleMiddleware::requireAuth();
             ?>
 
             
-            <section class="how-it-works-section">
+            <section class="how-it-works-section services-loading" aria-busy="true">
+                <div class="services-skeleton how-it-works-skeleton" aria-hidden="true">
+                    <span class="skeleton-block skeleton-section-title"></span>
+                    <div class="skeleton-steps-row">
+                        <?php for ($i = 0; $i < 4; $i++) : ?>
+                        <?php if ($i > 0) : ?>
+                        <span class="skeleton-block skeleton-step-arrow"></span>
+                        <?php endif; ?>
+                        <div class="skeleton-step">
+                            <span class="skeleton-block skeleton-step-number"></span>
+                            <span class="skeleton-block skeleton-step-copy"></span>
+                        </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
                 <h2 class="section-label">How It Works</h2>
                 <div class="steps-row">
                     <div class="step-item">
@@ -159,7 +173,13 @@ RoleMiddleware::requireAuth();
             </section>
 
             
-            <section class="announcements-controls">
+            <section class="announcements-controls services-loading" aria-busy="true">
+                <div class="services-skeleton services-controls-skeleton" aria-hidden="true">
+                    <span class="skeleton-block skeleton-search"></span>
+                    <span class="skeleton-block skeleton-filter"></span>
+                    <span class="skeleton-block skeleton-filter"></span>
+                    <span class="skeleton-block skeleton-filter"></span>
+                </div>
                 <div class="controls-left">
                     <div class="search-wrap">
                         <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -194,7 +214,28 @@ RoleMiddleware::requireAuth();
             </section>
 
             
-            <section class="announcements-section">
+            <section class="announcements-section services-loading" aria-busy="true">
+                <div class="services-skeleton services-list-skeleton" aria-hidden="true">
+                    <div class="skeleton-services-header">
+                        <span class="skeleton-block skeleton-section-title"></span>
+                        <span class="skeleton-block skeleton-services-count"></span>
+                    </div>
+                    <div class="skeleton-services-grid">
+                        <?php for ($i = 0; $i < 3; $i++) : ?>
+                        <div class="skeleton-service-card">
+                            <div class="skeleton-service-top">
+                                <span class="skeleton-block skeleton-service-icon"></span>
+                                <span class="skeleton-block skeleton-service-badge"></span>
+                            </div>
+                            <span class="skeleton-block skeleton-service-title"></span>
+                            <span class="skeleton-block skeleton-service-copy"></span>
+                            <span class="skeleton-block skeleton-service-copy skeleton-service-copy-short"></span>
+                            <span class="skeleton-block skeleton-service-details"></span>
+                            <span class="skeleton-block skeleton-service-button"></span>
+                        </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
                 <div class="panel-header" style="margin-bottom: 16px;">
                     <h2 class="section-label">Available Services</h2>
                     <span class="svc-count" id="svc-count">

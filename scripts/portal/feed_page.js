@@ -1,7 +1,18 @@
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  
+  const loadingSections = Array.from(document.querySelectorAll(".feed-loading"));
+  const skeletonTimer = window.setTimeout(() => {
+    loadingSections.forEach((section) => section.classList.add("feed-skeleton-active"));
+  }, 150);
+
+  const finishLoading = () => {
+    window.clearTimeout(skeletonTimer);
+    loadingSections.forEach((section) => {
+      section.classList.remove("feed-loading", "feed-skeleton-active");
+      section.setAttribute("aria-busy", "false");
+    });
+  };
 
   const banOverlay = document.getElementById("ban-modal-overlay");
   const banDismiss = document.getElementById("ban-modal-dismiss");
@@ -478,4 +489,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   window.showToast = showToast;
+
+  if (document.readyState === "complete") {
+    finishLoading();
+  } else {
+    window.addEventListener("load", finishLoading, { once: true });
+  }
 });

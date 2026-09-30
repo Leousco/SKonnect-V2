@@ -46,7 +46,26 @@ RoleMiddleware::requireAuth();
     ?>
 
         
-        <section class="featured-section">
+        <section class="featured-section announcement-loading" aria-busy="true">
+            <div class="announcement-skeleton featured-section-skeleton" aria-hidden="true">
+                <span class="skeleton-block skeleton-section-heading"></span>
+                <?php if ($featured): ?>
+                <div class="skeleton-featured-card">
+                    <div class="skeleton-featured-badges">
+                        <span class="skeleton-block skeleton-featured-badge"></span>
+                        <span class="skeleton-block skeleton-featured-badge skeleton-featured-category"></span>
+                    </div>
+                    <span class="skeleton-block skeleton-featured-title"></span>
+                    <span class="skeleton-block skeleton-featured-copy"></span>
+                    <span class="skeleton-block skeleton-featured-copy skeleton-featured-copy-short"></span>
+                    <div class="skeleton-featured-meta">
+                        <span class="skeleton-block"></span>
+                        <span class="skeleton-block"></span>
+                    </div>
+                    <span class="skeleton-block skeleton-featured-button"></span>
+                </div>
+                <?php endif; ?>
+            </div>
             <h2 class="section-label">Featured Announcement</h2>
 
             <?php if ($featured): ?>
@@ -77,7 +96,15 @@ RoleMiddleware::requireAuth();
         </section>
 
         
-        <section class="announcements-controls">
+        <section class="announcements-controls announcement-loading" aria-busy="true">
+            <div class="announcement-skeleton controls-section-skeleton" aria-hidden="true">
+                <span class="skeleton-block skeleton-search"></span>
+                <div class="skeleton-control-actions">
+                    <span class="skeleton-block skeleton-select"></span>
+                    <span class="skeleton-block skeleton-select"></span>
+                    <span class="skeleton-block skeleton-bookmark-button"></span>
+                </div>
+            </div>
             <div class="controls-left">
                 <div class="search-wrap">
                     <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
@@ -111,7 +138,28 @@ RoleMiddleware::requireAuth();
         </section>
 
         
-        <section class="announcements-section">
+        <section class="announcements-section announcement-loading" aria-busy="true">
+            <div class="announcement-skeleton announcements-section-skeleton" aria-hidden="true">
+                <span class="skeleton-block skeleton-section-heading"></span>
+                <div class="skeleton-announcements-grid">
+                    <?php for ($i = 0; $i < 3; $i++): ?>
+                    <div class="skeleton-announcement-card">
+                        <span class="skeleton-block skeleton-announcement-image"></span>
+                        <div class="skeleton-announcement-body">
+                            <span class="skeleton-block skeleton-announcement-badge"></span>
+                            <span class="skeleton-block skeleton-announcement-title"></span>
+                            <span class="skeleton-block skeleton-announcement-copy"></span>
+                            <span class="skeleton-block skeleton-announcement-copy skeleton-announcement-copy-short"></span>
+                            <span class="skeleton-block skeleton-announcement-meta"></span>
+                            <div class="skeleton-announcement-actions">
+                                <span class="skeleton-block skeleton-read-button"></span>
+                                <span class="skeleton-block skeleton-bookmark-icon"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
             <h2 class="section-label">All Announcements</h2>
 
             <div class="announcements-grid" id="announcements-grid">
@@ -183,7 +231,13 @@ RoleMiddleware::requireAuth();
         </section>
 
         
-        <section class="pagination-section">
+        <section class="pagination-section announcement-loading" aria-busy="true">
+            <div class="announcement-skeleton pagination-section-skeleton" aria-hidden="true">
+                <span class="skeleton-block skeleton-page-button"></span>
+                <span class="skeleton-block skeleton-page-number"></span>
+                <span class="skeleton-block skeleton-page-number"></span>
+                <span class="skeleton-block skeleton-page-button"></span>
+            </div>
             <button class="page-btn" id="prev-btn" disabled>&#8249; Previous</button>
             <div class="page-numbers" id="page-numbers"></div>
             <button class="page-btn" id="next-btn">Next &#8250;</button>

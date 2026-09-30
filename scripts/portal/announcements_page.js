@@ -1,5 +1,17 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+    const loadingSections = Array.from(document.querySelectorAll('.announcement-loading'));
+    const skeletonTimer = window.setTimeout(() => {
+        loadingSections.forEach(section => section.classList.add('announcement-skeleton-active'));
+    }, 150);
+
+    const finishLoading = () => {
+        window.clearTimeout(skeletonTimer);
+        loadingSections.forEach(section => {
+            section.classList.remove('announcement-loading', 'announcement-skeleton-active');
+            section.setAttribute('aria-busy', 'false');
+        });
+    };
 
     const searchInput    = document.getElementById('ann-search');
     const categorySelect = document.getElementById('ann-category');
@@ -164,5 +176,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
     }
 
-    renderPage();
+    try {
+        renderPage();
+    } finally {
+        if (document.readyState === 'complete') {
+            finishLoading();
+        } else {
+            window.addEventListener('load', finishLoading, { once: true });
+        }
+    }
 });

@@ -84,13 +84,31 @@
   
     async function fetchJSON(action) {
         const res = await fetch(`${API}?action=${action}`);
+        if (!res.ok) {
+            throw new Error(`Dashboard ${action} request failed with status ${res.status}.`);
+        }
         return res.json();
+    }
+
+    function runDashboardLoad(elements, sectionName, load, onError) {
+        Promise.resolve()
+            .then(load)
+            .catch(error => {
+                console.error(`Unable to load dashboard ${sectionName}.`, error);
+                onError();
+            })
+            .finally(() => {
+                elements.forEach(element => {
+                    element.classList.remove('is-loading');
+                    element.setAttribute('aria-busy', 'false');
+                });
+            });
     }
   
     
     async function loadStats() {
         const data = await fetchJSON('stats');
-        if (data.status !== 'success') return;
+        if (data.status !== 'success') throw new Error(data.message || 'Dashboard stats request was unsuccessful.');
         const s = data.data;
         document.getElementById('stat-requests').textContent = s.active_requests;
         document.getElementById('stat-posts').textContent    = s.community_posts;
@@ -102,8 +120,9 @@
     async function loadActivity() {
         const listEl = document.getElementById('activity-list');
         const data   = await fetchJSON('activity');
+        if (data.status !== 'success') throw new Error(data.message || 'Recent activity request was unsuccessful.');
   
-        if (data.status !== 'success' || !data.data.length) {
+        if (!data.data.length) {
             listEl.innerHTML = '<p class="empty-state">No recent activity yet.</p>';
             return;
         }
@@ -128,8 +147,9 @@
     async function loadAnnouncements() {
         const listEl = document.getElementById('announcement-list');
         const data   = await fetchJSON('announcements');
+        if (data.status !== 'success') throw new Error(data.message || 'Announcements request was unsuccessful.');
   
-        if (data.status !== 'success' || !data.data.length) {
+        if (!data.data.length) {
             listEl.innerHTML = '<li class="empty-state">No announcements yet.</li>';
             return;
         }
@@ -176,8 +196,9 @@
     async function loadDiscussions() {
         const listEl = document.getElementById('discussion-list');
         const data   = await fetchJSON('discussions');
+        if (data.status !== 'success') throw new Error(data.message || 'Discussions request was unsuccessful.');
 
-        if (data.status !== 'success' || !data.data.length) {
+        if (!data.data.length) {
             listEl.innerHTML = '<li class="empty-state">No discussions yet.</li>';
             return;
         }
@@ -218,8 +239,9 @@
     async function loadServices() {
         const listEl = document.getElementById('service-list');
         const data   = await fetchJSON('services');
+        if (data.status !== 'success') throw new Error(data.message || 'Services request was unsuccessful.');
 
-        if (data.status !== 'success' || !data.data.length) {
+        if (!data.data.length) {
             listEl.innerHTML = '<li class="empty-state">No services available right now.</li>';
             return;
         }
@@ -247,7 +269,7 @@
     
     async function loadEvents() {
         const data = await fetchJSON('events');
-        if (data.status !== 'success') return;
+        if (data.status !== 'success') throw new Error(data.message || 'Events request was unsuccessful.');
 
         eventsMap = {};
         data.data.forEach((ev, i) => {
@@ -529,12 +551,67 @@
     });
   
     buildModal();
-    loadStats();
-    loadActivity();
-    loadAnnouncements();
-    loadDiscussions();
-    loadServices();
-    loadEvents();
+    runDashboardLoad(
+        Array.from(document.querySelectorAll('.widget-card')),
+        'widgets',
+        loadStats,
+        () => {
+            document.querySelectorAll('.widget-number').forEach(element => {
+                element.textContent = '—';
+            });
+            document.querySelectorAll('.widget-sub').forEach(element => {
+                element.textContent = 'Unable to load data.';
+            });
+        }
+    );
+    runDashboardLoad(
+        [document.querySelector('.mini-announcements')],
+        'announcements',
+        loadAnnouncements,
+        () => {
+            document.getElementById('announcement-list').innerHTML =
+                '<li class="empty-state">Unable to load announcements.</li>';
+        }
+    );
+    runDashboardLoad(
+        [document.querySelector('.community-discussions')],
+        'discussions',
+        loadDiscussions,
+        () => {
+            document.getElementById('discussion-list').innerHTML =
+                '<li class="empty-state">Unable to load discussions.</li>';
+        }
+    );
+    runDashboardLoad(
+        [document.querySelector('.calendar-section')],
+        'events',
+        loadEvents,
+        () => {
+            eventsMap = {};
+            document.getElementById('calendar-skeleton').style.display = 'none';
+            renderCalendar();
+            document.getElementById('events-empty').textContent = 'Unable to load events.';
+            document.getElementById('calendar').style.display = '';
+        }
+    );
+    runDashboardLoad(
+        [document.querySelector('.available-services')],
+        'services',
+        loadServices,
+        () => {
+            document.getElementById('service-list').innerHTML =
+                '<li class="empty-state">Unable to load services.</li>';
+        }
+    );
+    runDashboardLoad(
+        [document.querySelector('.recent-activity')],
+        'recent activity',
+        loadActivity,
+        () => {
+            document.getElementById('activity-list').innerHTML =
+                '<p class="empty-state">Unable to load recent activity.</p>';
+        }
+    );
 
     setInterval(() => {
         const today = getPhilippineDateParts();

@@ -15,6 +15,175 @@
 .announcements-section  { animation-delay: 0.15s; }
 .pagination-section     { animation-delay: 0.25s; }
 
+.feed-loading {
+  position: relative;
+}
+
+.feed-loading.feed-skeleton-active > :not(.feed-skeleton) {
+  display: none;
+}
+
+.feed-skeleton {
+  display: none;
+  position: relative;
+  width: 100%;
+  border-radius: inherit;
+}
+
+.feed-loading.feed-skeleton-active > .feed-skeleton {
+  display: flex;
+}
+
+.skeleton-block {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 600px 100%;
+  animation: feed-skeleton-shimmer 1.4s infinite linear;
+}
+
+@keyframes feed-skeleton-shimmer {
+  0% { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+.controls-skeleton {
+  align-items: center;
+  gap: 12px;
+}
+
+.skeleton-action {
+  width: 128px;
+  height: 40px;
+}
+
+.skeleton-bookmark-action {
+  width: 142px;
+}
+
+.skeleton-search {
+  flex: 1;
+  min-width: 120px;
+  height: 40px;
+}
+
+.skeleton-filter {
+  width: 132px;
+  height: 40px;
+}
+
+.threads-skeleton {
+  flex-direction: column;
+  gap: 18px;
+}
+
+.skeleton-section-title {
+  width: 185px;
+  height: 18px;
+}
+
+.skeleton-thread-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.skeleton-thread-card {
+  display: flex;
+  min-width: 0;
+  min-height: 248px;
+  border: 1px solid var(--border);
+  border-top: 3px solid #e2e8f0;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.skeleton-thread-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.skeleton-thread-badges {
+  display: flex;
+  gap: 6px;
+}
+
+.skeleton-thread-badge {
+  width: 82px;
+  height: 18px;
+  border-radius: 20px;
+}
+
+.skeleton-thread-status {
+  width: 72px;
+}
+
+.skeleton-thread-title {
+  width: 82%;
+  height: 17px;
+}
+
+.skeleton-thread-copy {
+  width: 100%;
+  height: 11px;
+}
+
+.skeleton-thread-copy-short {
+  width: 68%;
+  margin-top: -8px;
+}
+
+.skeleton-thread-meta {
+  width: 80%;
+  height: 10px;
+  margin-top: auto;
+}
+
+.skeleton-thread-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.skeleton-support-action {
+  width: 58px;
+  height: 34px;
+  margin-right: auto;
+}
+
+.skeleton-comment-action {
+  width: 110px;
+  height: 34px;
+}
+
+.skeleton-bookmark-icon {
+  width: 36px;
+  height: 34px;
+}
+
+.pagination-skeleton {
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: transparent;
+}
+
+.skeleton-page-button {
+  width: 112px;
+  height: 36px;
+}
+
+.skeleton-page-number {
+  width: 36px;
+  height: 36px;
+}
+
 
 
 .feed-card {
@@ -703,6 +872,29 @@
 
 
 @media (max-width: 768px) {
+  .controls-skeleton {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .skeleton-action,
+  .skeleton-bookmark-action {
+    width: calc(50% - 6px);
+  }
+
+  .skeleton-search {
+    flex-basis: 100%;
+  }
+
+  .skeleton-filter {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .skeleton-thread-grid {
+    grid-template-columns: 1fr;
+  }
+
   .controls-left {
     flex-wrap: wrap;
   }

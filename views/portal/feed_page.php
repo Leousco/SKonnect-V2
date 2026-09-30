@@ -73,7 +73,15 @@ $cat_labels = [
             ?>
 
             
-            <section class="announcements-controls">
+            <section class="announcements-controls feed-loading" aria-busy="true">
+                <div class="feed-skeleton controls-skeleton" aria-hidden="true">
+                    <span class="skeleton-block skeleton-action"></span>
+                    <span class="skeleton-block skeleton-action skeleton-bookmark-action"></span>
+                    <span class="skeleton-block skeleton-search"></span>
+                    <span class="skeleton-block skeleton-filter"></span>
+                    <span class="skeleton-block skeleton-filter"></span>
+                    <span class="skeleton-block skeleton-filter"></span>
+                </div>
                 <div class="controls-left">
                     <button class="btn-primary-portal" id="submit-concern-btn">
                         Post a Thread
@@ -115,7 +123,31 @@ $cat_labels = [
             </section>
 
             
-            <section class="announcements-section">
+            <section class="announcements-section feed-loading" aria-busy="true">
+                <div class="feed-skeleton threads-skeleton" aria-hidden="true">
+                    <span class="skeleton-block skeleton-section-title"></span>
+                    <div class="skeleton-thread-grid">
+                        <?php for ($i = 0; $i < 3; $i++) : ?>
+                        <div class="skeleton-thread-card">
+                            <div class="skeleton-thread-body">
+                                <div class="skeleton-thread-badges">
+                                    <span class="skeleton-block skeleton-thread-badge"></span>
+                                    <span class="skeleton-block skeleton-thread-badge skeleton-thread-status"></span>
+                                </div>
+                                <span class="skeleton-block skeleton-thread-title"></span>
+                                <span class="skeleton-block skeleton-thread-copy"></span>
+                                <span class="skeleton-block skeleton-thread-copy skeleton-thread-copy-short"></span>
+                                <span class="skeleton-block skeleton-thread-meta"></span>
+                                <div class="skeleton-thread-actions">
+                                    <span class="skeleton-block skeleton-support-action"></span>
+                                    <span class="skeleton-block skeleton-comment-action"></span>
+                                    <span class="skeleton-block skeleton-bookmark-icon"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endfor; ?>
+                    </div>
+                </div>
                 <h2 class="section-label">Community Threads</h2>
 
                 <div class="announcements-grid" id="feed-grid">
@@ -187,7 +219,13 @@ $cat_labels = [
             </section>
 
             
-            <section class="pagination-section">
+            <section class="pagination-section feed-loading" aria-busy="true">
+                <div class="feed-skeleton pagination-skeleton" aria-hidden="true">
+                    <span class="skeleton-block skeleton-page-button"></span>
+                    <span class="skeleton-block skeleton-page-number"></span>
+                    <span class="skeleton-block skeleton-page-number"></span>
+                    <span class="skeleton-block skeleton-page-button"></span>
+                </div>
                 <button class="page-btn" id="prev-btn" disabled>&#8249; Previous</button>
                 <div class="page-numbers" id="page-numbers"></div>
                 <button class="page-btn" id="next-btn">Next &#8250;</button>

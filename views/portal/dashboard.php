@@ -37,7 +37,15 @@ $userRole       = 'Resident';
             
             <section class="dashboard-widgets">
 
-                <div class="widget-card" id="widget-requests">
+                <div class="widget-card is-loading" id="widget-requests" aria-busy="true">
+                    <div class="widget-skeleton dashboard-skeleton" aria-hidden="true">
+                        <span class="skeleton-block widget-skeleton-icon"></span>
+                        <span class="widget-skeleton-lines">
+                            <span class="skeleton-block widget-skeleton-number"></span>
+                            <span class="skeleton-block widget-skeleton-label"></span>
+                            <span class="skeleton-block widget-skeleton-sub"></span>
+                        </span>
+                    </div>
                     <div class="widget-icon-wrap requests">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -53,7 +61,15 @@ $userRole       = 'Resident';
                     </div>
                 </div>
 
-                <div class="widget-card" id="widget-posts">
+                <div class="widget-card is-loading" id="widget-posts" aria-busy="true">
+                    <div class="widget-skeleton dashboard-skeleton" aria-hidden="true">
+                        <span class="skeleton-block widget-skeleton-icon"></span>
+                        <span class="widget-skeleton-lines">
+                            <span class="skeleton-block widget-skeleton-number"></span>
+                            <span class="skeleton-block widget-skeleton-label"></span>
+                            <span class="skeleton-block widget-skeleton-sub"></span>
+                        </span>
+                    </div>
                     <div class="widget-icon-wrap posts">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -66,7 +82,15 @@ $userRole       = 'Resident';
                     </div>
                 </div>
 
-                <div class="widget-card" id="widget-events">
+                <div class="widget-card is-loading" id="widget-events" aria-busy="true">
+                    <div class="widget-skeleton dashboard-skeleton" aria-hidden="true">
+                        <span class="skeleton-block widget-skeleton-icon"></span>
+                        <span class="widget-skeleton-lines">
+                            <span class="skeleton-block widget-skeleton-number"></span>
+                            <span class="skeleton-block widget-skeleton-label"></span>
+                            <span class="skeleton-block widget-skeleton-sub"></span>
+                        </span>
+                    </div>
                     <div class="widget-icon-wrap events">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -82,7 +106,15 @@ $userRole       = 'Resident';
                     </div>
                 </div>
 
-                <div class="widget-card" id="widget-notifs">
+                <div class="widget-card is-loading" id="widget-notifs" aria-busy="true">
+                    <div class="widget-skeleton dashboard-skeleton" aria-hidden="true">
+                        <span class="skeleton-block widget-skeleton-icon"></span>
+                        <span class="widget-skeleton-lines">
+                            <span class="skeleton-block widget-skeleton-number"></span>
+                            <span class="skeleton-block widget-skeleton-label"></span>
+                            <span class="skeleton-block widget-skeleton-sub"></span>
+                        </span>
+                    </div>
                     <div class="widget-icon-wrap notifs">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -101,7 +133,19 @@ $userRole       = 'Resident';
             
             <div class="dashboard-upper">
 
-                <section class="mini-announcements">
+                <section class="mini-announcements is-loading" aria-busy="true">
+                    <div class="dashboard-skeleton card-skeleton" aria-hidden="true">
+                        <div class="skeleton-heading">
+                            <span class="skeleton-block skeleton-heading-icon"></span>
+                            <span class="skeleton-block skeleton-heading-title"></span>
+                        </div>
+                        <div class="skeleton-list">
+                            <span class="skeleton-block skeleton-list-row"></span>
+                            <span class="skeleton-block skeleton-list-row"></span>
+                            <span class="skeleton-block skeleton-list-row"></span>
+                        </div>
+                        <span class="skeleton-block skeleton-button"></span>
+                    </div>
                     <h2 class="section-label">
                         <span class="section-icon icon-announcements">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -121,7 +165,19 @@ $userRole       = 'Resident';
                     <a href="announcements_page.php" class="btn-small">View All Announcements &rsaquo;</a>
                 </section>
 
-                <section class="community-discussions">
+                <section class="community-discussions is-loading" aria-busy="true">
+                    <div class="dashboard-skeleton card-skeleton" aria-hidden="true">
+                        <div class="skeleton-heading">
+                            <span class="skeleton-block skeleton-heading-icon"></span>
+                            <span class="skeleton-block skeleton-heading-title"></span>
+                        </div>
+                        <div class="skeleton-list">
+                            <span class="skeleton-block skeleton-list-row"></span>
+                            <span class="skeleton-block skeleton-list-row"></span>
+                            <span class="skeleton-block skeleton-list-row"></span>
+                        </div>
+                        <span class="skeleton-block skeleton-button"></span>
+                    </div>
                     <h2 class="section-label">
                         <span class="section-icon icon-discussions">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -143,7 +199,29 @@ $userRole       = 'Resident';
             </div>
 
             
-            <section class="calendar-section">
+            <section class="calendar-section is-loading" aria-busy="true">
+                <div class="dashboard-skeleton calendar-card-skeleton" aria-hidden="true">
+                    <div class="skeleton-heading">
+                        <span class="skeleton-block skeleton-heading-icon"></span>
+                        <span class="skeleton-block skeleton-heading-title"></span>
+                    </div>
+                    <div class="calendar-skeleton-columns">
+                        <div class="calendar-skeleton-column">
+                            <span class="skeleton-block calendar-skeleton-month"></span>
+                            <div class="calendar-skeleton-grid">
+                                <?php for ($i = 0; $i < 42; $i++): ?>
+                                <span class="skeleton-block calendar-skeleton-day"></span>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
+                        <div class="calendar-skeleton-column events-skeleton-column">
+                            <span class="skeleton-block events-skeleton-title"></span>
+                            <span class="skeleton-block events-skeleton-row"></span>
+                            <span class="skeleton-block events-skeleton-row"></span>
+                            <span class="skeleton-block events-skeleton-row"></span>
+                        </div>
+                    </div>
+                </div>
                 <h2 class="section-label">
                     <span class="section-icon icon-events">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -207,7 +285,19 @@ $userRole       = 'Resident';
             
             <div class="dashboard-lower">
 
-                <section class="available-services">
+                <section class="available-services is-loading" aria-busy="true">
+                    <div class="dashboard-skeleton card-skeleton" aria-hidden="true">
+                        <div class="skeleton-heading">
+                            <span class="skeleton-block skeleton-heading-icon"></span>
+                            <span class="skeleton-block skeleton-heading-title"></span>
+                        </div>
+                        <div class="skeleton-list">
+                            <span class="skeleton-block skeleton-list-row"></span>
+                            <span class="skeleton-block skeleton-list-row"></span>
+                            <span class="skeleton-block skeleton-list-row"></span>
+                        </div>
+                        <span class="skeleton-block skeleton-button"></span>
+                    </div>
                     <h2 class="section-label">
                         <span class="section-icon icon-services">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -229,7 +319,18 @@ $userRole       = 'Resident';
                     <a href="services_page.php" class="btn-small">View All Services &rsaquo;</a>
                 </section>
 
-                <section class="recent-activity">
+                <section class="recent-activity is-loading" aria-busy="true">
+                    <div class="dashboard-skeleton card-skeleton" aria-hidden="true">
+                        <div class="skeleton-heading">
+                            <span class="skeleton-block skeleton-heading-icon"></span>
+                            <span class="skeleton-block skeleton-heading-title"></span>
+                        </div>
+                        <div class="skeleton-list">
+                            <span class="skeleton-block skeleton-list-row"></span>
+                            <span class="skeleton-block skeleton-list-row"></span>
+                            <span class="skeleton-block skeleton-list-row"></span>
+                        </div>
+                    </div>
                     <h2 class="section-label">
                         <span class="section-icon icon-activity">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

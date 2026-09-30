@@ -1,8 +1,8 @@
 # SKonnect
 
-A community portal that connects residents with their SK officers: announcements, community discussions, events, and youth services in one place.
+A community portal that connects residents with their SK officers: announcements, community discussions, youth services, and events in one place.
 
-> **Last Update:** 9/29/26
+> **Last Update:** 9/30/26
 
 ## Table of Contents
 
@@ -126,83 +126,82 @@ Completed:
 
 ## Known Issues
 
-### General
+### [ GENERAL ]
 
 - [x] Design inconsistencies for buttons, dropdowns, etc.
 - [ ] Topbars on each user views are not sticky
-- [x] After logging in, clicking the 'back' button of a browser returns the user to the login page. *(uncertain)*
-- [ ] Empty fields like threads, reports, etc. show either two "no record yet" messages or misaligned *(not centered)* text.
+- [x] After logging in, clicking the 'back' button of a browser returns the user to the login page. *(fixed maybe)*
+- [ ] Empty fields like threads, reports, etc. show either two "no record yet" messages or misaligned (not centered) text.
 - [ ] Inconsistent toast design across all user views.
 - [ ] Make the notifications on admin users (officer, moderator, admin) a modal.
 - [ ] Make a 404 page.
 
-### PUBLIC SIDE
+### [ PUBLIC SIDE ]
 
-- Login page
+#### Login page
 - [x] No loading visualization when clicking the "Login" button
 - [ ] Forgot Password non functional
 
-- Registration
+#### Registration
 - [ ] No password restrictions
 
-- Services
+#### Services
 - [ ] Bug with modal appearing and the navbar
 
-### PORTAL SIDE
+### [ PORTAL SIDE ]
 
-- Dashboard
+#### Dashboard
 - [x] Event in calendar shows "Tomorrow" even though the event is still 2 days from now
 - [x] Include a services section for easy viewing
 - [x] Include latest community discussions (trending threads)
 
-- Notifications
+#### Notifications
 - [x] Color and icon of "action require" service requests
 - [x] Viewing a notification doesn't auto "mark as read" it
 
-- Profile
+#### Profile
 - [ ] User info improvements
 
-- Services
+#### Services
 - [x] Clicking outside the modal closes the modal resulting in loss of progress
 - [x] Make the "Submit Request" button unclickable if all fields are not complete yet
 - [x] On the request modal, make the info strip non-sticky to allow more space for viewing the form
 - [x] Bug, multiple services entries appearing on one application
-- [ ] Maybe add a confirmation modal or something when submitting an application *(uncertain)*
+- [ ] Maybe add a confirmation modal or something before submitting an application
 
-- Notif Badge
-- [x] Counter appears without any new notifications when opening "view" pages 
-  (`thread_view.php`, `announcement_view.php`)
+#### Notif Badge
+- [x] Counter appears without any new notifications when opening "view" pages (`thread_view.php`, `announcement_view.php`)
 
-### OFFICER SIDE
+### [ OFFICER SIDE ]
 
-- Events Page
+#### Events Page
 - [x] Clicking outside the add event modal closes the modal resulting in loss of progress
 - [ ] Past events don't auto delete *(to be evaluated)*
 - [ ] New events appear at the bottom of the list
 
-- Notification badge
+#### Notification badge
 - [ ] Notification badge non functional
 
-- Services
+#### Services
 - [ ] No confirmation modal when deactivating or activating a service
 
-### MODERATOR SIDE
+### [ MODERATOR SIDE ]
 
-- Dashboard
+#### Dashboard
 - [ ] Styles for containers
 - [ ] Fix the layouts of each section
 
-- Community Feed
+#### Community Feed
 - [ ] Commenting or replying auto updates the status of the thread to 'responded' but it is not shown immediately because the page needs to refresh first.
 
-- Notifications
+#### Notifications
 - [ ] Notifications non functional
 
-### ADMIN SIDE
+### [ ADMIN SIDE ]
 
 - [x] Mostly non functional, styles are inconsistent with other related modules on different users
 
-- Dashboard
+#### Dashboard
 - [ ] Update the sections
 - [ ] Add sections for other modules (threads, reports, recent announcements)
 

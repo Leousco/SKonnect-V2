@@ -32,7 +32,7 @@ function navLink(string $href, string $label, string $activeTarget): string
             <?= navLink('announcements.php', 'Announcements',  $activeTarget) ?>
             <?= navLink('services.php',      'Services',       $activeTarget) ?>
             <?= navLink('community.php',     'Community Feed', $activeTarget) ?>
-            <?= navLink('../auth/login.php', 'Login',          $activeTarget) ?>
+            <?= navLink('../auth/login.php', '<i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Login', $activeTarget) ?>
         </ul>
     </div>
 </nav>

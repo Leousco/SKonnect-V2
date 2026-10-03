@@ -186,17 +186,18 @@ $cat_labels = [
 
                                     <div class="ann-card-actions">
 
-                                        
-                                        <button class="support-btn <?= $user_supported ? 'active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $user_supported ? 'Remove support' : 'I support this' ?>">
-                                            <img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon">
-                                            <span class="support-count"><?= (int)$t['support_count'] ?></span>
-                                        </button>
-
-                                        
-                                        <div class="card-actions-right">
+                                        <div class="card-actions-left">
+                                            <button class="support-btn <?= $user_supported ? 'active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $user_supported ? 'Remove support' : 'I support this' ?>">
+                                                <img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon">
+                                                <span class="support-count"><?= (int)$t['support_count'] ?></span>
+                                            </button>
                                             <a href="thread_view.php?id=<?= (int)$t['id'] ?>" class="btn-secondary-portal">
                                                 💬 <?= (int)$t['comment_count'] ?> <?= $t['comment_count'] == 1 ? 'Comment' : 'Comments' ?>
                                             </a>
+                                        </div>
+
+                                        
+                                        <div class="card-actions-right">
                                             <button class="bookmark-btn <?= $is_bookmarked ? 'active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $is_bookmarked ? 'Remove bookmark' : 'Bookmark' ?>">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="bm-icon">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />

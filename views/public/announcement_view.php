@@ -105,7 +105,7 @@ function fileIcon(string $path): string {
             </div>
 
             
-            <div class="pub-av-accent-line"></div>
+            <div class="pub-av-accent-line" style="background: linear-gradient(90deg, <?= $theme['accent'] ?>, transparent);"></div>
 
             
             <div class="pub-av-body">

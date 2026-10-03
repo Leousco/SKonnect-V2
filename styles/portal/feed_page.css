@@ -461,7 +461,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 12px;
+}
+
+.card-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .card-actions-right {

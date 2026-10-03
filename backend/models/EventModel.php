@@ -13,7 +13,7 @@ class EventModel {
             "SELECT e.*, CONCAT(u.first_name, ' ', u.last_name) AS author_name
              FROM events e
              JOIN users u ON u.id = e.created_by
-             ORDER BY e.event_date ASC"
+             ORDER BY e.event_date DESC, e.event_time DESC, e.id DESC"
         );
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

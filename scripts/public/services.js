@@ -195,11 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
         ctaBlock.style.display = (!isInfo && status !== 'closed') ? '' : 'none';
 
         overlay.style.display = 'flex';
+        document.body.classList.add('pub-modal-open');
         document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
         overlay.style.display = 'none';
+        document.body.classList.remove('pub-modal-open');
         document.body.style.overflow = '';
     }
 

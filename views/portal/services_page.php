@@ -271,7 +271,7 @@ RoleMiddleware::requireAuth();
 
                             
                             $btnLabel = match ($svc['service_type']) {
-                                'document'    => 'Apply Now',
+                                'document'    => 'Apply',
                                 'appointment' => 'Request Service',
                                 default       => 'View Details',
                             };
@@ -570,7 +570,7 @@ RoleMiddleware::requireAuth();
 
                     
                     <div class="form-group">
-                        <label class="modal-label">Upload Required Documents <span class="required-star">*</span></label>
+                        <label class="modal-label"><span id="r-docs-label">Upload Required Documents</span> <span class="required-star" id="r-docs-required">*</span></label>
                         <div class="file-drop-zone" id="file-drop-zone">
                             <input type="file" id="r-docs" name="documents[]" multiple class="file-input-hidden" accept="image/*,.pdf,.doc,.docx">
                             <div class="file-drop-inner">

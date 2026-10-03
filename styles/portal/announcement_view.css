@@ -1,6 +1,13 @@
 
 
+body {
+    font-family: "Poppins", sans-serif;
+}
 
+.av-body,
+.av-body * {
+    font-family: "Poppins", sans-serif !important;
+}
 
 
 
@@ -171,7 +178,7 @@
 
 .av-divider {
     height: 3px;
-    margin: 0 32px;
+    margin: 0;
     border-radius: 2px;
     opacity: 0.6;
 }

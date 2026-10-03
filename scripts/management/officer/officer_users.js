@@ -175,14 +175,11 @@
   
 
   function lockScroll() {
-      const sbw = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.paddingRight = sbw + 'px';
-      document.body.style.overflow = 'hidden';
+      document.documentElement.classList.add('modal-open');
   }
 
   function unlockScroll() {
-      document.body.style.paddingRight = '';
-      document.body.style.overflow = '';
+      document.documentElement.classList.remove('modal-open');
   }
 
   

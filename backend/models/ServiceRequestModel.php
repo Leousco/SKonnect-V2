@@ -159,6 +159,19 @@ class ServiceRequestModel
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
+    public function getServiceRequirements(int $serviceId): ?string
+    {
+        $stmt = $this->db->prepare("
+            SELECT requirements
+            FROM services
+            WHERE id = :id
+            LIMIT 1
+        ");
+        $stmt->execute([':id' => $serviceId]);
+        $requirements = $stmt->fetchColumn();
+        return $requirements === false || $requirements === null ? null : (string)$requirements;
+    }
+
     public function isServiceAvailable(int $serviceId): bool
     {
         $capacity = $this->getServiceCapacity($serviceId);

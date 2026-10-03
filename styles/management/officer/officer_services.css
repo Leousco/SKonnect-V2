@@ -985,33 +985,131 @@
   bottom: 28px;
   right: 28px;
   z-index: 700;
-  padding: 12px 20px;
-  background: var(--off-dark);
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(360px, calc(100vw - 32px));
+  min-height: 84px;
+  padding: 13px 12px 13px 15px;
+  border: 1px solid;
+  border-left-width: 4px;
   border-radius: 9px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-family: "Poppins", sans-serif;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
   opacity: 0;
   transform: translateY(12px);
   transition: opacity 0.25s, transform 0.25s;
   pointer-events: none;
-  max-width: 320px;
+}
+
+.svc-toast--success {
+  --toast-accent: #16a05a;
+  color: #14532d;
+  background: #f0faf4;
+  border-color: #ccebd8;
+  border-left-color: var(--toast-accent);
+}
+
+.svc-toast--warning {
+  --toast-accent: #d97706;
+  color: #854d0e;
+  background: #fffbeb;
+  border-color: #f5e5b8;
+  border-left-color: var(--toast-accent);
+}
+
+.svc-toast--danger {
+  --toast-accent: #dc3545;
+  color: #7f1d1d;
+  background: #fff5f5;
+  border-color: #f3d0d3;
+  border-left-color: var(--toast-accent);
+}
+
+.svc-toast--info {
+  --toast-accent: #2563eb;
+  color: #1e3a8a;
+  background: #f3f7ff;
+  border-color: #d5e2fb;
+  border-left-color: var(--toast-accent);
 }
 
 .svc-toast.svc-toast--show {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
-.svc-toast.svc-toast--success {
-  background: var(--off-green);
+
+.svc-toast-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  color: var(--toast-accent);
 }
-.svc-toast.svc-toast--warning {
-  background: var(--off-coral);
+
+.svc-toast-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
-.svc-toast.svc-toast--danger {
-  background: #b91c1c;
+
+.svc-toast-content {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 13px;
+  border-left: 1px solid currentColor;
+}
+
+.svc-toast-title {
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.svc-toast-detail {
+  color: #52657e;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.svc-toast-close {
+  display: grid;
+  place-items: center;
+  align-self: flex-start;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  color: #94a3b8;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.svc-toast-close:hover {
+  color: #334155;
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.svc-toast-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 520px) {
+  .svc-toast {
+    right: 16px;
+    bottom: 16px;
+  }
 }
 
 
@@ -1923,6 +2021,37 @@
 .svc-confirm-icon svg {
   width: 26px;
   height: 26px;
+}
+
+.svc-confirm-icon--activate {
+  background: var(--off-green-bg);
+  color: var(--off-green-text);
+}
+
+.svc-confirm-icon--deactivate {
+  background: var(--off-coral-bg);
+  color: var(--off-coral-text);
+}
+
+.svc-confirm-delete--activate {
+  background: var(--off-green-text);
+}
+
+.svc-confirm-delete--activate:hover {
+  background: #166534;
+}
+
+.svc-confirm-delete--deactivate {
+  background: #c2410c;
+}
+
+.svc-confirm-delete--deactivate:hover {
+  background: #9a3412;
+}
+
+.svc-confirm-delete:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 

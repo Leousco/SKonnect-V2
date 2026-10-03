@@ -541,7 +541,7 @@
 .svc-details-list {
   padding-top: 10px;
   border-top: 1px solid var(--border);
-  min-height: 96px;
+  min-height: 85px;
 }
 
 .svc-details-list--slots {

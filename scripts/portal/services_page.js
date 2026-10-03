@@ -21,6 +21,13 @@
     const noResults    = document.getElementById('no-results');
     const svcCount     = document.getElementById('svc-count');
 
+    function getRequirementLines(requirements) {
+        return requirements
+            .split('\n')
+            .map(line => line.trim().replace(/^[-•]\s*/, ''))
+            .filter(Boolean);
+    }
+
     function filterCards() {
         const query    = searchInput.value.toLowerCase().trim();
         const category = catSelect.value;
@@ -183,7 +190,7 @@
             detailsCapWrap.style.display = 'none';
         }
 
-        const reqLines = requirements.split('\n').map(l => l.trim().replace(/^[-•]\s*/, '')).filter(Boolean);
+        const reqLines = getRequirementLines(requirements);
         if (reqLines.length) {
             detailsReqSec.style.display = '';
             detailsReqList.innerHTML = reqLines.map(r => `<li>${escapeHtml(r)}</li>`).join('');
@@ -265,6 +272,8 @@
     const applyEmail   = document.getElementById('r-email');
     const applyAddress = document.getElementById('r-address');
     const applyAgree   = document.getElementById('r-agree');
+    const applyDocsLabel = document.getElementById('r-docs-label');
+    const applyDocsRequired = document.getElementById('r-docs-required');
 
     
     const discardOverlay = document.getElementById('discard-confirm-overlay');
@@ -289,6 +298,7 @@
 
     let selectedFiles = [];
     let isSubmitting = false;
+    let applyRequiresDocuments = true;
 
     function isApplyFormReady() {
         return Boolean(
@@ -296,7 +306,7 @@
             applyContact?.value.trim() &&
             applyEmail?.value.trim() &&
             applyAddress?.value.trim() &&
-            selectedFiles.length > 0 &&
+            (!applyRequiresDocuments || selectedFiles.length > 0) &&
             applyAgree?.checked
         );
     }
@@ -317,7 +327,7 @@
         const categoryKey  = btn.dataset.categoryKey || 'other';
         const eligibility  = btn.dataset.eligibility || '—';
         const processing   = btn.dataset.processing  || '—';
-        const requirements = btn.dataset.requirements || '—';
+        const requirements = btn.dataset.requirements || '';
 
         applyTitle.textContent = service;
         applyIcon.innerHTML    = icon;
@@ -326,7 +336,14 @@
         applyElig.textContent  = eligibility;
         applyProc.textContent  = processing;
 
-        const reqSummary = requirements.split('\n').map(l => l.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
+        const reqSummary = getRequirementLines(requirements);
+        applyRequiresDocuments = reqSummary.length > 0;
+        if (applyDocsLabel) {
+            applyDocsLabel.textContent = applyRequiresDocuments
+                ? 'Upload Required Documents'
+                : 'Upload Documents (Optional)';
+        }
+        if (applyDocsRequired) applyDocsRequired.hidden = !applyRequiresDocuments;
         applyReqs.textContent = reqSummary.length
             ? reqSummary.slice(0, 3).join(', ') + (reqSummary.length > 3 ? '…' : '')
             : '—';
@@ -419,7 +436,7 @@
 
         if (!address) { showError('r-address', 'err-address', 'Home address is required.'); valid = false; }
 
-        if (selectedFiles.length === 0) {
+        if (applyRequiresDocuments && selectedFiles.length === 0) {
             const dz  = document.getElementById('file-drop-zone');
             const err = document.getElementById('err-docs');
             if (dz)  dz.style.borderColor = '#e11d48';

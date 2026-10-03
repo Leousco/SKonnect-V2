@@ -209,10 +209,11 @@ $userRole       = 'Resident';
                         <div class="calendar-skeleton-column">
                             <span class="skeleton-block calendar-skeleton-month"></span>
                             <div class="calendar-skeleton-grid">
-                                <?php for ($i = 0; $i < 42; $i++): ?>
+                                <?php for ($i = 0; $i < 28; $i++): ?>
                                 <span class="skeleton-block calendar-skeleton-day"></span>
                                 <?php endfor; ?>
                             </div>
+                            <span class="skeleton-block calendar-skeleton-pill"></span>
                         </div>
                         <div class="calendar-skeleton-column events-skeleton-column">
                             <span class="skeleton-block events-skeleton-title"></span>

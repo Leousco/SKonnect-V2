@@ -79,16 +79,38 @@
 
   
   const confirmOverlay = document.getElementById("svc-confirm-overlay");
+  const confirmIcon = document.getElementById("svc-confirm-icon");
   const confirmTitle = document.getElementById("svc-confirm-title");
   const confirmBody = document.getElementById("svc-confirm-body");
   const confirmDelete = document.getElementById("svc-confirm-delete");
   const confirmCancel = document.getElementById("svc-confirm-cancel");
   let confirmAction = null;
 
-  function openConfirm(title, message, confirmLabel, action) {
+  function openConfirm(title, message, confirmLabel, action, variant = "danger") {
     confirmTitle.textContent = title;
     confirmBody.textContent = message;
     confirmDelete.textContent = confirmLabel;
+    confirmDelete.className = `svc-confirm-delete${
+      variant === "activate"
+        ? " svc-confirm-delete--activate"
+        : variant === "deactivate"
+          ? " svc-confirm-delete--deactivate"
+          : ""
+    }`;
+    confirmIcon.className = `svc-confirm-icon${
+      variant === "activate"
+        ? " svc-confirm-icon--activate"
+        : variant === "deactivate"
+          ? " svc-confirm-icon--deactivate"
+          : ""
+    }`;
+    if (variant === "activate" || variant === "deactivate") {
+      confirmIcon.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"/></svg>';
+    } else {
+      confirmIcon.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>';
+    }
     confirmAction = action;
     confirmOverlay.style.display = "flex";
   }
@@ -102,13 +124,51 @@
 
   let toastTimer = null;
 
-  function showToast(message, type = "success") {
+  const toastIcons = {
+    success:
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m7.5 12.2 3 3 6-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    warning:
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2.5 22 20H2L12 2.5Z" fill="currentColor"/><path d="M12 9v5m0 3h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+    danger:
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="m9 9 6 6m0-6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+    info:
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12 11v5m0-8h.01" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>',
+  };
+
+  function showToast(title, detail, type = "success") {
     clearTimeout(toastTimer);
-    toast.textContent = message;
-    toast.className = `svc-toast svc-toast--${type} svc-toast--show`;
+    const toastType = toastIcons[type] ? type : "info";
+    const icon = document.createElement("span");
+    icon.className = "svc-toast-icon";
+    icon.innerHTML = toastIcons[toastType];
+
+    const content = document.createElement("span");
+    content.className = "svc-toast-content";
+    const heading = document.createElement("span");
+    heading.className = "svc-toast-title";
+    heading.textContent = title;
+    const description = document.createElement("span");
+    description.className = "svc-toast-detail";
+    description.textContent = detail;
+    content.append(heading, description);
+
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.className = "svc-toast-close";
+    closeButton.setAttribute("aria-label", "Dismiss notification");
+    closeButton.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+    closeButton.addEventListener("click", () => {
+      clearTimeout(toastTimer);
+      toast.classList.remove("svc-toast--show");
+    });
+
+    toast.replaceChildren(icon, content, closeButton);
+    toast.className = `svc-toast svc-toast--${toastType} svc-toast--show`;
+    toast.setAttribute("role", toastType === "danger" ? "alert" : "status");
     toastTimer = setTimeout(
       () => toast.classList.remove("svc-toast--show"),
-      3400
+      5000
     );
   }
 
@@ -430,7 +490,7 @@
         return;
       }
       if (file.size > 10 * 1024 * 1024) {
-        showToast(`"${file.name}" exceeds 10MB and was skipped.`, "warning");
+        showToast("File not added", `"${file.name}" exceeds 10 MB.`, "warning");
         return;
       }
       const duplicate = selectedFiles.some(
@@ -439,7 +499,7 @@
       if (!duplicate) selectedFiles.push(file);
     });
     if (rejected)
-      showToast("Some files were skipped (unsupported type).", "warning");
+      showToast("Files not added", "Some files have an unsupported type.", "warning");
     renderAttachmentList();
   }
 
@@ -685,7 +745,7 @@
           else if (lower.includes("approval")) setError(fieldApprovalMsg, errApprovalMsg, msg);
           else if (lower.includes("contact")) setError(fieldContact, errContact, msg);
           else if (lower.includes("capacity")) setError(fieldMaxCapacity, errCapacity, msg);
-          else showToast(msg, "danger");
+          else showToast("Error", msg, "danger");
         });
         
         if (!validateTab(1)) goToTab(1);
@@ -699,16 +759,16 @@
       if (isEdit) {
         const card = grid.querySelector(`.svc-card[data-id="${svc.id}"]`);
         if (card) card.replaceWith(buildCard(svc));
-        showToast(`"${svc.name}" updated successfully.`, "success");
+        showToast("Service updated", svc.name, "success");
       } else {
         grid.prepend(buildCard(svc));
-        showToast(`"${svc.name}" has been added.`, "success");
+        showToast("Service added", svc.name, "success");
       }
 
       applyFilters();
       closeModal();
     } catch (err) {
-      showToast("Network error — please try again.", "danger");
+      showToast("Error", "Network error while saving the service. Please try again.", "danger");
     } finally {
       saveBtn.disabled = false;
       saveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg> Save Service`;
@@ -730,45 +790,61 @@
     const name =
       card.querySelector(".svc-card-title")?.textContent || "Service";
 
-    
-    card.dataset.status = newStatus;
+    const actionLabel = newStatus === "active" ? "Activate" : "Deactivate";
+    openConfirm(
+      `${actionLabel} Service`,
+      `Are you sure you want to ${actionLabel.toLowerCase()} "${name}"?`,
+      actionLabel,
+      async () => {
+        const fd = new FormData();
+        fd.append("action", "toggle");
+        fd.append("id", id);
 
-    
-    const badge = card.querySelector(".svc-status-badge");
-    if (badge && !badge.classList.contains("svc-badge-full")) {
-      badge.className = `svc-status-badge svc-badge-${newStatus}`;
-      badge.innerHTML =
-        newStatus === "active"
-          ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><span class="svc-status-dot"></span>Active`
-          : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg><span class="svc-status-dot"></span>Inactive`;
-    }
+        try {
+          const response = await fetch("../../../backend/routes/services.php", {
+            method: "POST",
+            body: fd,
+          });
+          const json = await response.json();
+          if (!response.ok || !json.success || json.status !== newStatus) {
+            showToast(
+              "Error",
+              json.message || "Could not update the service status.",
+              "danger"
+            );
+            return false;
+          }
+        } catch {
+          showToast("Error", "Network error while updating the service status.", "danger");
+          return false;
+        }
 
-    
-    toggleBtn.dataset.status = newStatus;
-    toggleBtn.className = `svc-toggle-btn svc-toggle-${newStatus}`;
-    toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"/></svg> ${
-      newStatus === "active" ? "Deactivate" : "Activate"
-    }`;
+        card.dataset.status = newStatus;
+        const badge = card.querySelector(".svc-status-badge");
+        if (badge && !badge.classList.contains("svc-badge-full")) {
+          badge.className = `svc-status-badge svc-badge-${newStatus}`;
+          badge.innerHTML =
+            newStatus === "active"
+              ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><span class="svc-status-dot"></span>Active`
+              : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg><span class="svc-status-dot"></span>Inactive`;
+        }
 
-    applyFilters();
-    showToast(
-      `"${name}" is now ${newStatus}.`,
-      newStatus === "active" ? "success" : "warning"
+        toggleBtn.dataset.status = newStatus;
+        toggleBtn.className = `svc-toggle-btn svc-toggle-${newStatus}`;
+        toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"/></svg> ${
+          newStatus === "active" ? "Deactivate" : "Activate"
+        }`;
+
+        applyFilters();
+        showToast(
+          newStatus === "active" ? "Service activated" : "Service deactivated",
+          name,
+          newStatus === "active" ? "success" : "warning"
+        );
+        return true;
+      },
+      newStatus
     );
-
-    
-    const fd = new FormData();
-    fd.append("action", "toggle");
-    fd.append("id", id);
-    fetch("../../../backend/routes/services.php", {
-      method: "POST",
-      body: fd,
-    })
-      .then((r) => r.json())
-      .then((json) => {
-        if (!json.success) showToast("Could not update status.", "danger");
-      })
-      .catch(() => showToast("Network error on status update.", "danger"));
   });
 
   
@@ -790,11 +866,30 @@
       "Remove Service",
       `Are you sure you want to delete "${name}"? This action cannot be undone.`,
       "Remove",
-      () => {
-        if (!pendingDeleteCard) return;
+      async () => {
+        if (!pendingDeleteCard) return true;
         const cardName =
           pendingDeleteCard.querySelector(".svc-card-title")?.textContent ||
           "Service";
+
+        const fd = new FormData();
+        fd.append("action", "delete");
+        fd.append("id", pendingDeleteId);
+        try {
+          const response = await fetch("../../../backend/routes/services.php", {
+            method: "POST",
+            body: fd,
+          });
+          const json = await response.json();
+          if (!response.ok || !json.success) {
+            showToast("Error", json.message || "The service could not be removed.", "danger");
+            return false;
+          }
+        } catch {
+          showToast("Error", "Network error while removing the service.", "danger");
+          return false;
+        }
+
         pendingDeleteCard.style.transition = "opacity 0.3s, transform 0.3s";
         pendingDeleteCard.style.opacity = "0";
         pendingDeleteCard.style.transform = "scale(0.95)";
@@ -802,28 +897,21 @@
           pendingDeleteCard.remove();
           applyFilters();
         }, 300);
-        showToast(`"${cardName}" has been deleted.`, "danger");
-
-        const fd = new FormData();
-        fd.append("action", "delete");
-        fd.append("id", pendingDeleteId);
-        fetch("../../../backend/routes/services.php", {
-          method: "POST",
-          body: fd,
-        })
-          .then((r) => r.json())
-          .then((json) => {
-            if (!json.success)
-              showToast(json.message || "Delete failed.", "danger");
-          })
-          .catch(() => showToast("Network error on delete.", "danger"));
+        showToast("Service removed", cardName, "warning");
+        return true;
       }
     );
   });
 
-  confirmDelete.addEventListener("click", () => {
-    if (confirmAction) confirmAction();
-    closeConfirm();
+  confirmDelete.addEventListener("click", async () => {
+    if (!confirmAction) return;
+    confirmDelete.disabled = true;
+    try {
+      const shouldClose = await confirmAction();
+      if (shouldClose !== false) closeConfirm();
+    } finally {
+      confirmDelete.disabled = false;
+    }
   });
 
   confirmCancel.addEventListener("click", closeConfirm);
@@ -1323,7 +1411,7 @@
         const data = JSON.parse(viewBtn.dataset.service);
         openViewModal(data);
       } catch {
-        showToast("Could not load service data.", "danger");
+        showToast("Error", "Could not load service data.", "danger");
       }
     }
   });

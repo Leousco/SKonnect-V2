@@ -131,7 +131,7 @@ $cat_labels = [
                         </div>
 
                         <button class="view-thread-btn" onclick="event.stopPropagation(); window.location.href='public_thread_view.php?id=<?= (int)$t['id'] ?>'">
-                            View &amp; Read
+                            Read More
                         </button>
                     </article>
                 <?php endforeach; ?>

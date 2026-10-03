@@ -1,6 +1,17 @@
 
 
 
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.pub-av-body,
+.pub-av-body * {
+  font-family: "Poppins", sans-serif !important;
+}
+
+
+
 body::-webkit-scrollbar {
     display: none;
 }
@@ -144,9 +155,8 @@ body::-webkit-scrollbar {
 
 
 .pub-av-accent-line {
-  background-color: black;
   height: 3px;
-  margin: 0 32px;
+  margin: 0;
   border-radius: 2px;
   opacity: 0.6;
 }
@@ -442,7 +452,7 @@ body::-webkit-scrollbar {
     padding: 20px 20px 16px;
   }
   .pub-av-accent-line {
-    margin: 0 20px;
+    margin: 0;
   }
   .pub-av-body {
     padding: 20px 20px 24px;

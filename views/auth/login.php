@@ -43,7 +43,7 @@ if (!empty($_SESSION['user_id'])) {
             <span>SKonnect</span>
         </a>
         <ul class="navbar-menu">
-            <li><a href="../public/main.php" class="nav-link"><i class="fa-solid fa-angle-left"></i> Back</a></li>
+            <li><a href="../public/main.php" class="nav-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></li>
         </ul>
     </div>
 </nav>

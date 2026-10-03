@@ -36,7 +36,7 @@ if (!empty($_SESSION['user_id'])) {
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="public-services-page">
 
     <?php include __DIR__ . '/../../components/public/navbar.php'; ?>
 

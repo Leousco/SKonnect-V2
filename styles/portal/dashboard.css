@@ -507,6 +507,10 @@
   padding: 28px;
 }
 
+.calendar-card-skeleton .skeleton-heading-title {
+  width: 140px;
+}
+
 .calendar-skeleton-columns {
   display: grid;
   flex: 1;
@@ -531,13 +535,20 @@
   display: grid;
   flex: 1;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   gap: 6px;
 }
 
 .calendar-skeleton-day {
   min-height: 20px;
   border-radius: 8px;
+}
+
+.calendar-skeleton-pill {
+  width: 140px;
+  height: 18px;
+  margin-top: 14px;
+  border-radius: 999px;
 }
 
 .events-skeleton-column {
@@ -547,7 +558,7 @@
 }
 
 .events-skeleton-title {
-  width: 180px;
+  width: 130px;
   height: 16px;
   margin-bottom: 8px;
 }

@@ -116,10 +116,17 @@ RoleMiddleware::requireRole('sk_officer');
             <section class="evmgmt-list-panel">
                 <div class="evmgmt-panel-header">
                     <h2 class="section-label">All Events</h2>
-                    <div class="evmgmt-filter-row">
-                        <button class="evmgmt-filter-btn active" data-filter="all">All</button>
-                        <button class="evmgmt-filter-btn" data-filter="upcoming">Upcoming</button>
-                        <button class="evmgmt-filter-btn" data-filter="past">Past</button>
+                    <div class="evmgmt-list-controls">
+                        <div class="evmgmt-filter-row" role="group" aria-label="Filter events">
+                            <button class="evmgmt-filter-btn active" data-filter="all" aria-pressed="true">All</button>
+                            <button class="evmgmt-filter-btn" data-filter="upcoming" aria-pressed="false">Upcoming</button>
+                            <button class="evmgmt-filter-btn" data-filter="past" aria-pressed="false">Past</button>
+                        </div>
+                        <div class="evmgmt-sort-row" role="group" aria-label="Sort events by date">
+                            <span class="evmgmt-sort-label">Date:</span>
+                            <button class="evmgmt-sort-btn active" data-sort="newest" aria-pressed="true">Newest first</button>
+                            <button class="evmgmt-sort-btn" data-sort="oldest" aria-pressed="false">Oldest first</button>
+                        </div>
                     </div>
                 </div>
 

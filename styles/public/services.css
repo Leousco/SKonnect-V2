@@ -568,6 +568,14 @@ body::-webkit-scrollbar {
     gap: 8px;
 }
 
+.public-services-page #navbar {
+    transition: transform 0.18s ease-in-out;
+}
+
+.public-services-page.pub-modal-open #navbar {
+    transform: translateY(-100%);
+}
+
 
 
 .pub-modal-overlay {

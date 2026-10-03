@@ -155,6 +155,9 @@ Completed:
 - [x] Include a services section for easy viewing
 - [x] Include latest community discussions (trending threads)
 
+#### Services
+- [x] Required documents field is still required even if there are no requirements listed
+
 #### Notifications
 - [x] Color and icon of "action require" service requests
 - [x] Viewing a notification doesn't auto "mark as read" it
@@ -167,7 +170,7 @@ Completed:
 - [x] Make the "Submit Request" button unclickable if all fields are not complete yet
 - [x] On the request modal, make the info strip non-sticky to allow more space for viewing the form
 - [x] Bug, multiple services entries appearing on one application
-- [ ] Maybe add a confirmation modal or something before submitting an application
+- [ ] Maybe add a confirmation modal or something when submitting an application
 
 #### Notif Badge
 - [x] Counter appears without any new notifications when opening "view" pages (`thread_view.php`, `announcement_view.php`)
@@ -176,14 +179,16 @@ Completed:
 
 #### Events Page
 - [x] Clicking outside the add event modal closes the modal resulting in loss of progress
-- [ ] Past events don't auto delete *(to be evaluated)*
-- [ ] New events appear at the bottom of the list
+- [x] New events appear at the bottom of the list
 
 #### Notification badge
 - [ ] Notification badge non functional
 
 #### Services
-- [ ] No confirmation modal when deactivating or activating a service
+- [x] No confirmation modal when deactivating or activating a service
+
+#### Analytics
+- [ ] Some visuals are bugged
 
 ### [ MODERATOR SIDE ]
 
@@ -209,4 +214,4 @@ Completed:
 ### Features Backlog
 
 - [ ] Reactions system to the announcement module
-- [ ] Services page: make the request submission confirmation a modal instead of a toast notification
+- [ ] Portal Services page: make the request submission confirmation a modal instead of a toast notification

@@ -12,6 +12,8 @@
   var nextBtn = document.querySelector(".next-month");
   var eventListEl = document.getElementById("event-list");
   var listEmptyEl = document.getElementById("list-empty");
+  var filterButtons = document.querySelectorAll(".evmgmt-filter-btn");
+  var sortButtons = document.querySelectorAll(".evmgmt-sort-btn");
 
   var statTotal = document.getElementById("stat-num-total");
   var statUpcoming = document.getElementById("stat-num-upcoming");
@@ -64,18 +66,54 @@
     "Dec",
   ];
 
-  var today = new Date();
-  today.setHours(0, 0, 0, 0);
-  var current = new Date(today.getFullYear(), today.getMonth(), 1);
+  var philippineToday = getPhilippineDateParts();
+  var current = new Date(
+    Date.UTC(philippineToday.year, philippineToday.month - 1, 1)
+  );
+  var activeSort = "newest";
 
   function parseDateStr(s) {
-    var p = s.split("-").map(Number);
-    return new Date(p[0], p[1] - 1, p[2]);
+    var p = String(s).slice(0, 10).split("-").map(Number);
+    return new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+  }
+  function dateOrdinal(s) {
+    var d = parseDateStr(s);
+    return d.getTime() / 86400000;
+  }
+  function getPhilippineDateParts() {
+    var parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Manila",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).formatToParts(new Date());
+    var values = {};
+    parts.forEach(function (part) {
+      values[part.type] = part.value;
+    });
+    return {
+      year: Number(values.year),
+      month: Number(values.month),
+      day: Number(values.day),
+    };
+  }
+  function todayOrdinal() {
+    return (
+      Date.UTC(
+        philippineToday.year,
+        philippineToday.month - 1,
+        philippineToday.day
+      ) / 86400000
+    );
   }
   function formatDateDisplay(s) {
     var d = parseDateStr(s);
     return (
-      MONTHS_SHORT[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear()
+      MONTHS_SHORT[d.getUTCMonth()] +
+      " " +
+      d.getUTCDate() +
+      ", " +
+      d.getUTCFullYear()
     );
   }
   function formatTime(t) {
@@ -92,17 +130,17 @@
     return e ? s + " – " + e : s;
   }
   function daysUntil(s) {
-    var diff = Math.round((parseDateStr(s) - today) / 86400000);
+    var diff = dateOrdinal(s) - todayOrdinal();
     if (diff === 0) return "Today";
     if (diff === 1) return "Tomorrow";
     if (diff < 0) return Math.abs(diff) + "d ago";
     return "In " + diff + " days";
   }
   function isPast(s) {
-    return parseDateStr(s) < today;
+    return dateOrdinal(s) < todayOrdinal();
   }
   function isToday(s) {
-    return parseDateStr(s).getTime() === today.getTime();
+    return dateOrdinal(s) === todayOrdinal();
   }
   function isSameMonth(s, y, m) {
     var p = s.split("-").map(Number);
@@ -157,15 +195,15 @@
   
 
   function updateStats() {
-    var now = today;
+    var now = getPhilippineDateParts();
     statTotal.textContent = eventsData.length;
     statUpcoming.textContent = eventsData.filter(function (e) {
-      return !isPast(e.date) && !isToday(e.date);
+      return dateOrdinal(e.date) > todayOrdinal();
     }).length;
     statMonth.textContent = eventsData.filter(function (e) {
       var d = parseDateStr(e.date);
       return (
-        d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+        d.getUTCFullYear() === now.year && d.getUTCMonth() === now.month - 1
       );
     }).length;
     statPast.textContent = eventsData.filter(function (e) {
@@ -176,13 +214,13 @@
   
 
   function renderCalendar() {
-    var year = current.getFullYear(),
-      month = current.getMonth();
+    var year = current.getUTCFullYear(),
+      month = current.getUTCMonth();
     monthYearEl.textContent = MONTHS[month] + " " + year;
     calDatesEl.innerHTML = "";
 
-    var firstDay = new Date(year, month, 1).getDay();
-    var lastDate = new Date(year, month + 1, 0).getDate();
+    var firstDay = new Date(Date.UTC(year, month, 1)).getUTCDay();
+    var lastDate = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
 
     var lookup = {};
     eventsData.forEach(function (ev) {
@@ -229,8 +267,9 @@
   }
 
   function filterToDate(dateStr) {
-    document.querySelectorAll(".evmgmt-filter-btn").forEach(function (b) {
+    filterButtons.forEach(function (b) {
       b.classList.remove("active");
+      b.setAttribute("aria-pressed", "false");
     });
     activeFilter = "date:" + dateStr;
     renderEventList();
@@ -248,7 +287,15 @@
     });
 
     filtered.sort(function (a, b) {
-      return parseDateStr(a.date) - parseDateStr(b.date);
+      var dateOrder = dateOrdinal(a.date) - dateOrdinal(b.date);
+      var timeOrder = (a.time || "").localeCompare(b.time || "");
+      var idOrder = a.id - b.id;
+      var direction = activeSort === "newest" ? -1 : 1;
+      return dateOrder === 0
+        ? timeOrder === 0
+          ? idOrder * direction
+          : timeOrder * direction
+        : dateOrder * direction;
     });
 
     eventListEl.innerHTML = "";
@@ -280,10 +327,10 @@
       li.innerHTML =
         '<div class="evmgmt-date-badge">' +
         '<span class="evmgmt-date-day">' +
-        d.getDate() +
+        d.getUTCDate() +
         "</span>" +
         '<span class="evmgmt-date-mon">' +
-        MONTHS_SHORT[d.getMonth()] +
+        MONTHS_SHORT[d.getUTCMonth()] +
         "</span>" +
         "</div>" +
         '<div class="evmgmt-event-info">' +
@@ -406,6 +453,20 @@
           alert(res.message || "Save failed.");
           return;
         }
+        if (!idVal) {
+          activeFilter = "all";
+          activeSort = "newest";
+          filterButtons.forEach(function (filterButton) {
+            var active = filterButton.dataset.filter === "all";
+            filterButton.classList.toggle("active", active);
+            filterButton.setAttribute("aria-pressed", String(active));
+          });
+          sortButtons.forEach(function (sortButton) {
+            var active = sortButton.dataset.sort === "newest";
+            sortButton.classList.toggle("active", active);
+            sortButton.setAttribute("aria-pressed", String(active));
+          });
+        }
         closeModal(eventModal);
         loadEvents().then(refresh);
       })
@@ -492,20 +553,7 @@
 
   
 
-  function getScrollbarWidth() {
-    return window.innerWidth - document.documentElement.clientWidth;
-  }
-
-  function setScrollbarVariable() {
-    const scrollbarWidth = getScrollbarWidth();
-    document.documentElement.style.setProperty(
-      "--scrollbar-w",
-      scrollbarWidth + "px"
-    );
-  }
-
   function openModal(el) {
-    setScrollbarVariable();
     el.classList.add("is-open");
     document.documentElement.classList.add("modal-open");
   }
@@ -516,14 +564,6 @@
       document.documentElement.classList.remove("modal-open");
     }
   }
-
-  window.addEventListener("resize", function () {
-    if (document.querySelector(".evmgmt-modal-overlay.is-open")) {
-      setScrollbarVariable();
-    }
-  });
-
-  
 
   function refresh() {
     updateStats();
@@ -589,23 +629,42 @@
     if (btn.classList.contains("btn-delete")) openDeleteModal(id);
   });
 
-  document.querySelectorAll(".evmgmt-filter-btn").forEach(function (btn) {
+  filterButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      document.querySelectorAll(".evmgmt-filter-btn").forEach(function (b) {
+      filterButtons.forEach(function (b) {
         b.classList.remove("active");
+        b.setAttribute("aria-pressed", "false");
       });
       btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
       activeFilter = btn.dataset.filter;
       renderEventList();
     });
   });
 
+  sortButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      sortButtons.forEach(function (sortButton) {
+        sortButton.classList.remove("active");
+        sortButton.setAttribute("aria-pressed", "false");
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+      activeSort = btn.dataset.sort;
+      renderEventList();
+    });
+  });
+
   prevBtn.addEventListener("click", function () {
-    current = new Date(current.getFullYear(), current.getMonth() - 1, 1);
+    current = new Date(
+      Date.UTC(current.getUTCFullYear(), current.getUTCMonth() - 1, 1)
+    );
     renderCalendar();
   });
   nextBtn.addEventListener("click", function () {
-    current = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+    current = new Date(
+      Date.UTC(current.getUTCFullYear(), current.getUTCMonth() + 1, 1)
+    );
     renderCalendar();
   });
 
@@ -618,4 +677,16 @@
 
   
   loadEvents().then(refresh);
+  window.setInterval(function () {
+    var latestToday = getPhilippineDateParts();
+    if (
+      latestToday.year === philippineToday.year &&
+      latestToday.month === philippineToday.month &&
+      latestToday.day === philippineToday.day
+    ) {
+      return;
+    }
+    philippineToday = latestToday;
+    refresh();
+  }, 60000);
 })();

@@ -102,6 +102,10 @@
   border-radius: 8px;
 }
 
+.navbar-menu i {
+  margin-right: 3px;
+}
+
 .navbar-menu a:hover {
   color: var(--primary-blue);
   background: var(--white);

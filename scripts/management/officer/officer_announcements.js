@@ -984,7 +984,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     modal.classList.add("apm--open");
-    document.body.style.overflow = "hidden";
+    document.documentElement.classList.add("modal-open");
 
     const apmBody = document.getElementById("apm-body");
     apmBody.innerHTML = `<div class="apm-loading"><div class="apm-spinner"></div><span>Loading preview…</span></div>`;
@@ -1165,7 +1165,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function closePreviewModal() {
     const modal = document.getElementById("ann-preview-modal");
     if (modal) modal.classList.remove("apm--open");
-    document.body.style.overflow = "";
+    document.documentElement.classList.remove("modal-open");
   }
 
   

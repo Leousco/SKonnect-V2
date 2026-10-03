@@ -63,10 +63,13 @@ html {
   scrollbar-gutter: stable;
 }
 
+html.modal-open {
+  overflow: hidden;
+}
+
 body {
   background: var(--off-bg);
   color: var(--off-text-body);
-  scrollbar-gutter: stable;
 }
 
 ::-webkit-scrollbar {

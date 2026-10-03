@@ -69,7 +69,12 @@ class ServiceRequestController
             return ['success' => false, 'errors' => ['You already have an active application for this service.']];
         }
 
-        $uploadValidation = $this->validateApplicationUploads($filesArray);
+        $requirements = $this->model->getServiceRequirements($serviceId) ?? '';
+        $requiredDocuments = array_filter(array_map(
+            static fn(string $line): string => trim(preg_replace('/^[-•]\s*/u', '', trim($line))),
+            explode("\n", $requirements)
+        ));
+        $uploadValidation = $this->validateApplicationUploads($filesArray, !empty($requiredDocuments));
         if (!$uploadValidation['ok']) {
             return ['success' => false, 'errors' => $uploadValidation['errors']];
         }
@@ -410,7 +415,7 @@ class ServiceRequestController
         return [$files];
     }
 
-    private function validateApplicationUploads(?array $filesArray): array
+    private function validateApplicationUploads(?array $filesArray, bool $required = true): array
     {
         $files = $this->normaliseFilesArray($filesArray);
         $validFiles = [];
@@ -465,7 +470,7 @@ class ServiceRequestController
             $validFiles[] = $file;
         }
 
-        if (!$validFiles) {
+        if (!$validFiles && $required) {
             return ['ok' => false, 'errors' => ['Please upload at least one valid required document.']];
         }
 

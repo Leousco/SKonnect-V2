@@ -190,3 +190,16 @@
     display: grid;
   }
 }
+
+.bookmarks-empty {
+  padding-left: clamp(20px, 6vw, 40px);
+  padding-right: clamp(20px, 6vw, 40px);
+}
+
+.feed-toast {
+  right: max(12px, env(safe-area-inset-right));
+  bottom: max(12px, env(safe-area-inset-bottom));
+  max-width: calc(100vw - 24px);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

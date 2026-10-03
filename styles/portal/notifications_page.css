@@ -478,3 +478,54 @@
     .announcements-section .notif-icon-wrap  { display: none; }
     .announcements-section .notif-content-wrap { padding: 14px 0; }
 }
+
+.announcements-section,
+.notif-item-row,
+.notif-content-wrap,
+.notif-actions,
+.modal-box,
+.modal-header,
+.modal-body,
+.modal-footer {
+    min-width: 0;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: min(560px, 100%);
+    box-sizing: border-box;
+}
+
+.notif-modal-body-text {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+    .announcements-section .notif-title,
+    .announcements-section .notif-preview {
+        max-width: none;
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: 12px;
+    }
+
+    .modal-box {
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .modal-footer {
+        flex-wrap: wrap;
+    }
+}

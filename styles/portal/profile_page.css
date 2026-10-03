@@ -958,6 +958,52 @@
     .activity-summary-grid { grid-template-columns: 1fr; }
 }
 
+.profile-hero-card,
+.profile-hero-body,
+.profile-hero-info,
+.profile-lower,
+.profile-card,
+.activity-summary-grid {
+    min-width: 0;
+}
+
+.profile-hero-name,
+.profile-hero-sub,
+.field-value {
+    overflow-wrap: anywhere;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: min(560px, 100%);
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+    .modal-overlay {
+        padding: 12px;
+    }
+
+    .modal-box {
+        max-height: calc(100vh - 24px);
+        overflow-y: auto;
+    }
+
+    .profile-hero-bg {
+        min-height: 110px;
+    }
+
+    .profile-hero-body {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .profile-card {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
 
 
 .thread-cat-tag {

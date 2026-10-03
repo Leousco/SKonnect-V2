@@ -436,3 +436,61 @@ body {
 .av-back-btn:hover svg {
     transform: translateX(-3px);
 }
+
+.av-layout,
+.av-main,
+.av-header,
+.av-body,
+.av-sidebar {
+    min-width: 0;
+}
+
+.av-body img,
+.av-body video,
+.av-body iframe,
+.av-body table {
+    max-width: 100%;
+}
+
+.av-body table {
+    display: block;
+    overflow-x: auto;
+}
+
+@media (max-width: 600px) {
+    .av-layout {
+        gap: 16px;
+    }
+
+    .av-header {
+        padding: 22px 18px 18px;
+    }
+
+    .av-title {
+        font-size: clamp(20px, 6vw, 26px);
+    }
+
+    .av-body {
+        padding: 20px 18px 24px;
+    }
+
+    .av-attachments {
+        margin: 0 8px 20px;
+        padding: 16px;
+    }
+
+    .av-attach-name {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .av-info-card {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 960px) {
+    .av-sidebar {
+        position: static;
+    }
+}

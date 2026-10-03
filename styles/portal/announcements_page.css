@@ -767,3 +767,41 @@
         grid-template-columns: 1fr;
     }
 }
+
+.featured-card,
+.announcements-grid,
+.ann-card,
+.ann-card-body,
+.announcements-controls,
+.controls-left,
+.controls-right {
+    min-width: 0;
+}
+
+.ann-card-title,
+.ann-card-excerpt {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .featured-section {
+        margin-bottom: 24px;
+    }
+
+    .featured-card {
+        padding: 22px 18px;
+    }
+
+    .announcements-controls {
+        gap: 12px;
+    }
+
+    .controls-left {
+        min-width: 0;
+    }
+
+    .announcements-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+}

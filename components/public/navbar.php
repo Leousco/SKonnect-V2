@@ -21,10 +21,10 @@ function navLink(string $href, string $label, string $activeTarget): string
             <span>SKonnect</span>
         </a>
 
-        <button class="navbar-toggle" id="navbarToggle">
-            <span></span>
-            <span></span>
-            <span></span>
+        <button class="navbar-toggle" id="navbarToggle" type="button" aria-label="Toggle navigation" aria-controls="navbarMenu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
         </button>
 
         <ul class="navbar-menu" id="navbarMenu">
@@ -36,3 +36,4 @@ function navLink(string $href, string $label, string $activeTarget): string
         </ul>
     </div>
 </nav>
+<script src="../../scripts/public/navigation.js"></script>

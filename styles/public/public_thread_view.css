@@ -7,7 +7,7 @@
 .pub-thread-page {
     background: var(--bg);
     min-height: 100vh;
-    padding: 48px 8% 80px;
+    padding: clamp(28px, 4vw, 48px) clamp(16px, 8%, 120px) 80px;
 }
 
 .pub-thread-container {
@@ -53,6 +53,7 @@
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
     padding: 28px 32px;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -89,6 +90,7 @@
     line-height: 1.35;
     margin: 0;
     font-family: "Poppins", sans-serif;
+    overflow-wrap: anywhere;
 }
 
 
@@ -705,7 +707,20 @@
 
 @media (max-width: 480px) {
     .pub-thread-page {
-        padding: 24px 4% 48px;
+        padding: 24px 16px 48px;
+    }
+
+    .pub-thread-main-card,
+    .pub-comments-section {
+        padding: 18px 14px;
+    }
+
+    .pub-thread-meta-counts {
+        gap: 8px;
+    }
+
+    .carousel-slide {
+        height: 150px;
     }
 }
 /* ============================================================

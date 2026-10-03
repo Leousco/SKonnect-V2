@@ -149,7 +149,7 @@ body::-webkit-scrollbar {
     flex-wrap: wrap;
 }
 
-.pub-controls-left { flex: 1; min-width: 220px; }
+.pub-controls-left { flex: 1 1 320px; min-width: min(100%, 220px); }
 
 .pub-search-wrap {
     position: relative;
@@ -167,7 +167,8 @@ body::-webkit-scrollbar {
 }
 
 .pub-search-input {
-    width: 50%;
+    width: 100%;
+    max-width: 640px;
     padding: 10px 14px 10px 36px;
     font-size: 14px;
     font-family: 'Poppins', sans-serif;
@@ -254,7 +255,7 @@ body::-webkit-scrollbar {
 
 .pub-services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 20px;
 }
 
@@ -594,7 +595,7 @@ body::-webkit-scrollbar {
     border: 1px solid var(--border, #d1dae6);
     border-radius: 14px;
     box-shadow: 0 24px 64px rgba(15, 37, 69, 0.28);
-    width: 100%;
+    width: min(100%, 640px);
     max-width: 640px;
     max-height: 90vh;
     display: flex;
@@ -921,6 +922,9 @@ body::-webkit-scrollbar {
     .pub-how-it-works, .pub-controls, .pub-services-section { padding-left: 5%; padding-right: 5%; }
     .pub-services-grid { grid-template-columns: 1fr; }
     .pub-controls { flex-direction: column; align-items: stretch; }
+    .pub-controls-left,
+    .pub-search-wrap,
+    .pub-search-input { width: 100%; max-width: none; }
     .pub-controls-right { flex-direction: column; }
     .pub-details-meta-grid { grid-template-columns: 1fr; }
     .pub-modal-body { padding: 18px; }

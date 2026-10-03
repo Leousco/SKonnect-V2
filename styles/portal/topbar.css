@@ -765,3 +765,57 @@ a.notif-item-inner:hover { text-decoration: none; }
     border-color: #9b1c1c;
     box-shadow: 0 4px 14px rgba(185, 28, 28, 0.3);
 }
+
+.topbar,
+.topbar-left,
+.topbar-right {
+    min-width: 0;
+}
+
+.topbar-left {
+    max-width: 100%;
+}
+
+.topbar-title {
+    overflow-wrap: anywhere;
+}
+
+.notif-dropdown {
+    width: calc(100vw - 24px);
+    max-width: 340px;
+    box-sizing: border-box;
+}
+
+.logout-modal-overlay {
+    padding: 12px;
+}
+
+.logout-modal {
+    max-width: min(360px, 100%);
+}
+
+@media (max-width: 680px) {
+    .topbar {
+        width: 100%;
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+    }
+
+    .topbar-title {
+        font-size: clamp(20px, 6vw, 26px);
+        line-height: 1.2;
+    }
+
+    .topbar-right {
+        gap: 10px;
+    }
+
+    .logout-modal {
+        padding: 28px 20px 24px;
+    }
+
+    .logout-modal-actions {
+        flex-wrap: wrap;
+    }
+}

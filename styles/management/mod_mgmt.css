@@ -79,8 +79,9 @@ body {
 .mod-content {
   margin-left: 250px;
   flex: 1;
+  min-width: 0;
   padding: 36px 40px 60px;
-  max-width: 1300px;
+  max-width: none;
 }
 
 /* ── SECTION LABEL ── */
@@ -139,7 +140,26 @@ body {
 
 @media (max-width: 900px) {
   .mod-content {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    padding: 24px 20px 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mod-layout {
+    flex-direction: column;
+  }
+
+  .mod-content {
+    width: 100%;
     margin-left: 0;
     padding: 24px 20px 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mod-content {
+    padding: 20px 14px 40px;
   }
 }

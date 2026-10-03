@@ -3,7 +3,7 @@ body::-webkit-scrollbar {
 }
 
 .announcements-page {
-  padding: 40px 8%;
+  padding: 40px clamp(16px, 8%, 120px);
   background: #f4f6f9;
   min-height: 100vh;
 }
@@ -20,7 +20,7 @@ body::-webkit-scrollbar {
 }
 
 .header-text h1 {
-  font-size: 32px;
+  font-size: clamp(24px, 2.35vw, 32px);
   font-weight: 700;
   margin-bottom: 8px;
   color: #1e293b;
@@ -41,9 +41,12 @@ body::-webkit-scrollbar {
     position: relative;
     display: flex;
     align-items: center;
+    flex: 1 1 220px;
+    min-width: 0;
 }
 
 .search-input{
+  width: 100%;
   padding: 10px 14px 10px 36px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
@@ -244,6 +247,43 @@ body::-webkit-scrollbar {
 @media (max-width: 768px) {
   .announcements-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .announcements-page {
+    padding: 28px 16px 48px;
+  }
+
+  .announcements-header {
+    align-items: stretch;
+    margin-bottom: 28px;
+  }
+
+  .header-controls {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .header-controls .search-wrap,
+  .header-controls .search-input,
+  .header-controls .filter-category,
+  .header-controls .sort-order {
+    width: 100%;
+  }
+
+  .featured-announcement {
+    padding: 22px 20px;
+  }
+
+  .card-actions {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 }
 

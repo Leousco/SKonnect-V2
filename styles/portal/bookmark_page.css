@@ -265,3 +265,31 @@
         justify-content: center;
     }
 }
+
+.bmp-header,
+.bmp-header-left,
+.bmp-title,
+.bmp-subtitle {
+    min-width: 0;
+}
+
+.bmp-title,
+.bmp-subtitle {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+    .bmp-header-left {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .bmp-icon-wrap {
+        width: 44px;
+        height: 44px;
+    }
+
+    .bmp-title {
+        font-size: 19px;
+    }
+}

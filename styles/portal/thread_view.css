@@ -1304,3 +1304,50 @@
 .comment-tombstone--self svg {
   color: #9ca3af;
 }
+
+.thread-container,
+.thread-main-card,
+.thread-meta,
+.thread-content,
+.thread-carousel {
+  min-width: 0;
+}
+
+.thread-content img,
+.thread-content video,
+.thread-content iframe,
+.thread-main-card img {
+  max-width: 100%;
+}
+
+.report-modal,
+.delete-modal {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .report-modal-overlay,
+  .delete-modal-overlay {
+    padding: 12px;
+  }
+
+  .thread-container {
+    width: 100%;
+  }
+
+  .thread-main-card {
+    border-radius: 10px;
+  }
+
+  .report-modal,
+  .delete-modal {
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    padding: 24px 18px;
+  }
+
+  .delete-modal-footer {
+    flex-wrap: wrap;
+  }
+}

@@ -88,7 +88,8 @@ body {
   margin-left: 250px;
   flex: 1;
   padding: 36px 40px 60px;
-  max-width: 1300px;
+  min-width: 0;
+  max-width: none;
 }
 
 /* SECTION HEADERS */

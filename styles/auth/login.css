@@ -2,6 +2,24 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+.navbar-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.navbar-toggle span {
+  width: 28px;
+  height: 3px;
+  background: var(--white);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
 
 
 #navbar {
@@ -58,6 +76,13 @@ body::-webkit-scrollbar {
   border-radius: 50%;
   top: -2px;
   right: -8px;
+}
+
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  gap: 8px;
+  align-items: center;
 }
 
 .navbar-menu li {
@@ -166,8 +191,7 @@ body::-webkit-scrollbar {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background: url("../../assets/img/hero-bg.jpg") center center / 100% 100%
-    no-repeat;
+  background: url("../../assets/img/hero-bg.jpg") center center / cover no-repeat;
   z-index: 0;
 }
 
@@ -393,6 +417,38 @@ body::-webkit-scrollbar {
   box-shadow: none;
 }
 
+@media (max-width: 768px) {
+  .hero {
+    min-height: calc(100vh - 70px);
+    min-height: calc(100svh - 70px);
+    padding: 24px 16px;
+  }
+
+  .login-card {
+    margin-top: 0;
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 16px;
+  }
+
+  .navbar-logo {
+    gap: 8px;
+    font-size: 1.25rem;
+  }
+
+  .form-footer {
+    flex-wrap: wrap;
+  }
+
+  .form-footer .forgot-link,
+  .form-footer .register-block {
+    white-space: normal;
+  }
+}
 
 
 

@@ -1601,3 +1601,52 @@
     padding: 18px 16px;
   }
 }
+
+@media (min-width: 769px) and (max-width: 900px) {
+  .dashboard-content {
+    margin-left: 220px;
+  }
+}
+
+.dashboard-content,
+.dashboard-content > *,
+.dashboard-upper > *,
+.dashboard-lower > *,
+.calendar-section > * {
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+  }
+
+  .dashboard-upper,
+  .dashboard-lower {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calendar-section {
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-content {
+    padding: 16px 12px;
+  }
+
+  .calendar-section {
+    padding: 16px 12px;
+  }
+
+  .list-scroll {
+    margin-right: 0;
+    padding-right: 0;
+    overflow-x: auto;
+  }
+}

@@ -30,7 +30,7 @@ body::-webkit-scrollbar {
 .hero-bg {
     position: absolute;
     inset: 0;
-    background: url("../../assets/img/hero-bg.jpg") center center / 100% 100% no-repeat;
+    background: url("../../assets/img/hero-bg.jpg") center center / cover no-repeat;
     z-index: 0;
   }
   
@@ -121,7 +121,7 @@ body::-webkit-scrollbar {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: 30px;
     max-width: 1200px;
     margin: 0 auto;
@@ -249,7 +249,7 @@ body::-webkit-scrollbar {
 
 .program-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     gap: 25px;
 }
 
@@ -307,7 +307,7 @@ body::-webkit-scrollbar {
 
 .contact-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: 40px;
     align-items: center;
 }
@@ -351,4 +351,82 @@ body::-webkit-scrollbar {
     font-size: 1.05rem;
     color: var(--text-dark);
     margin: 0;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        min-height: 75vh;
+        padding: 48px 20px;
+    }
+
+    .hero h1 {
+        font-size: clamp(2rem, 7vw, 3.2rem);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1rem, 3.5vw, 1.3rem);
+    }
+
+    .features,
+    .about,
+    .programs,
+    .contact-preview {
+        padding-top: 56px;
+        padding-bottom: 56px;
+    }
+
+    .section-title,
+    .about h2 {
+        font-size: clamp(1.6rem, 5vw, 2.2rem);
+        margin-bottom: 32px;
+    }
+
+    .features-grid,
+    .program-grid,
+    .stats-grid,
+    .contact-grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+        gap: 20px;
+    }
+
+    .stat-card,
+    .contact-card {
+        padding: 28px 24px;
+    }
+
+    .map-embed {
+        height: clamp(240px, 55vw, 350px);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        min-height: 70vh;
+    }
+
+    .hero-description,
+    .about p,
+    .cta p {
+        font-size: 1rem;
+    }
+
+    .hero .btn {
+        display: block;
+        width: 100%;
+        max-width: 280px;
+        margin: 12px auto 0;
+    }
+
+    .hero .btn-outline {
+        margin-left: auto;
+    }
+
+    .card,
+    .program-card {
+        padding: 28px 20px;
+    }
+
+    .cta {
+        padding: 56px 20px;
+    }
 }

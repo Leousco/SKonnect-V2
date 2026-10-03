@@ -11,16 +11,6 @@ window.addEventListener("pageshow", function (event) {
 document.addEventListener("DOMContentLoaded", function () {
 
     
-    const navbarToggle = document.getElementById("navbarToggle");
-    const navbarMenu = document.getElementById("navbarMenu");
-
-    if (navbarToggle && navbarMenu) {
-        navbarToggle.addEventListener("click", function () {
-            navbarMenu.classList.toggle("active");
-        });
-    }
-
-    
     const counters = document.querySelectorAll(".counter");
     counters.forEach(counter => {
         const updateCount = () => {

@@ -104,7 +104,7 @@ body {
   flex: 1;
   min-width: 0;
   padding: 36px 40px 60px;
-  max-width: 1300px;
+  max-width: none;
 }
 
 /* ── SECTION LABEL ──────────────────────────────────────── */
@@ -167,7 +167,26 @@ body {
 
 @media (max-width: 900px) {
   .admin-content {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+    padding: 24px 20px 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-content {
+    width: 100%;
     margin-left: 0;
     padding: 24px 20px 48px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-content {
+    padding: 20px 14px 40px;
   }
 }

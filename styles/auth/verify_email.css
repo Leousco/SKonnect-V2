@@ -59,6 +59,13 @@
     top: -2px;
     right: -8px;
   }
+
+  .navbar-menu {
+    display: flex;
+    list-style: none;
+    gap: 8px;
+    align-items: center;
+  }
   
   .navbar-menu li {
     display: inline-block;
@@ -95,6 +102,23 @@
     border-color: var(--white);
     box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
     transform: translateY(-1px);
+  }
+
+  .navbar-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+  }
+
+  .navbar-toggle span {
+    width: 28px;
+    height: 3px;
+    background: var(--white);
+    border-radius: 2px;
   }
   
   @media (max-width: 768px) {
@@ -146,17 +170,20 @@
   
   .hero {
     position: relative;
-    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
+    min-height: calc(100svh - 80px);
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    padding: 24px 16px;
   }
   
   .hero-bg {
     position: absolute;
     inset: 0;
-    background: url("../../assets/img/hero-bg.jpg") center center / 100% 100%
+    background: url("../../assets/img/hero-bg.jpg") center center / cover
       no-repeat;
     z-index: 0;
   }
@@ -341,18 +368,19 @@
   
   @media (max-width: 480px) {
     .verify-card {
-      margin: 0 16px;
-      padding: 28px 20px 24px;
+      width: 100%;
+      margin: 0;
+      padding: 24px 16px;
     }
   
     .otp-input {
-      width: 40px;
+      width: clamp(32px, 10vw, 40px);
       height: 48px;
       font-size: 1.2rem;
     }
   
     .otp-group {
-      gap: 6px;
+      gap: 4px;
     }
   }
 

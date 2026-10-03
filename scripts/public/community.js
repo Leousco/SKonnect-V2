@@ -7,16 +7,6 @@ window.addEventListener("pageshow", function (event) {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-  
-  const navbarToggle = document.getElementById("navbarToggle");
-  const navbarMenu = document.getElementById("navbarMenu");
-  if (navbarToggle && navbarMenu) {
-    navbarToggle.addEventListener("click", () => {
-      navbarMenu.classList.toggle("active");
-    });
-  }
-
-  
   const feedGrid = document.getElementById("pub-feed-grid");
   if (feedGrid) initFeed();
 

@@ -38,6 +38,11 @@ if (!empty($_SESSION['user_id'])) {
             <img src="../../assets/img/loger.jpg" alt="SK Logo">
             <span>SKonnect</span>
         </a>
+        <button class="navbar-toggle" id="navbarToggle" type="button" aria-label="Toggle navigation" aria-controls="navbarMenu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
         <ul class="navbar-menu" id="navbarMenu">
             <li><a href="../public/main.php" class="nav-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a></li>
         </ul>
@@ -164,6 +169,7 @@ if (!empty($_SESSION['user_id'])) {
 </main>
 
 <script src="../../scripts/auth/register.js"></script>
+<script src="../../scripts/public/navigation.js"></script>
 
 </body>
 </html>

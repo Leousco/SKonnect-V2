@@ -13,6 +13,7 @@ $verified = $token && $model->verifyByToken($token);
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKonnect — Account Verification</title>
     <style>
         *,
@@ -33,7 +34,7 @@ $verified = $token && $model->verifyByToken($token);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: clamp(16px, 4vw, 32px);
         }
 
         body::before {
@@ -52,7 +53,7 @@ $verified = $token && $model->verifyByToken($token);
             background: linear-gradient(135deg, #0f2545, #1e5fa8);
             border-radius: 14px;
             border-left: 5px solid #facc15;
-            padding: 40px 44px;
+            padding: clamp(24px, 6vw, 40px) clamp(20px, 7vw, 44px);
             max-width: 480px;
             width: 100%;
             text-align: center;
@@ -78,7 +79,7 @@ $verified = $token && $model->verifyByToken($token);
         }
 
         h1 {
-            font-size: 22px;
+            font-size: clamp(20px, 5vw, 22px);
             font-weight: 800;
             color: #ffffff;
             line-height: 1.3;
@@ -114,6 +115,13 @@ $verified = $token && $model->verifyByToken($token);
             color: rgba(255, 255, 255, 0.35);
             font-size: 11px;
             margin-top: 28px;
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>

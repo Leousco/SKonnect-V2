@@ -25,7 +25,12 @@ if (!isset($_SESSION['verify_email'])) {
             <img src="../../assets/img/loger.jpg" alt="SK Logo">
             <span>SKonnect</span>
         </a>
-        <ul class="navbar-menu">
+        <button class="navbar-toggle" id="navbarToggle" type="button" aria-label="Toggle navigation" aria-controls="navbarMenu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
+        <ul class="navbar-menu" id="navbarMenu">
             <li><a href="../public/main.php" class="nav-link"><i class="fa-solid fa-arrow-left"></i> Home</a></li>
         </ul>
     </div>
@@ -79,6 +84,7 @@ if (!isset($_SESSION['verify_email'])) {
 </main>
 
 <script src="../../scripts/auth/verify_email.js"></script>
+<script src="../../scripts/public/navigation.js"></script>
 
 </body>
 </html>

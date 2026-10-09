@@ -1,0 +1,52 @@
+    
+## Open Project in localhost
+
+php -S localhost:8000
+
+    
+    
+                    SKONNECT AI ASSISTANT
+
+        ┌─────────────────────────────────────┐
+        │ 1. UI SHELL                         │
+        │                                     │
+        │ Floating button                     │
+        │ Chat panel                           │
+        │ Input + Send                         │
+        └──────────────────┬──────────────────┘
+                           ↓
+        ┌─────────────────────────────────────┐
+        │ 2. CHAT FRONTEND LOGIC              │
+        │                                     │
+        │ Messages                             │
+        │ Open / close                        │
+        │ Loading state                        │
+        │ Error state                          │
+        │ Send message                        │
+        └──────────────────┬──────────────────┘
+                           ↓
+        ┌─────────────────────────────────────┐
+        │ 3. BACKEND CHAT ENDPOINT            │
+        │                                     │
+        │ Browser → PHP backend               │
+        │ Validate request                    │
+        │ Identify resident                   │
+        │ Return response                     │
+        └──────────────────┬──────────────────┘
+                           ↓
+        ┌─────────────────────────────────────┐
+        │ 4. AI SERVICE                       │
+        │                                     │
+        │ Backend → Gemini/etc.               │
+        │ Prompt                              │
+        │ Response                            │
+        └──────────────────┬──────────────────┘
+                           ↓
+        ┌─────────────────────────────────────┐
+        │ 5. SKONNECT KNOWLEDGE               │
+        │                                     │
+        │ Services                            │
+        │ Announcements                       │
+        │ Requests                            │
+        │ Resident information                │
+        └─────────────────────────────────────┘

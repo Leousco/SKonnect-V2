@@ -1,4 +1,5 @@
 <?php
+$isResidentPortal = (($userRole ?? '') === 'Resident');
 $pageTitle      = $pageTitle      ?? 'Dashboard';
 $pageBreadcrumb = $pageBreadcrumb ?? [['Home', '#'], [$pageTitle, null]];
 $userName       = $userName       ?? 'Juan Dela Cruz';
@@ -129,6 +130,10 @@ $initials   = strtoupper(substr($nameParts[0], 0, 1) . (isset($nameParts[1]) ? s
         </div>
     </div>
 </div>
+
+<?php if ($isResidentPortal): ?>
+    <?php include __DIR__ . '/ai-chat.php'; ?>
+<?php endif; ?>
 
 
 <div class="logout-modal-overlay" id="logout-modal-overlay" role="dialog" aria-modal="true"

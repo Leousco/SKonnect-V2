@@ -29,20 +29,6 @@ class EmailService
         $this->mail->setFrom('skonnect.system@gmail.com', 'SKonnect - Barangay Sauyo');
     }
 
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
     private function sendNotification(
         string $email,
         string $name,
@@ -144,14 +130,6 @@ class EmailService
         );
     }
 
-    
-
-
-
-
-
-
-
     public function sendModCommentNotification(
         string $email,
         string $name,
@@ -206,14 +184,6 @@ class EmailService
         );
     }
 
-    
-
-
-
-
-
-
-
     public function sendModReplyNotification(
         string $email,
         string $name,
@@ -241,14 +211,6 @@ class EmailService
         );
     }
 
-    
-
-
-
-
-
-
-
     public function sendStatusChangeNotification(
         string $email,
         string $name,
@@ -274,14 +236,6 @@ class EmailService
             bodyPlain: "Your thread \"{$threadSubject}\" has been updated to status: {$info['label']}.\n\n{$info['note']}"
         );
     }
-
-    
-
-
-
-
-
-
 
     public function sendPinStatusNotification(
         string $email,

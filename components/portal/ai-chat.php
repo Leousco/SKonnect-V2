@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../../styles/portal/ai-chat.css">
 
-<div class="ai-chat" id="ai-chat">
+<div class="ai-chat" id="ai-chat" data-endpoint="../../backend/routes/ai.php">
     <button class="ai-chat-button" id="ai-chat-button" type="button" aria-label="Open SK Assistant" aria-expanded="false" aria-controls="ai-chat-panel">
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18.5l-1.8-5.9L4.5 11l5.7-2 1.8-5.5Z" />

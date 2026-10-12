@@ -114,11 +114,11 @@ class DashboardModel
     public function getLatestAnnouncements(): array
     {
         $stmt = $this->db->prepare("
-            SELECT id, title, category, published_at
+            SELECT id, title, category, published_at, featured::int AS featured, featured_at
             FROM announcements
             WHERE status = 'active'
               AND (expired_at IS NULL OR expired_at >= CURRENT_DATE)
-            ORDER BY published_at DESC
+            ORDER BY featured DESC, featured_at DESC NULLS LAST, published_at DESC
         ");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -142,6 +142,7 @@ class DashboardModel
                 t.id,
                 t.category,
                 t.subject,
+                t.message,
                 t.created_at,
                 CONCAT(u.first_name, ' ', u.last_name) AS author_name,
                 (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count

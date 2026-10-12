@@ -154,6 +154,7 @@ Completed:
 - [x] Event in calendar shows "Tomorrow" even though the event is still 2 days from now
 - [x] Include a services section for easy viewing
 - [x] Include latest community discussions (trending threads)
+- [ ] Hide the scrollbars on each section
 
 #### Services
 - [x] Required documents field is still required even if there are no requirements listed
@@ -209,6 +210,9 @@ Completed:
 #### Dashboard
 - [ ] Update the sections
 - [ ] Add sections for other modules (threads, reports, recent announcements)
+
+#### Activity Logs
+- [ ] Activities from the officer are not logged
 
 
 ### Features Backlog

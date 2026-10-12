@@ -156,13 +156,22 @@ $userRole       = 'Resident';
                         Latest Announcements
                     </h2>
                     <div class="list-scroll">
-                        <ul class="announcement-list" id="announcement-list">
-                            <li class="activity-skeleton"></li>
-                            <li class="activity-skeleton"></li>
-                            <li class="activity-skeleton"></li>
-                        </ul>
+                        <div class="announcement-featured" id="featured-announcement"></div>
+                        <div class="list-scroll-content">
+                            <ul class="announcement-list" id="announcement-list">
+                                <li class="activity-skeleton"></li>
+                                <li class="activity-skeleton"></li>
+                                <li class="activity-skeleton"></li>
+                            </ul>
+                        </div>
+                        <button class="scroll-more" type="button" aria-label="Scroll for more announcements" hidden>
+                            Scroll for more
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
                     </div>
-                    <a href="announcements_page.php" class="btn-small">View All Announcements &rsaquo;</a>
+                    <a href="announcements_page.php" class="btn-small">View all announcements <span aria-hidden="true">&rarr;</span></a>
                 </section>
 
                 <section class="community-discussions is-loading" aria-busy="true">
@@ -187,13 +196,21 @@ $userRole       = 'Resident';
                         Latest Community Discussions
                     </h2>
                     <div class="list-scroll">
-                        <ul class="discussion-list" id="discussion-list">
-                            <li class="activity-skeleton"></li>
-                            <li class="activity-skeleton"></li>
-                            <li class="activity-skeleton"></li>
-                        </ul>
+                        <div class="list-scroll-content">
+                            <ul class="discussion-list" id="discussion-list">
+                                <li class="activity-skeleton"></li>
+                                <li class="activity-skeleton"></li>
+                                <li class="activity-skeleton"></li>
+                            </ul>
+                        </div>
+                        <button class="scroll-more" type="button" aria-label="Scroll for more discussions" hidden>
+                            Scroll for more
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
                     </div>
-                    <a href="feed_page.php" class="btn-small">View All Discussions &rsaquo;</a>
+                    <a href="feed_page.php" class="btn-small">View all discussions <span aria-hidden="true">&rarr;</span></a>
                 </section>
 
             </div>
@@ -311,13 +328,21 @@ $userRole       = 'Resident';
                         Available Services
                     </h2>
                     <div class="list-scroll">
-                        <ul class="service-list" id="service-list">
-                            <li class="activity-skeleton"></li>
-                            <li class="activity-skeleton"></li>
-                            <li class="activity-skeleton"></li>
-                        </ul>
+                        <div class="list-scroll-content">
+                            <ul class="service-list" id="service-list">
+                                <li class="activity-skeleton"></li>
+                                <li class="activity-skeleton"></li>
+                                <li class="activity-skeleton"></li>
+                            </ul>
+                        </div>
+                        <button class="scroll-more" type="button" aria-label="Scroll for more services" hidden>
+                            Scroll for more
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
                     </div>
-                    <a href="services_page.php" class="btn-small">View All Services &rsaquo;</a>
+                    <a href="services_page.php" class="btn-small">View all services <span aria-hidden="true">&rarr;</span></a>
                 </section>
 
                 <section class="recent-activity is-loading" aria-busy="true">
@@ -341,11 +366,19 @@ $userRole       = 'Resident';
                         Recent Activity
                     </h2>
                     <div class="list-scroll">
-                        <div class="activity-list" id="activity-list">
-                            <div class="activity-skeleton"></div>
-                            <div class="activity-skeleton"></div>
-                            <div class="activity-skeleton"></div>
+                        <div class="list-scroll-content">
+                            <div class="activity-list" id="activity-list">
+                                <div class="activity-skeleton"></div>
+                                <div class="activity-skeleton"></div>
+                                <div class="activity-skeleton"></div>
+                            </div>
                         </div>
+                        <button class="scroll-more" type="button" aria-label="Scroll for more activity" hidden>
+                            Scroll for more
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </button>
                     </div>
                 </section>
 

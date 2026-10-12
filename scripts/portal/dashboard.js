@@ -20,13 +20,6 @@
     let current = new Date(Date.UTC(todayParts.year, todayParts.month - 1, 1));
     let eventsMap = {};
   
-    const ACTIVITY_ICONS = {
-        thread:            { icon: '💬', label: 'Thread' },
-        request_submitted: { icon: '📋', label: 'Request' },
-        comment:           { icon: '💭', label: 'Comment' },
-        reply:             { icon: '↩️', label: 'Reply' },
-    };
-  
     function pad(n) { return String(n).padStart(2, '0'); }
 
     function getPhilippineDateParts() {
@@ -90,6 +83,36 @@
         return res.json();
     }
 
+    function refreshScrollMore() {
+        document.querySelectorAll('.list-scroll').forEach(container => {
+            const button = container.querySelector('.scroll-more');
+            const content = container.querySelector('.list-scroll-content');
+            if (!button || !content) return;
+
+            const hasOverflow = content.scrollHeight > content.clientHeight + 2;
+            const atBottom = content.scrollTop + content.clientHeight >= content.scrollHeight - 8;
+            button.hidden = !hasOverflow;
+            button.classList.toggle('is-at-bottom', atBottom);
+            button.setAttribute('aria-hidden', String(atBottom));
+            button.tabIndex = atBottom ? -1 : 0;
+        });
+    }
+
+    document.querySelectorAll('.list-scroll').forEach(container => {
+        const button = container.querySelector('.scroll-more');
+        const content = container.querySelector('.list-scroll-content');
+        if (!button || !content) return;
+
+        content.addEventListener('scroll', refreshScrollMore, { passive: true });
+        button.addEventListener('click', () => {
+            content.scrollBy({
+                top: Math.max(content.clientHeight * 0.75, 120),
+                behavior: 'smooth',
+            });
+        });
+    });
+    window.addEventListener('resize', refreshScrollMore);
+
     function runDashboardLoad(elements, sectionName, load, onError) {
         Promise.resolve()
             .then(load)
@@ -102,6 +125,7 @@
                     element.classList.remove('is-loading');
                     element.setAttribute('aria-busy', 'false');
                 });
+                refreshScrollMore();
             });
     }
   
@@ -123,6 +147,7 @@
         if (data.status !== 'success') throw new Error(data.message || 'Recent activity request was unsuccessful.');
   
         if (!data.data.length) {
+            listEl.classList.remove('has-items');
             listEl.innerHTML = '<p class="empty-state">No recent activity yet.</p>';
             return;
         }
@@ -130,26 +155,28 @@
         const items = data.data.slice(0, 7);
   
         listEl.innerHTML = items.map(item => {
-            const meta      = ACTIVITY_ICONS[item.type] || { icon: '📌', label: 'Activity' };
             const typeClass = item.type.replace(/_/g, '-');
             return `
                 <div class="activity-item">
-                    <div class="activity-dot ${typeClass}" title="${meta.label}">${meta.icon}</div>
+                    <span class="activity-dot ${typeClass}" aria-hidden="true"></span>
                     <div class="activity-meta">
                         <p>${escapeHtml(item.description)}</p>
                         <span class="activity-date">${timeAgo(item.activity_at)}</span>
                     </div>
                 </div>`;
         }).join('');
+        listEl.classList.add('has-items');
     }
   
     
     async function loadAnnouncements() {
         const listEl = document.getElementById('announcement-list');
+        const featuredEl = document.getElementById('featured-announcement');
         const data   = await fetchJSON('announcements');
         if (data.status !== 'success') throw new Error(data.message || 'Announcements request was unsuccessful.');
   
         if (!data.data.length) {
+            featuredEl.hidden = true;
             listEl.innerHTML = '<li class="empty-state">No announcements yet.</li>';
             return;
         }
@@ -162,25 +189,63 @@
             notice:  'badge-notice',
         };
   
-        listEl.innerHTML = data.data.map(ann => {
+        const featured = data.data.find(announcement => Number(announcement.featured) === 1);
+        const earlier = featured
+            ? data.data.filter(announcement => String(announcement.id) !== String(featured.id))
+            : data.data;
+        const announcementLink = ann => `announcement_view.php?id=${encodeURIComponent(ann.id)}`;
+        const shortDate = dateStr => {
+            const [, month, day] = String(dateStr).slice(0, 10).split('-').map(Number);
+            return `${MONTHS_SHORT[month - 1]} ${day}`;
+        };
+        const announcementRows = earlier.map(ann => {
             const badge = categoryBadge[ann.category] || '';
-            const date  = timeAgo(ann.published_at);
+            const date = shortDate(ann.published_at);
             return `
-                <li>
-                    <a href="announcement_view.php?id=${ann.id}">
-                        <span class="ann-content">
-                            <span class="ann-title">${escapeHtml(ann.title)}</span>
-                            <span class="ann-meta">
-                                <span class="ann-badge ${badge}">${ann.category}</span>
-                                <span class="ann-date">${date}</span>
-                            </span>
-                        </span>
+                <li class="announcement-row">
+                    <a href="${announcementLink(ann)}">
+                        <span class="ann-row-date">${date}</span>
+                        <span class="ann-row-title">${escapeHtml(ann.title)}</span>
+                        <span class="ann-badge ${badge}">${escapeHtml(ann.category)}</span>
                         <svg class="ann-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
                     </a>
                 </li>`;
         }).join('');
+        if (featured) {
+            const badge = categoryBadge[featured.category] || '';
+            const featuredDate = shortDate(featured.published_at).split(' ');
+            featuredEl.innerHTML = `
+                <a href="${announcementLink(featured)}">
+                    <span class="ann-feature-date">
+                        <span>${featuredDate[0]}</span>
+                        <strong>${featuredDate[1]}</strong>
+                    </span>
+                    <span class="ann-feature-content">
+                        <span class="ann-feature-meta">
+                            <span class="ann-badge ${badge}">${escapeHtml(featured.category)}</span>
+                            <span>Featured</span>
+                        </span>
+                        <span class="ann-feature-title">${escapeHtml(featured.title)}</span>
+                    </span>
+                    <span class="ann-feature-arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"></path>
+                            <path d="m12 5 7 7-7 7"></path>
+                        </svg>
+                    </span>
+                </a>`;
+            featuredEl.hidden = false;
+        } else {
+            featuredEl.hidden = true;
+        }
+
+        listEl.innerHTML = `
+            ${featured && earlier.length ? `
+                <li class="announcement-earlier">Recent</li>
+                ${announcementRows}
+            ` : featured ? '' : announcementRows}`;
     }
   
     
@@ -205,19 +270,23 @@
 
         listEl.innerHTML = data.data.map(t => {
             const replies = Number(t.comment_count) || 0;
+            const message = String(t.message || '').replace(/\s+/g, ' ').trim();
             return `
                 <li>
                     <a href="thread_view.php?id=${t.id}">
                         <div class="discussion-avatar">${initials(t.author_name)}</div>
                         <div class="discussion-body">
-                            <span class="discussion-subject">${escapeHtml(t.subject)}</span>
-                            <div class="discussion-footer">
+                            <div class="discussion-heading">
+                                <span class="discussion-subject">${escapeHtml(t.subject)}</span>
                                 <span class="ann-badge disc-badge-${t.category}">${escapeHtml(t.category)}</span>
+                            </div>
+                            <div class="discussion-preview-row">
+                                <span class="discussion-preview">${escapeHtml(message)}</span>
                                 <span class="discussion-meta">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                                     </svg>
-                                    ${replies} ${replies === 1 ? 'Reply' : 'Replies'}
+                                    <span>${replies}</span>
                                 </span>
                             </div>
                         </div>
@@ -569,6 +638,7 @@
         'announcements',
         loadAnnouncements,
         () => {
+            document.getElementById('featured-announcement').hidden = true;
             document.getElementById('announcement-list').innerHTML =
                 '<li class="empty-state">Unable to load announcements.</li>';
         }

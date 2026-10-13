@@ -18,16 +18,21 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
 // include Origin; Referer is accepted as a fallback for compatible clients.
 $originHeader = $_SERVER['HTTP_ORIGIN'] ?? '';
 $refererHeader = $_SERVER['HTTP_REFERER'] ?? '';
-$requestHost = strtolower($_SERVER['HTTP_HOST'] ?? '');
-$requestScheme = (!empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off')
-    ? 'https'
-    : 'http';
+$requestHostHeader = $_SERVER['HTTP_HOST'] ?? '';
+$requestHostDetails = parse_url('//' . $requestHostHeader);
+$requestHost = strtolower(is_array($requestHostDetails) ? ($requestHostDetails['host'] ?? '') : '');
+$forwardedProto = strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')[0]));
+$requestScheme = in_array($forwardedProto, ['http', 'https'], true)
+    ? $forwardedProto
+    : ((!empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off') ? 'https' : 'http');
 $sourceHeader = $originHeader !== '' ? $originHeader : $refererHeader;
 $source = $sourceHeader !== '' ? parse_url($sourceHeader) : false;
 $sourceHost = is_array($source) ? strtolower($source['host'] ?? '') : '';
 $sourceScheme = is_array($source) ? strtolower($source['scheme'] ?? '') : '';
 $sourcePort = is_array($source) ? ($source['port'] ?? null) : null;
-$requestPort = (int) ($_SERVER['SERVER_PORT'] ?? ($requestScheme === 'https' ? 443 : 80));
+$requestPort = is_array($requestHostDetails)
+    ? ($requestHostDetails['port'] ?? ($requestScheme === 'https' ? 443 : 80))
+    : ($requestScheme === 'https' ? 443 : 80);
 $effectiveSourcePort = $sourcePort ?? ($sourceScheme === 'https' ? 443 : 80);
 
 if (
@@ -35,7 +40,7 @@ if (
     !is_array($source) ||
     !in_array($sourceScheme, ['http', 'https'], true) ||
     $sourceScheme !== $requestScheme ||
-    $sourceHost !== strtolower(preg_replace('/:\\d+$/', '', $requestHost)) ||
+    $sourceHost !== $requestHost ||
     $effectiveSourcePort !== $requestPort
 ) {
     aiJsonResponse(403, ['success' => false, 'message' => 'Request origin not allowed.']);

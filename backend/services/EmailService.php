@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../config/paths.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -39,8 +40,12 @@ class EmailService
         string $bodyHtml,
         string $bodyPlain,
         string $ctaLabel = 'View Thread',
-        string $ctaUrl   = 'http://localhost/SKonnect/views/portal/feed.php'
+        string $ctaUrl   = ''
     ): bool {
+        if ($ctaLabel !== '' && $ctaUrl === '') {
+            $ctaUrl = appAbsoluteUrl('views/portal/feed_page.php');
+        }
+
         try {
             $this->configureSMTP();
             $this->mail->addAddress($email, $name);
@@ -126,7 +131,7 @@ class EmailService
             bodyHtml: "<p>{$excerpt}...</p><p style='color:rgba(255,255,255,0.5);font-size:11.5px;'>Posted on {$date}</p>",
             bodyPlain: "{$excerpt}...\n\nPosted on {$date}",
             ctaLabel: 'View Announcement',
-            ctaUrl: 'http://localhost/SKonnect/views/public/announcement_view.php'
+            ctaUrl: appAbsoluteUrl('views/public/announcement_view.php?id=' . (int) ($announcement['id'] ?? 0))
         );
     }
 
@@ -462,7 +467,7 @@ class EmailService
                          through your SKonnect portal.</p>",
             bodyPlain:  "Hi {$name},\n\nYour service request for \"{$safe}\" (Ref # {$appCode}) has been received.\n\nAn SK Officer will review your application and you will be notified of any updates.",
             ctaLabel:   'Track My Request',
-            ctaUrl:     'http://localhost/SKonnect/views/portal/my_requests_page.php'
+            ctaUrl: appAbsoluteUrl('views/portal/my_requests_page.php')
         );
     }
 
@@ -490,7 +495,7 @@ class EmailService
                          submit a new request through your SKonnect portal.</p>",
             bodyPlain:  "Hi {$name},\n\nYour service request for \"{$safe}\" (Ref # {$appCode}) has been cancelled.\n\nIf this was a mistake, you may submit a new request through your SKonnect portal.",
             ctaLabel:   'Go to My Requests',
-            ctaUrl:     'http://localhost/SKonnect/views/portal/my_requests_page.php'
+            ctaUrl:     appAbsoluteUrl('views/portal/my_requests_page.php')
         );
     }
 
@@ -527,7 +532,7 @@ class EmailService
                          <p>Please log in to your SKonnect portal to review and respond to this request.</p>",
             bodyPlain:  "Hi {$name},\n\nYour service request for \"{$safe}\" (Ref # {$appCode}) requires your attention.\n\nOfficer's message:\n\"{$officerNote}\"\n\nPlease log in to your SKonnect portal to respond.",
             ctaLabel:   'Respond Now',
-            ctaUrl:     'http://localhost/SKonnect/views/portal/my_requests_page.php'
+            ctaUrl:     appAbsoluteUrl('views/portal/my_requests_page.php')
         );
     }
 
@@ -580,7 +585,7 @@ class EmailService
                 . ($approvalMessage ? "Officer's message:\n\"{$approvalMessage}\"\n\n" : "")
                 . ($hasFulfillmentFile ? "A file has been prepared for you. Please visit your SKonnect portal to view and download it.\n" : ""),
             ctaLabel:   'View My Request',
-            ctaUrl:     'http://localhost/SKonnect/views/portal/my_requests_page.php'
+            ctaUrl:     appAbsoluteUrl('views/portal/my_requests_page.php')
         );
     }
 
@@ -619,7 +624,7 @@ class EmailService
                          portal.</p>",
             bodyPlain:  "Hi {$name},\n\nYour service request for \"{$safe}\" (Ref # {$appCode}) has been DECLINED.\n\nReason:\n\"{$reason}\"\n\nPlease visit your SKonnect portal if you wish to reapply.",
             ctaLabel:   'Go to My Requests',
-            ctaUrl:     'http://localhost/SKonnect/views/portal/my_requests_page.php'
+            ctaUrl:     appAbsoluteUrl('views/portal/my_requests_page.php')
         );
     }
  
@@ -667,7 +672,7 @@ class EmailService
             bodyHtml:   $bodyHtml,
             bodyPlain:  $bodyPlain,
             ctaLabel:   'Go to SKonnect',
-            ctaUrl:     'http://localhost/skonnect/views/auth/login.php'
+            ctaUrl:     appAbsoluteUrl('views/auth/login.php')
         );
     }
 }

@@ -131,7 +131,7 @@ $userRole       = 'Resident';
 
                                 <div class="ann-card-image">
                                     <?php if ($ann['banner_img']) : ?>
-                                        <img src="<?= htmlspecialchars($ann['banner_img']) ?>" alt="<?= htmlspecialchars($ann['title']) ?>">
+                                        <img src="<?= htmlspecialchars(publicAssetUrl($ann['banner_img'])) ?>" alt="<?= htmlspecialchars($ann['title']) ?>">
                                     <?php else : ?>
                                         <div class="ann-card-placeholder-img"></div>
                                     <?php endif; ?>

@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../models/AnnouncementModel.php';
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../services/EmailService.php';
+require_once __DIR__ . '/../config/paths.php';
 
 class AnnouncementController
 {
@@ -348,12 +349,7 @@ class AnnouncementController
 
         if (!move_uploaded_file($file['tmp_name'], $destAbs)) return false;
 
-        if (preg_match('#/(SKonnect/.+)$#i', $destAbs, $m)) {
-            return '/' . $m[1];
-        }
-
-        $docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
-        return str_replace($docRoot, '', $destAbs);
+        return publicAssetUrl($destAbs);
     }
 
     private function normaliseFileArray(array $files): array

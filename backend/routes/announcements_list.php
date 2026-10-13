@@ -9,6 +9,7 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/paths.php';
 
 RoleMiddleware::requireAdmin();
 
@@ -76,6 +77,10 @@ $stmt->bindValue(':limit',  $perPage, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset,  PDO::PARAM_INT);
 $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach ($rows as &$row) {
+    $row['banner_img'] = publicAssetUrl($row['banner_img'] ?? null);
+}
+unset($row);
 
 
 $statsStmt = $conn->query("

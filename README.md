@@ -4,6 +4,12 @@ A community portal that connects residents with their SK officers: announcements
 
 > **Last Update:** 9/30/26
 
+## Render Deployment
+
+Deploy the project as a Docker web service using the included `Dockerfile`. The app is served from the domain root, and its PHP pages are under `views/`.
+
+The container grants Apache write access to the upload directories. Render's container filesystem is otherwise ephemeral, so configure persistent storage for uploaded files if announcement banners or other uploads must survive a restart or redeploy. Set the database and Gemini credentials as Render environment variables; do not commit them.
+
 ## Table of Contents
 
 - [System Users](#system-users)
@@ -11,6 +17,7 @@ A community portal that connects residents with their SK officers: announcements
 - [Features](#features)
   - [Feature to be Implemented](#feature-to-be-implemented)
   - [Implemented Major Features](#implemented-major-features)
+- [Render Deployment](#render-deployment)
 - [Refactoring for Database Migration](#refactoring-for-database-migration)
 - [Known Issues](#known-issues)
 - [Features Backlog](#features-backlog)

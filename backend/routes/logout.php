@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/paths.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
@@ -15,6 +16,6 @@ if (ini_get("session.use_cookies")) {
 
 session_destroy();
 
-header('Location: /SKonnect/views/public/main.php');
+header('Location: ' . appUrl());
 exit;
 ?>

@@ -100,7 +100,7 @@ function fileLabel(string $path): string
                     
                     <?php if ($ann['banner_img']) : ?>
                         <div class="av-banner">
-                            <img src="<?= htmlspecialchars($ann['banner_img']) ?>" alt="<?= htmlspecialchars($ann['title']) ?>">
+                            <img src="<?= htmlspecialchars(publicAssetUrl($ann['banner_img'])) ?>" alt="<?= htmlspecialchars($ann['title']) ?>">
 
                         </div>
                     <?php endif; ?>
@@ -169,7 +169,7 @@ function fileLabel(string $path): string
                                     <li class="av-attach-item">
                                         <span class="av-attach-icon"><?= fileIcon($f['file_path']) ?></span>
                                         <span class="av-attach-name"><?= htmlspecialchars(fileLabel($f['file_path'])) ?></span>
-                                        <a href="<?= htmlspecialchars($f['file_path']) ?>" download class="av-attach-dl" title="Download">
+                                        <a href="<?= htmlspecialchars(publicAssetUrl($f['file_path'])) ?>" download class="av-attach-dl" title="Download">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                             </svg>

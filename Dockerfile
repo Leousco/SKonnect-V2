@@ -16,5 +16,7 @@ COPY . /var/www/html/
 
 # Install PHP dependencies inside the container build
 RUN composer install --no-dev --optimize-autoloader
+RUN mkdir -p /var/www/html/assets/uploads /var/www/html/uploads \
+    && chown -R www-data:www-data /var/www/html/assets/uploads /var/www/html/uploads
 
 EXPOSE 80

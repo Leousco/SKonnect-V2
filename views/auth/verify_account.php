@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../backend/config/paths.php';
 require_once __DIR__ . '/../../backend/config/database.php';
 require_once __DIR__ . '/../../backend/models/UserAdminModel.php';
 
@@ -133,13 +134,13 @@ $verified = $token && $model->verifyByToken($token);
             <span class="badge" style="color: #4ade80;">Account Verified</span>
             <h1>Your account is now verified!</h1>
             <p>You can now log in to SKonnect using your email and the password provided by the administrator.</p>
-            <a href="/SKonnect/views/auth/login.php" class="btn">Go to Login</a>
+            <a href="<?= htmlspecialchars(appUrl('views/auth/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn">Go to Login</a>
         <?php else : ?>
             <span class="icon">❌</span>
             <span class="badge" style="color: #f87171;">Verification Failed</span>
             <h1>This link is invalid or already used.</h1>
             <p>The verification link may have already been used, or it doesn't exist. If you believe this is an error, please contact the barangay office.</p>
-            <a href="/SKonnect/views/auth/login.php" class="btn">Back to Login</a>
+            <a href="<?= htmlspecialchars(appUrl('views/auth/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="btn">Back to Login</a>
         <?php endif; ?>
         <p class="footer">SKonnect &mdash; Sangguniang Kabataan Portal &bull; Barangay Sauyo</p>
     </div>

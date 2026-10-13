@@ -1,9 +1,7 @@
 <?php
+require_once __DIR__ . '/../config/paths.php';
 
 class RoleMiddleware {
-
-    private static $loginPage   = '/SKonnect/views/auth/login.php';
-    private static $deniedPage  = '/SKonnect/views/public/unauthorized.php';
 
     public static function requireAuth(): void {
         self::startSession();
@@ -60,12 +58,12 @@ class RoleMiddleware {
     }
 
     private static function redirectToLogin(): void {
-        header('Location: ' . self::$loginPage);
+        header('Location: ' . appUrl('views/auth/login.php'));
         exit;
     }
 
     private static function redirectToDenied(): void {
-        header('Location: ' . self::$deniedPage);
+        header('Location: ' . appUrl('views/public/unauthorized.php'));
         exit;
     }
 }

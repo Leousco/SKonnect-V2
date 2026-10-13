@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/paths.php';
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../services/EmailService.php';
@@ -55,7 +56,7 @@ try {
             $age          = (int)(new DateTime())->diff(new DateTime($data['birth_date']))->y;
             $fullName     = trim($data['first_name']) . ' ' . trim($data['last_name']);
             $verifyToken  = bin2hex(random_bytes(32));
-            $verifyUrl    = 'http://' . $_SERVER['HTTP_HOST'] . '/SKonnect/views/auth/verify_account.php?token=' . $verifyToken;
+            $verifyUrl    = appAbsoluteUrl('views/auth/verify_account.php?token=' . rawurlencode($verifyToken));
 
             $newId = $model->create([
                 'first_name'   => trim($data['first_name']),

@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../../backend/config/paths.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +38,7 @@
     <h1>Access Denied</h1>
     <p>You don't have permission to view this page. Please contact your administrator if you believe this is a mistake.</p>
     <a href="javascript:history.back()" class="btn">Go Back</a>
-    <a href="/SKonnect/views/auth/login.php" class="back">Return to Login</a>
+    <a href="<?= htmlspecialchars(appUrl('views/auth/login.php'), ENT_QUOTES, 'UTF-8') ?>" class="back">Return to Login</a>
 </div>
 </body>
 </html>

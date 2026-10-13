@@ -9,6 +9,7 @@ header('Content-Type: application/json');
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/paths.php';
 
 RoleMiddleware::requireAdmin();
 
@@ -26,19 +27,7 @@ $action = $_GET['action'] ?? ($_POST['action'] ?? '');
 
 
 function resolveWebPath(string $absPath): string {
-    $absPath = str_replace('\\', '/', $absPath);
-
-    if (preg_match('#/(SKonnect/.+)$#i', $absPath, $m)) {
-        return '/' . $m[1];
-    }
-
-    $docRoot = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] ?? ''), '/');
-    if ($docRoot !== '' && str_starts_with($absPath, $docRoot)) {
-        return str_replace($docRoot, '', $absPath);
-    }
-
-    
-    return $absPath;
+    return publicAssetUrl($absPath);
 }
 
 

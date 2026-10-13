@@ -206,6 +206,7 @@ $userRole       = 'Resident';
             bookmarkRouteUrl: '../../backend/routes/bookmarks.php'
         };
     </script>
+    <script src="../../scripts/pagination.js"></script>
     <script src="../../scripts/portal/bookmark_page.js"></script>
 </body>
 

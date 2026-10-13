@@ -425,20 +425,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
     const totalPages = getTotalPages();
+    const pagination = document.querySelector(".pagination-section");
 
     if (!pageNumbersEl) return;
+    if (pagination) pagination.style.display = totalPages > 1 ? "" : "none";
     pageNumbersEl.innerHTML = "";
 
-    for (let i = 1; i <= totalPages; i++) {
+    window.SKONNECT_PAGINATION.getPageRange(currentPage, totalPages).forEach((page) => {
+      if (page === "…") {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "pagination-ellipsis";
+        ellipsis.textContent = page;
+        pageNumbersEl.appendChild(ellipsis);
+        return;
+      }
       const btn = document.createElement("button");
-      btn.className = "page-num" + (i === currentPage ? " active" : "");
-      btn.textContent = i;
+      btn.type = "button";
+      btn.className = "page-num" + (page === currentPage ? " active" : "");
+      btn.textContent = page;
+      if (page === currentPage) btn.setAttribute("aria-current", "page");
       btn.addEventListener("click", () => {
-        currentPage = i;
+        currentPage = page;
         applyPage();
       });
       pageNumbersEl.appendChild(btn);
-    }
+    });
 
     if (prevBtn) prevBtn.disabled = currentPage === 1;
     if (nextBtn) nextBtn.disabled = currentPage === totalPages;
@@ -446,6 +457,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyPage() {
     const filtered = getFilteredCards();
+    currentPage = Math.min(currentPage, getTotalPages());
     const start = (currentPage - 1) * CARDS_PER_PAGE;
 
     cards.forEach((card) => {

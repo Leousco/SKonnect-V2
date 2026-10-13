@@ -464,6 +464,7 @@ $cat_labels = [
     <script>
         const MOD_NAME = <?= json_encode($_SESSION['user_name'] ?? 'Moderator') ?>;
     </script>
+    <script src="../../../scripts/pagination.js"></script>
     <script src="../../../scripts/management/moderator/mod_feed.js"></script>
 
 </body>

@@ -85,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const CARDS_PER_PAGE = 9;
     let currentPage = 1;
+    const pagination = document.querySelector(".pagination-wrapper");
 
     function getFilteredCards() {
       return allCards.filter((c) => c.dataset.filtered !== "false");
@@ -99,19 +100,29 @@ document.addEventListener("DOMContentLoaded", () => {
       const prevBtn = document.getElementById("pub-prev-btn");
       const nextBtn = document.getElementById("pub-next-btn");
       const totalPages = getTotalPages();
+      if (pagination) pagination.style.display = totalPages > 1 ? "" : "none";
 
       if (pageNumbersEl) {
         pageNumbersEl.innerHTML = "";
-        for (let i = 1; i <= totalPages; i++) {
+        window.SKONNECT_PAGINATION.getPageRange(currentPage, totalPages).forEach((page) => {
+          if (page === "…") {
+            const ellipsis = document.createElement("span");
+            ellipsis.className = "pagination-ellipsis";
+            ellipsis.textContent = page;
+            pageNumbersEl.appendChild(ellipsis);
+            return;
+          }
           const btn = document.createElement("button");
-          btn.className = "page-num" + (i === currentPage ? " active" : "");
-          btn.textContent = i;
+          btn.type = "button";
+          btn.className = "page-num" + (page === currentPage ? " active" : "");
+          btn.textContent = page;
+          if (page === currentPage) btn.setAttribute("aria-current", "page");
           btn.addEventListener("click", () => {
-            currentPage = i;
+            currentPage = page;
             applyPage();
           });
           pageNumbersEl.appendChild(btn);
-        }
+        });
       }
 
       if (prevBtn) prevBtn.disabled = currentPage === 1;
@@ -120,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function applyPage() {
       const filtered = getFilteredCards();
+      currentPage = Math.min(currentPage, getTotalPages());
       const start = (currentPage - 1) * CARDS_PER_PAGE;
 
       allCards.forEach((card) => {

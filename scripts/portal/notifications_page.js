@@ -95,15 +95,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextBtn   = document.getElementById('next-btn');
         if (!container) return;
 
+        const pagination = container.closest('.pagination-section');
+        if (pagination) pagination.style.display = totalPages > 1 ? '' : 'none';
         container.innerHTML = '';
 
-        for (let i = 1; i <= totalPages; i++) {
+        window.SKONNECT_PAGINATION.getPageRange(currentPage, totalPages).forEach(page => {
+            if (page === '…') {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'pagination-ellipsis';
+                ellipsis.textContent = page;
+                container.appendChild(ellipsis);
+                return;
+            }
             const btn = document.createElement('button');
-            btn.className = 'page-num' + (i === currentPage ? ' active' : '');
-            btn.textContent = i;
-            btn.addEventListener('click', () => { currentPage = i; renderPage(); });
+            btn.type = 'button';
+            btn.className = 'page-num' + (page === currentPage ? ' active' : '');
+            btn.textContent = page;
+            if (page === currentPage) btn.setAttribute('aria-current', 'page');
+            btn.addEventListener('click', () => { currentPage = page; renderPage(); });
             container.appendChild(btn);
-        }
+        });
 
         if (prevBtn) {
             prevBtn.disabled = currentPage === 1;

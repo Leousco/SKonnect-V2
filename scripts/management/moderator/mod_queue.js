@@ -113,20 +113,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const numbersEl = document.getElementById("mq-page-numbers");
     const prevBtn = document.getElementById("mq-prev");
     const nextBtn = document.getElementById("mq-next");
+    const pagination = document.querySelector(".mq-pagination");
 
     if (!numbersEl) return;
+    if (pagination) pagination.style.display = totalPages > 1 ? "" : "none";
     numbersEl.innerHTML = "";
 
-    for (let i = 1; i <= totalPages; i++) {
+    window.SKONNECT_PAGINATION.getPageRange(currentPage, totalPages).forEach((page) => {
+      if (page === "…") {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "pagination-ellipsis";
+        ellipsis.textContent = page;
+        numbersEl.appendChild(ellipsis);
+        return;
+      }
       const btn = document.createElement("button");
-      btn.className = "mq-page-num" + (i === currentPage ? " active" : "");
-      btn.textContent = i;
+      btn.type = "button";
+      btn.className = "mq-page-num" + (page === currentPage ? " active" : "");
+      btn.textContent = page;
+      if (page === currentPage) btn.setAttribute("aria-current", "page");
       btn.addEventListener("click", () => {
-        currentPage = i;
+        currentPage = page;
         applyFilters();
       });
       numbersEl.appendChild(btn);
-    }
+    });
 
     if (prevBtn) prevBtn.disabled = currentPage === 1;
     if (nextBtn) nextBtn.disabled = currentPage === totalPages;

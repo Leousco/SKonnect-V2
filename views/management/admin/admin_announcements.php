@@ -457,6 +457,7 @@ RoleMiddleware::requireAdmin();
     </div>
 </div>
 
+<script src="../../../scripts/pagination.js"></script>
 <script src="../../../scripts/management/admin/admin_announcements.js?v=<?= time() ?>"></script>
 </body>
 </html>

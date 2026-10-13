@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
     const prev = document.createElement("button");
+    prev.type = "button";
     prev.className = "ann-page-btn";
     prev.innerHTML = "&#8249; Prev";
     prev.disabled = state.page === 1;
@@ -71,8 +72,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const makePageBtn = (p) => {
       const btn = document.createElement("button");
+      btn.type = "button";
       btn.className = "ann-page-num" + (p === state.page ? " active" : "");
       btn.textContent = p;
+      if (p === state.page) btn.setAttribute("aria-current", "page");
       btn.addEventListener("click", () => {
         state.page = p;
         buildPagination(containerEl, allRows, state, renderFn);
@@ -82,26 +85,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const makeEllipsis = () => {
       const span = document.createElement("span");
-      span.className = "ann-page-ellipsis";
+      span.className = "pagination-ellipsis";
       span.textContent = "…";
       return span;
     };
 
-    if (totalPages <= 7) {
-      for (let p = 1; p <= totalPages; p++) numWrap.appendChild(makePageBtn(p));
-    } else {
-      numWrap.appendChild(makePageBtn(1));
-      if (state.page > 3) numWrap.appendChild(makeEllipsis());
-      const lo = Math.max(2, state.page - 1);
-      const hi = Math.min(totalPages - 1, state.page + 1);
-      for (let p = lo; p <= hi; p++) numWrap.appendChild(makePageBtn(p));
-      if (state.page < totalPages - 2) numWrap.appendChild(makeEllipsis());
-      numWrap.appendChild(makePageBtn(totalPages));
-    }
+    window.SKONNECT_PAGINATION.getPageRange(state.page, totalPages).forEach((page) => {
+      if (page === "…") numWrap.appendChild(makeEllipsis());
+      else numWrap.appendChild(makePageBtn(page));
+    });
     containerEl.appendChild(numWrap);
 
     
     const next = document.createElement("button");
+    next.type = "button";
     next.className = "ann-page-btn";
     next.innerHTML = "Next &#8250;";
     next.disabled = state.page === totalPages;

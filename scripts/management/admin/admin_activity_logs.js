@@ -12,6 +12,7 @@
     let currentPage  = 1;
     let totalPages   = 1;
     let totalRecords = 0;
+    let latestRequest = 0;
 
     const searchInput   = document.getElementById('logSearch');
     const filterAction  = document.getElementById('filterAction');
@@ -139,6 +140,7 @@
 
     
     async function fetchLogs(page = 1) {
+        const requestId = ++latestRequest;
         const params = new URLSearchParams({
             action:        'get_logs',
             page,
@@ -153,6 +155,7 @@
             setLoadingState(true);
             const res  = await fetch(`${API_URL}?${params}`);
             const json = await res.json();
+            if (requestId !== latestRequest) return;
             if (json.status !== 'success') throw new Error(json.message ?? 'Unknown error');
 
             const d      = json.data;
@@ -162,9 +165,11 @@
 
             render(d.logs, d.total, d.pages, d.page);
         } catch (err) {
-            showError('Failed to load activity logs: ' + err.message);
+            if (requestId === latestRequest) {
+                showError('Failed to load activity logs: ' + err.message);
+            }
         } finally {
-            setLoadingState(false);
+            if (requestId === latestRequest) setLoadingState(false);
         }
     }
 
@@ -228,10 +233,7 @@
     }
 
     function buildPageRange(current, total) {
-        if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-        if (current <= 4) return [1, 2, 3, 4, 5, '…', total];
-        if (current >= total - 3) return [1, '…', total-4, total-3, total-2, total-1, total];
-        return [1, '…', current-1, current, current+1, '…', total];
+        return window.SKONNECT_PAGINATION.getPageRange(current, total);
     }
 
     

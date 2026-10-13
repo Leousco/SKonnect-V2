@@ -81,23 +81,27 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderPagination(totalPages) {
     pageNumbers.innerHTML = "";
 
-    const maxVisible = 5;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-    let endPage   = Math.min(totalPages, startPage + maxVisible - 1);
-    if (endPage - startPage < maxVisible - 1) {
-      startPage = Math.max(1, endPage - maxVisible + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
+    window.SKONNECT_PAGINATION.getPageRange(currentPage, totalPages).forEach((page) => {
+      if (page === "…") {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "pagination-ellipsis";
+        ellipsis.textContent = page;
+        pageNumbers.appendChild(ellipsis);
+        return;
+      }
       const btn = document.createElement("button");
-      btn.className = "mod-page-num" + (i === currentPage ? " active" : "");
-      btn.textContent = i;
+      btn.type = "button";
+      btn.className = "mod-page-num" + (page === currentPage ? " active" : "");
+      btn.textContent = page;
+      if (page === currentPage) btn.setAttribute("aria-current", "page");
       btn.addEventListener("click", () => {
-        currentPage = i;
+        currentPage = page;
         renderPage();
       });
       pageNumbers.appendChild(btn);
-    }
+    });
+    const pagination = document.querySelector(".mod-pagination");
+    if (pagination) pagination.style.display = totalPages > 1 ? "" : "none";
 
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === totalPages || totalPages === 0;

@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const matchesCategory = category === "all" || rowCat === category;
 
       const show = matchesSearch && matchesStatus && matchesCategory;
+      row.dataset.filterVisible = show ? "true" : "false";
       row.style.display = show ? "" : "none";
       if (show) visible++;
     });
@@ -51,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     sorted.forEach((row) => tbody.appendChild(row));
-    filterRows();
+    filterAndPage();
   }
 
   searchInput.addEventListener("input", filterRows);
@@ -1061,40 +1062,56 @@ document.addEventListener("DOMContentLoaded", () => {
   const pageNumbers = document.getElementById("page-numbers");
   const prevBtn = document.getElementById("prev-btn");
   const nextBtn = document.getElementById("next-btn");
+  const pagination = pageNumbers?.closest(".pagination-section");
   let currentPage = 1;
 
   function applyPagination() {
-    const visible = rows.filter((r) => r.style.display !== "none");
+    const visible = rows.filter((row) => row.dataset.filterVisible === "true");
     const total = Math.max(1, Math.ceil(visible.length / ROWS_PER_PAGE));
     currentPage = Math.min(currentPage, total);
 
+    rows.forEach((row) => { row.style.display = "none"; });
     visible.forEach((row, i) => {
       const pageOfRow = Math.floor(i / ROWS_PER_PAGE) + 1;
       row.style.display = pageOfRow === currentPage ? "" : "none";
     });
 
     pageNumbers.innerHTML = "";
-    for (let i = 1; i <= total; i++) {
+    const pageRange = window.SKONNECT_PAGINATION.getPageRange(currentPage, total);
+    pageRange.forEach((page) => {
+      if (page === "…") {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "pagination-ellipsis";
+        ellipsis.textContent = page;
+        pageNumbers.appendChild(ellipsis);
+        return;
+      }
       const btn = document.createElement("button");
-      btn.className = "page-num" + (i === currentPage ? " active" : "");
-      btn.textContent = i;
+      btn.type = "button";
+      btn.className = "page-num" + (page === currentPage ? " active" : "");
+      btn.textContent = page;
+      if (page === currentPage) btn.setAttribute("aria-current", "page");
       btn.addEventListener("click", () => {
-        currentPage = i;
-        applyPagination();
+        currentPage = page;
+        filterAndPage();
       });
       pageNumbers.appendChild(btn);
-    }
+    });
 
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === total;
+    if (pagination) pagination.style.display = total > 1 ? "" : "none";
   }
 
   prevBtn?.addEventListener("click", () => {
-    currentPage--;
+    if (currentPage > 1) currentPage--;
     applyPagination();
   });
   nextBtn?.addEventListener("click", () => {
-    currentPage++;
+    const total = Math.max(1, Math.ceil(
+      rows.filter((row) => row.dataset.filterVisible === "true").length / ROWS_PER_PAGE,
+    ));
+    if (currentPage < total) currentPage++;
     applyPagination();
   });
 

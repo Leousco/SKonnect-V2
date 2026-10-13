@@ -331,6 +331,7 @@ function modInitials(string $name): string
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="../../../scripts/pagination.js"></script>
 <script src="../../../scripts/management/moderator/mod_activity_logs.js"></script>
 
 </body>

@@ -205,8 +205,10 @@
                 <li class="announcement-row">
                     <a href="${announcementLink(ann)}">
                         <span class="ann-row-date">${date}</span>
-                        <span class="ann-row-title">${escapeHtml(ann.title)}</span>
-                        <span class="ann-badge ${badge}">${escapeHtml(ann.category)}</span>
+                        <span class="ann-row-content">
+                            <span class="ann-row-title">${escapeHtml(ann.title)}</span>
+                            <span class="ann-badge ${badge}">${escapeHtml(ann.category)}</span>
+                        </span>
                         <svg class="ann-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="9 18 15 12 9 6"></polyline>
                         </svg>
@@ -319,7 +321,7 @@
             const badgeClass = SERVICE_BADGE[s.category] || 'svc-badge-other';
             return `
                 <li>
-                    <a href="service_view.php?id=${s.id}">
+                    <a href="services_page.php?id=${encodeURIComponent(s.id)}">
                         <span class="service-content">
                             <span class="service-name">${escapeHtml(s.name)}</span>
                             <span class="service-meta">

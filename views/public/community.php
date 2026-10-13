@@ -156,6 +156,7 @@ $cat_labels = [
 
     <?php include __DIR__ . '/../../components/public/footer.php'; ?>
 
+    <script src="../../scripts/pagination.js"></script>
     <script src="../../scripts/public/community.js"></script>
 
 </body>

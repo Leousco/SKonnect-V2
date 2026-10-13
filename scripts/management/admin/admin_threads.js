@@ -197,6 +197,7 @@
 
   function applyPage() {
     const visible = getCards().filter((c) => c.dataset.filterVisible === "1");
+    currentPage = Math.min(currentPage, getTotalPages());
     const start = (currentPage - 1) * CARDS_PER_PAGE;
 
     getCards().forEach((c) => (c.style.display = "none"));
@@ -212,18 +213,29 @@
     const prevBtn = document.getElementById("adm-prev-btn");
     const nextBtn = document.getElementById("adm-next-btn");
     const total = getTotalPages();
+    const pagination = document.querySelector(".adm-pagination");
 
+    if (pagination) pagination.style.display = total > 1 ? "" : "none";
     pageNumbers.innerHTML = "";
-    for (let i = 1; i <= total; i++) {
+    window.SKONNECT_PAGINATION.getPageRange(currentPage, total).forEach((page) => {
+      if (page === "…") {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "pagination-ellipsis";
+        ellipsis.textContent = page;
+        pageNumbers.appendChild(ellipsis);
+        return;
+      }
       const btn = document.createElement("button");
-      btn.className = "adm-page-num" + (i === currentPage ? " active" : "");
-      btn.textContent = i;
+      btn.type = "button";
+      btn.className = "adm-page-num" + (page === currentPage ? " active" : "");
+      btn.textContent = page;
+      if (page === currentPage) btn.setAttribute("aria-current", "page");
       btn.addEventListener("click", () => {
-        currentPage = i;
+        currentPage = page;
         applyPage();
       });
       pageNumbers.appendChild(btn);
-    }
+    });
 
     prevBtn.disabled = currentPage === 1;
     nextBtn.disabled = currentPage === total;

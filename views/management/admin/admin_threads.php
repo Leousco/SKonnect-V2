@@ -464,6 +464,7 @@ $cat_labels = [
     <script>
         const ADMIN_NAME = <?= json_encode($_SESSION['user_name'] ?? 'System Admin') ?>;
     </script>
+    <script src="../../../scripts/pagination.js"></script>
     <script src="../../../scripts/management/admin/admin_threads.js"></script>
 
 </body>

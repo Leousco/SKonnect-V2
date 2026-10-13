@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageNumbersEl  = document.getElementById('page-numbers');
     const prevBtn        = document.getElementById('prev-btn');
     const nextBtn        = document.getElementById('next-btn');
+    const pagination     = document.querySelector('.pagination-section');
     const countBadge     = document.getElementById('bm-count-badge');
 
     const CARDS_PER_PAGE = 6;
@@ -65,6 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const totalPages = Math.max(1, Math.ceil(total / CARDS_PER_PAGE));
         currentPage      = Math.min(currentPage, totalPages);
+        if (pagination) pagination.style.display = totalPages > 1 ? '' : 'none';
 
         const start = (currentPage - 1) * CARDS_PER_PAGE;
         const slice = visible.slice(start, start + CARDS_PER_PAGE);
@@ -80,13 +82,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderPagination(totalPages, totalItems) {
         pageNumbersEl.innerHTML = '';
 
-        for (let i = 1; i <= totalPages; i++) {
+        window.SKONNECT_PAGINATION.getPageRange(currentPage, totalPages).forEach(page => {
+            if (page === '…') {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'pagination-ellipsis';
+                ellipsis.textContent = page;
+                pageNumbersEl.appendChild(ellipsis);
+                return;
+            }
             const btn = document.createElement('button');
-            btn.className = 'page-num' + (i === currentPage ? ' active' : '');
-            btn.textContent = i;
-            btn.addEventListener('click', () => { currentPage = i; renderPage(); });
+            btn.type = 'button';
+            btn.className = 'page-num' + (page === currentPage ? ' active' : '');
+            btn.textContent = page;
+            if (page === currentPage) btn.setAttribute('aria-current', 'page');
+            btn.addEventListener('click', () => { currentPage = page; renderPage(); });
             pageNumbersEl.appendChild(btn);
-        }
+        });
 
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage === totalPages || totalItems === 0;
@@ -101,8 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
     categorySelect?.addEventListener('change', resetAndRender);
     sortSelect?.addEventListener('change',     resetAndRender);
 
-    prevBtn?.addEventListener('click', () => { currentPage--; renderPage(); });
-    nextBtn?.addEventListener('click', () => { currentPage++; renderPage(); });
+    prevBtn?.addEventListener('click', () => {
+        if (currentPage > 1) currentPage--;
+        renderPage();
+    });
+    nextBtn?.addEventListener('click', () => {
+        const totalPages = Math.max(1, Math.ceil(getVisibleCards().length / CARDS_PER_PAGE));
+        if (currentPage < totalPages) currentPage++;
+        renderPage();
+    });
 
 
     function applyBookmarkState(btn) {

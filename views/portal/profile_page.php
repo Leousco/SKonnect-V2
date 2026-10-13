@@ -63,11 +63,6 @@ $eduDisplay    = mapEdu($p['educational_attainment'] ?? '');
 $empDisplay    = mapEmp($p['employment_status'] ?? '');
 $isVoter       = (bool)($p['is_registered_voter'] ?? false);
 
-$heroTags = [];
-if ($isVoter)                        $heroTags[] = '🗳️ Registered Voter';
-if (!empty($p['employment_status'])) $heroTags[] = '💼 ' . mapEmp($p['employment_status']);
-if (!empty($p['purok']))             $heroTags[] = '📍 ' . htmlspecialchars($p['purok']);
-
 $profileJson = json_encode($p, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
 
 $pageTitle      = 'My Profile';
@@ -129,10 +124,19 @@ $notifCount     = $notifStats['unread'];
                     <div class="profile-hero-name-row">
                         <h2 class="profile-hero-name" id="hero-fullname"><?= htmlspecialchars($fullName) ?></h2>
                         <span class="profile-role-badge">SK Member</span>
-                        <span class="profile-verified-badge" title="Verified account">✓ Verified</span>
+                        <span class="profile-verified-badge" title="Verified account">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m5 12 4 4L19 6" />
+                            </svg>
+                            Verified
+                        </span>
                         <?php if ($incomplete): ?>
                             <span class="profile-incomplete-badge" id="incomplete-badge" title="Profile setup incomplete">
-                                ⚠️ Incomplete Profile
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.6L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+                                    <path d="M12 9v4m0 4h.01" />
+                                </svg>
+                                Incomplete Profile
                             </span>
                         <?php endif; ?>
                     </div>
@@ -140,56 +144,119 @@ $notifCount     = $notifStats['unread'];
                         Barangay Sauyo, Novaliches, Quezon City &nbsp;·&nbsp; Member since <?= $memberSince ?>
                     </p>
                     <div class="profile-hero-tags" id="hero-tags">
-                        <?php foreach ($heroTags as $tag): ?>
-                            <span class="hero-tag"><?= htmlspecialchars($tag) ?></span>
-                        <?php endforeach; ?>
-                        <?php if (empty($heroTags)): ?>
+                        <?php if ($isVoter): ?>
+                            <span class="hero-tag">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M4 21V5m0 0c5-4 11 4 16 0v11c-5 4-11-4-16 0" />
+                                    <path d="M4 5v11" />
+                                </svg>
+                                Registered Voter
+                            </span>
+                        <?php endif; ?>
+                        <?php if (!empty($p['employment_status'])): ?>
+                            <span class="hero-tag">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect x="3" y="7" width="18" height="13" rx="2" />
+                                    <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2" />
+                                </svg>
+                                <?= htmlspecialchars($empDisplay) ?>
+                            </span>
+                        <?php endif; ?>
+                        <?php if (!empty($p['purok'])): ?>
+                            <span class="hero-tag">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+                                    <circle cx="12" cy="10" r="2.5" />
+                                </svg>
+                                <?= htmlspecialchars($p['purok']) ?>
+                            </span>
+                        <?php endif; ?>
+                        <?php if (!$isVoter && empty($p['employment_status']) && empty($p['purok'])): ?>
                             <span class="hero-tag hero-tag-empty">Complete your profile to show tags</span>
                         <?php endif; ?>
                     </div>
                 </div>
 
-                <button class="btn-primary-portal profile-edit-trigger" id="profile-edit-trigger">
-                    ✏️ Edit Profile
+                <button class="btn-primary-portal profile-edit-trigger" id="profile-edit-trigger" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+                    </svg>
+                    Edit Profile
                 </button>
             </div>
         </section>
 
-        
-        <section class="dashboard-widgets" style="margin-top: 24px;">
-            <div class="widget-card">
-                <h3>Service Requests</h3>
-                <p class="widget-number" id="stat-requests">—</p>
-                <span class="widget-sub">Total submitted</span>
+        <section class="profile-card activity-summary-card" aria-labelledby="activity-summary-title">
+            <div class="profile-card-header activity-summary-header">
+                <h2 class="section-label" id="activity-summary-title">Activity Summary</h2>
+                <a class="profile-inline-link" href="my_requests_page.php">View my requests</a>
             </div>
-            <div class="widget-card">
-                <h3>Community Posts</h3>
-                <p class="widget-number" id="stat-posts">—</p>
-                <span class="widget-sub">Threads & concerns</span>
+            <div class="activity-summary-grid">
+                <div class="activity-summary-item act-summary-service">
+                    <span class="act-label">Service Requests</span>
+                    <span class="act-value" id="sum-requests">—</span>
+                    <span class="act-sub">Total submitted</span>
+                </div>
+                <div class="activity-summary-item act-summary-approved">
+                    <span class="act-label">Approved</span>
+                    <span class="act-value" id="sum-approved">—</span>
+                    <span class="act-sub">Assistance received</span>
+                </div>
+                <div class="activity-summary-item act-summary-pending">
+                    <span class="act-label">Pending</span>
+                    <span class="act-value" id="sum-pending">—</span>
+                    <span class="act-sub">Awaiting review</span>
+                </div>
+                <div class="activity-summary-item act-summary-rejected">
+                    <span class="act-label">Rejected</span>
+                    <span class="act-value" id="sum-rejected">—</span>
+                    <span class="act-sub">Request updates</span>
+                </div>
+                <div class="activity-summary-item act-summary-thread">
+                    <span class="act-label">Threads</span>
+                    <span class="act-value" id="sum-threads">—</span>
+                    <span class="act-sub">Posted by you</span>
+                </div>
+                <div class="activity-summary-item act-summary-notif">
+                    <span class="act-label">Alerts</span>
+                    <span class="act-value" id="sum-notifs">—</span>
+                    <span class="act-sub">Notifications</span>
+                </div>
+                <div class="activity-summary-item act-summary-member">
+                    <span class="act-label">Member Since</span>
+                    <span class="act-member-value"><?= !empty($p['created_at']) ? htmlspecialchars((new DateTime($p['created_at']))->format("M 'y")) : '—' ?></span>
+                    <span class="act-sub">Portal member</span>
+                </div>
             </div>
-            <div class="widget-card">
-                <h3>Approved</h3>
-                <p class="widget-number" id="stat-approved">—</p>
-                <span class="widget-sub">Assistance received</span>
+            <div class="profile-recent-header">
+                <h3 class="profile-sub-heading">Recent Service Requests</h3>
+                <a class="profile-inline-link profile-browse-link" href="services_page.php">Browse services</a>
             </div>
-            <div class="widget-card">
-                <h3>Member Since</h3>
-                <p class="widget-number" style="font-size:22px;"><?= (new DateTime($p['created_at']))->format("M 'y") ?></p>
-                <span class="widget-sub">Portal member</span>
+            <div class="profile-scroll-wrap" data-scroll-area>
+                <ul class="profile-recent-list profile-scroll-content" id="recent-requests">
+                    <li class="recent-list-placeholder">Loading…</li>
+                </ul>
+                <button class="profile-scroll-more" type="button" aria-label="Scroll for more service requests" hidden>
+                    Scroll for more
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
+                </button>
             </div>
         </section>
 
-        
         <div class="profile-lower">
-
-            
-            <div class="profile-left-col">
 
                 
                 <section class="profile-card" id="card-personal">
                     <div class="profile-card-header">
                         <h2 class="section-label">Personal Information</h2>
-                        <button class="card-edit-btn" data-target="personal">Edit</button>
+                        <button class="card-edit-btn" type="button" data-target="personal">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+                            </svg>
+                            Edit
+                        </button>
                     </div>
 
                     <div class="profile-fields" id="view-personal">
@@ -295,7 +362,12 @@ $notifCount     = $notifStats['unread'];
                 <section class="profile-card" id="card-contact">
                     <div class="profile-card-header">
                         <h2 class="section-label">Contact & Address</h2>
-                        <button class="card-edit-btn" data-target="contact">Edit</button>
+                        <button class="card-edit-btn" type="button" data-target="contact">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+                            </svg>
+                            Edit
+                        </button>
                     </div>
 
                     <div class="profile-fields" id="view-contact">
@@ -373,7 +445,12 @@ $notifCount     = $notifStats['unread'];
                 <section class="profile-card" id="card-membership">
                     <div class="profile-card-header">
                         <h2 class="section-label">SK Membership</h2>
-                        <button class="card-edit-btn" data-target="membership">Edit</button>
+                        <button class="card-edit-btn" type="button" data-target="membership">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z" />
+                            </svg>
+                            Edit
+                        </button>
                     </div>
 
                     <div class="profile-fields" id="view-membership">
@@ -383,7 +460,7 @@ $notifCount     = $notifStats['unread'];
                         </div>
                         <div class="profile-field-row">
                             <span class="field-label">Date Joined</span>
-                            <span class="field-value"><?= (new DateTime($p['created_at']))->format('F j, Y') ?></span>
+                            <span class="field-value"><?= !empty($p['created_at']) ? htmlspecialchars((new DateTime($p['created_at']))->format('F j, Y')) : '—' ?></span>
                         </div>
                         <div class="profile-field-row">
                             <span class="field-label">Member Status</span>
@@ -477,80 +554,25 @@ $notifCount     = $notifStats['unread'];
                     </form>
                 </section>
 
-            </div>
-
-            
-            <div class="profile-right-col">
-
-                
-                <section class="profile-card">
-                    <div class="profile-card-header">
-                        <h2 class="section-label">Activity Summary</h2>
-                    </div>
-                    <div class="activity-summary-grid">
-                        <div class="activity-summary-item">
-                            <div class="act-icon act-icon-service">📋</div>
-                            <div class="act-body">
-                                <span class="act-label">Total Requests</span>
-                                <span class="act-value" id="sum-requests">—</span>
-                            </div>
-                        </div>
-                        <div class="activity-summary-item">
-                            <div class="act-icon act-icon-approved">✅</div>
-                            <div class="act-body">
-                                <span class="act-label">Approved</span>
-                                <span class="act-value" id="sum-approved">—</span>
-                            </div>
-                        </div>
-                        <div class="activity-summary-item">
-                            <div class="act-icon act-icon-pending">🔍</div>
-                            <div class="act-body">
-                                <span class="act-label">Pending</span>
-                                <span class="act-value" id="sum-pending">—</span>
-                            </div>
-                        </div>
-                        <div class="activity-summary-item">
-                            <div class="act-icon act-icon-rejected">❌</div>
-                            <div class="act-body">
-                                <span class="act-label">Rejected</span>
-                                <span class="act-value" id="sum-rejected">—</span>
-                            </div>
-                        </div>
-                        <div class="activity-summary-item">
-                            <div class="act-icon act-icon-thread">💬</div>
-                            <div class="act-body">
-                                <span class="act-label">Threads Posted</span>
-                                <span class="act-value" id="sum-threads">—</span>
-                            </div>
-                        </div>
-                        <div class="activity-summary-item">
-                            <div class="act-icon act-icon-notif">🔔</div>
-                            <div class="act-body">
-                                <span class="act-label">Notifications</span>
-                                <span class="act-value" id="sum-notifs">—</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h3 class="profile-sub-heading">Recent Service Requests</h3>
-                    <ul class="profile-recent-list" id="recent-requests">
-                        <li class="recent-list-placeholder">Loading…</li>
-                    </ul>
-                </section>
-
-                
                 <section class="profile-card" id="card-threads">
                     <div class="profile-card-header">
                         <h2 class="section-label">Posted Threads</h2>
+                        <span class="profile-thread-total" id="thread-total">—</span>
                     </div>
-                    <div class="threads-scroll-body">
-                        <ul class="profile-recent-list" id="user-threads-list">
+                    <div class="profile-scroll-wrap threads-scroll-body" data-scroll-area>
+                        <ul class="profile-recent-list profile-scroll-content" id="user-threads-list">
                             <li class="recent-list-placeholder">Loading…</li>
                         </ul>
+                        <button class="profile-scroll-more" type="button" aria-label="Scroll for more posted threads" hidden>
+                            Scroll for more
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </button>
                     </div>
+                    <a class="profile-card-footer-link" href="feed_page.php">View all threads</a>
                 </section>
 
-            </div>
         </div>
 
     </main>
@@ -563,7 +585,12 @@ $notifCount     = $notifStats['unread'];
 
         <div class="modal-header">
             <div class="modal-header-left">
-                <div class="modal-icon" style="background: linear-gradient(135deg,#1e5fa8,#c8921a); font-size:22px;">👋</div>
+                <div class="modal-icon setup-modal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M5 21a7 7 0 0 1 14 0m-2-7 2 2 4-4" />
+                    </svg>
+                </div>
                 <div>
                     <h3>Let's finish setting up your profile</h3>
                     <p class="modal-subtitle">A few more details help the SK office serve you better.</p>
@@ -572,7 +599,12 @@ $notifCount     = $notifStats['unread'];
         </div>
 
         <div class="setup-required-banner">
-            <span class="setup-banner-icon">⚠️</span>
+            <span class="setup-banner-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.6L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+                    <path d="M12 9v4m0 4h.01" />
+                </svg>
+            </span>
             <span>
                 <strong>Mobile Number</strong> and <strong>Purok / Zone</strong> are required.
                 This modal will continue to appear until these are filled in.
@@ -617,7 +649,7 @@ $notifCount     = $notifStats['unread'];
 
 
 <div class="profile-toast" id="profile-toast" style="display:none;">
-    <span class="toast-icon" id="toast-icon">✅</span>
+    <span class="toast-icon" id="toast-icon" aria-hidden="true"></span>
     <span class="toast-text" id="toast-text">Changes saved.</span>
 </div>
 

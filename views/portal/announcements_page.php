@@ -253,6 +253,7 @@ RoleMiddleware::requireAuth();
         bookmarkRouteUrl: '../../backend/routes/bookmarks.php'
     };
 </script>
+<script src="../../scripts/pagination.js"></script>
 <script src="../../scripts/portal/announcements_page.js"></script>
 </body>
 </html>

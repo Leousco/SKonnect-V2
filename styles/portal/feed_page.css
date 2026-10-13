@@ -846,8 +846,9 @@
 
 .feed-toast {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
+  top: max(24px, env(safe-area-inset-top));
+  right: max(24px, env(safe-area-inset-right));
+  bottom: auto;
   z-index: 9999;
   background: var(--navy);
   color: #fff;
@@ -857,15 +858,17 @@
   font-weight: 500;
   box-shadow: 0 8px 24px rgba(15, 37, 69, 0.25);
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateX(20px);
   transition: opacity 0.2s, transform 0.2s;
   pointer-events: none;
   max-width: 320px;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .feed-toast.show {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 .feed-toast.toast-success {
   background: #166534;
@@ -1130,8 +1133,9 @@
 }
 
 .feed-toast {
+  top: max(12px, env(safe-area-inset-top));
   right: max(12px, env(safe-area-inset-right));
-  bottom: max(12px, env(safe-area-inset-bottom));
+  bottom: auto;
   max-width: calc(100vw - 24px);
   white-space: normal;
   overflow-wrap: anywhere;

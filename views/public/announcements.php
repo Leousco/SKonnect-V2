@@ -181,6 +181,7 @@ $annList  = $annModel->getActive();
 
 <?php include __DIR__ . '/../../components/public/footer.php'; ?>
 
+<script src="../../scripts/pagination.js"></script>
 <script src="../../scripts/public/announcements.js"></script>
 </body>
 </html>

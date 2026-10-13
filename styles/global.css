@@ -296,6 +296,15 @@ body {
   gap: 6px;
 }
 
+.pagination-ellipsis {
+  display: inline-flex;
+  min-width: 24px;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  user-select: none;
+}
+
 .page-num {
   width: 36px;
   height: 36px;

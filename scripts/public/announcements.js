@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pageNumbersEl  = document.getElementById('pub-page-numbers');
     const prevBtn        = document.getElementById('pub-prev');
     const nextBtn        = document.getElementById('pub-next');
+    const pagination     = document.querySelector('.pagination');
 
     const CARDS_PER_PAGE = 6;
     let currentPage = 1;
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allCards.forEach(c => c.style.display = 'none');
 
         currentPage = Math.min(currentPage, totalPages);
+        if (pagination) pagination.style.display = totalPages > 1 ? '' : 'none';
         const start = (currentPage - 1) * CARDS_PER_PAGE;
         visible.slice(start, start + CARDS_PER_PAGE).forEach(card => {
             grid.appendChild(card);
@@ -61,14 +63,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         
         pageNumbersEl.innerHTML = '';
-        for (let i = 1; i <= totalPages; i++) {
+        window.SKONNECT_PAGINATION.getPageRange(currentPage, totalPages).forEach(page => {
+            if (page === '…') {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'pagination-ellipsis';
+                ellipsis.textContent = page;
+                pageNumbersEl.appendChild(ellipsis);
+                return;
+            }
             const btn = document.createElement('button');
-            btn.className   = 'page-btn' + (i === currentPage ? ' active' : '');
-            btn.textContent = i;
-            btn.style.fontWeight = i === currentPage ? '700' : '400';
-            btn.addEventListener('click', () => { currentPage = i; renderPage(); });
+            btn.type = 'button';
+            btn.className   = 'page-btn' + (page === currentPage ? ' active' : '');
+            btn.textContent = page;
+            btn.style.fontWeight = page === currentPage ? '700' : '400';
+            if (page === currentPage) btn.setAttribute('aria-current', 'page');
+            btn.addEventListener('click', () => { currentPage = page; renderPage(); });
             pageNumbersEl.appendChild(btn);
-        }
+        });
 
         prevBtn.disabled = currentPage === 1;
         nextBtn.disabled = currentPage === totalPages || total === 0;
@@ -79,8 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput?.addEventListener('input',  debounce(reset, 250));
     categorySelect?.addEventListener('change', reset);
     sortSelect?.addEventListener('change',     reset);
-    prevBtn?.addEventListener('click', () => { currentPage--; renderPage(); });
-    nextBtn?.addEventListener('click', () => { currentPage++; renderPage(); });
+    prevBtn?.addEventListener('click', () => {
+        if (currentPage > 1) currentPage--;
+        renderPage();
+    });
+    nextBtn?.addEventListener('click', () => {
+        const totalPages = Math.max(1, Math.ceil(getVisible().length / CARDS_PER_PAGE));
+        if (currentPage < totalPages) currentPage++;
+        renderPage();
+    });
 
     function debounce(fn, ms) {
         let t;

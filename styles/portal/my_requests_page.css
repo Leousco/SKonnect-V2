@@ -1167,8 +1167,8 @@
 
 
 @keyframes req-toast-in {
-    from { opacity: 0; transform: translateY(12px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    from { opacity: 0; transform: translateX(20px); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes req-spin {
@@ -1177,8 +1177,9 @@
 
 .req-toast {
     position: fixed;
-    bottom: 28px;
-    right: 28px;
+    top: max(24px, env(safe-area-inset-top));
+    right: max(24px, env(safe-area-inset-right));
+    bottom: auto;
     z-index: 9999;
     display: none;
     align-items: center;
@@ -1242,8 +1243,9 @@
 }
 
 .req-toast {
+    top: max(12px, env(safe-area-inset-top));
     right: max(12px, env(safe-area-inset-right));
-    bottom: max(12px, env(safe-area-inset-bottom));
+    bottom: auto;
     max-width: calc(100vw - 24px);
     overflow-wrap: anywhere;
 }

@@ -549,6 +549,7 @@ RoleMiddleware::requireRole("sk_officer");
     </main>
 </div>
 
+<script src="../../../scripts/pagination.js"></script>
 <script src="../../../scripts/management/officer/officer_announcements.js"></script>
 
 </body>

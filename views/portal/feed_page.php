@@ -374,6 +374,7 @@ $cat_labels = [
         const USER_BAN_LEVEL = <?= (int)$sanction_level ?>;
         const USER_IS_BANNED = <?= $is_banned ? 'true' : 'false' ?>;
     </script>
+    <script src="../../scripts/pagination.js"></script>
     <script src="../../scripts/portal/feed_page.js"></script>
 
 </body>

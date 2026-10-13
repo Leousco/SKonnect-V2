@@ -123,6 +123,7 @@ RoleMiddleware::requireAdmin();
     </main>
 </div>
 
+<script src="../../../scripts/pagination.js"></script>
 <script src="../../../scripts/management/admin/admin_activity_logs.js"></script>
 </body>
 </html>

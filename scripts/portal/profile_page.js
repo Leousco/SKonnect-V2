@@ -6,6 +6,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const CTRL      = window.PROFILE_CTRL;
     const NOTIF_CTRL = window.NOTIF_CTRL;
+    const iconPaths = {
+        voter: '<path d="M4 21V5m0 0c5-4 11 4 16 0v11c-5 4-11-4-16 0"/>',
+        work: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18M10 12v2h4v-2"/>',
+        location: '<path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
+        document: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',
+        clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+        checkCircle: '<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',
+        xCircle: '<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/>',
+        ban: '<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>',
+        alert: '<path d="M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.6L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 4h.01"/>',
+        question: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.3 1.7c-1.1 1.1-1.9 1.4-1.9 3m0 3h.01"/>',
+        megaphone: '<path d="m3 11 18-5v12L3 14v-3Z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6M21 6v12"/>',
+        bulb: '<path d="M9 18h6m-5 4h4m-5-7a7 7 0 1 1 6 0c-.8.5-1 1.4-1 3h-4c0-1.6-.2-2.5-1-3Z"/>',
+        calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+        message: '<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-4.1a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 4h.5a8.5 8.5 0 0 1 8 7.5Z"/>',
+        heart: '<path d="M20.8 8.8c0 4.2-8.8 10-8.8 10S3.2 13 3.2 8.8a4.5 4.5 0 0 1 8.8-1.2 4.5 4.5 0 0 1 8.8 1.2Z"/>',
+        pencil: '<path d="m16 4 4 4M4 20l4-.8L19 8a2.1 2.1 0 0 0-3-3L5 16l-1 4Z"/>',
+        close: '<path d="m6 6 12 12M18 6 6 18"/>',
+        warning: '<path d="M10.3 3.9 2.5 17.4A2 2 0 0 0 4.2 20h15.6a2 2 0 0 0 1.7-2.6L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 4h.01"/>',
+    };
+
+    function svgIcon(name) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconPaths[name] ?? iconPaths.document}</svg>`;
+    }
 
     
 
@@ -59,11 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const wrap = document.getElementById('hero-tags');
         if (!wrap) return;
         const tags = [];
-        if (p.is_registered_voter == 1) tags.push('🗳️ Registered Voter');
-        if (p.employment_status)        tags.push('💼 ' + mapEmp(p.employment_status));
-        if (p.purok)                    tags.push('📍 ' + p.purok);
+        if (p.is_registered_voter == 1) tags.push({ icon: 'voter', label: 'Registered Voter' });
+        if (p.employment_status) tags.push({ icon: 'work', label: mapEmp(p.employment_status) });
+        if (p.purok) tags.push({ icon: 'location', label: p.purok });
         wrap.innerHTML = tags.length
-            ? tags.map(t => `<span class="hero-tag">${escHtml(t)}</span>`).join('')
+            ? tags.map(tag => `<span class="hero-tag">${svgIcon(tag.icon)}${escHtml(tag.label)}</span>`).join('')
             : '<span class="hero-tag hero-tag-empty">Complete your profile to show tags</span>';
     }
 
@@ -99,22 +123,22 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const res  = await fetch(CTRL + '?action=get_activity');
             const json = await res.json();
-            if (json.status !== 'success') return;
+            if (!res.ok || json.status !== 'success') {
+                throw new Error(json.message || `Activity request failed with status ${res.status}.`);
+            }
 
             const s = json.summary;
-
-            setEl('stat-requests', s.total);
-            setEl('stat-posts',    s.threads);
-            setEl('stat-approved', s.approved);
 
             setEl('sum-requests', s.total);
             setEl('sum-approved', s.approved);
             setEl('sum-pending',  s.pending);
             setEl('sum-rejected', s.rejected);
             setEl('sum-threads',  s.threads);
+            setEl('thread-total', `${s.threads} total`);
 
             renderRecentRequests(json.recent);
             renderUserThreads(json.threads);
+            refreshProfileScrollAreas();
         } catch (e) {
             console.error('Activity load failed', e);
         }
@@ -138,27 +162,28 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const statusIcon = {
-            pending:         '🔍',
-            approved:        '✅',
-            rejected:        '❌',
-            cancelled:       '🚫',
-            action_required: '⚠️',
+            pending: 'clock',
+            approved: 'checkCircle',
+            rejected: 'xCircle',
+            cancelled: 'ban',
+            action_required: 'alert',
         };
 
         list.innerHTML = items.map(r => {
             const st   = statusLabel[r.status] ?? { text: r.status, cls: '' };
-            const icon = statusIcon[r.status]  ?? '📋';
+            const icon = statusIcon[r.status] ?? 'document';
             const dt   = new Date(r.submitted_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
             return `
                 <li class="profile-recent-item">
-                    <div class="profile-recent-icon">${icon}</div>
+                    <div class="profile-recent-icon request-icon-${statusIcon[r.status] ? r.status : 'default'}">${svgIcon(icon)}</div>
                     <div class="profile-recent-body">
                         <span class="profile-recent-title">${escHtml(r.service_name)}</span>
                         <span class="profile-recent-meta">${dt}</span>
                     </div>
-                    <span class="req-status-badge ${st.cls}">${st.text}</span>
+                    <span class="req-status-badge ${st.cls}">${escHtml(st.text)}</span>
                 </li>`;
         }).join('');
+        refreshProfileScrollAreas();
     }
 
     function renderUserThreads(threads) {
@@ -167,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         if (!threads || threads.length === 0) {
             list.innerHTML = '<li class="recent-list-placeholder">You haven\'t posted any threads yet.</li>';
+            refreshProfileScrollAreas();
             return;
         }
     
@@ -186,11 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     
         const categoryIcon = {
-            inquiry:        '❓',
-            complaint:      '📢',
-            suggestion:     '💡',
-            event_question: '📅',
-            other:          '💬',
+            inquiry: 'question',
+            complaint: 'megaphone',
+            suggestion: 'bulb',
+            event_question: 'calendar',
+            other: 'message',
         };
     
         const BASE = '../../views/portal/thread_view.php';
@@ -198,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         list.innerHTML = threads.map(t => {
             const st   = statusLabel[t.status]     ?? { text: t.status,   cls: '' };
             const cat  = categoryLabel[t.category] ?? t.category;
-            const icon = categoryIcon[t.category]  ?? '💬';
+            const icon = categoryIcon[t.category] ?? 'message';
             const dt   = new Date(t.created_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
             
             
@@ -222,21 +248,55 @@ document.addEventListener('DOMContentLoaded', () => {
             
             return `
                 <li class="profile-recent-item">
-                    <div class="profile-recent-icon">${icon}</div>
+                    <div class="profile-recent-icon thread-icon-${categoryIcon[t.category] ? t.category : 'other'}">${svgIcon(icon)}</div>
                     <div class="profile-recent-body">
-                        <a href="${BASE}?id=${t.id}" class="profile-recent-title profile-thread-link" title="${escHtml(t.subject)}">${escHtml(truncate(t.subject))}</a>
-                        <span class="profile-recent-meta">
+                        <div class="profile-thread-heading">
+                            <a href="${BASE}?id=${encodeURIComponent(t.id)}" class="profile-recent-title profile-thread-link" title="${escHtml(t.subject)}">${escHtml(truncate(t.subject))}</a>
                             <span class="${categoryClass}">${escHtml(cat)}</span>
-                            &nbsp;·&nbsp; ${dt}
-                            &nbsp;·&nbsp; 💬 ${t.comment_count} &nbsp; ♥ ${t.support_count}
+                            <span class="req-status-badge thread-status-badge ${st.cls}">${escHtml(st.text)}</span>
+                        </div>
+                        <span class="profile-recent-meta profile-thread-meta">
+                            <span>${dt}</span>
+                            <span aria-hidden="true">·</span>
+                            <span>${svgIcon('message')} ${Number(t.comment_count) || 0}</span>
+                            <span>${svgIcon('heart')} ${Number(t.support_count) || 0}</span>
                         </span>
                     </div>
-                    <span class="req-status-badge ${st.cls}">${st.text}</span>
                 </li>`;
         }).join('');
+        refreshProfileScrollAreas();
     }
 
     loadActivity();
+
+    function refreshProfileScrollAreas() {
+        document.querySelectorAll('[data-scroll-area]').forEach(wrapper => {
+            const content = wrapper.querySelector('.profile-scroll-content');
+            const button = wrapper.querySelector('.profile-scroll-more');
+            if (!content || !button) return;
+
+            const hasOverflow = content.scrollHeight > content.clientHeight + 2;
+            const atBottom = content.scrollTop + content.clientHeight >= content.scrollHeight - 8;
+            button.hidden = !hasOverflow;
+            button.classList.toggle('is-at-bottom', atBottom);
+            wrapper.classList.toggle('has-overflow', hasOverflow);
+            wrapper.classList.toggle('is-at-bottom', atBottom);
+            button.setAttribute('aria-hidden', String(!hasOverflow || atBottom));
+            button.tabIndex = hasOverflow && !atBottom ? 0 : -1;
+        });
+    }
+
+    document.querySelectorAll('[data-scroll-area]').forEach(wrapper => {
+        const content = wrapper.querySelector('.profile-scroll-content');
+        const button = wrapper.querySelector('.profile-scroll-more');
+        if (!content || !button) return;
+
+        content.addEventListener('scroll', refreshProfileScrollAreas, { passive: true });
+        button.addEventListener('click', () => {
+            content.scrollBy({ top: Math.max(content.clientHeight * 0.75, 100), behavior: 'smooth' });
+        });
+    });
+    window.addEventListener('resize', refreshProfileScrollAreas);
 
     
 
@@ -316,9 +376,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const formEl = document.getElementById(`form-${target}`);
             if (!viewEl || !formEl) return;
             const isEditing = formEl.style.display !== 'none';
-            viewEl.style.display = isEditing ? 'flex' : 'none';
+            viewEl.style.display = isEditing ? 'grid' : 'none';
             formEl.style.display = isEditing ? 'none' : 'flex';
-            btn.textContent      = isEditing ? 'Edit' : '✕ Cancel';
+            btn.innerHTML = isEditing
+                ? `${svgIcon('pencil')}Edit`
+                : `${svgIcon('close')}Cancel`;
         });
     });
 
@@ -364,9 +426,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const viewEl  = document.getElementById(`view-${target}`);
         const formEl  = document.getElementById(`form-${target}`);
         const editBtn = document.querySelector(`.card-edit-btn[data-target="${target}"]`);
-        if (viewEl)  viewEl.style.display = 'flex';
+        if (viewEl)  viewEl.style.display = 'grid';
         if (formEl)  formEl.style.display = 'none';
-        if (editBtn) editBtn.textContent  = '✏️ Edit';
+        if (editBtn) editBtn.innerHTML = `${svgIcon('pencil')}Edit`;
         clearSectionErrors(target);
     }
 
@@ -530,7 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderProfile(json.profile);
                 updateIncompleteUI(json.profile);
                 closeSetupModal();
-                showToast('Profile setup complete! Welcome aboard. 🎉');
+                showToast('Profile setup complete! Welcome aboard.');
             } else {
                 showToast(json.message || 'Could not save. Try again.', false);
             }
@@ -580,18 +642,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const text  = document.getElementById('toast-text');
         if (!toast || !icon || !text) return;
 
-        icon.textContent       = success ? '✅' : '⚠️';
+        icon.innerHTML         = svgIcon(success ? 'checkCircle' : 'warning');
         text.textContent       = message;
         toast.style.background = success ? 'var(--navy)' : '#b91c1c';
         toast.style.display    = 'flex';
         toast.style.opacity    = '1';
+        toast.style.transform  = '';
         toast.style.transition = '';
 
         if (toastTimer) clearTimeout(toastTimer);
         toastTimer = setTimeout(() => {
             toast.style.opacity    = '0';
-            toast.style.transition = 'opacity 0.3s';
-            setTimeout(() => { toast.style.display = 'none'; toast.style.opacity = '1'; toast.style.transition = ''; }, 300);
+            toast.style.transform  = 'translateX(12px)';
+            toast.style.transition = 'opacity 0.3s, transform 0.3s';
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.style.opacity = '1';
+                toast.style.transform = '';
+                toast.style.transition = '';
+            }, 300);
         }, 3200);
     }
 

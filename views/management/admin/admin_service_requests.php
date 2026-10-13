@@ -475,6 +475,7 @@ $focusId = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
 
 <script>window.FOCUS_REQUEST_ID = <?= $focusId ? $focusId : 'null' ?>;</script>
+<script src="../../../scripts/pagination.js"></script>
 <script src="../../../scripts/management/admin/admin_service_requests.js?v=<?= time() ?>"></script>
 
 </body>

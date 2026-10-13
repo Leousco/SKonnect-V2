@@ -244,6 +244,7 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
     </div>
 </div>
 
+<script src="../../scripts/pagination.js"></script>
 <script src="../../scripts/portal/notifications_page.js"></script>
 
 </body>

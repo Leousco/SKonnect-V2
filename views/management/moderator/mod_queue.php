@@ -402,6 +402,7 @@ $status_badge = [
         <img class="mod-lightbox-img" id="mq-lightbox-img" src="" alt="Image preview">
     </div>
 
+    <script src="../../../scripts/pagination.js"></script>
     <script src="../../../scripts/management/moderator/mod_queue.js"></script>
 
 </body>

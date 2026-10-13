@@ -125,9 +125,11 @@ document.addEventListener('DOMContentLoaded', function () {
             next:    document.getElementById(`${opts.prefix}-btn-next`),
         };
         let page = 1, searchTimer = null;
+        let latestRequest = 0;
 
         function load(p) {
             page = p || page;
+            const requestId = ++latestRequest;
             const params = new URLSearchParams({
                 search:   els.search?.value.trim() || '',
                 category: els.cat?.value || '',
@@ -140,16 +142,25 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`${LIST_URL}?${params}`)
                 .then(r => r.json())
                 .then(json => {
+                    if (requestId !== latestRequest) return;
                     if (json.status !== 'success') {
                         if (els.tbody) els.tbody.innerHTML = `<tr><td colspan="${opts.colspan}" style="text-align:center;padding:24px;color:var(--ap-danger);">Error loading data.</td></tr>`;
                         return;
                     }
                     const { rows, stats, pages } = json.data;
+                    if (pages > 0 && page > pages) {
+                        load(Math.max(1, pages));
+                        return;
+                    }
                     renderStats(stats);
                     renderRows(rows);
                     renderPagination(pages, page);
                 })
-                .catch(() => { if (els.tbody) els.tbody.innerHTML = `<tr><td colspan="${opts.colspan}" style="text-align:center;padding:24px;color:var(--ap-danger);">Network error.</td></tr>`; });
+                .catch(() => {
+                    if (requestId === latestRequest && els.tbody) {
+                        els.tbody.innerHTML = `<tr><td colspan="${opts.colspan}" style="text-align:center;padding:24px;color:var(--ap-danger);">Network error.</td></tr>`;
+                    }
+                });
         }
 
         function renderRows(rows) {
@@ -167,13 +178,22 @@ document.addEventListener('DOMContentLoaded', function () {
             els.prev.disabled = current <= 1;
             els.next.disabled = current >= pages;
             els.numbers.innerHTML = '';
-            for (let i = 1; i <= pages; i++) {
+            window.SKONNECT_PAGINATION.getPageRange(current, pages).forEach(pageNumber => {
+                if (pageNumber === '…') {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'pagination-ellipsis';
+                    ellipsis.textContent = pageNumber;
+                    els.numbers.appendChild(ellipsis);
+                    return;
+                }
                 const b = document.createElement('button');
-                b.className   = `ann-page-num${i === current ? ' active' : ''}`;
-                b.textContent = i;
-                b.addEventListener('click', () => load(i));
+                b.type = 'button';
+                b.className   = `ann-page-num${pageNumber === current ? ' active' : ''}`;
+                b.textContent = pageNumber;
+                if (pageNumber === current) b.setAttribute('aria-current', 'page');
+                b.addEventListener('click', () => load(pageNumber));
                 els.numbers.appendChild(b);
-            }
+            });
             els.prev.onclick = () => load(current - 1);
             els.next.onclick = () => load(current + 1);
         }

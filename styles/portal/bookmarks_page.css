@@ -142,8 +142,9 @@
 
 .feed-toast {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
+  top: max(24px, env(safe-area-inset-top));
+  right: max(24px, env(safe-area-inset-right));
+  bottom: auto;
   background: var(--navy);
   color: white;
   padding: 9px 14px;
@@ -155,14 +156,17 @@
   opacity: 0;
   pointer-events: none;
   white-space: nowrap;
-  transform: translateY(8px);
+  transform: translateX(20px);
   transition: opacity 0.2s ease, transform 0.2s ease;
+  max-width: 380px;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .feed-toast.show {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 
 .toast-success {
@@ -197,8 +201,9 @@
 }
 
 .feed-toast {
+  top: max(12px, env(safe-area-inset-top));
   right: max(12px, env(safe-area-inset-right));
-  bottom: max(12px, env(safe-area-inset-bottom));
+  bottom: auto;
   max-width: calc(100vw - 24px);
   white-space: normal;
   overflow-wrap: anywhere;

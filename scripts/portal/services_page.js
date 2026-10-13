@@ -253,7 +253,18 @@
     detailsCancel?.addEventListener('click', closeDetailsModal);
     detailsOverlay?.addEventListener('click', e => { if (e.target === detailsOverlay) closeDetailsModal(); });
 
-    
+    const requestedServiceId = new URLSearchParams(window.location.search).get('id');
+    if (requestedServiceId) {
+        const requestedService = Array.from(document.querySelectorAll('.res-svc-card'))
+            .find(card => card.dataset.id === requestedServiceId);
+        const viewButton = requestedService?.querySelector('.res-view-btn');
+        if (requestedService && viewButton) {
+            requestedService.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            openDetailsModal(viewButton);
+        }
+    }
+
+
 
 
 
@@ -584,14 +595,15 @@
         const toast = document.createElement('div');
         toast.id = 'svc-toast';
         toast.style.cssText = `
-            position:fixed; bottom:28px; right:28px; z-index:9999;
+            position:fixed; top:max(24px, env(safe-area-inset-top)); right:max(24px, env(safe-area-inset-right)); z-index:9999;
             display:flex; align-items:center; gap:10px;
             padding:14px 20px; border-radius:10px;
             font-size:13px; font-weight:500;
             font-family:"Poppins",sans-serif;
             box-shadow:0 8px 32px rgba(15,37,69,0.18);
             animation:toast-in 0.3s cubic-bezier(0.16,1,0.3,1);
-            max-width:380px; line-height:1.5; white-space:pre-line;
+            max-width:min(380px, calc(100vw - 48px)); line-height:1.5; white-space:pre-line;
+            overflow-wrap:anywhere;
             ${type === 'success'
                 ? 'background:#15803d;color:#fff;border:1px solid #15803d;'
                 : 'background:#b91c1c;color:#fff;border:1px solid #b91c1c;'}
@@ -610,13 +622,13 @@
         if (!document.getElementById('toast-style')) {
             const style = document.createElement('style');
             style.id = 'toast-style';
-            style.textContent = `@keyframes toast-in{from{opacity:0;transform:translateY(12px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+            style.textContent = `@keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}`;
             document.head.appendChild(style);
         }
 
         document.body.appendChild(toast);
-        setTimeout(() => { toast.style.transition = 'opacity 0.3s'; toast.style.opacity = '0'; }, 3500);
+        setTimeout(() => { toast.style.transition = 'opacity 0.3s, transform 0.3s'; toast.style.opacity = '0'; toast.style.transform = 'translateX(12px)'; }, 3500);
         setTimeout(() => toast.remove(), 3800);
     }
 
@@ -627,7 +639,7 @@
         if (!document.getElementById('toast-style')) {
             const style = document.createElement('style');
             style.id = 'toast-style';
-            style.textContent = `@keyframes toast-in{from{opacity:0;transform:translateY(12px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+            style.textContent = `@keyframes toast-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}`;
             document.head.appendChild(style);
         }
@@ -635,14 +647,15 @@
         const toast = document.createElement('div');
         toast.id = 'svc-toast';
         toast.style.cssText = `
-            position:fixed; bottom:28px; right:28px; z-index:9999;
+            position:fixed; top:max(24px, env(safe-area-inset-top)); right:max(24px, env(safe-area-inset-right)); z-index:9999;
             display:flex; align-items:center; gap:10px;
             padding:14px 20px; border-radius:10px;
             font-size:13px; font-weight:500;
             font-family:"Poppins",sans-serif;
             box-shadow:0 8px 32px rgba(15,37,69,0.18);
             animation:toast-in 0.3s cubic-bezier(0.16,1,0.3,1);
-            max-width:380px; line-height:1.5;
+            max-width:min(380px, calc(100vw - 48px)); line-height:1.5;
+            overflow-wrap:anywhere;
             background:#1d4ed8; color:#fff; border:1px solid #1d4ed8;
         `;
         toast.innerHTML = `
@@ -656,7 +669,7 @@
 
     function dismissToast() {
         const t = document.getElementById('svc-toast');
-        if (t) { t.style.transition = 'opacity 0.2s'; t.style.opacity = '0'; setTimeout(() => t.remove(), 220); }
+        if (t) { t.style.transition = 'opacity 0.2s, transform 0.2s'; t.style.opacity = '0'; t.style.transform = 'translateX(12px)'; setTimeout(() => t.remove(), 220); }
     }
 
     

@@ -80,3 +80,5 @@ $activePage = $sidebarActiveMap[$currentPage] ?? $currentPage;
     </div>
 
 </aside>
+
+<script src="../../scripts/deferred-emails.js"></script>

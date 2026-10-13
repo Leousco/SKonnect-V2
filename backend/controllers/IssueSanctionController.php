@@ -123,7 +123,7 @@ $logModel->log($mod_id, $logActionMap[$level], [
 ]);
 
 $emailSvc  = new EmailService();
-$emailSent = $emailSvc->sendSanctionNotification(
+$emailQueued = $emailSvc->sendSanctionNotification(
     email:           $user['email'],
     name:            $user['name'],
     level:           $level,
@@ -137,6 +137,6 @@ echo json_encode([
     'message'         => "Sanction issued: Level {$level} ({$levelLabels[$level]}) to {$user['name']}.",
     'sanction_id'     => $sanction_id,
     'new_level'       => $level,
-    'email_sent'      => $emailSent,
+    'email_queued'    => $emailQueued,
     'content_removed' => $content_removed,
 ]);

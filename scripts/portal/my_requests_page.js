@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (show) visible++;
     });
 
-    noResults.style.display = visible === 0 ? "block" : "none";
+    noResults.style.display = rows.length > 0 && visible === 0 ? "block" : "none";
   }
 
   function sortRows() {
@@ -380,7 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = escapeHtml(truncateName(fullName));
         const title = escapeHtml(fullName);
         const rawPath = doc.file_path || "";
-        const basePath = rawPath ? "/SKonnect/" + rawPath.replace(/^\/+/, "") : "";
+        const basePath = window.SKONNECT_ASSETS.url(rawPath);
         const path = escapeHtml(basePath);
         const isPreviewable = doc.mime_type && (doc.mime_type.startsWith("image/") || doc.mime_type === "application/pdf");
 
@@ -467,7 +467,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const basePath = "/SKonnect/" + filePath.replace(/^\/+/, "");
+    const basePath = window.SKONNECT_ASSETS.url(filePath);
     const fileName = filePath.split("/").pop();
     const ext = fileName.split(".").pop().toLowerCase();
     const isImage = ["jpg", "jpeg", "png", "gif", "webp"].includes(ext);
@@ -1093,7 +1093,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (page === currentPage) btn.setAttribute("aria-current", "page");
       btn.addEventListener("click", () => {
         currentPage = page;
-        filterAndPage();
+        applyPagination();
       });
       pageNumbers.appendChild(btn);
     });
@@ -1129,5 +1129,5 @@ document.addEventListener("DOMContentLoaded", () => {
   statusSelect.addEventListener("change", filterAndPage);
   categorySelect.addEventListener("change", filterAndPage);
 
-  applyPagination();
+  filterAndPage();
 });

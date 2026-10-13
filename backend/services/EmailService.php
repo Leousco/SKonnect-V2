@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/DeferredEmailQueue.php';
 require_once __DIR__ . '/../config/paths.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -31,6 +32,52 @@ class EmailService
     }
 
     private function sendNotification(
+        string $email,
+        string $name,
+        string $subject,
+        string $badge,
+        string $badgeColor,
+        string $title,
+        string $bodyHtml,
+        string $bodyPlain,
+        string $ctaLabel = 'View Thread',
+        string $ctaUrl   = ''
+    ): bool {
+        $notification = compact(
+            'email',
+            'name',
+            'subject',
+            'badge',
+            'badgeColor',
+            'title',
+            'bodyHtml',
+            'bodyPlain',
+            'ctaLabel',
+            'ctaUrl'
+        );
+        if (DeferredEmailQueue::enqueue($notification)) {
+            return true;
+        }
+
+        return $this->deliverQueuedNotification($notification);
+    }
+
+    public function deliverQueuedNotification(array $notification): bool
+    {
+        $required = [
+            'email', 'name', 'subject', 'badge', 'badgeColor',
+            'title', 'bodyHtml', 'bodyPlain', 'ctaLabel', 'ctaUrl',
+        ];
+        foreach ($required as $key) {
+            if (!isset($notification[$key]) || !is_string($notification[$key])) {
+                throw new InvalidArgumentException('Invalid queued email notification payload.');
+            }
+        }
+
+        return $this->deliverNotification(...$notification);
+    }
+
+    private function deliverNotification(
         string $email,
         string $name,
         string $subject,
@@ -302,29 +349,25 @@ class EmailService
     public function sendWarningNotification($email, $name, $reason, $threadSubject)
     {
         $subject = "Community Notice: Warning Regarding Your $threadSubject";
+        $safeName = htmlspecialchars((string)$name);
+        $safeReason = htmlspecialchars((string)$reason);
+        $safeThread = htmlspecialchars((string)$threadSubject);
 
-        $message = "
-        <html>
-        <head>
-            <title>SKonnect Community Notice</title>
-        </head>
-        <body>
-            <h2>Hello, $name</h2>
-            <p>This is a formal warning from the SKonnect Moderation Team.</p>
-            <p>Your recent <strong>$threadSubject</strong> was reported and reviewed by our team.</p>
-            <p><strong>Reason for Warning:</strong> $reason</p>
-            <hr>
-            <p>Please review our community guidelines to avoid further sanctions or account suspension.</p>
-            <p>Best regards,<br>SKonnect Team</p>
-        </body>
-        </html>
-        ";
-
-        $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $headers .= "From: noreply@skonnect-qcu.com" . "\r\n";
-
-        return mail($email, $subject, $message, $headers);
+        return $this->sendNotification(
+            email: (string)$email,
+            name: (string)$name,
+            subject: $subject,
+            badge: '⚠️ Community Warning',
+            badgeColor: '#fbbf24',
+            title: 'A moderator has issued a warning',
+            bodyHtml: "<p>Hello <strong>{$safeName}</strong>,</p>
+                       <p>Your recent <strong>{$safeThread}</strong> was reviewed by our moderation team.</p>
+                       <p><strong>Reason:</strong> {$safeReason}</p>
+                       <p>Please review our community guidelines to avoid further sanctions.</p>",
+            bodyPlain: "Hello {$name},\n\nYour recent \"{$threadSubject}\" was reviewed by our moderation team.\nReason: {$reason}\n\nPlease review our community guidelines.",
+            ctaLabel: '',
+            ctaUrl: ''
+        );
     }
 
     public function sendSanctionNotification(

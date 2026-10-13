@@ -506,6 +506,7 @@ function statusCss(string $status): string {
 
 <div class="req-toast" id="req-toast" aria-live="polite"></div>
 
+<script src="../../../scripts/asset_paths.js"></script>
 <script src="../../../scripts/pagination.js"></script>
 <script src="../../../scripts/management/officer/officer_requests.js"></script>
 

@@ -96,15 +96,12 @@ class ServiceRequestController
             throw $e;
         }
 
-        $application = $this->model->getById($applicationId);
+        $application = $this->model->getSubmissionNotificationDetails($applicationId, $residentId);
         if ($application) {
-            $residentEmail = $application['email'];
-            $residentName  = $application['full_name'];
-            $serviceName   = $application['service_name'];
             $this->emailService->sendRequestSubmitted(
-                $residentEmail,
-                $residentName,
-                $serviceName,
+                $application['email'],
+                $application['full_name'],
+                $application['service_name'],
                 $applicationId
             );
         }

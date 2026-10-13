@@ -775,7 +775,7 @@ document.addEventListener("DOMContentLoaded", function () {
         closeModal();
         showToast(
           data.message +
-            (data.email_sent ? " Email sent." : " (Email failed.)"),
+            (data.email_queued ? " Email notification is being processed." : ""),
           "success"
         );
         setTimeout(() => location.reload(), 900);

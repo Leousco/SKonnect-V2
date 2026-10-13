@@ -38,12 +38,6 @@ if (!in_array($new_status, $allowed_statuses)) {
 $result = $model->updateThreadStatus($thread_id, $new_status);
 
 if ($result) {
-    echo json_encode([
-        'status'     => 'success',
-        'new_status' => $new_status,
-        'message'    => 'Thread status updated.',
-    ]);
-
     $author = $model->getThreadAuthor($thread_id);
     if ($author && !empty($author['email'])) {
         $emailService = new EmailService();
@@ -64,6 +58,11 @@ if ($result) {
         'notes'       => "Status changed to \"{$new_status}\".",
     ]);
 
+    echo json_encode([
+        'status'     => 'success',
+        'new_status' => $new_status,
+        'message'    => 'Thread status updated.',
+    ]);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Failed to update status.']);
 }

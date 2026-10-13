@@ -97,6 +97,23 @@ class ServiceRequestModel
         return $row;
     }
 
+    public function getSubmissionNotificationDetails(int $applicationId, int $residentId): ?array
+    {
+        $stmt = $this->db->prepare("
+            SELECT sa.email, sa.full_name, sv.name AS service_name
+            FROM service_applications sa
+            INNER JOIN services sv ON sv.id = sa.service_id
+            WHERE sa.id = :id AND sa.resident_id = :resident_id
+            LIMIT 1
+        ");
+        $stmt->execute([
+            ':id' => $applicationId,
+            ':resident_id' => $residentId,
+        ]);
+        $details = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $details ?: null;
+    }
+
     public function getDocuments(int $applicationId): array
     {
         $stmt = $this->db->prepare("

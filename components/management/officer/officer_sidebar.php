@@ -137,4 +137,5 @@ function offIsGroupOpen(array $pages): string {
 
 </aside>
 
+<script src="../../../scripts/deferred-emails.js"></script>
 <script src="../../../scripts/management/officer/officer_sidebar.js"></script>

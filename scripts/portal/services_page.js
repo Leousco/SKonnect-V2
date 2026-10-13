@@ -494,27 +494,36 @@
                 method: 'POST',
                 body:   fd,
             });
-            const json = await res.json();
+            const responseText = await res.text();
+            let json;
+            try {
+                json = JSON.parse(responseText);
+            } catch {
+                throw new Error(`The server returned an invalid response (${res.status}).`);
+            }
             dismissToast();
 
-            if (json.success) {
+            if (res.ok && json.success) {
                 closeApplyModal();
                 showToast('Request submitted!', 'success');
 
-                
                 const serviceId = applyServId.value;
                 document.querySelectorAll(`.svc-apply-btn[data-id="${serviceId}"]`).forEach(btn => {
                     btn.disabled = true;
                     btn.textContent = '✓ Applied';
                     btn.classList.add('svc-apply-btn--applied');
                 });
+
             } else {
                 const msgs = json.errors ? json.errors.join('\n') : (json.message || 'Submission failed.');
                 showToast(msgs, 'error');
             }
         } catch (err) {
             dismissToast();
-            showToast('Network error. Please check your connection and try again.', 'error');
+            console.error('Service request submission failed.', err);
+            showToast(err instanceof TypeError
+                ? 'We could not confirm the result. Check My Requests before submitting again.'
+                : (err.message || 'Could not confirm submission. Check My Requests before trying again.'), 'error');
         } finally {
             isSubmitting = false;
             applySubmit.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg> Submit Request`;

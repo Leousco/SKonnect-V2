@@ -371,7 +371,7 @@ if ($method === 'POST' && $action === 'sanction') {
         'notes'       => $notesStr,
     ]);
 
-    $emailSent = (new EmailService())->sendSanctionNotification(
+    $emailQueued = (new EmailService())->sendSanctionNotification(
         email:           $user['email'],
         name:            $user['name'],
         level:           $level,
@@ -383,7 +383,7 @@ if ($method === 'POST' && $action === 'sanction') {
     jsonSuccess([
         'sanction_id'     => $sanction_id,
         'new_level'       => $level,
-        'email_sent'      => $emailSent,
+        'email_queued'    => $emailQueued,
         'content_removed' => $content_removed,
     ], "Sanction issued: Level {$level} ({$levelLabels[$level]}) to {$user['name']}.");
 }

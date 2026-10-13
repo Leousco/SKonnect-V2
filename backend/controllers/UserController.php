@@ -83,7 +83,7 @@ try {
                 verifyUrl:  $verifyUrl
             );
 
-            echo json_encode(['status' => 'success', 'message' => 'User created. A verification email has been sent.', 'id' => $newId]);
+            echo json_encode(['status' => 'success', 'message' => 'User created. The verification email is being processed.', 'id' => $newId]);
             break;
 
         case 'update_user':

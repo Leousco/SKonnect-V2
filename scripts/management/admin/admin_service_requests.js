@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const titleAttr = escapeHtml(fullName);
       const size      = formatSize(doc.file_size);
       const metaParts = [formatDate(doc.uploaded_at), size].filter(Boolean);
-      const basePath  = "/SKonnect/" + doc.file_path.replace(/^\/+/, "");
+      const basePath  = window.SKONNECT_ASSETS.url(doc.file_path);
       const isImage   = doc.mime_type && doc.mime_type.startsWith("image/");
       const isPdf     = doc.mime_type === "application/pdf";
 
@@ -375,7 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     drawerFulfillmentSection.style.display = "";
 
-    const basePath = "/SKonnect/" + filePath.replace(/^\/+/, "");
+    const basePath = window.SKONNECT_ASSETS.url(filePath);
     const fileName = filePath.split("/").pop() || "fulfillment_file";
     const ext = fileName.split(".").pop().toLowerCase();
 

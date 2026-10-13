@@ -468,6 +468,7 @@ function resStatusCss(string $s): string {
 
 <div id="req-toast" class="req-toast" aria-live="polite" style="display:none;"></div>
 
+<script src="../../scripts/asset_paths.js"></script>
 <script src="../../scripts/pagination.js"></script>
 <script src="../../scripts/portal/my_requests_page.js"></script>
 </body>

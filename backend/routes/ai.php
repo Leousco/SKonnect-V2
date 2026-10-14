@@ -59,7 +59,32 @@ if (!RoleMiddleware::is('resident')) {
     aiJsonResponse(403, ['success' => false, 'message' => 'Resident access required.']);
 }
 
-$rawBody = file_get_contents('php://input');
+// 32 KiB accommodates a 2,000-character UTF-8 message, including JSON escaping.
+const AI_MAX_REQUEST_BODY_BYTES = 32768;
+$bodyStream = @fopen('php://input', 'rb');
+if ($bodyStream === false) {
+    aiJsonResponse(400, ['success' => false, 'message' => 'Invalid JSON request body.']);
+}
+
+$rawBody = '';
+while (!feof($bodyStream)) {
+    // Read at most one byte beyond the limit so oversized bodies are detected early.
+    $remainingWithProbe = AI_MAX_REQUEST_BODY_BYTES + 1 - strlen($rawBody);
+    $chunk = @fread($bodyStream, min(4096, $remainingWithProbe));
+
+    if ($chunk === false || ($chunk === '' && !feof($bodyStream))) {
+        fclose($bodyStream);
+        aiJsonResponse(400, ['success' => false, 'message' => 'Invalid JSON request body.']);
+    }
+
+    $rawBody .= $chunk;
+    if (strlen($rawBody) > AI_MAX_REQUEST_BODY_BYTES) {
+        fclose($bodyStream);
+        aiJsonResponse(413, ['success' => false, 'message' => 'Request body is too large.']);
+    }
+}
+fclose($bodyStream);
+
 try {
     $request = json_decode($rawBody, true, 512, JSON_THROW_ON_ERROR);
 } catch (JsonException $e) {

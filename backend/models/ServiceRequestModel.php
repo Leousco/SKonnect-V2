@@ -11,6 +11,11 @@ class ServiceRequestModel
         $this->db = (new Database())->getConnection();
     }
 
+    public function getConnection(): PDO
+    {
+        return $this->db;
+    }
+
     public function getAll(array $filters = []): array
     {
         $sql = "
@@ -100,7 +105,7 @@ class ServiceRequestModel
     public function getSubmissionNotificationDetails(int $applicationId, int $residentId): ?array
     {
         $stmt = $this->db->prepare("
-            SELECT sa.email, sa.full_name, sv.name AS service_name
+            SELECT sa.email, sa.full_name, sa.status, sv.name AS service_name
             FROM service_applications sa
             INNER JOIN services sv ON sv.id = sa.service_id
             WHERE sa.id = :id AND sa.resident_id = :resident_id
@@ -305,7 +310,7 @@ class ServiceRequestModel
         if ($setActionRequired) {
             $this->db->prepare("
                 UPDATE service_applications
-                SET status = 'action_required'
+                SET status = 'action_required', updated_at = NOW()
                 WHERE id = :id AND status = 'pending'
             ")->execute([':id' => $applicationId]);
         }
@@ -316,13 +321,13 @@ class ServiceRequestModel
         if ($fulfillmentFile !== null) {
             $stmt = $this->db->prepare("
                 UPDATE service_applications
-                SET status = :status, fulfillment_file = :file
+                SET status = :status, fulfillment_file = :file, updated_at = NOW()
                 WHERE id = :id
             ");
             $stmt->execute([':status' => $status, ':file' => $fulfillmentFile, ':id' => $id]);
         } else {
             $stmt = $this->db->prepare("
-                UPDATE service_applications SET status = :status WHERE id = :id
+                UPDATE service_applications SET status = :status, updated_at = NOW() WHERE id = :id
             ");
             $stmt->execute([':status' => $status, ':id' => $id]);
         }
@@ -344,7 +349,7 @@ class ServiceRequestModel
         }
 
         $this->db->prepare("
-            UPDATE service_applications SET status = 'cancelled' WHERE id = :id
+            UPDATE service_applications SET status = 'cancelled', updated_at = NOW() WHERE id = :id
         ")->execute([':id' => $applicationId]);
 
         return true;

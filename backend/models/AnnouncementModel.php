@@ -6,9 +6,8 @@ class AnnouncementModel {
 
     private $conn;
 
-    public function __construct() {
-        $db = new Database();
-        $this->conn = $db->getConnection();
+    public function __construct(?PDO $connection = null) {
+        $this->conn = $connection ?? (new Database())->getConnection();
     }
 
     
@@ -245,6 +244,19 @@ class AnnouncementModel {
     }
 
     public function archiveExpired(): int {
+        $archived = $this->archiveExpiredRows();
+        if ($archived) {
+            try {
+                require_once __DIR__ . '/../services/OfficerNotificationService.php';
+                (new OfficerNotificationService($this->conn))->notifyArchivedAnnouncements($archived);
+            } catch (PDOException $e) {
+                error_log('Unable to notify announcement authors after expiry archiving: ' . $e->getMessage());
+            }
+        }
+        return count($archived);
+    }
+
+    public function archiveExpiredRows(): array {
         $stmt = $this->conn->prepare(
             "UPDATE announcements
              SET status = 'archived', archived_at = NOW()
@@ -252,9 +264,10 @@ class AnnouncementModel {
                AND expired_at IS NOT NULL
                AND expired_at < CURRENT_DATE
                AND archived_at IS NULL"
+             . " RETURNING id, title, author_id"
         );
         $stmt->execute();
-        return $stmt->rowCount();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

@@ -96,8 +96,15 @@ class ServiceRequestController
             throw $e;
         }
 
+        try {
+            require_once __DIR__ . '/../services/OfficerNotificationService.php';
+            (new OfficerNotificationService($this->model->getConnection()))->notifyIncomingRequest($applicationId);
+        } catch (PDOException $e) {
+            error_log('Unable to notify officers about a new service request: ' . $e->getMessage());
+        }
+
         $application = $this->model->getSubmissionNotificationDetails($applicationId, $residentId);
-        if ($application) {
+        if ($application && $application['status'] === 'action_required') {
             $this->emailService->sendRequestSubmitted(
                 $application['email'],
                 $application['full_name'],
@@ -170,6 +177,19 @@ class ServiceRequestController
 
         $this->model->updateStatus($applicationId, 'pending');
 
+        if ($currentStatus === 'action_required') {
+            try {
+                require_once __DIR__ . '/../services/OfficerNotificationService.php';
+                (new OfficerNotificationService($this->model->getConnection()))->notifyRequestUpdate(
+                    'updated',
+                    $applicationId,
+                    (string)$existing['service_name']
+                );
+            } catch (PDOException $e) {
+                error_log('Unable to notify officers about a resident request update: ' . $e->getMessage());
+            }
+        }
+
         return [
             'success'        => true,
             'application_id' => $applicationId,
@@ -187,6 +207,17 @@ class ServiceRequestController
         }
 
         if ($application) {
+            try {
+                require_once __DIR__ . '/../services/OfficerNotificationService.php';
+                (new OfficerNotificationService($this->model->getConnection()))->notifyRequestUpdate(
+                    'cancelled',
+                    $applicationId,
+                    (string)$application['service_name']
+                );
+            } catch (PDOException $e) {
+                error_log('Unable to notify officers about a cancelled service request: ' . $e->getMessage());
+            }
+
             $this->emailService->sendRequestCancelled(
                 $application['email'],
                 $application['full_name'],

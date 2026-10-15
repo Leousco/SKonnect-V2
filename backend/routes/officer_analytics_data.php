@@ -14,8 +14,13 @@ header('Content-Type: application/json; charset=utf-8');
 ob_clean();
 
 try {
-    $db     = (new Database())->getConnection();
     $period = $_GET['period'] ?? 'month';
+    if (!is_string($period) || !in_array($period, ['month', 'quarter', 'year'], true)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Invalid analytics period.']);
+        exit;
+    }
+    $db  = (new Database())->getConnection();
     $now    = new DateTime();
 
     
@@ -240,7 +245,7 @@ try {
                 'active',
                 NULL::text,
                 'event',
-                CAST(e.event_date AS TIMESTAMP)
+                e.created_at
             FROM events e
             ORDER BY e.created_at DESC
             LIMIT 3

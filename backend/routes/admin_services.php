@@ -3,6 +3,7 @@
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../services/OfficerNotificationService.php';
 
 RoleMiddleware::requireAdmin();
 
@@ -158,9 +159,10 @@ if ($method === 'POST' && $action === 'update') {
     if (!in_array($status,       $allowed_statuses))   $status       = 'active';
 
     
-    $check = $db->prepare('SELECT id FROM services WHERE id = :id');
+    $check = $db->prepare('SELECT id, name, created_by FROM services WHERE id = :id');
     $check->execute([':id' => $id]);
-    if (!$check->fetch()) jsonError('Service not found.', 404);
+    $existingService = $check->fetch(PDO::FETCH_ASSOC);
+    if (!$existingService) jsonError('Service not found.', 404);
 
     $stmt = $db->prepare('
         UPDATE services
@@ -191,6 +193,19 @@ if ($method === 'POST' && $action === 'update') {
         ':id'               => $id,
     ]);
 
+    if (!empty($existingService['created_by'])) {
+        try {
+            (new OfficerNotificationService($db))->notifyAdminUpdate(
+                (int)$existingService['created_by'],
+                'service',
+                $id,
+                $name
+            );
+        } catch (PDOException $e) {
+            error_log('Unable to notify a service author about an admin edit: ' . $e->getMessage());
+        }
+    }
+
     jsonSuccess([], 'Service updated successfully.');
 }
 
@@ -203,9 +218,10 @@ if ($method === 'POST' && $action === 'delete') {
 
     if ($id === 0) jsonError('Invalid service ID.');
 
-    $check = $db->prepare('SELECT id FROM services WHERE id = :id');
+    $check = $db->prepare('SELECT id, name, created_by FROM services WHERE id = :id');
     $check->execute([':id' => $id]);
-    if (!$check->fetch()) jsonError('Service not found.', 404);
+    $existingService = $check->fetch(PDO::FETCH_ASSOC);
+    if (!$existingService) jsonError('Service not found.', 404);
 
     
     $apps = $db->prepare('
@@ -219,6 +235,19 @@ if ($method === 'POST' && $action === 'delete') {
 
     $stmt = $db->prepare('DELETE FROM services WHERE id = :id');
     $stmt->execute([':id' => $id]);
+
+    if (!empty($existingService['created_by'])) {
+        try {
+            (new OfficerNotificationService($db))->notifyAdminUpdate(
+                (int)$existingService['created_by'],
+                'service',
+                $id,
+                $existingService['name']
+            );
+        } catch (PDOException $e) {
+            error_log('Unable to notify a service author about an admin deletion: ' . $e->getMessage());
+        }
+    }
 
     jsonSuccess([], 'Service deleted successfully.');
 }

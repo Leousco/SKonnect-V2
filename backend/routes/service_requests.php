@@ -8,7 +8,9 @@ require_once __DIR__ . '/../controllers/ServiceRequestController.php';
 RoleMiddleware::requireAuth(); 
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
+if (ob_get_level() > 0) {
+    ob_clean();
+}
 
 $action     = $_GET['action'] ?? ($_POST['action'] ?? '');
 $controller = new ServiceRequestController();

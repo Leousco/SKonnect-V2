@@ -10,6 +10,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/paths.php';
+require_once __DIR__ . '/../services/OfficerNotificationService.php';
 
 RoleMiddleware::requireAdmin();
 
@@ -158,7 +159,7 @@ if ($action === 'update') {
         exit;
     }
 
-    $stmt = $conn->prepare("SELECT featured_at, banner_img, status, archived_at FROM announcements WHERE id = :id");
+    $stmt = $conn->prepare("SELECT title, author_id, featured_at, banner_img, status, archived_at FROM announcements WHERE id = :id");
     $stmt->execute([':id' => $id]);
     $existing = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$existing) {
@@ -221,6 +222,17 @@ if ($action === 'update') {
             }
         }
 
+        try {
+            (new OfficerNotificationService($conn))->notifyAdminUpdate(
+                (int)$existing['author_id'],
+                'announcement',
+                $id,
+                $title
+            );
+        } catch (PDOException $e) {
+            error_log('Unable to notify an announcement author about an admin edit: ' . $e->getMessage());
+        }
+
         echo json_encode(['status' => 'success', 'message' => 'Announcement updated.', 'id' => $id]);
 
     } catch (Exception $e) {
@@ -251,18 +263,33 @@ try {
             if (!in_array($newStatus, ['active', 'draft', 'archived'])) {
                 throw new Exception('Invalid status.');
             }
+            $ownerStmt = $conn->prepare('SELECT title, author_id FROM announcements WHERE id = :id');
+            $ownerStmt->execute([':id' => $id]);
+            $owner = $ownerStmt->fetch(PDO::FETCH_ASSOC);
             $archivedAt = $newStatus === 'archived' ? date('Y-m-d H:i:s') : null;
             $conn->prepare("
                 UPDATE announcements
                 SET status = :status, archived_at = :archived_at, updated_at = NOW()
                 WHERE id = :id
             ")->execute([':status' => $newStatus, ':archived_at' => $archivedAt, ':id' => $id]);
+            if ($owner) {
+                try {
+                    (new OfficerNotificationService($conn))->notifyAdminUpdate(
+                        (int)$owner['author_id'],
+                        'announcement',
+                        $id,
+                        $owner['title']
+                    );
+                } catch (PDOException $e) {
+                    error_log('Unable to notify an announcement author about an admin status change: ' . $e->getMessage());
+                }
+            }
             echo json_encode(['status' => 'success', 'new_status' => $newStatus]);
             break;
 
         case 'delete':
             
-            $stmt = $conn->prepare("SELECT banner_img FROM announcements WHERE id = :id");
+            $stmt = $conn->prepare("SELECT banner_img, title, author_id FROM announcements WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $ann = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($ann && $ann['banner_img']) {
@@ -277,13 +304,26 @@ try {
                 if (file_exists($localPath)) @unlink($localPath);
             }
             $conn->prepare("DELETE FROM announcements WHERE id = :id")->execute([':id' => $id]);
+            if ($ann) {
+                try {
+                    (new OfficerNotificationService($conn))->notifyAdminUpdate(
+                        (int)$ann['author_id'],
+                        'announcement',
+                        $id,
+                        $ann['title']
+                    );
+                } catch (PDOException $e) {
+                    error_log('Unable to notify an announcement author about an admin deletion: ' . $e->getMessage());
+                }
+            }
             echo json_encode(['status' => 'success']);
             break;
 
         case 'toggle-featured':
-            $stmt = $conn->prepare("SELECT featured FROM announcements WHERE id = :id");
+            $stmt = $conn->prepare("SELECT featured, title, author_id FROM announcements WHERE id = :id");
             $stmt->execute([':id' => $id]);
-            $current = (int)$stmt->fetchColumn();
+            $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
+            $current = (int)($announcement['featured'] ?? 0);
             $newVal  = $current ? 0 : 1;
             $conn->prepare("
                 UPDATE announcements
@@ -294,6 +334,18 @@ try {
                 ':featured_at' => $newVal ? date('Y-m-d H:i:s') : null,
                 ':id'          => $id,
             ]);
+            if ($announcement) {
+                try {
+                    (new OfficerNotificationService($conn))->notifyAdminUpdate(
+                        (int)$announcement['author_id'],
+                        'announcement',
+                        $id,
+                        $announcement['title']
+                    );
+                } catch (PDOException $e) {
+                    error_log('Unable to notify an announcement author about an admin feature change: ' . $e->getMessage());
+                }
+            }
             echo json_encode(['status' => 'success', 'featured' => $newVal]);
             break;
 

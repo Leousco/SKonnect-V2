@@ -1,4 +1,5 @@
 <?php
+$officerRole = 'OFFICER';
 $initials = '';
 if (!empty($officerName)) {
     $parts = explode(' ', trim($officerName));
@@ -44,44 +45,26 @@ if (!empty($officerName)) {
         <div class="off-topbar-divider"></div>
 
         
-        <div class="off-topbar-notif" role="button" tabindex="0" aria-label="Notifications" aria-expanded="false" id="off-notif-btn">
+        <div class="off-topbar-notif-wrap">
+        <button class="off-topbar-notif" type="button" aria-label="Notifications" aria-expanded="false" id="off-notif-btn">
             <svg class="off-notif-bell" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/>
             </svg>
-            <?php if (!empty($notifCount) && $notifCount > 0): ?>
-                <span class="off-notif-badge"><?= (int)$notifCount ?></span>
-            <?php endif; ?>
+            <span class="off-notif-badge" id="off-notif-badge" hidden></span>
 
             
-            <div class="off-notif-dropdown" id="off-notif-dropdown" role="menu">
+        </button>
+
+        <div class="off-notif-dropdown" id="off-notif-dropdown">
                 <div class="off-notif-dropdown-header">
                     <span>Notifications</span>
-                    <a href="#" class="off-notif-view-all">View all</a>
+                    <button class="off-notif-view-all" id="off-notif-view-all" type="button">View all</button>
                 </div>
-                <ul class="off-notif-list">
-                    <li class="off-notif-item unread">
-                        <div class="off-notif-dot"></div>
-                        <div class="off-notif-content">
-                            <p>New service request from <strong>Pedro Cruz</strong></p>
-                            <span class="off-notif-time">1 hour ago</span>
-                        </div>
-                    </li>
-                    <li class="off-notif-item unread">
-                        <div class="off-notif-dot"></div>
-                        <div class="off-notif-content">
-                            <p>Residency certificate ready for approval</p>
-                            <span class="off-notif-time">3 hours ago</span>
-                        </div>
-                    </li>
-                    <li class="off-notif-item">
-                        <div class="off-notif-dot"></div>
-                        <div class="off-notif-content">
-                            <p>Event <strong>Barangay Assembly</strong> is due in 2 days</p>
-                            <span class="off-notif-time">Yesterday</span>
-                        </div>
-                    </li>
+                <ul class="off-notif-list" id="off-notif-preview" aria-live="polite">
+                    <li class="off-notif-empty">Loading notifications...</li>
                 </ul>
-            </div>
+                <p class="off-notif-error off-notif-preview-error" id="off-notif-preview-error" hidden></p>
+        </div>
         </div>
 
         <div class="off-topbar-divider"></div>
@@ -136,6 +119,43 @@ if (!empty($officerName)) {
 
     </div>
 </header>
+
+<div class="off-notif-modal-overlay" id="off-notif-modal" aria-hidden="true">
+    <section class="off-notif-modal" role="dialog" aria-modal="true" aria-labelledby="off-notif-modal-title">
+        <header class="off-notif-modal-header">
+            <div>
+                <h2 id="off-notif-modal-title">All notifications</h2>
+                <span id="off-notif-modal-count"></span>
+            </div>
+            <button class="off-notif-modal-close" id="off-notif-modal-close" type="button" aria-label="Close notifications">&times;</button>
+        </header>
+        <div class="off-notif-controls">
+            <label class="off-notif-search-label">
+                <span class="sr-only">Search notifications</span>
+                <input id="off-notif-search" type="search" placeholder="Search notifications">
+            </label>
+            <select id="off-notif-type" aria-label="Filter by notification type">
+                <option value="">All types</option>
+                <option value="requests">Service requests</option>
+                <option value="attention">Needs attention</option>
+                <option value="admin_updates">Admin changes</option>
+                <option value="events">Events</option>
+                <option value="announcements">Announcements</option>
+            </select>
+            <select id="off-notif-read" aria-label="Filter by read status">
+                <option value="">All notifications</option>
+                <option value="0">Unread</option>
+                <option value="1">Read</option>
+            </select>
+            <button id="off-notif-mark-all" type="button">Mark all read</button>
+        </div>
+        <p class="off-notif-modal-error" id="off-notif-modal-error" role="alert" hidden></p>
+        <div class="off-notif-modal-list" id="off-notif-modal-list" aria-live="polite">
+            <p class="off-notif-empty">Loading notifications...</p>
+        </div>
+        <button class="off-notif-load-more" id="off-notif-load-more" type="button" hidden>Load more</button>
+    </section>
+</div>
 
 
 <div class="off-logout-overlay" id="off-logout-overlay" role="dialog" aria-modal="true"

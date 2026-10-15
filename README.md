@@ -2,7 +2,7 @@
 
 A community portal that connects residents with their SK officers: announcements, community discussions, youth services, and events in one place.
 
-> **Last Update:** 9/30/26
+> **Last Update:** 10/15/26
 
 ## Render Deployment
 
@@ -161,17 +161,14 @@ Completed:
 - [x] Event in calendar shows "Tomorrow" even though the event is still 2 days from now
 - [x] Include a services section for easy viewing
 - [x] Include latest community discussions (trending threads)
-- [ ] Hide the scrollbars on each section
-
-#### Services
-- [x] Required documents field is still required even if there are no requirements listed
+- [x] Hide the scrollbars on each section
 
 #### Notifications
 - [x] Color and icon of "action require" service requests
 - [x] Viewing a notification doesn't auto "mark as read" it
 
 #### Profile
-- [ ] User info improvements
+- [x] User info improvements
 
 #### Services
 - [x] Clicking outside the modal closes the modal resulting in loss of progress
@@ -190,13 +187,13 @@ Completed:
 - [x] New events appear at the bottom of the list
 
 #### Notification badge
-- [ ] Notification badge non functional
+- [x] Notification badge non functional
 
 #### Services
 - [x] No confirmation modal when deactivating or activating a service
 
 #### Analytics
-- [ ] Some visuals are bugged
+- [x] Some visuals are bugged
 
 ### [ MODERATOR SIDE ]
 
@@ -221,6 +218,15 @@ Completed:
 #### Activity Logs
 - [ ] Activities from the officer are not logged
 
+### Deployment Issues (Render)
+
+#### Officer
+- [ ] Announcement preview in announcement page doesn't show the image banner
+- [ ] Requests in requests page cannot be reviewed (Same with admin)
+- [ ] Analytics does not show most of the data
+
+#### Admin
+- [ ] Bug when activating or deactivating a service (also no confirmation modal)
 
 ### Features Backlog
 

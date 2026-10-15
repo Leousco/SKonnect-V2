@@ -38,8 +38,9 @@ RoleMiddleware::requireRole('sk_officer');
                 <button class="an-period-tab" data-period="quarter">This Quarter</button>
                 <button class="an-period-tab" data-period="year">This Year</button>
             </div>
+            <p class="an-error" id="an-error" role="alert" hidden></p>
             <div class="an-period-right">
-                <span class="an-last-updated">Last updated: <strong>Mar 27, 2026 — 8:00 AM</strong></span>
+                <span class="an-last-updated">Last updated: <strong>Loading...</strong></span>
                 <button class="an-export-btn" id="an-export-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                     Export Report
@@ -56,8 +57,8 @@ RoleMiddleware::requireRole('sk_officer');
                 </div>
                 <div class="widget-body">
                     <span class="widget-label">Total Requests</span>
-                    <p class="widget-number" data-kpi="total-requests">42</p>
-                    <span class="widget-trend up">&#9650; 12% vs last period</span>
+                    <p class="widget-number" data-kpi="total-requests">&mdash;</p>
+                    <span class="widget-caption">Selected period</span>
                 </div>
             </div>
 
@@ -67,8 +68,8 @@ RoleMiddleware::requireRole('sk_officer');
                 </div>
                 <div class="widget-body">
                     <span class="widget-label">Approval Rate</span>
-                    <p class="widget-number" data-kpi="approval-rate">91%</p>
-                    <span class="widget-trend up">&#9650; Up from 87%</span>
+                    <p class="widget-number" data-kpi="approval-rate">&mdash;</p>
+                    <span class="widget-caption">Of decided requests</span>
                 </div>
             </div>
 
@@ -78,8 +79,8 @@ RoleMiddleware::requireRole('sk_officer');
                 </div>
                 <div class="widget-body">
                     <span class="widget-label">Avg. Processing Time</span>
-                    <p class="widget-number" data-kpi="avg-days">3.4<span class="widget-unit">d</span></p>
-                    <span class="widget-trend up">&#9650; Faster by 0.6d</span>
+                    <p class="widget-number" data-kpi="avg-days">&mdash;<span class="widget-unit">d</span></p>
+                    <span class="widget-caption">Completed requests</span>
                 </div>
             </div>
 
@@ -89,8 +90,8 @@ RoleMiddleware::requireRole('sk_officer');
                 </div>
                 <div class="widget-body">
                     <span class="widget-label">Announcements</span>
-                    <p class="widget-number" data-kpi="announcements">7</p>
-                    <span class="widget-trend neutral">3 this month</span>
+                    <p class="widget-number" data-kpi="announcements">&mdash;</p>
+                    <span class="widget-caption">All active announcements</span>
                 </div>
             </div>
 
@@ -103,26 +104,26 @@ RoleMiddleware::requireRole('sk_officer');
             <section class="an-panel an-panel--grow">
                 <div class="panel-header">
                     <h2 class="section-label">Request Volume</h2>
-                    <span class="an-chart-period" id="an-volume-period">Mar 2026</span>
+                    <span class="an-chart-period" id="an-volume-period">Loading...</span>
                 </div>
                 <div class="an-sparkline-wrap">
                     <canvas id="chart-volume" height="130"></canvas>
                 </div>
                 <div class="an-spark-stats">
                     <div class="an-spark-stat">
-                        <span class="an-spark-val" data-kpi="spark-pending">8</span>
+                        <span class="an-spark-val" data-kpi="spark-pending">&mdash;</span>
                         <span class="an-spark-lbl">Pending</span>
                     </div>
                     <div class="an-spark-stat">
-                        <span class="an-spark-val" data-kpi="spark-processing">6</span>
+                        <span class="an-spark-val" data-kpi="spark-processing">&mdash;</span>
                         <span class="an-spark-lbl">Processing</span>
                     </div>
                     <div class="an-spark-stat">
-                        <span class="an-spark-val" data-kpi="spark-approved">24</span>
+                        <span class="an-spark-val" data-kpi="spark-approved">&mdash;</span>
                         <span class="an-spark-lbl">Approved</span>
                     </div>
                     <div class="an-spark-stat">
-                        <span class="an-spark-val" data-kpi="spark-declined">4</span>
+                        <span class="an-spark-val" data-kpi="spark-declined">&mdash;</span>
                         <span class="an-spark-lbl">Declined</span>
                     </div>
                 </div>
@@ -164,7 +165,9 @@ RoleMiddleware::requireRole('sk_officer');
                     <a href="officer_announcements.php" class="btn-off-sm">Manage &rsaquo;</a>
                 </div>
                 <div class="an-donut-wrap">
-                    <canvas id="chart-announcements" height="180"></canvas>
+                    <div class="an-donut-chart">
+                        <canvas id="chart-announcements" aria-label="Announcements by status"></canvas>
+                    </div>
                     <div class="an-donut-legend" id="an-ann-legend">
                         
                     </div>

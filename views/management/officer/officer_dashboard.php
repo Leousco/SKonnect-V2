@@ -444,11 +444,20 @@ $jsData = json_encode([
                     </div>
                     <div class="requests-table-wrap">
                         <table class="requests-table">
+                            <colgroup>
+                                <col class="requests-col-resident">
+                                <col class="requests-col-service">
+                                <col class="requests-col-submitted">
+                                <col class="requests-col-type">
+                                <col class="requests-col-status">
+                                <col class="requests-col-action">
+                            </colgroup>
                             <thead>
                                 <tr>
                                     <th>Resident</th>
-                                    <th>Service</th>
+                                    <th>Service Name</th>
                                     <th>Submitted</th>
+                                    <th>Type</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -456,7 +465,7 @@ $jsData = json_encode([
                             <tbody>
                                 <?php if (empty($recentRequests)): ?>
                                     <tr>
-                                        <td colspan="5" style="text-align:center; padding:28px 12px;
+                                        <td colspan="6" style="text-align:center; padding:28px 12px;
                                             color:var(--off-text-muted); font-size:13px;">
                                             &#10003;&nbsp; No pending requests — you're all caught up!
                                         </td>
@@ -464,27 +473,25 @@ $jsData = json_encode([
                                 <?php else: ?>
                                     <?php foreach ($recentRequests as $req): ?>
                                         <tr>
-                                            <td>
+                                            <td class="requests-resident">
                                                 <div class="req-name">
                                                     <div class="req-avatar">
                                                         <?= htmlspecialchars(dashInitials($req['full_name'])) ?>
                                                     </div>
-                                                    <?= htmlspecialchars($req['full_name']) ?>
+                                                    <span class="req-resident-name"><?= htmlspecialchars($req['full_name']) ?></span>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <?= dashCategoryBadge($req['service_category']) ?>
-                                                <span style="display:block; font-size:11px;
-                                                    color:var(--off-text-muted); margin-top:3px;">
-                                                    <?= htmlspecialchars($req['service_name']) ?>
-                                                </span>
+                                            <td class="requests-service" title="<?= htmlspecialchars($req['service_name'], ENT_QUOTES, 'UTF-8') ?>">
+                                                <?= htmlspecialchars($req['service_name']) ?>
                                             </td>
-                                            <td style="white-space:nowrap; font-size:12px;
-                                                color:var(--off-text-muted);">
+                                            <td class="requests-submitted">
                                                 <?= date('M j, Y', strtotime($req['submitted_at'])) ?>
                                             </td>
-                                            <td><?= dashStatusPill($req['status']) ?></td>
-                                            <td>
+                                            <td class="requests-type">
+                                                <?= dashCategoryBadge($req['service_category']) ?>
+                                            </td>
+                                            <td class="requests-status"><?= dashStatusPill($req['status']) ?></td>
+                                            <td class="requests-action">
                                                 <a href="officer_requests.php?id=<?= (int)$req['id'] ?>"
                                                    class="action-link">Review</a>
                                             </td>

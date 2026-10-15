@@ -209,18 +209,6 @@
       sortRows();
     });
   
-    document.querySelectorAll(".req-table thead th.sortable").forEach((th) => {
-      th.addEventListener("click", () => {
-        sortDir = sortDir === "desc" ? "asc" : "desc";
-        document
-          .querySelectorAll(".req-table thead th.sortable")
-          .forEach((h) => h.classList.remove("sort-asc", "sort-desc"));
-        th.classList.add(sortDir === "asc" ? "sort-asc" : "sort-desc");
-        currentPage = 1;
-        sortRows();
-      });
-    });
-  
     function sortRows() {
       const rows = getRows();
       rows.sort((a, b) => {

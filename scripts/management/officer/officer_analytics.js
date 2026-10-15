@@ -27,6 +27,7 @@
     let chartEvents  = null;
     let chartAnn     = null;
     let lastData     = null;
+    let latestRequest = 0;
 
     
     Chart.defaults.font.family            = "'Poppins', sans-serif";
@@ -36,7 +37,10 @@
 
     
     function loadPeriod(period) {
+        const requestId = ++latestRequest;
         setLoading(true);
+        document.getElementById('an-error').hidden = true;
+        document.getElementById('an-export-btn').disabled = true;
         fetch(`${DATA_API}?period=${period}`, { credentials: 'same-origin' })
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -44,12 +48,15 @@
             })
             .then(data => {
                 if (!data.success) throw new Error(data.message || 'API error');
+                if (requestId !== latestRequest) return;
                 lastData = data;
                 render(data);
                 setLoading(false);
+                document.getElementById('an-export-btn').disabled = false;
                 updateTimestamp();
             })
             .catch(err => {
+                if (requestId !== latestRequest) return;
                 setLoading(false);
                 showError(err.message);
             });
@@ -64,6 +71,9 @@
 
     function showError(msg) {
         console.error('Analytics error:', msg);
+        const error = document.getElementById('an-error');
+        error.textContent = 'Analytics data could not be loaded. Please try again.';
+        error.hidden = false;
     }
 
     function updateTimestamp() {
@@ -197,11 +207,12 @@
         const max = Math.max(...d.serviceBreakdown.map(s => s.count), 1);
         container.innerHTML = d.serviceBreakdown.map(s => {
             const pct = Math.round((s.count / max) * 100);
+            const category = Object.prototype.hasOwnProperty.call(svcIcons, s.key) ? s.key : 'other';
             return `
                 <div class="an-bar-row">
-                    <span class="an-bar-label" title="${s.label}">${s.label}</span>
+                    <span class="an-bar-label" title="${escapeHtml(s.label)}">${escapeHtml(s.label)}</span>
                     <div class="an-bar-track">
-                        <div class="an-bar-fill bar-${s.key}" style="width:${pct}%"></div>
+                        <div class="an-bar-fill bar-${category}" style="width:${pct}%"></div>
                     </div>
                     <span class="an-bar-count">${s.count}</span>
                 </div>`;
@@ -270,7 +281,8 @@
                 }],
             },
             options: {
-                responsive: false,
+                responsive: true,
+                maintainAspectRatio: false,
                 cutout: '68%',
                 plugins: { tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } } },
             },
@@ -299,6 +311,16 @@
         other:      `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z"/></svg>`,
     };
 
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+        })[char]);
+    }
+
     function renderServicesList(d) {
         const list = document.getElementById('an-services-list');
         if (!d.services.length) {
@@ -307,14 +329,14 @@
         }
         list.innerHTML = d.services.map(svc => `
             <div class="an-service-row">
-                <div class="an-service-icon svc-icon-${svc.category}">
+                <div class="an-service-icon svc-icon-${Object.prototype.hasOwnProperty.call(svcIcons, svc.category) ? svc.category : 'other'}">
                     ${svcIcons[svc.category] || svcIcons.other}
                 </div>
                 <div class="an-service-info">
-                    <p class="an-service-name">${svc.name}</p>
+                    <p class="an-service-name">${escapeHtml(svc.name)}</p>
                     <p class="an-service-requests">${svc.requests} request${svc.requests !== 1 ? 's' : ''} this period</p>
                 </div>
-                <span class="an-service-status ${svc.status}">
+                <span class="an-service-status ${svc.status === 'active' ? 'active' : 'inactive'}">
                     ${svc.status === 'active'
                         ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>Active`
                         : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg>Inactive`}

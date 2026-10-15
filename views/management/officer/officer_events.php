@@ -11,7 +11,7 @@ RoleMiddleware::requireRole('sk_officer');
     <title>SKonnect | Events Management</title>
     <link rel="stylesheet" href="../../../styles/management/officer/officer_events.css">
     <link rel="stylesheet" href="../../../styles/management/officer_mgmt.css">
-    <link rel="stylesheet" href="../../../styles/management/officer/officer_sidebar.css">
+    <link rel="stylesheet" href="../../../styles/management/officer/officer_sidebar.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/officer/officer_topbar.css">
 </head>
 <body>

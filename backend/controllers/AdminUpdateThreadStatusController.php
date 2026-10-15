@@ -13,6 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/ThreadModel.php';
 require_once __DIR__ . '/../models/ActivityLogModel.php';
 require_once __DIR__ . '/../services/EmailService.php';
+require_once __DIR__ . '/../services/ModeratorNotificationService.php';
 
 $db       = new Database();
 $conn     = $db->getConnection();
@@ -39,6 +40,12 @@ $result = $model->updateThreadStatus($thread_id, $new_status);
 
 if ($result) {
     $author = $model->getThreadAuthor($thread_id);
+    (new ModeratorNotificationService($conn))->notifyAdminThreadAction(
+        'status',
+        $thread_id,
+        $author['subject'] ?? "(Thread #{$thread_id})",
+        $new_status
+    );
     if ($author && !empty($author['email'])) {
         $emailService = new EmailService();
         $emailService->sendStatusChangeNotification(

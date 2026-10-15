@@ -126,6 +126,17 @@ $stmt = $conn->prepare(
 $stmt->execute([':uid' => $mod_id]);
 $activityLog = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$stmt = $conn->prepare(
+    "SELECT action, description, created_at
+     FROM activity_logs
+     WHERE user_id = :uid
+       AND action IN ('report_resolved', 'report_dismissed')
+     ORDER BY created_at DESC
+     LIMIT 5"
+);
+$stmt->execute([':uid' => $mod_id]);
+$reviewedReports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
 
 $stmt = $conn->query(
@@ -196,14 +207,14 @@ $stmt = $conn->query(
     "SELECT
         t.id,
         t.subject,
+        t.category,
         t.created_at,
         CONCAT(u.first_name, ' ', u.last_name) AS author_name,
         (SELECT COUNT(*) FROM thread_comments tc WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count
      FROM threads t
      JOIN users u ON u.id = t.author_id
      WHERE t.is_removed = FALSE
-     ORDER BY t.created_at DESC
-     LIMIT 5"
+     ORDER BY t.created_at DESC, t.id DESC"
 );
 $recentThreads = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -314,10 +325,37 @@ function badgeClass(string $category): string
 
 function initials(string $name): string
 {
-    $parts = explode(' ', trim($name));
+    $parts = array_values(array_filter(explode(' ', trim($name))));
+    if (empty($parts)) return '?';
     $i = strtoupper(substr($parts[0], 0, 1));
     if (count($parts) > 1) $i .= strtoupper(substr(end($parts), 0, 1));
     return $i;
+}
+
+function shortThreadTitle(string $subject): string
+{
+    $words = preg_split('/\s+/', trim($subject), -1, PREG_SPLIT_NO_EMPTY);
+    if (count($words) <= 4) return $subject;
+    return implode(' ', array_slice($words, 0, 4)) . '…';
+}
+
+function threadCategoryLabel(string $category): string
+{
+    $labels = [
+        'inquiry' => 'Inquiry',
+        'complaint' => 'Complaint',
+        'suggestion' => 'Suggestion',
+        'event_question' => 'Event question',
+        'other' => 'Other',
+    ];
+    return $labels[$category] ?? ucfirst(str_replace('_', ' ', $category));
+}
+
+function threadCategoryClass(string $category): string
+{
+    return in_array($category, ['inquiry', 'complaint', 'suggestion', 'event_question', 'other'], true)
+        ? 'category-' . $category
+        : 'category-other';
 }
 ?>
 <!DOCTYPE html>
@@ -327,10 +365,10 @@ function initials(string $name): string
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKonnect | Moderator Dashboard</title>
-    <link rel="stylesheet" href="../../../styles/management/moderator/mod_dashboard.css">
-    <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css">
+    <link rel="stylesheet" href="../../../styles/management/moderator/mod_dashboard.css?v=4">
+    <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_sidebar.css">
-    <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css">
+    <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css?v=5">
 </head>
 
 <body>
@@ -422,7 +460,7 @@ function initials(string $name): string
                         <h2 class="section-label">Pending Reports</h2>
                         <a href="mod_queue.php" class="btn-mod-sm">View All &rsaquo;</a>
                     </div>
-                    <div class="requests-table-wrap">
+                    <div class="requests-table-wrap <?= empty($pendingRows) ? 'requests-table-wrap--empty' : '' ?>">
                         <table class="requests-table">
                             <thead>
                                 <tr>
@@ -434,13 +472,7 @@ function initials(string $name): string
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($pendingRows)) : ?>
-                                    <tr>
-                                        <td colspan="5" style="text-align:center; color:var(--mod-text-muted); padding:24px;">
-                                            No pending reports — queue is clear.
-                                        </td>
-                                    </tr>
-                                <?php else : ?>
+                                <?php if (!empty($pendingRows)) : ?>
                                     <?php foreach ($pendingRows as $row) : ?>
                                         <tr>
                                             <td>
@@ -468,6 +500,14 @@ function initials(string $name): string
                                 <?php endif; ?>
                             </tbody>
                         </table>
+                        <?php if (empty($pendingRows)) : ?>
+                            <div class="reports-empty">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                                <p>No pending reports — all clear!</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </section>
 
@@ -545,31 +585,6 @@ function initials(string $name): string
 
                 </div>
 
-                
-                <aside class="mod-col-activity">
-
-                    <section class="mod-activity-panel mod-activity-panel--full">
-                        <h2 class="section-label">Moderator Activity Log</h2>
-                        <div class="activity-feed">
-                            <?php if (empty($activityLog)) : ?>
-                                <p style="font-size:13px; color:var(--mod-text-muted); padding:12px 0;">No recent activity recorded.</p>
-                            <?php else : ?>
-                                <?php foreach ($activityLog as $entry) : ?>
-                                    <div class="activity-entry">
-                                        <div class="activity-icon <?= activityIconClass($entry['action']) ?>">
-                                            <?= activitySvg($entry['action']) ?>
-                                        </div>
-                                        <div class="activity-info">
-                                            <p><?= activityLabel($entry['action'], $entry['description']) ?></p>
-                                            <span><?= date('M j, Y · g:i A', strtotime($entry['created_at'])) ?></span>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </div>
-                    </section>
-
-                </aside>
             </div>
 
             <div class="mod-bottom-row">
@@ -618,7 +633,7 @@ function initials(string $name): string
                 </section>
 
                 
-                <section class="chart-panel chart-panel--stretch">
+                <section class="chart-panel chart-panel--stretch mod-recent-posts-panel">
                     <div class="panel-header">
                         <h2 class="section-label">Recent Community Posts</h2>
                         <a href="mod_feed.php" class="btn-mod-sm">Manage &rsaquo;</a>
@@ -630,19 +645,77 @@ function initials(string $name): string
                             <?php foreach ($recentThreads as $thread) : ?>
                                 <li class="mod-thread-item">
                                     <div class="thread-meta-badge">
-                                        <span class="thread-replies"><?= (int)$thread['comment_count'] ?></span>
-                                        <span class="thread-replies-lbl">replies</span>
+                                        <span class="thread-author-initials"><?= htmlspecialchars(initials($thread['author_name'])) ?></span>
                                     </div>
                                     <div class="thread-info">
-                                        <strong><?= htmlspecialchars($thread['subject']) ?></strong>
-                                        <span>Posted by <?= htmlspecialchars($thread['author_name']) ?> &middot; <?= timeAgo($thread['created_at']) ?></span>
+                                        <div class="thread-title-row">
+                                            <strong title="<?= htmlspecialchars($thread['subject']) ?>"><?= htmlspecialchars(shortThreadTitle($thread['subject'])) ?></strong>
+                                            <span class="thread-category-pill <?= htmlspecialchars(threadCategoryClass($thread['category'])) ?>"><?= htmlspecialchars(threadCategoryLabel($thread['category'])) ?></span>
+                                        </div>
+                                        <span>Posted by <?= htmlspecialchars($thread['author_name']) ?> &middot; <?= timeAgo($thread['created_at']) ?> &middot; <?= (int)$thread['comment_count'] ?> <?= (int)$thread['comment_count'] === 1 ? 'comment' : 'comments' ?></span>
                                     </div>
+                                    <a class="thread-view-button" href="mod_feed.php?thread_id=<?= (int)$thread['id'] ?>">View</a>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </ul>
+                </section>
+            </div>
+
+            <div class="mod-history-row">
+                <section class="chart-panel mod-history-panel">
+                    <div class="panel-header">
+                        <h2 class="section-label">Reviewed Reports</h2>
+                        <a href="mod_queue.php" class="btn-mod-sm">View Queue &rsaquo;</a>
+                    </div>
+                    <ul class="mod-reviewed-list">
+                        <?php if (empty($reviewedReports)) : ?>
+                            <li class="mod-reviewed-empty">No reports handled yet.</li>
+                        <?php else : ?>
+                            <?php foreach ($reviewedReports as $report) : ?>
+                                <?php
+                                $reportDetails = json_decode($report['description'], true);
+                                $threadSubject = is_array($reportDetails) && !empty($reportDetails['target_name'])
+                                    ? $reportDetails['target_name']
+                                    : 'Thread report';
+                                $reportStatus = $report['action'] === 'report_dismissed' ? 'dismissed' : 'resolved';
+                                ?>
+                                <li class="mod-reviewed-item">
+                                    <div class="mod-reviewed-info">
+                                        <strong><?= htmlspecialchars($threadSubject) ?></strong>
+                                        <span><?= date('M j, Y · g:i A', strtotime($report['created_at'])) ?></span>
+                                    </div>
+                                    <span class="mod-reviewed-status status-<?= $reportStatus ?>">
+                                        <?= ucfirst($reportStatus) ?>
+                                    </span>
                                 </li>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </ul>
                 </section>
 
+                <aside class="mod-col-activity">
+                    <section class="mod-activity-panel mod-activity-panel--full">
+                        <h2 class="section-label">Moderator Activity Log</h2>
+                        <div class="activity-feed">
+                            <?php if (empty($activityLog)) : ?>
+                                <p style="font-size:13px; color:var(--mod-text-muted); padding:12px 0;">No recent activity recorded.</p>
+                            <?php else : ?>
+                                <?php foreach ($activityLog as $entry) : ?>
+                                    <div class="activity-entry">
+                                        <div class="activity-icon <?= activityIconClass($entry['action']) ?>">
+                                            <?= activitySvg($entry['action']) ?>
+                                        </div>
+                                        <div class="activity-info">
+                                            <p><?= activityLabel($entry['action'], $entry['description']) ?></p>
+                                            <span><?= date('M j, Y · g:i A', strtotime($entry['created_at'])) ?></span>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                    </section>
+                </aside>
             </div>
 
         </main>

@@ -1089,10 +1089,10 @@
   transform: translateY(0);
 }
 .ms-toast.toast-success {
-  background: #065f46;
+  background: #0f766e;
 }
 .ms-toast.toast-error {
-  background: #991b1b;
+  background: #b91c1c;
 }
 
 

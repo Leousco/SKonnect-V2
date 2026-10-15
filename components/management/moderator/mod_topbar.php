@@ -44,43 +44,24 @@ if (!empty($modName)) {
         <div class="mod-topbar-divider"></div>
 
         
-        <div class="mod-topbar-notif" role="button" tabindex="0" aria-label="Notifications" aria-expanded="false" id="mod-notif-btn">
-            <svg class="mod-notif-bell" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/>
-            </svg>
-            <?php if (!empty($notifCount) && $notifCount > 0): ?>
-                <span class="mod-notif-badge"><?= (int)$notifCount ?></span>
-            <?php endif; ?>
+        <div class="mod-topbar-notif-wrap">
+            <button class="mod-topbar-notif" type="button" aria-label="Notifications" aria-expanded="false"
+                    aria-haspopup="true" id="mod-notif-btn">
+                <svg class="mod-notif-bell" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/>
+                </svg>
+                <span class="mod-notif-badge" id="mod-notif-badge" hidden></span>
+            </button>
 
-            
-            <div class="mod-notif-dropdown" id="mod-notif-dropdown" role="menu">
+            <div class="mod-notif-dropdown" id="mod-notif-dropdown">
                 <div class="mod-notif-dropdown-header">
                     <span>Notifications</span>
-                    <a href="#" class="mod-notif-view-all">View all</a>
+                    <button type="button" class="mod-notif-view-all" id="mod-notif-view-all">View all</button>
                 </div>
-                <ul class="mod-notif-list">
-                    <li class="mod-notif-item unread">
-                        <div class="mod-notif-dot"></div>
-                        <div class="mod-notif-content">
-                            <p>New report submitted by <strong>juan_d</strong></p>
-                            <span class="mod-notif-time">1 hour ago</span>
-                        </div>
-                    </li>
-                    <li class="mod-notif-item unread">
-                        <div class="mod-notif-dot"></div>
-                        <div class="mod-notif-content">
-                            <p>Thread flagged for spam content</p>
-                            <span class="mod-notif-time">3 hours ago</span>
-                        </div>
-                    </li>
-                    <li class="mod-notif-item">
-                        <div class="mod-notif-dot"></div>
-                        <div class="mod-notif-content">
-                            <p>Warning acknowledged by <strong>pedro_c</strong></p>
-                            <span class="mod-notif-time">Yesterday</span>
-                        </div>
-                    </li>
+                <ul class="mod-notif-list" id="mod-notif-preview" aria-live="polite">
+                    <li class="mod-notif-empty">Loading notifications...</li>
                 </ul>
+                <p class="mod-notif-error" id="mod-notif-preview-error" role="alert" hidden></p>
             </div>
         </div>
 
@@ -137,6 +118,44 @@ if (!empty($modName)) {
     </div>
 </header>
 
+<div class="mod-notif-modal-overlay" id="mod-notif-modal" aria-hidden="true">
+    <section class="mod-notif-modal" role="dialog" aria-modal="true" aria-labelledby="mod-notif-modal-title">
+        <header class="mod-notif-modal-header">
+            <div>
+                <h2 id="mod-notif-modal-title">All notifications</h2>
+                <span id="mod-notif-modal-count"></span>
+            </div>
+            <button class="mod-notif-modal-close" id="mod-notif-modal-close" type="button" aria-label="Close notifications">&times;</button>
+        </header>
+        <div class="mod-notif-controls">
+            <label class="mod-notif-search-label">
+                <span class="sr-only">Search notifications</span>
+                <svg class="mod-notif-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path stroke-linecap="round" d="m16 16 4 4"></path>
+                </svg>
+                <input id="mod-notif-search" type="search" placeholder="Search notifications">
+            </label>
+            <select id="mod-notif-type" aria-label="Filter by notification type">
+                <option value="">All types</option>
+                <option value="reports">Reports</option>
+                <option value="admin_activity">Admin activity</option>
+            </select>
+            <select id="mod-notif-read" aria-label="Filter by read status">
+                <option value="">All notifications</option>
+                <option value="0">Unread</option>
+                <option value="1">Read</option>
+            </select>
+            <button id="mod-notif-mark-all" type="button">Mark all read</button>
+        </div>
+        <p class="mod-notif-modal-error" id="mod-notif-modal-error" role="alert" hidden></p>
+        <div class="mod-notif-modal-list" id="mod-notif-modal-list" aria-live="polite">
+            <p class="mod-notif-empty">Loading notifications...</p>
+        </div>
+        <button class="mod-notif-load-more" id="mod-notif-load-more" type="button" hidden>Load more</button>
+    </section>
+</div>
+
 <div class="mod-logout-overlay" id="mod-logout-overlay" role="dialog" aria-modal="true" aria-labelledby="mod-logout-title">
     <div class="mod-logout-modal">
         <div class="mod-logout-icon" aria-hidden="true">
@@ -153,4 +172,4 @@ if (!empty($modName)) {
     </div>
 </div>
 
-<script src="../../../scripts/management/moderator/mod_topbar.js"></script>
+<script src="../../../scripts/management/moderator/mod_topbar.js?v=3"></script>

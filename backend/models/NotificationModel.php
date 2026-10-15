@@ -158,6 +158,209 @@ class NotificationModel
         ];
     }
 
+    public function getModeratorNotifications(int $userId, array $filters = []): array
+    {
+        $types = [
+            'moderator_new_reports',
+            'moderator_admin_report_action',
+            'moderator_admin_thread_action',
+            'moderator_admin_comment',
+            'moderator_admin_reply',
+        ];
+        $categorySql = "CASE
+            WHEN type IN ('moderator_new_reports', 'moderator_admin_report_action') THEN 'reports'
+            ELSE 'admin_activity'
+        END";
+        $where = ['user_id = :uid', 'is_dismissed = FALSE', 'type IN (' .
+            implode(', ', array_map(static fn($index) => ':type' . $index, array_keys($types))) . ')'];
+        $params = [':uid' => $userId];
+        foreach ($types as $index => $type) {
+            $params[':type' . $index] = $type;
+        }
+
+        if (isset($filters['category']) && $filters['category'] !== '') {
+            $where[] = "({$categorySql}) = :category";
+            $params[':category'] = $filters['category'];
+        }
+        if (isset($filters['is_read']) && $filters['is_read'] !== '') {
+            $where[] = 'is_read = :is_read';
+            $params[':is_read'] = (bool)$filters['is_read'];
+        }
+        if (isset($filters['search']) && $filters['search'] !== '') {
+            $where[] = '(title ILIKE :search_title OR message ILIKE :search_message)';
+            $search = '%' . $filters['search'] . '%';
+            $params[':search_title'] = $search;
+            $params[':search_message'] = $search;
+        }
+
+        $whereSql = implode(' AND ', $where);
+        $stmt = $this->conn->prepare("
+            SELECT id, type, title, message, {$categorySql} AS category,
+                   is_read, created_at, link
+            FROM notifications
+            WHERE {$whereSql}
+            ORDER BY created_at DESC, id DESC
+            LIMIT :limit OFFSET :offset
+        ");
+        foreach ($params as $name => $value) {
+            $type = $name === ':uid' ? PDO::PARAM_INT
+                : ($name === ':is_read' ? PDO::PARAM_BOOL : PDO::PARAM_STR);
+            $stmt->bindValue($name, $value, $type);
+        }
+        $stmt->bindValue(':limit', (int)$filters['limit'], PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)($filters['offset'] ?? 0), PDO::PARAM_INT);
+        $stmt->execute();
+        $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $countStmt = $this->conn->prepare("
+            SELECT COUNT(*) FROM notifications WHERE {$whereSql}
+        ");
+        foreach ($params as $name => $value) {
+            $type = $name === ':uid' ? PDO::PARAM_INT
+                : ($name === ':is_read' ? PDO::PARAM_BOOL : PDO::PARAM_STR);
+            $countStmt->bindValue($name, $value, $type);
+        }
+        $countStmt->execute();
+
+        $unreadStmt = $this->conn->prepare("
+            SELECT COUNT(*) FROM notifications
+            WHERE user_id = :uid AND is_dismissed = FALSE AND is_read = FALSE
+              AND type IN (" . implode(', ', array_map(static fn($index) => ':unread_type' . $index, array_keys($types))) . ")
+        ");
+        $unreadStmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+        foreach ($types as $index => $type) {
+            $unreadStmt->bindValue(':unread_type' . $index, $type, PDO::PARAM_STR);
+        }
+        $unreadStmt->execute();
+
+        foreach ($notifications as &$notification) {
+            $notification['id'] = (int)$notification['id'];
+            $notification['is_read'] = (int)$notification['is_read'];
+        }
+        unset($notification);
+
+        return [
+            'notifications' => $notifications,
+            'total' => (int)$countStmt->fetchColumn(),
+            'unreadCount' => (int)$unreadStmt->fetchColumn(),
+        ];
+    }
+
+    public function updateHourlyModeratorNotification(
+        int $userId,
+        string $type,
+        string $refType,
+        int $hourBucket,
+        string $title,
+        string $singularMessage,
+        string $pluralMessage,
+        string $link
+    ): void {
+        $this->conn->beginTransaction();
+        try {
+            $this->lockNotificationKey("{$type}:{$userId}:{$hourBucket}");
+            $find = $this->conn->prepare("
+                SELECT id, message FROM notifications
+                WHERE user_id = :uid AND type = :type
+                  AND ref_type = :ref_type AND ref_id = :bucket
+                LIMIT 1 FOR UPDATE
+            ");
+            $find->execute([
+                ':uid' => $userId,
+                ':type' => $type,
+                ':ref_type' => $refType,
+                ':bucket' => $hourBucket,
+            ]);
+            $existing = $find->fetch(PDO::FETCH_ASSOC);
+
+            if ($existing) {
+                $count = preg_match('/^(\d+)/', (string)$existing['message'], $matches)
+                    ? (int)$matches[1] + 1
+                    : 2;
+                $message = $count === 1 ? $singularMessage : sprintf($pluralMessage, $count);
+                $update = $this->conn->prepare("
+                    UPDATE notifications
+                    SET title = :title, message = :message, link = :link,
+                        created_at = NOW(), is_read = FALSE, is_dismissed = FALSE
+                    WHERE id = :id
+                ");
+                $update->execute([
+                    ':title' => $title,
+                    ':message' => $message,
+                    ':link' => $link,
+                    ':id' => (int)$existing['id'],
+                ]);
+            } else {
+                $insert = $this->conn->prepare("
+                    INSERT INTO notifications
+                        (user_id, type, title, message, ref_type, ref_id, link, is_official)
+                    VALUES
+                        (:user_id, :type, :title, :message, :ref_type, :ref_id, :link, TRUE)
+                ");
+                $insert->execute([
+                    ':user_id' => $userId,
+                    ':type' => $type,
+                    ':title' => $title,
+                    ':message' => $singularMessage,
+                    ':ref_type' => $refType,
+                    ':ref_id' => $hourBucket,
+                    ':link' => $link,
+                ]);
+            }
+            $this->conn->commit();
+        } catch (Throwable $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    public function markModeratorNotificationRead(int $id, int $userId): bool
+    {
+        $stmt = $this->conn->prepare("
+            UPDATE notifications SET is_read = TRUE
+            WHERE id = :id AND user_id = :uid AND is_dismissed = FALSE
+              AND type IN (
+                'moderator_new_reports', 'moderator_admin_report_action',
+                'moderator_admin_thread_action', 'moderator_admin_comment', 'moderator_admin_reply'
+              )
+        ");
+        $stmt->execute([':id' => $id, ':uid' => $userId]);
+        if ($stmt->rowCount() > 0) {
+            return true;
+        }
+
+        $exists = $this->conn->prepare("
+            SELECT 1 FROM notifications
+            WHERE id = :id AND user_id = :uid AND is_dismissed = FALSE
+              AND type IN (
+                'moderator_new_reports', 'moderator_admin_report_action',
+                'moderator_admin_thread_action', 'moderator_admin_comment', 'moderator_admin_reply'
+              )
+        ");
+        $exists->execute([':id' => $id, ':uid' => $userId]);
+        return (bool)$exists->fetchColumn();
+    }
+
+    public function markAllModeratorNotificationsRead(int $userId): void
+    {
+        $this->conn->prepare("
+            UPDATE notifications SET is_read = TRUE
+            WHERE user_id = :uid AND is_dismissed = FALSE
+              AND type IN (
+                'moderator_new_reports', 'moderator_admin_report_action',
+                'moderator_admin_thread_action', 'moderator_admin_comment', 'moderator_admin_reply'
+              )
+        ")->execute([':uid' => $userId]);
+    }
+
+    public function getModeratorIds(): array
+    {
+        $stmt = $this->conn->query("SELECT id FROM users WHERE role = 'moderator' ORDER BY id");
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function getOfficerIds(): array
     {
         $stmt = $this->conn->query("SELECT id FROM users WHERE role = 'sk_officer' ORDER BY id");

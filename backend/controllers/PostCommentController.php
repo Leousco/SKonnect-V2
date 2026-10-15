@@ -45,12 +45,22 @@ if (!$model->threadExists($thread_id)) {
 
 $is_mod  = in_array($user_role, ['moderator', 'admin'], true) ? 1 : 0;
 $comment = $model->createComment($thread_id, (int)$user_id, $message, $is_mod);
+$threadStatus = null;
+$threadStatusUpdateFailed = false;
 
 
 if ($comment) {
     require_once __DIR__ . '/../services/NotificationService.php';
     $threadAuthor = $threadModel->getThreadAuthor($thread_id);
     if ($threadAuthor) {
+        if ($user_role === 'admin') {
+            require_once __DIR__ . '/../services/ModeratorNotificationService.php';
+            (new ModeratorNotificationService($conn))->notifyAdminComment(
+                $thread_id,
+                $threadAuthor['subject'],
+                false
+            );
+        }
         NotificationService::notifyThreadComment(
             (int) $threadAuthor['author_id'],
             (int) $user_id,
@@ -65,23 +75,39 @@ if ($comment) {
 
 if ($is_mod && $comment) {
     $author = $threadAuthor ?? $threadModel->getThreadAuthor($thread_id);
+    $threadStatus = $author['status'] ?? null;
     $authorIsCommenter = $author && (strtolower(trim($author['email'] ?? '')) === strtolower(trim($_SESSION['email'] ?? '')));
     $isPending = $author && strtolower($author['status'] ?? '') === 'pending';
+    $statusResponded = false;
 
     if ($isPending) {
-        $threadModel->updateThreadStatus($thread_id, 'responded');
-        $logModel->log((int)$user_id, 'thread_status_updated', [
-            'target_type' => 'thread',
-            'target_id'   => $thread_id,
-            'target_name' => $author['subject'] ?? "(Thread #{$thread_id})",
-            'target_user' => $author['name']    ?? '',
-            'notes'       => 'Status auto-updated to "responded" on moderator comment.',
-        ]);
+        if ($threadModel->updateThreadStatus($thread_id, 'responded')) {
+            $threadStatus = 'responded';
+            $statusResponded = true;
+            $logModel->log((int)$user_id, 'thread_status_updated', [
+                'target_type' => 'thread',
+                'target_id'   => $thread_id,
+                'target_name' => $author['subject'] ?? "(Thread #{$thread_id})",
+                'target_user' => $author['name']    ?? '',
+                'notes'       => 'Status auto-updated to "responded" on moderator comment.',
+            ]);
+            if ($user_role === 'admin') {
+                require_once __DIR__ . '/../services/ModeratorNotificationService.php';
+                (new ModeratorNotificationService($conn))->notifyAdminThreadAction(
+                    'status',
+                    $thread_id,
+                    $author['subject'] ?? "(Thread #{$thread_id})",
+                    'responded'
+                );
+            }
+        } else {
+            $threadStatusUpdateFailed = true;
+        }
     }
 
     if ($author && $author['email'] && !$authorIsCommenter) {
         $emailService = new EmailService();
-        if ($isPending) {
+        if ($statusResponded) {
             $emailService->sendModCommentRespondedNotification(
                 email: $author['email'],
                 name: $author['name'],
@@ -107,4 +133,9 @@ if ($is_mod && $comment) {
     ]);
 }
 
-echo json_encode(['status' => 'success', 'comment' => $comment]);
+echo json_encode([
+    'status' => 'success',
+    'comment' => $comment,
+    'thread_status' => $threadStatus,
+    'thread_status_update_failed' => $threadStatusUpdateFailed,
+]);

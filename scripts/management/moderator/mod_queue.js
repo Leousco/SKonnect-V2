@@ -210,6 +210,8 @@ document.addEventListener("DOMContentLoaded", function () {
   
 
   let loadingToastEl = null;
+  let toastTimer = null;
+  let toastStackTimer = null;
 
   function showLoadingToast(msg = "Processing…") {
     if (!loadingToastEl) {
@@ -225,6 +227,14 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function hideLoadingToast() {
+    if (loadingToastEl?.classList.contains("mq-toast-loading--show")) {
+      const toast = document.getElementById("mq-toast");
+      toast?.classList.add("mq-toast--above-loading");
+      clearTimeout(toastStackTimer);
+      toastStackTimer = setTimeout(() => {
+        toast?.classList.remove("mq-toast--above-loading");
+      }, 350);
+    }
     loadingToastEl?.classList.remove("mq-toast-loading--show");
   }
 
@@ -417,9 +427,14 @@ document.addEventListener("DOMContentLoaded", function () {
   function showToast(msg, type = "success") {
     const toast = document.getElementById("mq-toast");
     if (!toast) return;
+    const stackAboveLoading = toast.classList.contains("mq-toast--above-loading");
+    clearTimeout(toastTimer);
     toast.textContent = msg;
     toast.className = `mq-toast mq-toast-${type} show`;
-    setTimeout(() => {
+    if (stackAboveLoading) {
+      toast.classList.add("mq-toast--above-loading");
+    }
+    toastTimer = setTimeout(() => {
       toast.className = "mq-toast";
     }, 3200);
   }

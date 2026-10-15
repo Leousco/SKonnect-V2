@@ -10,7 +10,7 @@ RoleMiddleware::requireRole('sk_officer');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKonnect | Analytics — SK Officer</title>
     <link rel="stylesheet" href="../../../styles/management/officer_mgmt.css">
-    <link rel="stylesheet" href="../../../styles/management/officer/officer_sidebar.css">
+    <link rel="stylesheet" href="../../../styles/management/officer/officer_sidebar.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/officer/officer_topbar.css">
     <link rel="stylesheet" href="../../../styles/management/officer/officer_analytics.css">
 </head>

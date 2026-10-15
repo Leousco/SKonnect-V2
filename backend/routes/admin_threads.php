@@ -3,6 +3,7 @@
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../services/ModeratorNotificationService.php';
 
 RoleMiddleware::requireAdmin();
 
@@ -99,9 +100,17 @@ if ($method === 'POST' && $action === 'pin') {
     $stmt = $db->prepare('UPDATE threads SET is_pinned = NOT is_pinned WHERE id = :id');
     $stmt->execute([':id' => $id]);
 
-    $row = $db->prepare('SELECT is_pinned FROM threads WHERE id = :id');
+    $row = $db->prepare('SELECT is_pinned, subject FROM threads WHERE id = :id');
     $row->execute([':id' => $id]);
-    $pinned = (bool) $row->fetchColumn();
+    $thread = $row->fetch(PDO::FETCH_ASSOC);
+    $pinned = (bool)($thread['is_pinned'] ?? false);
+    if ($thread) {
+        (new ModeratorNotificationService($db))->notifyAdminThreadAction(
+            $pinned ? 'pinned' : 'unpinned',
+            $id,
+            $thread['subject']
+        );
+    }
 
     jsonSuccess(['pinned' => $pinned], $pinned ? 'Thread pinned.' : 'Thread unpinned.');
 }
@@ -121,6 +130,15 @@ if ($method === 'POST' && $action === 'delete') {
     
     $stmt = $db->prepare('UPDATE threads SET is_removed = 1 WHERE id = :id');
     $stmt->execute([':id' => $id]);
+    if ($stmt->rowCount() > 0) {
+        $thread = $db->prepare('SELECT subject FROM threads WHERE id = :id');
+        $thread->execute([':id' => $id]);
+        (new ModeratorNotificationService($db))->notifyAdminThreadAction(
+            'hidden',
+            $id,
+            (string)$thread->fetchColumn()
+        );
+    }
 
     jsonSuccess([], 'Thread deleted.');
 }

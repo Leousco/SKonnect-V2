@@ -439,7 +439,19 @@
   }
 
   .off-notif-search-label {
+    position: relative;
     flex: 1 1 180px;
+  }
+
+  .off-notif-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 11px;
+    width: 15px;
+    height: 15px;
+    color: var(--off-text-muted);
+    pointer-events: none;
+    transform: translateY(-50%);
   }
 
   .off-notif-controls input,
@@ -473,6 +485,10 @@
 
   .off-notif-controls input {
     width: 100%;
+  }
+
+  .off-notif-search-label input {
+    padding-left: 34px;
   }
 
   .off-notif-controls button {

@@ -136,10 +136,9 @@ Completed:
 ### [ GENERAL ]
 
 - [x] Design inconsistencies for buttons, dropdowns, etc.
-- [ ] Topbars on each user views are not sticky
 - [x] After logging in, clicking the 'back' button of a browser returns the user to the login page. *(fixed maybe)*
-- [ ] Empty fields like threads, reports, etc. show either two "no record yet" messages or misaligned (not centered) text.
-- [ ] Inconsistent toast design across all user views.
+- [x] Empty fields like threads, reports, etc. show either two "no record yet" messages or misaligned (not centered) text.
+- [x] Inconsistent toast design across all user views.
 - [ ] Make the notifications on admin users (officer, moderator, admin) a modal.
 - [ ] Make a 404 page.
 
@@ -198,14 +197,14 @@ Completed:
 ### [ MODERATOR SIDE ]
 
 #### Dashboard
-- [ ] Styles for containers
-- [ ] Fix the layouts of each section
+- [x] Styles for containers
+- [x] Fix the layouts of each section
 
 #### Community Feed
-- [ ] Commenting or replying auto updates the status of the thread to 'responded' but it is not shown immediately because the page needs to refresh first.
+- [x] Commenting or replying auto updates the status of the thread to 'responded' but it is not shown immediately because the page needs to refresh first.
 
 #### Notifications
-- [ ] Notifications non functional
+- [x] Notifications non functional
 
 ### [ ADMIN SIDE ]
 

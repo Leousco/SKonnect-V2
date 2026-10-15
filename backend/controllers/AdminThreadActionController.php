@@ -13,6 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/ThreadModel.php';
 require_once __DIR__ . '/../models/ActivityLogModel.php';
 require_once __DIR__ . '/../services/EmailService.php';
+require_once __DIR__ . '/../services/ModeratorNotificationService.php';
 
 $db        = new Database();
 $conn      = $db->getConnection();
@@ -49,12 +50,27 @@ function buildThreadMeta(ThreadModel $model, int $thread_id, string $notes): arr
     ];
 }
 
+function notifyModeratorsOfThreadAction(
+    ThreadModel $model,
+    PDO $conn,
+    int $threadId,
+    string $action
+): void {
+    $author = $model->getThreadAuthor($threadId);
+    (new ModeratorNotificationService($conn))->notifyAdminThreadAction(
+        $action,
+        $threadId,
+        $author['subject'] ?? "(Thread #{$threadId})"
+    );
+}
+
 switch ($action) {
 
     case 'flag':
         $result = $model->setThreadFlag($thread_id, 1);
         if ($result) {
             $logModel->log($admin_id, 'thread_flagged', buildThreadMeta($model, $thread_id, 'Thread flagged for review.'));
+            notifyModeratorsOfThreadAction($model, $conn, $thread_id, 'flagged');
         }
         echo json_encode([
             'status'  => $result ? 'success' : 'error',
@@ -67,6 +83,7 @@ switch ($action) {
         $result = $model->setThreadFlag($thread_id, 0);
         if ($result) {
             $logModel->log($admin_id, 'thread_unflagged', buildThreadMeta($model, $thread_id, 'Flag removed after review.'));
+            notifyModeratorsOfThreadAction($model, $conn, $thread_id, 'unflagged');
         }
         echo json_encode([
             'status'  => $result ? 'success' : 'error',
@@ -79,6 +96,7 @@ switch ($action) {
         $result = $model->setThreadRemoved($thread_id, 1);
         if ($result) {
             $logModel->log($admin_id, 'thread_removed', buildThreadMeta($model, $thread_id, 'Thread hidden from residents.'));
+            notifyModeratorsOfThreadAction($model, $conn, $thread_id, 'hidden');
             notifyThreadAuthor($model, $thread_id, function (EmailService $svc, array $author): void {
                 $svc->sendRemovalStatusNotification(
                     email: $author['email'],
@@ -98,6 +116,7 @@ switch ($action) {
         $result = $model->setThreadRemoved($thread_id, 0);
         if ($result) {
             $logModel->log($admin_id, 'thread_restored', buildThreadMeta($model, $thread_id, 'Thread restored to feed.'));
+            notifyModeratorsOfThreadAction($model, $conn, $thread_id, 'restored');
             notifyThreadAuthor($model, $thread_id, function (EmailService $svc, array $author): void {
                 $svc->sendRemovalStatusNotification(
                     email: $author['email'],
@@ -117,6 +136,7 @@ switch ($action) {
         $result = $model->setThreadPinned($thread_id, 1);
         if ($result) {
             $logModel->log($admin_id, 'thread_pinned', buildThreadMeta($model, $thread_id, 'Thread pinned to top of feed.'));
+            notifyModeratorsOfThreadAction($model, $conn, $thread_id, 'pinned');
             notifyThreadAuthor($model, $thread_id, function (EmailService $svc, array $author): void {
                 $svc->sendPinStatusNotification(
                     email: $author['email'],
@@ -137,6 +157,7 @@ switch ($action) {
         $result = $model->setThreadPinned($thread_id, 0);
         if ($result) {
             $logModel->log($admin_id, 'thread_unpinned', buildThreadMeta($model, $thread_id, 'Thread unpinned.'));
+            notifyModeratorsOfThreadAction($model, $conn, $thread_id, 'unpinned');
             notifyThreadAuthor($model, $thread_id, function (EmailService $svc, array $author): void {
                 $svc->sendPinStatusNotification(
                     email: $author['email'],

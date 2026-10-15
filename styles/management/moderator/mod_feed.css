@@ -1053,6 +1053,9 @@ body.mod-panel-open {
   opacity: 1;
   transform: translateY(0);
 }
+.mod-toast.mod-toast--above-loading {
+  bottom: 80px;
+}
 .mod-toast.mod-toast--success {
   background: #0f766e;
 }
@@ -1093,21 +1096,12 @@ body.mod-panel-open {
 }
 
 
-.mod-toast-loading--show ~ .mod-toast.mod-toast--show,
-.mod-toast.mod-toast--show {
-  bottom: 28px;
-}
-
-.mod-toast-loading--show + .mod-toast.mod-toast--show {
-  bottom: 80px;
-}
-
 .mod-toast-loading-spinner {
   display: inline-block;
   width: 15px;
   height: 15px;
   border: 2px solid rgba(226, 232, 240, 0.3);
-  border-top-color: #38bdf8;
+  border-top-color: var(--mod-primary-lt);
   border-radius: 50%;
   flex-shrink: 0;
   animation: mod-loading-spin 0.75s linear infinite;

@@ -207,7 +207,9 @@ class ThreadModel
                 u.id    AS author_id,
                 u.email,
                 CONCAT(u.first_name, ' ', u.last_name) AS name,
-                t.subject
+                t.id AS thread_id,
+                t.subject,
+                t.status
              FROM thread_comments tc
              JOIN threads t ON t.id = tc.thread_id
              JOIN users   u ON u.id = t.author_id

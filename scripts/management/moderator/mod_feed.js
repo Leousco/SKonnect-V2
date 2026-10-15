@@ -27,10 +27,15 @@
   
 
   let toastTimer = null;
+  let toastStackTimer = null;
   function showToast(msg, type = "success") {
     clearTimeout(toastTimer);
+    const stackAboveLoading = toastEl.classList.contains("mod-toast--above-loading");
     toastEl.textContent = msg;
     toastEl.className = `mod-toast mod-toast--${type} mod-toast--show`;
+    if (stackAboveLoading) {
+      toastEl.classList.add("mod-toast--above-loading");
+    }
     toastTimer = setTimeout(
       () => toastEl.classList.remove("mod-toast--show"),
       3400
@@ -55,7 +60,12 @@
   }
 
   function hideLoadingToast() {
-    if (loadingToastEl) {
+    if (loadingToastEl?.classList.contains("mod-toast-loading--show")) {
+      toastEl.classList.add("mod-toast--above-loading");
+      clearTimeout(toastStackTimer);
+      toastStackTimer = setTimeout(() => {
+        toastEl.classList.remove("mod-toast--above-loading");
+      }, 350);
       loadingToastEl.classList.remove("mod-toast-loading--show");
     }
   }
@@ -260,7 +270,40 @@
   selVisibility.addEventListener("change", applyFilters);
   selSort.addEventListener("change", applySort);
 
-  
+  function syncThreadStatus(threadId, status) {
+    const card = grid.querySelector(
+      `.mod-feed-card[data-id="${threadId}"]`
+    );
+    if (card) {
+      card.dataset.status = status;
+      const badge = card.querySelector(".mod-status-badge");
+      if (badge) {
+        badge.className = `mod-status-badge status-${status}`;
+        badge.textContent = capitalize(status);
+      }
+    }
+
+    document.querySelectorAll(".mod-status-toggler").forEach((toggler) => {
+      if (toggler.dataset.threadId !== String(threadId)) return;
+      toggler.querySelectorAll(".mod-status-opt").forEach((button) => {
+        button.classList.toggle("active", button.dataset.status === status);
+      });
+    });
+
+    const panelBadges = document.getElementById("panel-badges");
+    const panelBadge =
+      panelBadges?.querySelector(".mod-status-badge");
+    if (
+      panelBadge &&
+      document.getElementById("panel-status-toggler")?.dataset.threadId ===
+        String(threadId)
+    ) {
+      panelBadge.className = `mod-status-badge status-${status}`;
+      panelBadge.textContent = capitalize(status);
+    }
+
+    applyFilters();
+  }
 
   function bindStatusTogglers(container) {
     container.querySelectorAll(".mod-status-toggler").forEach((toggler) => {
@@ -301,54 +344,13 @@
                 );
 
                 if (data.status === "success") {
-                  toggler
-                    .querySelectorAll(".mod-status-opt")
-                    .forEach((b) => b.classList.remove("active"));
-                  btn.classList.add("active");
-
-                  const card = grid.querySelector(
-                    `.mod-feed-card[data-id="${threadId}"]`
-                  );
-                  if (card) {
-                    card.dataset.status = newStatus;
-                    const badge = card.querySelector(".mod-status-badge");
-                    if (badge) {
-                      badge.className = `mod-status-badge status-${newStatus}`;
-                      badge.textContent =
-                        newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
-                    }
-                    const panelToggler = document.getElementById(
-                      "panel-status-toggler"
-                    );
-                    if (
-                      panelToggler &&
-                      panelToggler.dataset.threadId === threadId
-                    ) {
-                      panelToggler
-                        .querySelectorAll(".mod-status-opt")
-                        .forEach((b) => {
-                          b.classList.toggle(
-                            "active",
-                            b.dataset.status === newStatus
-                          );
-                        });
-                      const panelBadges =
-                        document.getElementById("panel-badges");
-                      const panelBadge =
-                        panelBadges?.querySelector(".mod-status-badge");
-                      if (panelBadge) {
-                        panelBadge.className = `mod-status-badge status-${newStatus}`;
-                        panelBadge.textContent =
-                          newStatus.charAt(0).toUpperCase() +
-                          newStatus.slice(1);
-                      }
-                    }
-                  }
+                  syncThreadStatus(threadId, data.new_status || newStatus);
 
                   showToast(
                     `Status updated to "${capitalize(newStatus)}".`,
                     "success"
                   );
+                  window.setTimeout(() => window.location.reload(), 1400);
                 } else {
                   showToast(
                     data.message || "Failed to update status.",
@@ -708,6 +710,14 @@
     backdrop.classList.add("open");
     document.body.classList.add("mod-panel-open");
     loadPanel(threadId);
+  }
+
+  const requestedThreadId = new URLSearchParams(window.location.search).get("thread_id");
+  if (requestedThreadId && /^\d+$/.test(requestedThreadId)) {
+    const requestedCard = grid.querySelector(
+      `.mod-feed-card[data-id="${requestedThreadId}"]`
+    );
+    if (requestedCard) openPanel(requestedThreadId);
   }
 
   function closePanel() {
@@ -1093,6 +1103,9 @@
         const data = await res.json();
 
         if (data.status === "success") {
+          if (data.thread_status) {
+            syncThreadStatus(threadId, data.thread_status);
+          }
           textarea.value = "";
           const c = data.comment;
           const noComments = commentListEl.querySelector(
@@ -1180,7 +1193,12 @@
           }
 
           item.scrollIntoView({ behavior: "smooth", block: "end" });
-          showToast("Comment posted!", "success");
+          showToast(
+            data.thread_status_update_failed
+              ? "Comment posted, but the thread status could not be updated."
+              : "Comment posted!",
+            data.thread_status_update_failed ? "danger" : "success"
+          );
         } else {
           showToast(data.message || "Could not post comment.", "danger");
         }
@@ -1246,6 +1264,9 @@
         const data = await res.json();
 
         if (data.status === "success") {
+          if (data.thread_status) {
+            syncThreadStatus(threadId, data.thread_status);
+          }
           textarea.value = "";
           replyBox.style.display = "none";
 
@@ -1286,7 +1307,12 @@
 
           repliesEl.appendChild(item);
           item.scrollIntoView({ behavior: "smooth", block: "end" });
-          showToast("Reply posted!", "success");
+          showToast(
+            data.thread_status_update_failed
+              ? "Reply posted, but the thread status could not be updated."
+              : "Reply posted!",
+            data.thread_status_update_failed ? "danger" : "success"
+          );
         } else {
           showToast(data.message || "Could not post reply.", "danger");
         }

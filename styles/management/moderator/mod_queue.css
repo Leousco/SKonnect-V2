@@ -820,8 +820,9 @@
 .mq-toast {
   position: fixed;
   bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%) translateY(16px);
+  right: 28px !important;
+  left: auto !important;
+  transform: translateY(16px);
   background: var(--mod-dark);
   color: white;
   font-size: 13px;
@@ -833,19 +834,24 @@
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
   z-index: 9999;
-  white-space: nowrap;
+  max-width: min(360px, calc(100vw - 56px));
+  line-height: 1.4;
 }
 
 .mq-toast.show {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0) !important;
 }
 
 .mq-toast.mq-toast-success {
   background: #0f766e;
 }
 .mq-toast.mq-toast-error {
-  background: #dc2626;
+  background: #b91c1c;
+}
+
+.mq-toast.mq-toast--above-loading {
+  bottom: 80px;
 }
 
 
@@ -1028,7 +1034,7 @@
   width: 15px;
   height: 15px;
   border: 2px solid rgba(226, 232, 240, 0.3);
-  border-top-color: #34d399;
+  border-top-color: var(--mod-primary-lt);
   border-radius: 50%;
   flex-shrink: 0;
   animation: mq-loading-spin 0.75s linear infinite;
@@ -1045,16 +1051,6 @@
     transform: rotate(360deg);
   }
 }
-
-
-.mq-toast-loading--show + .mq-toast.show {
-  bottom: 80px;
-}
-
-
-
-
-
 
 
 .mq-panel-report-context {

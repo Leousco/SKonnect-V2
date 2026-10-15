@@ -1,3 +1,7 @@
+html {
+  scrollbar-gutter: stable;
+}
+
 .off-sidebar {
   width: 250px;
   background: linear-gradient(

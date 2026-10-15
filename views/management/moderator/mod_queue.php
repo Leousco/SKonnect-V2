@@ -43,10 +43,10 @@ $status_badge = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKonnect | Moderation Queue</title>
-    <link rel="stylesheet" href="../../../styles/management/moderator/mod_queue.css">
-    <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css">
+    <link rel="stylesheet" href="../../../styles/management/moderator/mod_queue.css?v=3">
+    <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_sidebar.css">
-    <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css">
+    <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css?v=5">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_feed.css">
 </head>
 

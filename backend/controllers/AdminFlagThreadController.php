@@ -13,6 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/ThreadModel.php';
 require_once __DIR__ . '/../models/ReportModel.php';
 require_once __DIR__ . '/../models/ActivityLogModel.php';
+require_once __DIR__ . '/../services/ModeratorNotificationService.php';
 
 $db          = new Database();
 $conn        = $db->getConnection();
@@ -63,6 +64,11 @@ $logModel->log($admin_id, 'thread_flagged', [
     'target_user' => $author['name']    ?? '',
     'notes'       => "Flagged for: {$category}. Added to mod queue.",
 ]);
+(new ModeratorNotificationService($conn))->notifyAdminThreadAction(
+    'flagged',
+    $thread_id,
+    $author['subject'] ?? "(Thread #{$thread_id})"
+);
 
 echo json_encode([
     'status'  => 'success',

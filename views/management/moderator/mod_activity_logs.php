@@ -89,9 +89,9 @@ function modInitials(string $name): string
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKonnect | Activity Logs — Moderator</title>
-    <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css">
+    <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_sidebar.css">
-    <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css">
+    <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css?v=5">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_activity_logs.css">
 </head>
 <body>
@@ -143,7 +143,7 @@ function modInitials(string $name): string
                 <div class="widget-body">
                     <span class="widget-label">Sanctions Issued</span>
                     <p class="widget-number"><?= $stats['sanctions_issued'] ?></p>
-                    <span class="widget-trend warning">&#9654; Warnings, mutes &amp; bans</span>
+                    <span class="widget-trend warning">&#9654; Warnings &amp; bans</span>
                 </div>
             </div>
 

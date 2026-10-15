@@ -6,6 +6,7 @@ require_once __DIR__ . '/../models/CommentModel.php';
 require_once __DIR__ . '/../models/ThreadModel.php';
 require_once __DIR__ . '/../models/ActivityLogModel.php';
 require_once __DIR__ . '/../services/EmailService.php';
+require_once __DIR__ . '/../services/ModeratorNotificationService.php';
 
 RoleMiddleware::requireAdmin();
 
@@ -164,10 +165,11 @@ if ($method === 'POST' && $action === 'ignore') {
     if ($id === 0) jsonError('Invalid report ID.');
 
     $logModel = new ActivityLogModel($db);
+    $reportActionSucceeded = false;
 
     if ($type === 'thread') {
-        $db->prepare("UPDATE thread_reports SET status = 'dismissed' WHERE id = :id")
-           ->execute([':id' => $id]);
+        $reportActionSucceeded = $db->prepare("UPDATE thread_reports SET status = 'dismissed' WHERE id = :id")
+            ->execute([':id' => $id]);
 
         $t = $db->prepare("SELECT thread_id FROM thread_reports WHERE id = :id");
         $t->execute([':id' => $id]);
@@ -179,8 +181,8 @@ if ($method === 'POST' && $action === 'ignore') {
             'notes'       => 'Report dismissed. No action taken.',
         ]);
     } else {
-        $db->prepare("UPDATE comment_reports SET status = 'dismissed' WHERE id = :id")
-           ->execute([':id' => $id]);
+        $reportActionSucceeded = $db->prepare("UPDATE comment_reports SET status = 'dismissed' WHERE id = :id")
+            ->execute([':id' => $id]);
 
         $logModel->log($admin_id, 'report_dismissed', [
             'target_type' => $type ?: 'comment',
@@ -189,6 +191,9 @@ if ($method === 'POST' && $action === 'ignore') {
         ]);
     }
 
+    if ($reportActionSucceeded) {
+        (new ModeratorNotificationService($db))->notifyAdminReportAction();
+    }
     jsonSuccess([], 'Report dismissed.');
 }
 
@@ -219,6 +224,11 @@ if ($method === 'POST' && $action === 'delete_content') {
                 'target_user' => $author['name'] ?? '',
                 'notes'       => 'Thread hidden from residents following a report.',
             ]);
+            (new ModeratorNotificationService($db))->notifyAdminThreadAction(
+                'hidden',
+                $target_id,
+                $author['subject'] ?? "(Thread #{$target_id})"
+            );
 
             if ($author && !empty($author['email'])) {
                 (new EmailService())->sendRemovalStatusNotification(
@@ -257,6 +267,9 @@ if ($method === 'POST' && $action === 'delete_content') {
         jsonError('Unknown content type.');
     }
 
+    if ($ok) {
+        (new ModeratorNotificationService($db))->notifyAdminReportAction();
+    }
     jsonSuccess([], 'Content removed.');
 }
 
@@ -327,6 +340,9 @@ if ($method === 'POST' && $action === 'sanction') {
         reason:    $reason ?: '(No additional reason provided)',
         report_id: $id
     );
+    if ($sanction_id) {
+        (new ModeratorNotificationService($db))->notifyAdminReportAction();
+    }
 
     $content_removed = false;
     if ($level >= 2) {
@@ -345,6 +361,13 @@ if ($method === 'POST' && $action === 'sanction') {
         } elseif ($type === 'reply') {
             $content_removed = $commentModel->removeReplyByMod($target_id);
         }
+    }
+    if ($content_removed && $type === 'thread' && $threadSubject) {
+        (new ModeratorNotificationService($db))->notifyAdminThreadAction(
+            'hidden',
+            $target_id,
+            $threadSubject
+        );
     }
 
     if ($type === 'thread') {

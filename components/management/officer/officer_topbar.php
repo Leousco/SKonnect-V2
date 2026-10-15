@@ -132,6 +132,10 @@ if (!empty($officerName)) {
         <div class="off-notif-controls">
             <label class="off-notif-search-label">
                 <span class="sr-only">Search notifications</span>
+                <svg class="off-notif-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path stroke-linecap="round" d="m16 16 4 4"></path>
+                </svg>
                 <input id="off-notif-search" type="search" placeholder="Search notifications">
             </label>
             <select id="off-notif-type" aria-label="Filter by notification type">

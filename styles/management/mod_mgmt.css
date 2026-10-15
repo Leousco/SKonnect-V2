@@ -67,7 +67,6 @@ html {
 body {
   background: var(--mod-bg);
   color: var(--mod-text-body);
-  scrollbar-gutter: stable;
 }
 
 

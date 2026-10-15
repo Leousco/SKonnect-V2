@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/ReportModel.php';
+require_once __DIR__ . '/../services/ModeratorNotificationService.php';
 
 $db    = new Database();
 $conn  = $db->getConnection();
@@ -61,6 +62,7 @@ if ($report_type === 'thread') {
 }
 
 if ($ok) {
+    (new ModeratorNotificationService($conn))->notifyNewReport();
     echo json_encode(['status' => 'success', 'message' => 'Report submitted. Thank you.']);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Could not submit report. Please try again.']);

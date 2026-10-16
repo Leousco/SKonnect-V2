@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><span class="rpt-type-badge type-${badgeType}">${typeLabel(r.type)}</span></td>
                 <td class="rpt-td-content">
                     <span class="rpt-content-title">${escHtml(r.content || '(deleted)')}</span>
-                    ${r.content_removed ? `<span class="rpt-removed-tag"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>Removed</span>` : ''}
+                    ${r.content_removed ? `<span class="rpt-removed-tag" role="img" aria-label="Content hidden or removed" title="Content hidden or removed"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.1A10.9 10.9 0 0 1 12 4.9c4.6 0 8.5 3 10 7.1a1 1 0 0 1 0 .7 11 11 0 0 1-3.1 4.4M6.6 6.6a11 11 0 0 0-4.6 5.4 1 1 0 0 0 0 .7 10.9 10.9 0 0 0 10 7.1 10.8 10.8 0 0 0 4.1-.8" /></svg></span>` : ''}
                 </td>
                 <td>${escHtml(r.reported_by || '—')}</td>
                 <td>${escHtml(r.author || '—')}</td>

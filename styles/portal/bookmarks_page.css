@@ -58,30 +58,56 @@
 
 
 .bm-card {
-  border-left: 4px solid var(--gold); 
+  border-top: 4px solid var(--gold);
+  border-left: 0;
 }
 
 .bm-card[data-status="pending"] {
-  border-left-color: var(--gold);
+  border-top-color: var(--gold);
 }
 .bm-card[data-status="responded"] {
-  border-left-color: var(--blue);
+  border-top-color: var(--blue);
 }
 .bm-card[data-status="resolved"] {
-  border-left-color: var(--green);
+  border-top-color: var(--green);
 }
 
 .bm-saved-on {
   background: #fef3c7;
   color: #92400e;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
   font-weight: 600;
+  font-size: 9px;
+  line-height: 1.4;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.support-icon {
-  font-size: 14px;
+.bm-card .ann-card-meta {
+  flex-wrap: nowrap;
+  gap: 6px;
+  min-width: 0;
 }
+
+.bm-author-date {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.bm-author-date > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bm-author-date time {
+  flex-shrink: 0;
+}
+
 .support-count {
   font-weight: 700;
   font-size: 12px;
@@ -192,6 +218,22 @@
   .controls-right {
     grid-template-columns: 1fr 1fr;
     display: grid;
+  }
+}
+
+@media (max-width: 420px) {
+  .bm-card .ann-card-meta {
+    gap: 4px;
+  }
+
+  .bm-author-date {
+    gap: 4px;
+    font-size: 9px;
+  }
+
+  .bm-saved-on {
+    font-size: 8px;
+    padding: 2px 4px;
   }
 }
 

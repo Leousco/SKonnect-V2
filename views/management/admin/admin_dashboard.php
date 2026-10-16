@@ -3,6 +3,8 @@ require_once __DIR__ . '/../../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireAdmin();
 
 require_once __DIR__ . '/../../../backend/models/EventModel.php';
+require_once __DIR__ . '/../../../backend/config/database.php';
+$dashboardDb  = (new Database())->getConnection();
 $eventModel    = new EventModel();
 $allEvents     = $eventModel->getAll();
 $today         = date('Y-m-d');
@@ -10,6 +12,70 @@ $upcomingEvents = array_slice(
     array_values(array_filter($allEvents, fn($e) => $e['event_date'] >= $today)),
     0, 4
 );
+
+$recentThreadsStmt = $dashboardDb->query("
+    SELECT t.id, t.subject, t.category, t.status, t.created_at,
+           CONCAT(u.first_name, ' ', u.last_name) AS author_name,
+           (SELECT COUNT(*) FROM thread_comments tc
+            WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count
+    FROM threads t
+    JOIN users u ON u.id = t.author_id
+    WHERE t.is_removed = FALSE
+    ORDER BY t.created_at DESC, t.id DESC
+    LIMIT 12
+");
+$recentThreads = $recentThreadsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$pendingReportsStmt = $dashboardDb->query("
+    SELECT *
+    FROM (
+        SELECT tr.id, 'thread' AS type, t.subject AS content,
+               tr.category AS reason, tr.created_at,
+               CONCAT(u.first_name, ' ', u.last_name) AS reporter_name
+        FROM thread_reports tr
+        JOIN threads t ON t.id = tr.thread_id
+        JOIN users u ON u.id = tr.reporter_id
+        WHERE tr.status = 'pending'
+
+        UNION ALL
+
+        SELECT cr.id, cr.target_type AS type,
+               COALESCE(th.subject, LEFT(COALESCE(tc.message, rep.message, '(deleted content)'), 70)) AS content,
+               cr.category AS reason, cr.created_at,
+               CONCAT(u.first_name, ' ', u.last_name) AS reporter_name
+        FROM comment_reports cr
+        JOIN users u ON u.id = cr.reporter_id
+        LEFT JOIN thread_comments tc
+            ON cr.target_type = 'comment' AND tc.id = cr.target_id
+        LEFT JOIN comment_replies rep
+            ON cr.target_type = 'reply' AND rep.id = cr.target_id
+        LEFT JOIN thread_comments parent_comment
+            ON cr.target_type = 'reply' AND parent_comment.id = rep.comment_id
+        LEFT JOIN threads th
+            ON th.id = COALESCE(tc.thread_id, parent_comment.thread_id)
+        WHERE cr.status = 'pending'
+    ) reports
+    ORDER BY created_at DESC
+    LIMIT 12
+");
+$pendingReports = $pendingReportsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$recentAnnouncementsStmt = $dashboardDb->query("
+    SELECT id, title, category, status, published_at
+    FROM announcements
+    WHERE status <> 'deleted'
+    ORDER BY published_at DESC, id DESC
+    LIMIT 12
+");
+$recentAnnouncements = $recentAnnouncementsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$feedCategoryLabels = [
+    'inquiry' => 'Inquiry',
+    'complaint' => 'Complaint',
+    'suggestion' => 'Suggestion',
+    'event_question' => 'Event',
+    'other' => 'Other',
+];
 ?>
 
 <!DOCTYPE html>
@@ -115,14 +181,48 @@ $upcomingEvents = array_slice(
                     </div>
                 </section>
 
-                
-                <section class="chart-panel">
-                    <div class="panel-header">
-                        <h2 class="section-label">Requests by Service Type</h2>
-                        <span class="chart-period" id="bar-chart-period"></span>
-                    </div>
-                    <div class="bar-chart-wrap"></div>
-                </section>
+                <div class="admin-service-analytics-grid">
+                    <section class="chart-panel">
+                        <div class="panel-header">
+                            <h2 class="section-label">Requests by Service Type</h2>
+                            <span class="chart-period" id="bar-chart-period"></span>
+                        </div>
+                        <div class="bar-chart-wrap"></div>
+                    </section>
+
+                    <section class="chart-panel admin-module-panel">
+                        <div class="panel-header">
+                            <h2 class="section-label">Announcements</h2>
+                            <a href="admin_announcements.php" class="btn-admin-sm">Manage &rsaquo;</a>
+                        </div>
+                        <div class="dashboard-module-list">
+                            <?php if (empty($recentAnnouncements)): ?>
+                                <p class="dashboard-module-empty">No announcements yet.</p>
+                            <?php else: ?>
+                                <?php foreach ($recentAnnouncements as $announcement): ?>
+                                    <a class="dashboard-module-item" href="admin_announcements.php">
+                                        <span class="dashboard-module-item-icon module-icon-announcement" aria-hidden="true">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M10.3 15.8c-.7-.1-1.4-.1-2.1-.1H7.5a4.5 4.5 0 1 1 0-9h.8c.7 0 1.4 0 2.1-.1m-.1 9.2c.3 1 .6 1.9 1 2.8.3.6.1 1.2-.4 1.5l-.7.4c-.6.3-1.3.1-1.5-.5a21 21 0 0 1-1.4-4.3m3.1.1a18 18 0 0 1-.6-4.6c0-1.6.2-3.1.6-4.6m0 9.2a23.8 23.8 0 0 1 8.8 2.5m-8.8-11.7a23.8 23.8 0 0 1 8.8-2.5m0 0a24 24 0 0 0-.4-1.1m.4 1.1a24 24 0 0 1 1 5.4m-1 8.9a24 24 0 0 0-.4 1.1m.4-1.1a24 24 0 0 0 1-5.4m0-3.5a2.2 2.2 0 0 1 0 3.5" />
+                                            </svg>
+                                        </span>
+                                        <span class="dashboard-module-item-content">
+                                            <span class="dashboard-module-item-title"><?= htmlspecialchars($announcement['title'], ENT_QUOTES) ?></span>
+                                            <span class="dashboard-module-item-meta">
+                                                <?= htmlspecialchars(ucfirst($announcement['category']), ENT_QUOTES) ?>
+                                                <span aria-hidden="true">&middot;</span>
+                                                <?= date('M j, Y', strtotime($announcement['published_at'])) ?>
+                                            </span>
+                                        </span>
+                                        <span class="dashboard-module-badge announcement-status status-<?= htmlspecialchars($announcement['status'], ENT_QUOTES) ?>">
+                                            <?= htmlspecialchars(ucfirst($announcement['status']), ENT_QUOTES) ?>
+                                        </span>
+                                    </a>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                    </section>
+                </div>
 
             </div>
 
@@ -199,6 +299,90 @@ $upcomingEvents = array_slice(
 
             </aside>
         </div>
+
+        <section class="admin-module-grid" aria-label="Recent module activity">
+            <section class="chart-panel admin-module-panel">
+                <div class="panel-header">
+                    <h2 class="section-label">Community Feed</h2>
+                    <a href="admin_threads.php" class="btn-admin-sm">View All &rsaquo;</a>
+                </div>
+                <div class="dashboard-module-list">
+                    <?php if (empty($recentThreads)): ?>
+                        <p class="dashboard-module-empty">No community threads yet.</p>
+                    <?php else: ?>
+                        <?php foreach ($recentThreads as $thread):
+                            $category = $feedCategoryLabels[$thread['category']] ?? 'Other';
+                            $categoryClass = array_key_exists($thread['category'], $feedCategoryLabels)
+                                ? $thread['category']
+                                : 'other';
+                            $authorNameParts = preg_split('/\s+/', trim($thread['author_name']));
+                            $authorInitials = strtoupper(substr($authorNameParts[0] ?? '', 0, 1));
+                            if (count($authorNameParts) > 1) {
+                                $authorInitials .= strtoupper(substr($authorNameParts[count($authorNameParts) - 1], 0, 1));
+                            }
+                        ?>
+                            <a class="dashboard-module-item dashboard-community-item" href="admin_threads.php">
+                                <span class="dashboard-community-avatar" aria-hidden="true">
+                                    <?= htmlspecialchars($authorInitials, ENT_QUOTES) ?>
+                                </span>
+                                <span class="dashboard-module-item-content">
+                                    <span class="dashboard-community-heading">
+                                        <span class="dashboard-module-item-title"><?= htmlspecialchars($thread['subject'], ENT_QUOTES) ?></span>
+                                        <span class="dashboard-module-badge dashboard-community-category category-<?= htmlspecialchars($categoryClass, ENT_QUOTES) ?>"><?= htmlspecialchars($category, ENT_QUOTES) ?></span>
+                                    </span>
+                                    <span class="dashboard-module-item-meta dashboard-community-meta">
+                                        Posted by <?= htmlspecialchars($thread['author_name'], ENT_QUOTES) ?>
+                                        <span aria-hidden="true">&middot;</span>
+                                        <?= date('M j, Y', strtotime($thread['created_at'])) ?>
+                                    </span>
+                                </span>
+                                <span class="dashboard-community-count" aria-label="<?= (int)$thread['comment_count'] ?> comments">
+                                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z" />
+                                    </svg>
+                                    <?= (int)$thread['comment_count'] ?>
+                                </span>
+                            </a>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </section>
+
+            <section class="chart-panel admin-module-panel">
+                <div class="panel-header">
+                    <h2 class="section-label">Pending Reports</h2>
+                    <a href="admin_reports.php" class="btn-admin-sm">Review Reports &rsaquo;</a>
+                </div>
+                <div class="dashboard-module-list">
+                    <?php if (empty($pendingReports)): ?>
+                        <p class="dashboard-module-empty">No pending reports to review.</p>
+                    <?php else: ?>
+                        <?php foreach ($pendingReports as $report): ?>
+                            <a class="dashboard-module-item" href="admin_reports.php">
+                                <span class="dashboard-module-item-icon module-icon-report" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 9v3.75m-9.3 3.4c-.9 1.5.2 3.4 1.9 3.4h14.8c1.7 0 2.8-1.9 1.9-3.4L13.9 3.4c-.9-1.5-3-1.5-3.9 0L2.7 16.1ZM12 15.8h.01v.01H12Z" />
+                                    </svg>
+                                </span>
+                                <span class="dashboard-module-item-content">
+                                    <span class="dashboard-module-item-title"><?= htmlspecialchars($report['content'] ?: '(deleted content)', ENT_QUOTES) ?></span>
+                                    <span class="dashboard-module-item-meta">
+                                        <?= htmlspecialchars($report['reporter_name'], ENT_QUOTES) ?>
+                                        <span aria-hidden="true">&middot;</span>
+                                        <?= date('M j, Y', strtotime($report['created_at'])) ?>
+                                    </span>
+                                    <span class="dashboard-module-badges">
+                                        <span class="dashboard-module-badge report-type"><?= htmlspecialchars(ucfirst($report['type']), ENT_QUOTES) ?></span>
+                                        <span class="dashboard-module-badge reason-<?= htmlspecialchars($report['reason'], ENT_QUOTES) ?>"><?= htmlspecialchars(ucfirst($report['reason']), ENT_QUOTES) ?></span>
+                                    </span>
+                                </span>
+                            </a>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </section>
+
+        </section>
 
         <div class="admin-bottom-row">
 

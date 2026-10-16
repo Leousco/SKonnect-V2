@@ -321,7 +321,7 @@
 .rpt-td-content { min-width: 0; max-width: none; }
 
 .rpt-content-title {
-  display: block;
+  display: inline;
   font-weight: 600;
   color: var(--ap-text-head);
   line-height: 1.35;
@@ -400,18 +400,18 @@
 .rpt-removed-tag {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin-left: 6px;
   border-radius: 20px;
-  font-size: 9.5px;
-  font-weight: 700;
-  text-transform: uppercase;
   background: #fee2e2;
   color: #b91c1c;
-  margin-left: 6px;
+  vertical-align: middle;
 }
 
-.rpt-removed-tag svg { width: 10px; height: 10px; }
+.rpt-removed-tag svg { width: 13px; height: 13px; }
 
 .btn-rpt-review {
   display: inline-flex;

@@ -1,11 +1,13 @@
 <?php
 require_once __DIR__ . '/../models/ServiceRequestModel.php';
+require_once __DIR__ . '/../models/ActivityLogModel.php';
 require_once __DIR__ . '/../services/EmailService.php';
 
 class ServiceRequestController
 {
     private ServiceRequestModel $model;
     private EmailService $emailService;
+    private ActivityLogModel $activityLog;
 
     private string $fulfillmentDir;
     private array $allowedMimes = [
@@ -26,6 +28,7 @@ class ServiceRequestController
     {
         $this->model        = new ServiceRequestModel();
         $this->emailService = new EmailService();
+        $this->activityLog = new ActivityLogModel($this->model->getConnection());
         $this->uploadDir = __DIR__ . '/../../uploads/applications/';
         $this->fulfillmentDir = __DIR__ . '/../../uploads/fulfillment/';
 
@@ -269,6 +272,13 @@ class ServiceRequestController
         }
 
         $this->model->updateStatus($id, $status, $fulfillmentPath);
+        $this->activityLog->log($officerId, 'service_request_' . $status, [
+            'target_type' => 'service_request',
+            'target_id'   => $id,
+            'target_name' => $existing['service_name'],
+            'target_user' => $existing['full_name'],
+            'notes'       => 'Service request status changed to ' . $status . '.',
+        ]);
 
         if (in_array($status, ['approved', 'rejected'], true)) {
             require_once __DIR__ . '/../services/NotificationService.php';
@@ -347,6 +357,13 @@ class ServiceRequestController
         }
 
         $this->model->insertNote($applicationId, $officerId, $note);
+        $this->activityLog->log($officerId, 'service_request_note_added', [
+            'target_type' => 'service_request',
+            'target_id'   => $applicationId,
+            'target_name' => $existing['service_name'],
+            'target_user' => $existing['full_name'],
+            'notes'       => 'Officer requested additional information.',
+        ]);
 
         require_once __DIR__ . '/../services/NotificationService.php';
         NotificationService::notifyServiceStatus(

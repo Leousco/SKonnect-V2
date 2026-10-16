@@ -2,7 +2,7 @@
 
 A community portal that connects residents with their SK officers: announcements, community discussions, youth services, and events in one place.
 
-> **Last Update:** 10/15/26
+> **Last Update:** 10/16/26
 
 ## Render Deployment
 
@@ -17,9 +17,9 @@ The container grants Apache write access to the upload directories. Render's con
 - [Features](#features)
   - [Feature to be Implemented](#feature-to-be-implemented)
   - [Implemented Major Features](#implemented-major-features)
-- [Render Deployment](#render-deployment)
 - [Refactoring for Database Migration](#refactoring-for-database-migration)
 - [Known Issues](#known-issues)
+- [Deployment Issues](#deployment-issues-render)
 - [Features Backlog](#features-backlog)
 
 ## System Users
@@ -162,6 +162,12 @@ Completed:
 - [x] Include latest community discussions (trending threads)
 - [x] Hide the scrollbars on each section
 
+#### Community Feed
+- [x] The icons are emojis, change it to SVGs
+- [x] Change the support icon to a simple heart instead of whatever that is
+- [x] In the bookmarks section fix the border colors
+- [x] Maybe fix the pill colors, some pills have the same colors despite meaning differently
+
 #### Notifications
 - [x] Color and icon of "action require" service requests
 - [x] Viewing a notification doesn't auto "mark as read" it
@@ -209,13 +215,14 @@ Completed:
 ### [ ADMIN SIDE ]
 
 - [x] Mostly non functional, styles are inconsistent with other related modules on different users
+- [ ] Notifications feature (same with officer and moderator)
 
 #### Dashboard
-- [ ] Update the sections
-- [ ] Add sections for other modules (threads, reports, recent announcements)
+- [x] Update the sections
+- [x] Add sections for other modules (threads, reports, recent announcements)
 
 #### Activity Logs
-- [ ] Activities from the officer are not logged
+- [x] Activities from the officer are not logged
 
 ### Deployment Issues (Render)
 

@@ -170,7 +170,12 @@ $cat_labels = [
                                     
                                     <div class="feed-card-badges">
                                         <?php if (!empty($t['is_pinned'])) : ?>
-                                            <span class="feed-pin-badge">📌 Pinned</span>
+                                            <span class="feed-pin-badge">
+                                                <svg aria-hidden="true" viewBox="0 0 24 24" class="feed-pin-icon">
+                                                    <path d="M16 9V4l1-1V2H7v1l1 1v5l-2 2v1h5v9l1 1 1-1v-9h5v-1l-2-2Z" />
+                                                </svg>
+                                                Pinned
+                                            </span>
                                         <?php endif; ?>
                                         <span class="ann-badge category-<?= $cat_key ?>"><?= $cat_label ?></span>
                                         <span class="feed-badge status-<?= $t['status'] ?>"><?= ucfirst($t['status']) ?></span>
@@ -188,11 +193,16 @@ $cat_labels = [
 
                                         <div class="card-actions-left">
                                             <button class="support-btn <?= $user_supported ? 'active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $user_supported ? 'Remove support' : 'I support this' ?>">
-                                                <img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon">
+                                                <svg aria-hidden="true" viewBox="0 0 24 24" class="support-icon">
+                                                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+                                                </svg>
                                                 <span class="support-count"><?= (int)$t['support_count'] ?></span>
                                             </button>
                                             <a href="thread_view.php?id=<?= (int)$t['id'] ?>" class="btn-secondary-portal">
-                                                💬 <?= (int)$t['comment_count'] ?> <?= $t['comment_count'] == 1 ? 'Comment' : 'Comments' ?>
+                                                <svg aria-hidden="true" viewBox="0 0 24 24" class="comment-icon">
+                                                    <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z" />
+                                                </svg>
+                                                <?= (int)$t['comment_count'] ?> <?= $t['comment_count'] == 1 ? 'Comment' : 'Comments' ?>
                                             </a>
                                         </div>
 

@@ -4,11 +4,13 @@ require_once __DIR__ . '/../models/AnnouncementModel.php';
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../services/EmailService.php';
 require_once __DIR__ . '/../config/paths.php';
+require_once __DIR__ . '/../models/ActivityLogModel.php';
 
 class AnnouncementController
 {
 
     private AnnouncementModel $model;
+    private ActivityLogModel $activityLog;
 
     private string $bannerDir  = 'assets/uploads/banners/';
     private string $attachDir  = 'assets/uploads/attachments/';
@@ -16,6 +18,7 @@ class AnnouncementController
     public function __construct()
     {
         $this->model = new AnnouncementModel();
+        $this->activityLog = new ActivityLogModel($this->model->getConnection());
     }
 
     public function create(): void
@@ -69,6 +72,9 @@ class AnnouncementController
         if (!$id) {
             $this->json(['status' => 'error', 'message' => 'Failed to create announcement.'], 500);
         }
+        $this->logOfficerAction('announcement_created', $id, $title, [
+            'notes' => $status === 'active' ? 'Announcement published.' : 'Draft announcement created.',
+        ]);
 
         if (!empty($_FILES['attachments']['tmp_name'])) {
             $files = $this->normaliseFileArray($_FILES['attachments']);
@@ -140,7 +146,14 @@ class AnnouncementController
             }
         }
 
-        $this->model->update($id, $data);
+        if (!$this->model->update($id, $data)) {
+            $this->json(['status' => 'error', 'message' => 'Failed to update announcement.'], 500);
+        }
+        $this->logOfficerAction('announcement_updated', $id, $data['title'] ?? $existing['title'], [
+            'notes' => isset($data['status'])
+                ? 'Announcement status changed to ' . $data['status'] . '.'
+                : 'Announcement details updated.',
+        ]);
         if (!empty($_FILES['attachments']['tmp_name'])) {
             $files = $this->normaliseFileArray($_FILES['attachments']);
             foreach ($files as $file) {
@@ -162,9 +175,13 @@ class AnnouncementController
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) $this->json(['status' => 'error', 'message' => 'Missing ID.'], 422);
 
-        $this->model->archive($id)
-            ? $this->json(['status' => 'success', 'message' => 'Announcement archived.'])
-            : $this->json(['status' => 'error',   'message' => 'Archive failed.'], 500);
+        $announcement = $this->model->getById($id);
+        if (!$announcement) $this->json(['status' => 'error', 'message' => 'Announcement not found.'], 404);
+        if (!$this->model->archive($id)) {
+            $this->json(['status' => 'error', 'message' => 'Archive failed.'], 500);
+        }
+        $this->logOfficerAction('announcement_archived', $id, $announcement['title'] ?? '');
+        $this->json(['status' => 'success', 'message' => 'Announcement archived.']);
     }
 
     public function restore(): void
@@ -175,9 +192,13 @@ class AnnouncementController
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) $this->json(['status' => 'error', 'message' => 'Missing ID.'], 422);
 
-        $this->model->restore($id)
-            ? $this->json(['status' => 'success', 'message' => 'Announcement restored.'])
-            : $this->json(['status' => 'error',   'message' => 'Restore failed.'], 500);
+        $announcement = $this->model->getById($id);
+        if (!$announcement) $this->json(['status' => 'error', 'message' => 'Announcement not found.'], 404);
+        if (!$this->model->restore($id)) {
+            $this->json(['status' => 'error', 'message' => 'Restore failed.'], 500);
+        }
+        $this->logOfficerAction('announcement_restored', $id, $announcement['title'] ?? '');
+        $this->json(['status' => 'success', 'message' => 'Announcement restored.']);
     }
 
     public function removeFile(): void
@@ -206,7 +227,13 @@ class AnnouncementController
         $absPath = str_replace('\\', '/', dirname(__DIR__, 2)) . $target['file_path'];
         if (file_exists($absPath)) @unlink($absPath);
 
-        $this->model->deleteFileById($fileId);
+        if (!$this->model->deleteFileById($fileId)) {
+            $this->json(['status' => 'error', 'message' => 'Failed to remove attachment.'], 500);
+        }
+        $announcement = $this->model->getById($announcementId);
+        $this->logOfficerAction('announcement_attachment_removed', $announcementId, $announcement['title'] ?? '', [
+            'attachment_id' => $fileId,
+        ]);
 
         $this->json(['status' => 'success', 'message' => 'Attachment removed.']);
     }
@@ -231,9 +258,11 @@ class AnnouncementController
             @unlink($existing['banner_img']);
         }
 
-        $this->model->delete($id)
-            ? $this->json(['status' => 'success', 'message' => 'Announcement deleted.'])
-            : $this->json(['status' => 'error',   'message' => 'Delete failed.'], 500);
+        if (!$this->model->delete($id)) {
+            $this->json(['status' => 'error', 'message' => 'Delete failed.'], 500);
+        }
+        $this->logOfficerAction('announcement_deleted', $id, $existing['title']);
+        $this->json(['status' => 'success', 'message' => 'Announcement deleted.']);
     }
 
     public function listAll(): void
@@ -317,6 +346,15 @@ class AnnouncementController
         header('Content-Type: application/json');
         echo json_encode($payload);
         exit;
+    }
+
+    private function logOfficerAction(string $action, int $targetId, string $targetName, array $extra = []): void
+    {
+        $this->activityLog->log((int)($_SESSION['user_id'] ?? 0), $action, array_merge([
+            'target_type' => 'announcement',
+            'target_id'   => $targetId,
+            'target_name' => $targetName,
+        ], $extra));
     }
 
     private function requireMethod(string $method): void

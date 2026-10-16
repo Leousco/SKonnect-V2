@@ -85,7 +85,7 @@ switch ($action) {
                 'target_id'   => $thread_id,
                 'target_name' => $thread_subject,
                 'target_user' => $report['thread_author_name'] ?? '',
-                'notes'       => "Report resolved. Category: {$category}. Thread hidden and author notified.",
+                'notes'       => "Report resolved.",
             ]);
 
             notifyAuthorEmail($threadModel, $thread_id, function (EmailService $svc, array $author): void {
@@ -101,7 +101,7 @@ switch ($action) {
         echo json_encode([
             'status'        => ($hideOk && $reportOk) ? 'success' : 'error',
             'message'       => $hideOk
-                ? 'Report resolved. Thread hidden and author notified.'
+                ? 'Report resolved.'
                 : 'Failed to hide thread.',
             'report_status' => 'reviewed',
             'thread_hidden' => $hideOk,

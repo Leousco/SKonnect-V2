@@ -391,21 +391,23 @@
 
 
 .comment-support-icon {
+  display: block;
   width: 13px;
   height: 13px;
-  object-fit: contain;
-  opacity: 0.5;
-  transition: opacity 0.15s, filter 0.15s;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: fill 0.15s;
 }
 
-.comment-support-btn:hover .comment-support-icon {
-  opacity: 0.85;
-  filter: invert(27%) sepia(60%) saturate(500%) hue-rotate(100deg) brightness(80%);
+.comment-support-btn:hover {
+  color: #15803d;
 }
 
 .comment-support-btn.active .comment-support-icon {
-  opacity: 1;
-  filter: invert(27%) sepia(60%) saturate(500%) hue-rotate(100deg) brightness(80%);
+  fill: currentColor;
 }
 
 /* COMMENTS SECTION */

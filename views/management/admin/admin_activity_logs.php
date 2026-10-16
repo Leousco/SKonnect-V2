@@ -48,6 +48,25 @@ RoleMiddleware::requireAdmin();
                     <option value="created">Created</option>
                     <option value="updated">Updated</option>
                     <option value="login">Login</option>
+                    <optgroup label="Officer actions">
+                        <option value="announcement_created">Announcement created</option>
+                        <option value="announcement_updated">Announcement updated</option>
+                        <option value="announcement_archived">Announcement archived</option>
+                        <option value="announcement_restored">Announcement restored</option>
+                        <option value="announcement_attachment_removed">Announcement attachment removed</option>
+                        <option value="announcement_deleted">Announcement deleted</option>
+                        <option value="event_created">Event created</option>
+                        <option value="event_updated">Event updated</option>
+                        <option value="event_deleted">Event deleted</option>
+                        <option value="service_created">Service created</option>
+                        <option value="service_updated">Service updated</option>
+                        <option value="service_status_updated">Service status updated</option>
+                        <option value="service_deleted">Service deleted</option>
+                        <option value="service_request_approved">Service request approved</option>
+                        <option value="service_request_rejected">Service request rejected</option>
+                        <option value="service_request_cancelled">Service request cancelled</option>
+                        <option value="service_request_note_added">Service request note added</option>
+                    </optgroup>
                 </select>
                 <input type="date" id="filterDateFrom" class="log-select" title="From date">
                 <input type="date" id="filterDateTo" class="log-select" title="To date">

@@ -10,6 +10,10 @@ class AnnouncementModel {
         $this->conn = $connection ?? (new Database())->getConnection();
     }
 
+    public function getConnection(): PDO {
+        return $this->conn;
+    }
+
     
 
     public function create(array $data): int|false {

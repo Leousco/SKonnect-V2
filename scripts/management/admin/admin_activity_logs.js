@@ -47,7 +47,7 @@
     }
 
     function formatRole(role) {
-        return { admin: 'Admin', moderator: 'Moderator', sk_officer: 'SK Officer', resident: 'Resident', system: 'System' }[role] ?? capitalize(role);
+        return { admin: 'Admin', moderator: 'Moderator', sk_officer: 'Officer', resident: 'Resident', system: 'System' }[role] ?? capitalize(role);
     }
 
     function getInitials(name) {
@@ -180,7 +180,16 @@
         pageInfo.textContent      = `Page ${page} of ${Math.max(1, pages)}`;
 
         logBody.innerHTML = logs.map(log => {
-            const actionConf = ACTION_CONFIG[log.action] ?? ACTION_CONFIG['updated'];
+            const actionBase = log.action.replace(/^(announcement|event|service_request|service)_/, '');
+            const actionAliases = {
+                archived: 'deleted',
+                attachment_removed: 'deleted',
+                cancelled: 'declined',
+                rejected: 'declined',
+            };
+            const actionConf = ACTION_CONFIG[log.action]
+                ?? ACTION_CONFIG[actionAliases[actionBase] ?? actionBase]
+                ?? ACTION_CONFIG['updated'];
             const dt         = parseDateTime(log.created_at);
 
             return `
@@ -201,7 +210,7 @@
                 <td>
                     <span class="log-action-badge ${actionConf.cls}">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">${actionConf.icon}</svg>
-                        ${capitalize(log.action)}
+                        ${capitalize(log.action.replace(/_/g, ' '))}
                     </span>
                 </td>
                 <td>${formatDescription(log.description)}</td>
@@ -299,7 +308,7 @@
                     dt.time,
                     log.user_name,
                     formatRole(log.user_role),
-                    log.action,
+                    log.action.replace(/_/g, ' '),
                     formatDescriptionPlain(log.description),
                 ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
             });

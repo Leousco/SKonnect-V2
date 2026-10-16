@@ -129,22 +129,29 @@ $cat_labels = [
                                     <p class="ann-card-excerpt"><?= htmlspecialchars(mb_substr($t['message'], 0, 160)) ?><?= mb_strlen($t['message']) > 160 ? '…' : '' ?></p>
 
                                     <div class="ann-card-meta">
-                                        <span>By: <?= htmlspecialchars($t['author_name']) ?></span>
-                                        <time datetime="<?= $t['created_at'] ?>"><?= $date_fmt ?></time>
+                                        <span class="bm-author-date">
+                                            <span>By: <?= htmlspecialchars($t['author_name']) ?></span>
+                                            <time datetime="<?= $t['created_at'] ?>"><?= $date_fmt ?></time>
+                                        </span>
                                         <span class="bm-saved-on">Saved on <?= $bm_date_fmt ?></span>
                                     </div>
 
                                     <div class="ann-card-actions">
                                         
                                         <button class="support-btn <?= $user_supported ? 'active' : '' ?>" data-thread-id="<?= (int)$t['id'] ?>" title="<?= $user_supported ? 'Remove support' : 'I support this' ?>">
-                                            <img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon">
+                                            <svg aria-hidden="true" viewBox="0 0 24 24" class="support-icon">
+                                                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+                                            </svg>
                                             <span class="support-count"><?= (int)$t['support_count'] ?></span>
                                         </button>
 
                                         
                                         <div class="card-actions-right">
                                             <a href="thread_view.php?id=<?= (int)$t['id'] ?>" class="btn-secondary-portal">
-                                                💬 <?= (int)$t['comment_count'] ?> <?= $t['comment_count'] == 1 ? 'Comment' : 'Comments' ?>
+                                                <svg aria-hidden="true" viewBox="0 0 24 24" class="comment-icon">
+                                                    <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z" />
+                                                </svg>
+                                                <?= (int)$t['comment_count'] ?> <?= $t['comment_count'] == 1 ? 'Comment' : 'Comments' ?>
                                             </a>
                                             <button class="bookmark-btn active" data-thread-id="<?= (int)$t['id'] ?>" title="Remove bookmark">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="bm-icon">

@@ -132,7 +132,12 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                             <time class="thread-date" datetime="<?= $thread['created_at'] ?>"><?= $date_fmt ?></time>
                         </div>
                         <div class="thread-meta-counts">
-                            <span>💬 <?= (int)$thread['comment_count'] ?> <?= $thread['comment_count'] == 1 ? 'comment' : 'comments' ?></span>
+                            <span>
+                                <svg aria-hidden="true" viewBox="0 0 24 24" class="comment-icon">
+                                    <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z" />
+                                </svg>
+                                <?= (int)$thread['comment_count'] ?> <?= $thread['comment_count'] == 1 ? 'comment' : 'comments' ?>
+                            </span>
                         </div>
                     </div>
 
@@ -155,7 +160,9 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                     
                     <div class="thread-actions">
                         <button class="support-btn <?= $thread['user_supported'] ? 'active' : '' ?>" id="thread-support-btn" data-thread-id="<?= $thread_id ?>" title="<?= $thread['user_supported'] ? 'Remove support' : 'I support this' ?>">
-                            <img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" class="support-icon">
+                                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+                            </svg>
                             <span id="thread-support-count"><?= (int)$thread['support_count'] ?></span>
                             <span><?= $thread['user_supported'] ? 'Supported' : 'Support' ?></span>
                         </button>
@@ -266,10 +273,16 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                                             <div class="comment-text"><?= nl2br(htmlspecialchars($c['message'])) ?></div>
                                             <div class="comment-actions">
                                                 <button class="comment-support-btn <?= $c['user_supported'] ? 'active' : '' ?>" data-comment-id="<?= (int)$c['id'] ?>" title="Support this comment">
-                                                    <img src="../../assets/img/handshake-icon.png" alt="Support" class="comment-support-icon"> <span class="comment-support-count"><?= (int)$c['support_count'] ?></span>
+                                                    <svg aria-hidden="true" viewBox="0 0 24 24" class="comment-support-icon">
+                                                        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+                                                    </svg>
+                                                    <span class="comment-support-count"><?= (int)$c['support_count'] ?></span>
                                                 </button>
                                                 <button class="reply-toggle-btn" data-comment-id="<?= (int)$c['id'] ?>" title="Reply to this comment">
-                                                    💬 Reply
+                                                    <svg aria-hidden="true" viewBox="0 0 24 24" class="comment-icon">
+                                                        <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z" />
+                                                    </svg>
+                                                    Reply
                                                 </button>
                                                 <?php if (!$is_own_comment) : ?>
                                                     <button class="content-report-btn" data-report-type="comment" data-target-id="<?= (int)$c['id'] ?>" title="Report this comment">

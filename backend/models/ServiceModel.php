@@ -11,6 +11,11 @@ class ServiceModel
         $this->db = (new Database())->getConnection();
     }
 
+    public function getConnection(): PDO
+    {
+        return $this->db;
+    }
+
     public function getAll(array $filters = []): array
     {
         $sql    = "

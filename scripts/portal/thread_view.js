@@ -560,13 +560,18 @@ document.addEventListener("DOMContentLoaded", () => {
               <button class="comment-support-btn" data-comment-id="${
                 c.id
               }" title="Support this comment">
-                  <img src="../../assets/img/handshake-icon.png" alt="Support" class="comment-support-icon">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" class="comment-support-icon">
+                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+                  </svg>
                 <span class="comment-support-count">0</span>
               </button>
               <button class="reply-toggle-btn" data-comment-id="${
                 c.id
               }" title="Reply to this comment">
-                💬 Reply
+                <svg aria-hidden="true" viewBox="0 0 24 24" class="comment-icon">
+                  <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z" />
+                </svg>
+                Reply
               </button>
               <button class="content-delete-btn" data-delete-type="comment" data-target-id="${
                 c.id

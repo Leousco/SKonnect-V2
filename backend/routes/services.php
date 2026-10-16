@@ -33,19 +33,19 @@ try {
         case 'update':
             $id = (int) ($_POST['id'] ?? 0);
             if (!$id) { echo json_encode(['success' => false, 'errors' => ['Service ID is required.']]); break; }
-            echo json_encode($controller->update($id, $_POST, $_FILES['attachments'] ?? null));
+            echo json_encode($controller->update($id, $_POST, $_FILES['attachments'] ?? null, $officerId));
             break;
 
         case 'toggle':
             $id = (int) ($_POST['id'] ?? 0);
             if (!$id) { echo json_encode(['success' => false, 'message' => 'Service ID is required.']); break; }
-            echo json_encode($controller->toggleStatus($id));
+            echo json_encode($controller->toggleStatus($id, $officerId));
             break;
 
         case 'delete':
             $id = (int) ($_POST['id'] ?? 0);
             if (!$id) { echo json_encode(['success' => false, 'message' => 'Service ID is required.']); break; }
-            echo json_encode($controller->delete($id));
+            echo json_encode($controller->delete($id, $officerId));
             break;
 
         default:

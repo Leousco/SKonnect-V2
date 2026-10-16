@@ -1,9 +1,11 @@
 <?php
 require_once __DIR__ . '/../models/ServiceModel.php';
+require_once __DIR__ . '/../models/ActivityLogModel.php';
 
 class ServiceController
 {
     private ServiceModel $model;
+    private ActivityLogModel $activityLog;
 
     private array $allowedMimes = [
         'application/pdf',
@@ -18,6 +20,7 @@ class ServiceController
     public function __construct()
     {
         $this->model     = new ServiceModel();
+        $this->activityLog = new ActivityLogModel($this->model->getConnection());
         $this->uploadDir = __DIR__ . '/../../uploads/forms/';
 
         if (!is_dir($this->uploadDir)) {
@@ -60,12 +63,13 @@ class ServiceController
         $attachmentPath = $attachmentPaths ? implode(',', $attachmentPaths) : null;
 
         $newId = $this->model->insert($data, $attachmentName, $attachmentPath, $officerId);
+        $this->logOfficerAction($officerId, 'service_created', $newId, $data['name']);
         require_once __DIR__ . '/../services/NotificationService.php';
         NotificationService::notifyNewService($newId, $data['name'], $data['category']);
         return ['success' => true, 'id' => $newId, 'service' => $this->model->getById($newId)];
     }
 
-    public function update(int $id, array $data, ?array $files): array
+    public function update(int $id, array $data, ?array $files, int $officerId = 0): array
     {
         $existing = $this->model->getById($id);
         if (!$existing) {
@@ -117,6 +121,11 @@ class ServiceController
         $attachmentPath = $keptPaths ? implode(',', array_values($keptPaths)) : null;
 
         $this->model->update($id, $data, $attachmentName, $attachmentPath);
+        $this->logOfficerAction($officerId, 'service_updated', $id, $data['name'], [
+            'notes' => isset($data['status']) && $data['status'] !== $existing['status']
+                ? 'Service status changed to ' . $data['status'] . '.'
+                : 'Service details updated.',
+        ]);
         return ['success' => true, 'service' => $this->model->getById($id)];
     }
 
@@ -143,7 +152,7 @@ class ServiceController
         return [$files];
     }
 
-    public function delete(int $id): array
+    public function delete(int $id, int $officerId = 0): array
     {
         $existing = $this->model->getById($id);
         if (!$existing) {
@@ -152,10 +161,11 @@ class ServiceController
 
         $this->deleteFile($existing['attachment_path']);
         $this->model->delete($id);
+        $this->logOfficerAction($officerId, 'service_deleted', $id, $existing['name']);
         return ['success' => true, 'message' => "Service \"{$existing['name']}\" deleted."];
     }
 
-    public function toggleStatus(int $id): array
+    public function toggleStatus(int $id, int $officerId = 0): array
     {
         $existing = $this->model->getById($id);
         if (!$existing) {
@@ -164,7 +174,20 @@ class ServiceController
 
         $newStatus = $existing['status'] === 'active' ? 'inactive' : 'active';
         $this->model->setStatus($id, $newStatus);
+        $this->logOfficerAction($officerId, 'service_status_updated', $id, $existing['name'], [
+            'notes' => "Service status changed to {$newStatus}.",
+        ]);
         return ['success' => true, 'status' => $newStatus];
+    }
+
+    private function logOfficerAction(int $officerId, string $action, int $serviceId, string $serviceName, array $extra = []): void
+    {
+        $actorId = $officerId ?: (int)($_SESSION['user_id'] ?? 0);
+        $this->activityLog->log($actorId, $action, array_merge([
+            'target_type' => 'service',
+            'target_id'   => $serviceId,
+            'target_name' => $serviceName,
+        ], $extra));
     }
 
     private function validate(array $data): array

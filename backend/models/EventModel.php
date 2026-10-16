@@ -8,6 +8,10 @@ class EventModel {
         $this->db = (new Database())->getConnection();
     }
 
+    public function getConnection(): PDO {
+        return $this->db;
+    }
+
     public function getAll(): array {
         $stmt = $this->db->prepare(
             "SELECT e.*, CONCAT(u.first_name, ' ', u.last_name) AS author_name

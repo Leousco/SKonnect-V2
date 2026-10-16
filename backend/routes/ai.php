@@ -110,6 +110,6 @@ try {
     $controller = new AIController();
     aiJsonResponse(200, $controller->handleMessage($message, (int) $residentId));
 } catch (Throwable $e) {
-    error_log('AI route failure: ' . $e);
+    error_log('AI route failure; returning generic server error.');
     aiJsonResponse(500, ['success' => false, 'message' => 'Unable to process the chat request.']);
 }

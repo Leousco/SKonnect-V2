@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../services/GeminiClient.php";
+require_once __DIR__ . "/../services/GroqClient.php";
 require_once __DIR__ . "/../services/AIContextProvider.php";
 
 class AIController
@@ -25,7 +26,7 @@ class AIController
         try {
             $portalData = (new AIContextProvider())->build();
         } catch (Throwable $e) {
-            error_log("AI context failure: " . $e->getMessage());
+            error_log("AI context construction failed.");
             return [
                 "success" => false,
                 "message" =>
@@ -33,23 +34,31 @@ class AIController
             ];
         }
 
-        $result = (new GeminiClient())->generate(
-            $this->systemInstruction(),
-            "<portal_data>\n" .
-                $portalData .
-                "\n</portal_data>\n\n" .
-                "<resident_question>\n" .
-                AIContextProvider::clean($message, 2000, false) .
-                "\n</resident_question>",
-        );
+        $systemInstruction = $this->systemInstruction();
+        $input = "<portal_data>\n" .
+            $portalData .
+            "\n</portal_data>\n\n" .
+            "<resident_question>\n" .
+            AIContextProvider::clean($message, 2000, false) .
+            "\n</resident_question>";
+
+        $result = (new GeminiClient())->generate($systemInstruction, $input);
+
+        if (!$result["ok"] && in_array($result["error"], [
+            "transport",
+            "timeout",
+            "rate_limited",
+            "server_error",
+            "empty",
+        ], true)) {
+            // One eligible Gemini failure permits exactly one Groq attempt.
+            $result = (new GroqClient())->generate($systemInstruction, $input);
+        }
 
         if (!$result["ok"]) {
-            $busy = $result["error"] === "rate_limited";
             return [
                 "success" => false,
-                "message" => $busy
-                    ? "SK Assistant is busy right now. Please try again in a minute."
-                    : "SK Assistant is unavailable right now. Please try again later.",
+                "message" => "SK Assistant is unavailable right now. Please try again later.",
             ];
         }
 

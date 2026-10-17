@@ -27,12 +27,12 @@
             </button>
         </header>
 
-        <div class="ai-chat-messages" id="ai-chat-messages" role="log" aria-live="polite" aria-label="Conversation">
+        <div class="ai-chat-messages" id="ai-chat-messages" role="log" aria-live="polite" aria-relevant="additions text" aria-label="Conversation">
         </div>
 
         <form class="ai-chat-compose" id="ai-chat-form">
             <label class="sr-only" for="ai-chat-input">Your message</label>
-            <input class="ai-chat-input" id="ai-chat-input" name="message" type="text" placeholder="Type a message..." autocomplete="off">
+            <textarea class="ai-chat-input" id="ai-chat-input" name="message" rows="1" placeholder="Type a message..." autocomplete="off" aria-label="Your message"></textarea>
             <button class="ai-chat-send" type="submit" aria-label="Send message">
                 <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13" /></svg>
             </button>

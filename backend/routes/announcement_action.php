@@ -11,6 +11,7 @@ require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/paths.php';
 require_once __DIR__ . '/../services/OfficerNotificationService.php';
+require_once __DIR__ . '/../services/AdminNotificationService.php';
 
 RoleMiddleware::requireAdmin();
 
@@ -29,6 +30,15 @@ $action = $_GET['action'] ?? ($_POST['action'] ?? '');
 
 function resolveWebPath(string $absPath): string {
     return publicAssetUrl($absPath);
+}
+
+function notifyAdminsOfAnnouncementChange(PDO $connection, string $action, int $id, string $title): void
+{
+    try {
+        (new AdminNotificationService($connection))->notifyAnnouncementChange($action, $id, $title);
+    } catch (Throwable $e) {
+        error_log('Unable to notify administrators about an announcement change: ' . $e->getMessage());
+    }
 }
 
 
@@ -108,6 +118,7 @@ if ($action === 'create') {
             }
         }
 
+        notifyAdminsOfAnnouncementChange($conn, 'created', (int)$newId, $title);
         echo json_encode(['status' => 'success', 'id' => $newId, 'ann_status' => $status]);
 
     } catch (Exception $e) {
@@ -233,6 +244,7 @@ if ($action === 'update') {
             error_log('Unable to notify an announcement author about an admin edit: ' . $e->getMessage());
         }
 
+        notifyAdminsOfAnnouncementChange($conn, 'updated', $id, $title);
         echo json_encode(['status' => 'success', 'message' => 'Announcement updated.', 'id' => $id]);
 
     } catch (Exception $e) {
@@ -272,6 +284,7 @@ try {
                 SET status = :status, archived_at = :archived_at, updated_at = NOW()
                 WHERE id = :id
             ")->execute([':status' => $newStatus, ':archived_at' => $archivedAt, ':id' => $id]);
+            if ($owner) notifyAdminsOfAnnouncementChange($conn, 'status', $id, (string)$owner['title']);
             if ($owner) {
                 try {
                     (new OfficerNotificationService($conn))->notifyAdminUpdate(
@@ -305,6 +318,7 @@ try {
             }
             $conn->prepare("DELETE FROM announcements WHERE id = :id")->execute([':id' => $id]);
             if ($ann) {
+                notifyAdminsOfAnnouncementChange($conn, 'deleted', $id, (string)$ann['title']);
                 try {
                     (new OfficerNotificationService($conn))->notifyAdminUpdate(
                         (int)$ann['author_id'],
@@ -335,6 +349,7 @@ try {
                 ':id'          => $id,
             ]);
             if ($announcement) {
+                notifyAdminsOfAnnouncementChange($conn, 'featured', $id, (string)$announcement['title']);
                 try {
                     (new OfficerNotificationService($conn))->notifyAdminUpdate(
                         (int)$announcement['author_id'],

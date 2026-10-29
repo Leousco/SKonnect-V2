@@ -729,46 +729,55 @@
     const newStatus = status === "active" ? "inactive" : "active";
     const name =
       card.querySelector(".svc-card-title")?.textContent || "Service";
+    const actionLabel = newStatus === "active" ? "Activate" : "Deactivate";
 
-    
-    card.dataset.status = newStatus;
+    openConfirm(
+      `${actionLabel} Service`,
+      `Are you sure you want to ${actionLabel.toLowerCase()} "${name}"?`,
+      actionLabel,
+      async () => {
+        const fd = new FormData();
+        fd.append("action", "toggle");
+        fd.append("id", id);
 
-    
-    const badge = card.querySelector(".svc-status-badge");
-    if (badge && !badge.classList.contains("svc-badge-full")) {
-      badge.className = `svc-status-badge svc-badge-${newStatus}`;
-      badge.innerHTML =
-        newStatus === "active"
-          ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><span class="svc-status-dot"></span>Active`
-          : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg><span class="svc-status-dot"></span>Inactive`;
-    }
+        try {
+          const response = await fetch("../../../backend/routes/services.php", {
+            method: "POST",
+            body: fd,
+          });
+          const json = await response.json();
+          if (!response.ok || !json.success || json.status !== newStatus) {
+            showToast(json.message || "Could not update status.", "danger");
+            return;
+          }
+        } catch {
+          showToast("Network error on status update.", "danger");
+          return;
+        }
 
-    
-    toggleBtn.dataset.status = newStatus;
-    toggleBtn.className = `svc-toggle-btn svc-toggle-${newStatus}`;
-    toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"/></svg> ${
-      newStatus === "active" ? "Deactivate" : "Activate"
-    }`;
+        card.dataset.status = newStatus;
+        const badge = card.querySelector(".svc-status-badge");
+        if (badge && !badge.classList.contains("svc-badge-full")) {
+          badge.className = `svc-status-badge svc-badge-${newStatus}`;
+          badge.innerHTML =
+            newStatus === "active"
+              ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg><span class="svc-status-dot"></span>Active`
+              : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/></svg><span class="svc-status-dot"></span>Inactive`;
+        }
 
-    applyFilters();
-    showToast(
-      `"${name}" is now ${newStatus}.`,
-      newStatus === "active" ? "success" : "warning"
+        toggleBtn.dataset.status = newStatus;
+        toggleBtn.className = `svc-toggle-btn svc-toggle-${newStatus}`;
+        toggleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1 0 12.728 0M12 3v9"/></svg> ${
+          newStatus === "active" ? "Deactivate" : "Activate"
+        }`;
+
+        applyFilters();
+        showToast(
+          `"${name}" is now ${newStatus}.`,
+          newStatus === "active" ? "success" : "warning"
+        );
+      }
     );
-
-    
-    const fd = new FormData();
-    fd.append("action", "toggle");
-    fd.append("id", id);
-    fetch("../../../backend/routes/services.php", {
-      method: "POST",
-      body: fd,
-    })
-      .then((r) => r.json())
-      .then((json) => {
-        if (!json.success) showToast("Could not update status.", "danger");
-      })
-      .catch(() => showToast("Network error on status update.", "danger"));
   });
 
   

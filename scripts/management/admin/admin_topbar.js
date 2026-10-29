@@ -1,6 +1,6 @@
 (function () {
 
-    const NOTIF_URL = '../../../backend/routes/notifications_list.php';
+    const NOTIF_URL = '../../../backend/routes/admin_notifications.php';
 
     
     function updateClock() {
@@ -26,7 +26,6 @@
             if (!isOpen) {
                 dd.classList.add('open');
                 btn.setAttribute('aria-expanded', 'true');
-                if (btnId === 'admin-notif-btn') loadNotifications();
             }
         });
 
@@ -42,7 +41,6 @@
             .forEach(el => el.setAttribute('aria-expanded', 'false'));
     }
 
-    setupDropdown('admin-notif-btn', 'admin-notif-dropdown');
     setupDropdown('admin-user-btn',  'admin-user-dropdown');
 
     
@@ -225,103 +223,204 @@
 
 
     
-    function loadNotifications() {
-        const list = document.getElementById('admin-notif-list');
-        if (!list) return;
+    const notifButton = document.getElementById('admin-notif-btn');
+    const notifDropdown = document.getElementById('admin-notif-dropdown');
+    const notifPreview = document.getElementById('admin-notif-preview');
+    const notifBadge = document.getElementById('admin-notif-badge');
+    const previewError = document.getElementById('admin-notif-preview-error');
+    const viewAllButton = document.getElementById('admin-notif-view-all');
+    const notifModal = document.getElementById('admin-notif-modal');
+    const modalClose = document.getElementById('admin-notif-modal-close');
+    const modalList = document.getElementById('admin-notif-modal-list');
+    const modalError = document.getElementById('admin-notif-modal-error');
+    const modalCount = document.getElementById('admin-notif-modal-count');
+    const loadMoreButton = document.getElementById('admin-notif-load-more');
+    const typeFilter = document.getElementById('admin-notif-type');
+    const readFilter = document.getElementById('admin-notif-read');
+    const searchInput = document.getElementById('admin-notif-search');
+    const markAllButton = document.getElementById('admin-notif-mark-all');
+    let modalRequestId = 0;
+    let modalOffset = 0;
+    let modalTotal = 0;
+    let searchTimer = null;
 
-        fetch(NOTIF_URL)
-            .then(r => r.json())
-            .then(json => {
-                if (json.status !== 'success') return;
-
-                const { notifications, unreadCount, systemAlerts } = json;
-
-                const badge = document.getElementById('admin-notif-badge');
-                if (badge) {
-                    badge.textContent   = unreadCount;
-                    badge.style.display = unreadCount > 0 ? '' : 'none';
-                }
-
-                let html = '';
-
-                if (systemAlerts.pendingRequests > 0) {
-                    html += `
-                        <li class="admin-notif-item unread">
-                            <div class="admin-notif-dot"></div>
-                            <div class="admin-notif-content">
-                                <p><strong>${systemAlerts.pendingRequests}</strong> pending service request${systemAlerts.pendingRequests !== 1 ? 's' : ''} awaiting review</p>
-                                <span class="admin-notif-time"><a href="admin_service_requests.php" style="color:inherit;">View requests →</a></span>
-                            </div>
-                        </li>`;
-                }
-
-                if (systemAlerts.flaggedReports > 0) {
-                    html += `
-                        <li class="admin-notif-item unread">
-                            <div class="admin-notif-dot" style="background:#ef4444;"></div>
-                            <div class="admin-notif-content">
-                                <p><strong>${systemAlerts.flaggedReports}</strong> flagged report${systemAlerts.flaggedReports !== 1 ? 's' : ''} need attention</p>
-                                <span class="admin-notif-time"><a href="admin_reports.php" style="color:inherit;">View reports →</a></span>
-                            </div>
-                        </li>`;
-                }
-
-                if (notifications.length > 0) {
-                    notifications.forEach(n => {
-                        const isUnread = !parseInt(n.is_read);
-                        const time     = timeAgo(n.created_at);
-                        html += `
-                            <li class="admin-notif-item${isUnread ? ' unread' : ''}">
-                                <div class="admin-notif-dot"></div>
-                                <div class="admin-notif-content">
-                                    <p>${escHtml(n.message)}</p>
-                                    <span class="admin-notif-time">${time}</span>
-                                </div>
-                            </li>`;
-                    });
-                }
-
-                if (!html) {
-                    html = `<li style="padding:20px;text-align:center;color:#6b7280;font-size:12px;">No notifications</li>`;
-                }
-
-                list.innerHTML = html;
-            })
-            .catch(() => {
-                const list = document.getElementById('admin-notif-list');
-                if (list) list.innerHTML = `<li style="padding:20px;text-align:center;color:#6b7280;font-size:12px;">Unable to load notifications</li>`;
-            });
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+        })[char]);
     }
 
-    
-    document.getElementById('admin-notif-mark-all')?.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        fetch(`${NOTIF_URL}?action=mark-read`)
-            .then(r => r.json())
-            .then(() => {
-                const badge = document.getElementById('admin-notif-badge');
-                if (badge) badge.style.display = 'none';
-                document.querySelectorAll('.admin-notif-item.unread').forEach(el => el.classList.remove('unread'));
+    function relativeTime(value) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return '';
+        const seconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+        if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+        return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function categoryLabel(category) {
+        return ({ announcements: 'Announcements', services: 'Services', requests: 'Service requests', reports: 'Community reports', users: 'User management' })[category] || 'Notification';
+    }
+
+    async function requestNotifications(params = {}, method = 'GET') {
+        let url = NOTIF_URL;
+        const options = { method, credentials: 'same-origin', headers: {} };
+        if (method === 'GET') {
+            url += `?${new URLSearchParams(params).toString()}`;
+        } else {
+            options.headers['Content-Type'] = 'application/json';
+            options.body = JSON.stringify(params);
+        }
+        const response = await fetch(url, options);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json();
+        if (!result.success) throw new Error(result.message || 'Unable to load notifications.');
+        return result;
+    }
+
+    function updateBadge(count) {
+        const unread = Number(count) || 0;
+        notifBadge.hidden = unread === 0;
+        notifBadge.textContent = unread > 99 ? '99+' : String(unread);
+        notifButton.setAttribute('aria-label', unread ? `Notifications, ${unread} unread` : 'Notifications');
+    }
+
+    function notificationMarkup(notification, modal = false) {
+        const unread = Number(notification.is_read) === 0;
+        const title = escapeHtml(notification.title);
+        const message = escapeHtml(notification.message);
+        const category = escapeHtml(categoryLabel(notification.category));
+        const time = escapeHtml(relativeTime(notification.created_at));
+        const link = typeof notification.link === 'string' && /^admin_[a-z_]+\.php(?:\?[a-zA-Z0-9_=&%-]*)?$/.test(notification.link)
+            ? escapeHtml(notification.link) : '';
+        if (!modal) {
+            return `<li class="admin-notif-item${unread ? ' unread' : ''}" data-notification-id="${Number(notification.id)}">
+                <span class="admin-notif-dot" aria-hidden="true"></span>
+                <div class="admin-notif-content"><span class="admin-notif-category">${category}</span><p><strong>${title}</strong></p><p>${message}</p><span class="admin-notif-time">${time}</span></div>
+            </li>`;
+        }
+        return `<article class="admin-notif-modal-row${unread ? ' unread' : ''}" data-notification-id="${Number(notification.id)}">
+            ${unread ? '<span class="admin-notif-dot" aria-label="Unread"></span>' : ''}
+            <div class="admin-notif-modal-row-body"><span class="admin-notif-category">${category}</span><h3>${title}</h3><p>${message}</p><time datetime="${escapeHtml(notification.created_at)}">${time}</time></div>
+            ${link ? `<a class="admin-notif-row-action" href="${link}" data-mark-read-open="${Number(notification.id)}">View</a>` : ''}
+        </article>`;
+    }
+
+    async function loadPreview() {
+        if (!notifPreview) return;
+        previewError.hidden = true;
+        try {
+            const result = await requestNotifications({ action: 'list', limit: '6' });
+            updateBadge(result.unreadCount);
+            notifPreview.innerHTML = result.notifications.length
+                ? result.notifications.map(item => notificationMarkup(item)).join('')
+                : '<li class="admin-notif-empty">You’re all caught up.</li>';
+        } catch (error) {
+            console.error('Admin notifications error:', error);
+            notifPreview.innerHTML = '<li class="admin-notif-empty">Notifications could not be loaded.</li>';
+            previewError.textContent = 'Please try again later.';
+            previewError.hidden = false;
+        }
+    }
+
+    async function loadModalNotifications(append = false) {
+        const requestId = ++modalRequestId;
+        modalError.hidden = true;
+        if (!append) {
+            modalOffset = 0;
+            modalList.innerHTML = '<p class="admin-notif-empty">Loading notifications...</p>';
+        }
+        try {
+            const result = await requestNotifications({
+                action: 'list', limit: '100', offset: String(modalOffset),
+                category: typeFilter.value, is_read: readFilter.value, search: searchInput.value.trim(),
             });
+            if (requestId !== modalRequestId) return;
+            modalTotal = Number(result.total) || 0;
+            modalCount.textContent = `${modalTotal} notification${modalTotal === 1 ? '' : 's'} · ${result.unreadCount} unread`;
+            if (append) modalList.insertAdjacentHTML('beforeend', result.notifications.map(item => notificationMarkup(item, true)).join(''));
+            else modalList.innerHTML = result.notifications.length
+                ? result.notifications.map(item => notificationMarkup(item, true)).join('')
+                : '<p class="admin-notif-empty">No notifications match these filters.</p>';
+            modalOffset += result.notifications.length;
+            loadMoreButton.hidden = modalOffset >= modalTotal;
+            updateBadge(result.unreadCount);
+        } catch (error) {
+            if (requestId !== modalRequestId) return;
+            console.error('Admin notifications error:', error);
+            modalList.innerHTML = '';
+            modalError.textContent = 'Notifications could not be loaded. Please try again.';
+            modalError.hidden = false;
+        }
+    }
+
+    notifButton?.addEventListener('click', event => {
+        event.stopPropagation();
+        const isOpen = notifDropdown.classList.contains('open');
+        closeAll();
+        if (!isOpen) {
+            notifDropdown.classList.add('open');
+            notifButton.setAttribute('aria-expanded', 'true');
+            loadPreview();
+        }
+    });
+    viewAllButton?.addEventListener('click', () => {
+        closeAll();
+        notifModal.classList.add('open');
+        notifModal.setAttribute('aria-hidden', 'false');
+        loadModalNotifications();
+        modalClose.focus();
+    });
+    function closeNotificationsModal() {
+        notifModal.classList.remove('open');
+        notifModal.setAttribute('aria-hidden', 'true');
+        notifButton.focus();
+    }
+    modalClose?.addEventListener('click', closeNotificationsModal);
+    notifModal?.addEventListener('click', event => {
+        if (event.target === notifModal) closeNotificationsModal();
+    });
+    typeFilter?.addEventListener('change', () => loadModalNotifications());
+    readFilter?.addEventListener('change', () => loadModalNotifications());
+    loadMoreButton?.addEventListener('click', () => loadModalNotifications(true));
+    searchInput?.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => loadModalNotifications(), 250);
+    });
+    markAllButton?.addEventListener('click', async () => {
+        markAllButton.disabled = true;
+        try {
+            await requestNotifications({ action: 'mark_all_read' }, 'POST');
+            await Promise.all([loadPreview(), loadModalNotifications()]);
+        } catch (error) {
+            console.error('Mark all admin notifications read failed:', error);
+            modalError.textContent = 'Notifications could not be updated. Please try again.';
+            modalError.hidden = false;
+        } finally {
+            markAllButton.disabled = false;
+        }
+    });
+    modalList?.addEventListener('click', async event => {
+        const openLink = event.target.closest('[data-mark-read-open]');
+        if (!openLink) return;
+        event.preventDefault();
+        try {
+            await requestNotifications({ action: 'mark_read', id: Number(openLink.dataset.markReadOpen) }, 'POST');
+            window.location.assign(openLink.href);
+        } catch (error) {
+            console.error('Mark admin notification read failed:', error);
+            modalError.textContent = 'This notification could not be updated. Please try again.';
+            modalError.hidden = false;
+        }
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && notifModal.classList.contains('open')) closeNotificationsModal();
     });
 
-    
-    function timeAgo(dateStr) {
-        const now  = new Date();
-        const past = new Date(dateStr);
-        const diff = Math.floor((now - past) / 1000);
-        if (diff < 60)     return 'Just now';
-        if (diff < 3600)   return `${Math.floor(diff / 60)} min ago`;
-        if (diff < 86400)  return `${Math.floor(diff / 3600)} hr ago`;
-        if (diff < 604800) return `${Math.floor(diff / 86400)} days ago`;
-        return past.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-
-    function escHtml(s) {
-        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
-
-    loadNotifications();
+    loadPreview();
+    setInterval(loadPreview, 60000);
 
 })();

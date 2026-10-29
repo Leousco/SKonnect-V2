@@ -2,7 +2,7 @@
 
 A community portal that connects residents with their SK officers: announcements, community discussions, youth services, and events in one place.
 
-> **Last Update:** 10/16/26
+> **Last Update:** 10/29/26
 
 ## Render Deployment
 
@@ -19,7 +19,7 @@ The container grants Apache write access to the upload directories. Render's con
   - [Implemented Major Features](#implemented-major-features)
 - [Refactoring for Database Migration](#refactoring-for-database-migration)
 - [Known Issues](#known-issues)
-- [Deployment Issues](#deployment-issues-render)
+- [Deployment](#deployment-issues-render)
 - [Features Backlog](#features-backlog)
 
 ## System Users
@@ -139,8 +139,8 @@ Completed:
 - [x] After logging in, clicking the 'back' button of a browser returns the user to the login page. *(fixed maybe)*
 - [x] Empty fields like threads, reports, etc. show either two "no record yet" messages or misaligned (not centered) text.
 - [x] Inconsistent toast design across all user views.
-- [ ] Make the notifications on admin users (officer, moderator, admin) a modal.
-- [ ] Make a 404 page.
+- [x] Make the notifications on admin users (officer, moderator, admin) a modal.
+- [ ] Make a 404 page (optional)
 
 ### [ PUBLIC SIDE ]
 
@@ -180,7 +180,7 @@ Completed:
 - [x] Make the "Submit Request" button unclickable if all fields are not complete yet
 - [x] On the request modal, make the info strip non-sticky to allow more space for viewing the form
 - [x] Bug, multiple services entries appearing on one application
-- [ ] Maybe add a confirmation modal or something when submitting an application
+- [ ] Maybe add a confirmation modal or something when submitting an application (optional)
 
 #### Notif Badge
 - [x] Counter appears without any new notifications when opening "view" pages (`thread_view.php`, `announcement_view.php`)
@@ -215,16 +215,21 @@ Completed:
 ### [ ADMIN SIDE ]
 
 - [x] Mostly non functional, styles are inconsistent with other related modules on different users
-- [ ] Notifications feature (same with officer and moderator)
+- [x] Notifications feature (same with officer and moderator)
 
 #### Dashboard
 - [x] Update the sections
 - [x] Add sections for other modules (threads, reports, recent announcements)
 
+#### Services
+- [x] No confirmation modal when activating/deactivating a service
+
 #### Activity Logs
 - [x] Activities from the officer are not logged
 
 ### Deployment Issues (Render)
+
+- [ ] Complete and fix deployment before presentation
 
 #### Officer
 - [ ] Announcement preview in announcement page doesn't show the image banner

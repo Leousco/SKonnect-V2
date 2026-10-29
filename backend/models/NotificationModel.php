@@ -601,6 +601,177 @@ class NotificationModel
         )->execute([':uid' => $userId]);
     }
 
+    public function createAdminNotificationOnce(
+        int $userId,
+        string $type,
+        string $title,
+        string $message,
+        string $refType,
+        int $refId,
+        string $link,
+        string $createdAt
+    ): bool {
+        $this->conn->beginTransaction();
+        try {
+            $lock = $this->conn->prepare('SELECT pg_advisory_xact_lock(hashtext(:key))');
+            $lock->execute([':key' => "admin-notification:{$userId}:{$type}:{$refType}:{$refId}"]);
+
+            $find = $this->conn->prepare("
+                SELECT 1 FROM notifications
+                WHERE user_id = :uid AND type = :type
+                  AND ref_type = :ref_type AND ref_id = :ref_id
+                LIMIT 1
+            ");
+            $find->execute([
+                ':uid' => $userId,
+                ':type' => $type,
+                ':ref_type' => $refType,
+                ':ref_id' => $refId,
+            ]);
+            if ($find->fetchColumn()) {
+                $this->conn->commit();
+                return false;
+            }
+
+            $insert = $this->conn->prepare("
+                INSERT INTO notifications
+                    (user_id, type, title, message, ref_type, ref_id, link, is_official, created_at)
+                VALUES
+                    (:uid, :type, :title, :message, :ref_type, :ref_id, :link, TRUE, :created_at)
+            ");
+            $insert->execute([
+                ':uid' => $userId,
+                ':type' => $type,
+                ':title' => $title,
+                ':message' => $message,
+                ':ref_type' => $refType,
+                ':ref_id' => $refId,
+                ':link' => $link,
+                ':created_at' => $createdAt,
+            ]);
+            $this->conn->commit();
+            return true;
+        } catch (Throwable $e) {
+            if ($this->conn->inTransaction()) {
+                $this->conn->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    public function getAdminNotifications(int $userId, array $filters = []): array
+    {
+        $types = [
+            'admin_content_announcement', 'admin_content_service',
+            'admin_service_request', 'admin_community_report', 'admin_user_management',
+        ];
+        $categorySql = "CASE type
+            WHEN 'admin_content_announcement' THEN 'announcements'
+            WHEN 'admin_content_service' THEN 'services'
+            WHEN 'admin_service_request' THEN 'requests'
+            WHEN 'admin_community_report' THEN 'reports'
+            WHEN 'admin_user_management' THEN 'users'
+        END";
+        $where = ['user_id = :uid', 'is_dismissed = FALSE'];
+        $params = [':uid' => $userId];
+        $typePlaceholders = [];
+        foreach ($types as $index => $type) {
+            $key = ':type' . $index;
+            $typePlaceholders[] = $key;
+            $params[$key] = $type;
+        }
+        $where[] = 'type IN (' . implode(', ', $typePlaceholders) . ')';
+        if (!empty($filters['category'])) {
+            $where[] = "({$categorySql}) = :category";
+            $params[':category'] = $filters['category'];
+        }
+        if (isset($filters['is_read']) && $filters['is_read'] !== '') {
+            $where[] = 'is_read = :is_read';
+            $params[':is_read'] = (bool)$filters['is_read'];
+        }
+        if (!empty($filters['search'])) {
+            $where[] = '(title ILIKE :search_title OR message ILIKE :search_message)';
+            $search = '%' . $filters['search'] . '%';
+            $params[':search_title'] = $search;
+            $params[':search_message'] = $search;
+        }
+        $whereSql = implode(' AND ', $where);
+        $bind = static function (PDOStatement $stmt) use ($params): void {
+            foreach ($params as $name => $value) {
+                $type = $name === ':uid' ? PDO::PARAM_INT
+                    : ($name === ':is_read' ? PDO::PARAM_BOOL : PDO::PARAM_STR);
+                $stmt->bindValue($name, $value, $type);
+            }
+        };
+
+        $stmt = $this->conn->prepare("
+            SELECT id, type, title, message, {$categorySql} AS category,
+                   is_read, created_at, link
+            FROM notifications
+            WHERE {$whereSql}
+            ORDER BY created_at DESC, id DESC
+            LIMIT :limit OFFSET :offset
+        ");
+        $bind($stmt);
+        $stmt->bindValue(':limit', (int)$filters['limit'], PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)($filters['offset'] ?? 0), PDO::PARAM_INT);
+        $stmt->execute();
+        $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $countStmt = $this->conn->prepare("SELECT COUNT(*) FROM notifications WHERE {$whereSql}");
+        $bind($countStmt);
+        $countStmt->execute();
+
+        $unreadStmt = $this->conn->prepare("
+            SELECT COUNT(*) FROM notifications
+            WHERE user_id = :uid AND is_dismissed = FALSE AND is_read = FALSE
+              AND type IN ('admin_content_announcement', 'admin_content_service',
+                           'admin_service_request', 'admin_community_report', 'admin_user_management')
+        ");
+        $unreadStmt->execute([':uid' => $userId]);
+        foreach ($notifications as &$notification) {
+            $notification['id'] = (int)$notification['id'];
+            $notification['is_read'] = (int)$notification['is_read'];
+        }
+        unset($notification);
+
+        return [
+            'notifications' => $notifications,
+            'total' => (int)$countStmt->fetchColumn(),
+            'unreadCount' => (int)$unreadStmt->fetchColumn(),
+        ];
+    }
+
+    public function markAdminNotificationRead(int $id, int $userId): bool
+    {
+        $stmt = $this->conn->prepare("
+            UPDATE notifications SET is_read = TRUE
+            WHERE id = :id AND user_id = :uid AND is_dismissed = FALSE
+              AND type IN ('admin_content_announcement', 'admin_content_service',
+                           'admin_service_request', 'admin_community_report', 'admin_user_management')
+        ");
+        $stmt->execute([':id' => $id, ':uid' => $userId]);
+        if ($stmt->rowCount() > 0) return true;
+        $check = $this->conn->prepare("
+            SELECT 1 FROM notifications
+            WHERE id = :id AND user_id = :uid AND is_dismissed = FALSE
+              AND type IN ('admin_content_announcement', 'admin_content_service',
+                           'admin_service_request', 'admin_community_report', 'admin_user_management')
+        ");
+        $check->execute([':id' => $id, ':uid' => $userId]);
+        return (bool)$check->fetchColumn();
+    }
+
+    public function markAllAdminNotificationsRead(int $userId): void
+    {
+        $this->conn->prepare("
+            UPDATE notifications SET is_read = TRUE
+            WHERE user_id = :uid AND is_dismissed = FALSE
+              AND type IN ('admin_content_announcement', 'admin_content_service',
+                           'admin_service_request', 'admin_community_report', 'admin_user_management')
+        ")->execute([':uid' => $userId]);
+    }
+
     public function dismiss(int $id, int $userId): bool
     {
         $stmt = $this->conn->prepare(

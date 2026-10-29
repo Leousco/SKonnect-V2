@@ -8,10 +8,16 @@ $dashboardDb  = (new Database())->getConnection();
 $eventModel    = new EventModel();
 $allEvents     = $eventModel->getAll();
 $today         = date('Y-m-d');
-$upcomingEvents = array_slice(
-    array_values(array_filter($allEvents, fn($e) => $e['event_date'] >= $today)),
-    0, 4
-);
+$upcomingEvents = array_values(array_filter($allEvents, fn($e) => $e['event_date'] >= $today));
+usort($upcomingEvents, static function ($a, $b) {
+    $dateOrder = strcmp($b['event_date'], $a['event_date']);
+    if ($dateOrder !== 0) {
+        return $dateOrder;
+    }
+
+    return strcmp($b['event_time'] ?? '', $a['event_time'] ?? '');
+});
+$upcomingEvents = array_slice($upcomingEvents, 0, 4);
 
 $recentThreadsStmt = $dashboardDb->query("
     SELECT t.id, t.subject, t.category, t.status, t.created_at,

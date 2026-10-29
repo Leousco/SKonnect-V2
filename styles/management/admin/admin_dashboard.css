@@ -241,7 +241,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-top: 16px;
+    margin-top: 10px;
 }
 
 .quick-action-btn {
@@ -809,12 +809,13 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    flex: 1;
-    margin-top: 16px;
+    flex: 1 0 auto;
+    align-self: stretch;
+    justify-content: flex-start;
 }
 
 .admin-events-list--grow .admin-event-item {
-    flex: 1;
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     gap: 14px;

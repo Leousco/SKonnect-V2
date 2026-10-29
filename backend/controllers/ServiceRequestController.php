@@ -106,6 +106,13 @@ class ServiceRequestController
             error_log('Unable to notify officers about a new service request: ' . $e->getMessage());
         }
 
+        try {
+            require_once __DIR__ . '/../services/AdminNotificationService.php';
+            (new AdminNotificationService($this->model->getConnection()))->notifyNewServiceRequest($applicationId);
+        } catch (Throwable $e) {
+            error_log('Unable to notify administrators about a new service request: ' . $e->getMessage());
+        }
+
         $application = $this->model->getSubmissionNotificationDetails($applicationId, $residentId);
         if ($application && $application['status'] === 'action_required') {
             $this->emailService->sendRequestSubmitted(

@@ -136,7 +136,11 @@
     transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
     color: var(--admin-text-muted);
     flex-shrink: 0;
+    padding: 0;
+    font: inherit;
 }
+
+.admin-topbar-notif-wrap { position: relative; }
 
 .admin-topbar-notif:hover,
 .admin-topbar-notif[aria-expanded="true"] {
@@ -178,7 +182,7 @@
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    width: 320px;
+    width: min(360px, calc(100vw - 32px));
     background: var(--admin-surface);
     border: 1px solid var(--admin-border);
     border-radius: 12px;
@@ -216,6 +220,11 @@
 }
 
 .admin-notif-view-all {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
     font-size: 12px;
     font-weight: 600;
     color: var(--admin-primary-lt);
@@ -259,12 +268,256 @@
     font-size: 13px;
     color: var(--admin-text-body);
     line-height: 1.45;
-    margin-bottom: 3px;
+    margin: 0 0 3px;
 }
 
 .admin-notif-time {
     font-size: 11px;
     color: var(--admin-text-muted);
+}
+
+.admin-notif-empty {
+    margin: 0;
+    padding: 22px 16px;
+    color: var(--admin-text-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+.admin-notif-error,
+.admin-notif-modal-error {
+    margin: 0;
+    padding: 10px 16px;
+    color: #b91c1c;
+    background: #fef2f2;
+    font-size: 12px;
+}
+
+.admin-notif-badge[hidden],
+.admin-notif-error[hidden],
+.admin-notif-modal-error[hidden],
+.admin-notif-load-more[hidden] { display: none; }
+
+.admin-notif-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(30, 27, 75, 0.48);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.admin-notif-modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.admin-notif-modal {
+    display: flex;
+    flex-direction: column;
+    width: min(760px, 100%);
+    max-height: min(760px, calc(100vh - 48px));
+    overflow: hidden;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 14px;
+    box-shadow: 0 24px 60px rgba(30, 27, 75, 0.22);
+    transform: translateY(10px);
+    transition: transform 0.2s ease;
+}
+
+.admin-notif-modal-overlay.open .admin-notif-modal { transform: translateY(0); }
+
+.admin-notif-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-notif-modal-header h2 {
+    margin: 0;
+    color: var(--admin-dark);
+    font-size: 18px;
+}
+
+.admin-notif-modal-header span {
+    display: block;
+    margin-top: 3px;
+    color: var(--admin-text-muted);
+    font-size: 12px;
+}
+
+.admin-notif-modal-close {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-surface);
+    color: var(--admin-text-muted);
+    font-size: 23px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.admin-notif-modal-close:hover { background: var(--admin-surface-2); color: var(--admin-dark); }
+
+.admin-notif-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-notif-search-label {
+    position: relative;
+    flex: 1 1 180px;
+}
+
+.admin-notif-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 11px;
+    width: 15px;
+    height: 15px;
+    color: var(--admin-text-muted);
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.admin-notif-controls input,
+.admin-notif-controls select,
+.admin-notif-controls button {
+    min-height: 36px;
+    padding: 7px 10px;
+    border: 1px solid var(--admin-border);
+    border-radius: 7px;
+    background-color: #fff;
+    color: var(--admin-text-body);
+    font: inherit;
+    font-size: 12px;
+}
+
+.admin-notif-controls input { width: 100%; padding-left: 34px; }
+
+.admin-notif-controls select {
+    min-width: 140px;
+    padding-right: 32px;
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 14px;
+}
+
+.admin-notif-controls input:focus,
+.admin-notif-controls select:focus { border-color: var(--admin-primary); outline: none; }
+
+.admin-notif-controls button {
+    border-color: var(--admin-primary);
+    background: var(--admin-primary);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-notif-controls button:hover:not(:disabled) {
+    background: var(--admin-primary-dark, #5b21b6);
+    box-shadow: 0 2px 6px rgba(91, 33, 182, 0.2);
+}
+
+.admin-notif-controls button:disabled { opacity: 0.6; cursor: wait; }
+
+.admin-notif-modal-list { overflow-y: auto; padding: 4px 22px 16px; }
+
+.admin-notif-modal-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 4px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-notif-modal-row.unread { background: #f5f3ff; }
+.admin-notif-modal-row-body { flex: 1; min-width: 0; }
+
+.admin-notif-category {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--admin-primary-lt);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+    text-transform: uppercase;
+}
+
+.admin-notif-modal-row h3 { margin: 0 0 4px; color: var(--admin-dark); font-size: 13px; }
+.admin-notif-modal-row p { margin: 0 0 5px; color: var(--admin-text-body); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.admin-notif-modal-row time { color: var(--admin-text-muted); font-size: 11px; }
+
+.admin-notif-row-action {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    border: 1px solid var(--admin-border-mid);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--admin-primary);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.admin-notif-row-action:hover { border-color: var(--admin-primary); background: var(--admin-primary); color: #fff; }
+
+.admin-notif-load-more {
+    align-self: center;
+    margin: 0 0 16px;
+    padding: 7px 14px;
+    border: 1px solid var(--admin-border-mid);
+    border-radius: 7px;
+    background: #fff;
+    color: var(--admin-primary);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.admin-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.admin-topbar-notif:focus-visible,
+.admin-notif-modal-close:focus-visible,
+.admin-notif-controls input:focus-visible,
+.admin-notif-controls select:focus-visible,
+.admin-notif-controls button:focus-visible,
+.admin-notif-row-action:focus-visible {
+    outline: 3px solid rgba(124, 58, 237, 0.28);
+    outline-offset: 2px;
 }
 
 
@@ -437,4 +690,16 @@
     .admin-topbar-right { width: 100%; justify-content: flex-end; }
     .admin-user-text, .admin-user-chevron { display: none; }
     .admin-topbar-user { padding: 5px; }
+}
+
+@media (max-width: 640px) {
+    .admin-notif-modal-overlay { padding: 12px; }
+    .admin-notif-modal { max-height: calc(100vh - 24px); }
+    .admin-notif-modal-header { padding: 16px; }
+    .admin-notif-controls { padding: 12px 16px; }
+    .admin-notif-search-label { flex-basis: 100%; }
+    .admin-notif-controls select { flex: 1 1 calc(50% - 8px); min-width: 0; }
+    .admin-notif-controls button { flex: 1 1 100%; }
+    .admin-notif-modal-list { padding: 4px 16px 14px; }
+    .admin-notif-modal-row { align-items: flex-start; }
 }

@@ -85,7 +85,7 @@
           </div>`,
         info: `
           <div class="an-skeleton-heading"><i class="an-skeleton-icon"></i><i></i></div>
-          <div class="an-skeleton-rows"><i></i><i></i><i></i><i></i><i></i><i></i></div>`,
+          <div class="an-skeleton-rows"><i></i><i></i><i></i></div>`,
         table: `
           <div class="an-skeleton-heading"><i></i><i></i></div>
           <div class="an-skeleton-table-head">
@@ -96,19 +96,16 @@
           </div>
           <div class="an-skeleton-table-row">
             <span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span>
-          </div>
-          <div class="an-skeleton-table-row">
-            <span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span>
           </div>`,
         status: `
           <div class="an-skeleton-heading"><i></i><i></i></div>
-          <div class="an-skeleton-rows"><i></i><i></i><i></i><i></i></div>
+          <div class="an-skeleton-rows"><i></i><i></i><i></i></div>
           <div class="an-skeleton-divider"></div>
           <div class="an-skeleton-heading"><i></i><i></i></div>
-          <div class="an-skeleton-rows"><i></i><i></i><i></i></div>`,
+          <div class="an-skeleton-rows"><i></i><i></i></div>`,
         report: `
           <div class="an-skeleton-heading"><i></i><i></i></div>
-          <div class="an-skeleton-rows"><i></i><i></i><i></i><i></i></div>`,
+          <div class="an-skeleton-rows"><i></i><i></i><i></i></div>`,
       };
 
       layer.innerHTML = templates[type];

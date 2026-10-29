@@ -35,8 +35,8 @@ $_initials = substr($_initials, 0, 2);
 
 $_unreadCount = 0;
 try {
-    $_nStmt = $_topbarConn->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = 0");
-    $_nStmt->execute([':id' => $_SESSION['user_id'] ?? 0, ':uid' => $_SESSION['user_id'] ?? 0]);
+    $_nStmt = $_topbarConn->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = :uid AND is_read = FALSE AND is_dismissed = FALSE AND type IN ('admin_content_announcement', 'admin_content_service', 'admin_service_request', 'admin_community_report', 'admin_user_management')");
+    $_nStmt->execute([':uid' => $_SESSION['user_id'] ?? 0]);
     $_unreadCount = (int)$_nStmt->fetchColumn();
 } catch (Exception $e) {  }
 ?>
@@ -75,27 +75,31 @@ try {
         <div class="admin-topbar-divider"></div>
 
         
-        <div class="admin-topbar-notif" role="button" tabindex="0"
-             aria-label="Notifications" aria-expanded="false" id="admin-notif-btn">
+        <div class="admin-topbar-notif-wrap">
+        <button class="admin-topbar-notif" type="button"
+             aria-label="Notifications" aria-expanded="false" aria-haspopup="true" id="admin-notif-btn">
             <svg class="admin-notif-bell" xmlns="http://www.w3.org/2000/svg" fill="none"
                  viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round"
                       d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/>
             </svg>
             <span class="admin-notif-badge" id="admin-notif-badge"
-                  style="<?= $_unreadCount === 0 ? 'display:none;' : '' ?>">
+                  <?= $_unreadCount === 0 ? 'hidden' : '' ?>>
                 <?= $_unreadCount ?>
             </span>
+
+        </button>
 
             
             <div class="admin-notif-dropdown" id="admin-notif-dropdown" role="menu">
                 <div class="admin-notif-dropdown-header">
                     <span>Notifications</span>
-                    <a href="#" class="admin-notif-view-all" id="admin-notif-mark-all">Mark all read</a>
+                    <button type="button" class="admin-notif-view-all" id="admin-notif-view-all">View all</button>
                 </div>
-                <ul class="admin-notif-list" id="admin-notif-list">
+                <ul class="admin-notif-list" id="admin-notif-preview" aria-live="polite">
                     <li style="padding:20px;text-align:center;color:#6b7280;font-size:12px;">Loading…</li>
                 </ul>
+                <p class="admin-notif-error" id="admin-notif-preview-error" role="alert" hidden></p>
             </div>
         </div>
 
@@ -147,5 +151,45 @@ try {
 
     </div>
 </header>
+
+<div class="admin-notif-modal-overlay" id="admin-notif-modal" aria-hidden="true">
+    <section class="admin-notif-modal" role="dialog" aria-modal="true" aria-labelledby="admin-notif-modal-title">
+        <header class="admin-notif-modal-header">
+            <div>
+                <h2 id="admin-notif-modal-title">All notifications</h2>
+                <span id="admin-notif-modal-count"></span>
+            </div>
+            <button class="admin-notif-modal-close" id="admin-notif-modal-close" type="button" aria-label="Close notifications">&times;</button>
+        </header>
+        <div class="admin-notif-controls">
+            <label class="admin-notif-search-label">
+                <span class="admin-sr-only">Search notifications</span>
+                <svg class="admin-notif-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="m16 16 4 4"></path>
+                </svg>
+                <input id="admin-notif-search" type="search" placeholder="Search notifications">
+            </label>
+            <select id="admin-notif-type" aria-label="Filter by notification type">
+                <option value="">All types</option>
+                <option value="announcements">Announcements</option>
+                <option value="services">Services</option>
+                <option value="requests">Service requests</option>
+                <option value="reports">Community reports</option>
+                <option value="users">User management</option>
+            </select>
+            <select id="admin-notif-read" aria-label="Filter by read status">
+                <option value="">All notifications</option>
+                <option value="0">Unread</option>
+                <option value="1">Read</option>
+            </select>
+            <button id="admin-notif-mark-all" type="button">Mark all read</button>
+        </div>
+        <p class="admin-notif-modal-error" id="admin-notif-modal-error" role="alert" hidden></p>
+        <div class="admin-notif-modal-list" id="admin-notif-modal-list" aria-live="polite">
+            <p class="admin-notif-empty">Loading notifications...</p>
+        </div>
+        <button class="admin-notif-load-more" id="admin-notif-load-more" type="button" hidden>Load more</button>
+    </section>
+</div>
 
 <script src="../../../scripts/management/admin/admin_topbar.js?v=<?= time() ?>"></script>

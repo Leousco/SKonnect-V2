@@ -26,6 +26,7 @@ function showToast(message, type = "error") {
   let messageEl   = document.getElementById("message");
   const resendBtn = document.getElementById("resendBtn");
   const countdownEl = document.getElementById("countdown");
+  const verifyBtn = form.querySelector('.verify-btn');
   
   
   inputs.forEach((input, i) => {
@@ -70,6 +71,11 @@ function showToast(message, type = "error") {
       showToast("Please enter the complete 6-digit OTP.");
       return;
     }
+
+    if (verifyBtn.disabled) return;
+    verifyBtn.disabled = true;
+    verifyBtn.classList.add("is-loading");
+    verifyBtn.textContent = "Verifying...";
   
     fetch("../../backend/routes/auth.php", {
       method: "POST",
@@ -95,11 +101,21 @@ function showToast(message, type = "error") {
             window.location.href = "login.php?verified=1";
           }, 1500);
         } else {
+          resetVerifyButton();
           showToast(data.message);
         }
       })
-      .catch(() => showToast("Server error. Please try again."));
+      .catch(() => {
+        resetVerifyButton();
+        showToast("Server error. Please try again.");
+      });
   });
+
+  function resetVerifyButton() {
+    verifyBtn.disabled = false;
+    verifyBtn.classList.remove("is-loading");
+    verifyBtn.textContent = "Verify Code";
+  }
   
   
   let countdownInterval = null;
@@ -113,7 +129,9 @@ function showToast(message, type = "error") {
   
     
     resendBtn.disabled = true;
-    startCountdown(60);
+    const originalText = "Resend Code";
+    resendBtn.classList.add("is-loading");
+    resendBtn.firstChild.textContent = "Sending... ";
   
     
     fetch("../../backend/routes/auth.php", {
@@ -124,8 +142,17 @@ function showToast(message, type = "error") {
       .then((res) => res.json())
       .then((data) => {
         showToast(data.message, data.status === "success" ? "success" : "error");
+        resendBtn.classList.remove("is-loading");
+        resendBtn.firstChild.textContent = `${originalText} `;
+        if (data.status === "success") startCountdown(60);
+        else resendBtn.disabled = false;
       })
-      .catch(() => showToast("Failed to resend OTP. Try again."));
+      .catch(() => {
+        resendBtn.classList.remove("is-loading");
+        resendBtn.firstChild.textContent = `${originalText} `;
+        resendBtn.disabled = false;
+        showToast("Failed to resend OTP. Try again.");
+      });
   });
   
   function startCountdown(duration) {

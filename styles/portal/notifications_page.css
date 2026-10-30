@@ -317,7 +317,8 @@
 .notif-empty-icon {
     font-size: 48px;
     margin-bottom: 16px;
-    opacity: 0.3;
+    opacity: 1;
+    filter: saturate(1.2) drop-shadow(0 2px 3px rgba(15, 37, 69, 0.16));
 }
 
 .notif-empty-title {

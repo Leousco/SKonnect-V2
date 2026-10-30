@@ -120,6 +120,24 @@
     return Array.from(grid.querySelectorAll(".svc-card"));
   }
 
+  function updateCardTitleStates() {
+    getCards().forEach((card) => {
+      const title = card.querySelector(".svc-card-title");
+      if (!title || card.getClientRects().length === 0) return;
+
+      const range = document.createRange();
+      range.selectNodeContents(title);
+      const lineTops = new Set(
+        Array.from(range.getClientRects(), (rect) => Math.round(rect.top))
+      );
+      card.classList.toggle("svc-title-two-lines", lineTops.size >= 2);
+    });
+  }
+
+  if (document.fonts?.ready) document.fonts.ready.then(updateCardTitleStates);
+  requestAnimationFrame(updateCardTitleStates);
+  window.addEventListener("resize", () => requestAnimationFrame(updateCardTitleStates));
+
   function applyFilters() {
     const q = searchInput.value.toLowerCase().trim();
     const category = selCategory.value;
@@ -706,6 +724,7 @@
       }
 
       applyFilters();
+      requestAnimationFrame(updateCardTitleStates);
       closeModal();
     } catch (err) {
       showToast("Network error — please try again.", "danger");
@@ -898,10 +917,11 @@
     const capFull = hasCapacity && d.current_count >= d.max_capacity;
 
     const reqLines = d.requirements
-      ? d.requirements
-          .split("\n")
-          .filter((l) => l.trim() && /^[-•*]/.test(l.trim()))
+      ? d.requirements.split("\n").map((line) => line.trim()).filter(Boolean)
       : [];
+    const requirementSummary = reqLines.length
+      ? `${reqLines.length} Document${reqLines.length === 1 ? "" : "s"}`
+      : "Not specified";
 
     const article = document.createElement("article");
     article.className = "svc-card";
@@ -936,7 +956,7 @@
         </div>
         <h3 class="svc-card-title">${escHtml(d.name)}</h3>
         <p class="svc-card-desc">${escHtml(d.description)}</p>
-        <ul class="svc-details-list">
+        <ul class="svc-details-list ${hasCapacity ? "svc-details-list--slots" : ""}">
           <li class="svc-detail-type">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z"/></svg>
             <span class="svc-detail-label">Service Type</span>
@@ -962,23 +982,11 @@
           </li>`
               : ""
           }
-          ${
-            reqLines.length
-              ? `<li class="svc-detail-req">
+          <li class="svc-detail-req">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
-            <div class="svc-detail-req-content">
-              <span class="svc-detail-label">Requirements</span>
-              <ul class="svc-req-list">${reqLines
-                .map(
-                  (l) =>
-                    `<li>${escHtml(l.trim().replace(/^[-•*]\s*/, ""))}</li>`
-                )
-                .join("")}
-              </ul>
-            </div>
-          </li>`
-              : ""
-          }
+            <span class="svc-detail-label">Requirements</span>
+            <span class="svc-detail-type-value">${escHtml(requirementSummary)}</span>
+          </li>
           ${
             d.service_type === "info" && d.contact_info
               ? `<li class="svc-detail-contact-row">

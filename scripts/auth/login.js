@@ -132,7 +132,8 @@ form.addEventListener("submit", (e) => {
       }
 
       clearLockoutNotice();
-      showToast(data.message, data.status === "success" ? "success" : "error");
+      const otpSent = data.status === "unverified" && !data.redirect?.includes("email_error=1");
+      showToast(data.message, data.status === "success" || otpSent ? "success" : "error");
 
       if (data.status === "success" || data.status === "unverified") {
         

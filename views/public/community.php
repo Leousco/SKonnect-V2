@@ -124,10 +124,15 @@ $cat_labels = [
                         <p class="thread-snippet"><?= htmlspecialchars(mb_substr($t['message'], 0, 160)) ?><?= mb_strlen($t['message']) > 160 ? '…' : '' ?></p>
 
                         <div class="thread-meta">
-                            <span>By: <?= htmlspecialchars($t['author_name']) ?></span>
+                            <span class="thread-meta-author" title="<?= htmlspecialchars($t['author_name'], ENT_QUOTES, 'UTF-8') ?>">By: <?= htmlspecialchars($t['author_name']) ?></span>
                             <time datetime="<?= $t['created_at'] ?>"><?= $date_fmt ?></time>
-                            <span><img src="../../assets/img/handshake-icon.png" alt="Support" class="support-icon"> <?= (int)$t['support_count'] ?></span>
-                            <span>💬 <?= (int)$t['comment_count'] ?> <?= $t['comment_count'] == 1 ? 'comment' : 'comments' ?></span>
+                            <span class="thread-meta-comments" aria-label="<?= (int)$t['comment_count'] ?> comments">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-1-4.5a7.5 7.5 0 1 1 16-3Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8 11.5h8M8 14.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                </svg>
+                                <span><?= (int)$t['comment_count'] ?></span>
+                            </span>
                         </div>
 
                         <button class="view-thread-btn" onclick="event.stopPropagation(); window.location.href='public_thread_view.php?id=<?= (int)$t['id'] ?>'">

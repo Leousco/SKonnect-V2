@@ -1189,6 +1189,74 @@
   color: var(--off-text-muted);
 }
 
+/* Keep service cards aligned with the compact resident service cards. */
+.svc-grid {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  grid-auto-rows: auto;
+}
+
+.svc-card-body {
+  padding: 18px 20px 14px;
+}
+
+.svc-card {
+  height: auto;
+}
+
+.svc-card-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  line-height: 21px;
+  max-height: 42px;
+  margin-bottom: 6px;
+}
+
+.svc-card-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  line-height: 21px;
+  flex: 0 0 auto;
+  margin: 0 0 12px;
+}
+
+.svc-card.svc-title-two-lines .svc-card-desc {
+  -webkit-line-clamp: 3;
+}
+
+.svc-details-list {
+  min-height: 85px;
+  padding-top: 10px;
+}
+
+.svc-details-list > .svc-detail-type,
+.svc-details-list > .svc-detail-contact-row,
+.svc-details-list > .svc-attachment-row {
+  display: none !important;
+}
+
+.svc-details-list.svc-details-list--slots {
+  display: block;
+  min-height: 0;
+  padding-top: 6px;
+}
+
+.svc-details-list.svc-details-list--slots > li {
+  display: none !important;
+}
+
+.svc-card-body > .svc-capacity-wrap {
+  margin-top: 0;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #eef1f5;
+}
+
 .svc-cat-assistance {
   background: #fef3c7;
   color: #92400e;
@@ -2571,4 +2639,53 @@
 
 .svc-attachment-add-more-input {
   display: none;
+}
+
+/* Match the resident metadata row and keep capacity details legible. */
+.svc-details-list > li.svc-detail-req {
+  display: grid;
+  grid-template-columns: 14px 87px minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+}
+
+.svc-details-list > li:not(.svc-detail-contact-row):not(.svc-attachment-row) {
+  grid-template-columns: 14px 87px minmax(0, 1fr);
+  align-items: center;
+}
+
+.svc-details-list > li:not(.svc-detail-contact-row):not(.svc-attachment-row) > .svc-detail-type-value {
+  display: block;
+  min-width: 0;
+  margin-left: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.svc-details-list > li.svc-detail-req > svg {
+  align-self: center;
+  margin-top: 0;
+}
+
+.svc-capacity-label {
+  color: var(--off-dark);
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.svc-capacity-label svg {
+  width: 15px;
+  height: 15px;
+  color: var(--off-dark);
+}
+
+.svc-capacity-count {
+  color: var(--off-dark);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.svc-capacity-bar {
+  background: #d7e0e7;
 }

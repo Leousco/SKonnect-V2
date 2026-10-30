@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/DeferredEmailQueue.php';
 require_once __DIR__ . '/../config/paths.php';
+require_once __DIR__ . '/AIConfig.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -22,13 +23,21 @@ class EmailService
         $this->mail = new PHPMailer(true);
         $this->mail->SMTPDebug = 0;
         $this->mail->isSMTP();
-        $this->mail->Host       = 'smtp.gmail.com';
+        $host = AIConfig::get('SMTP_HOST', '');
+        $username = AIConfig::get('SMTP_USERNAME', '');
+        $password = AIConfig::get('SMTP_PASSWORD', '');
+        if ($host === '' || $username === '' || $password === '') {
+            throw new RuntimeException('Email delivery is not configured. Set SMTP_HOST, SMTP_USERNAME, and SMTP_PASSWORD.');
+        }
+        $this->mail->Host       = $host;
         $this->mail->SMTPAuth   = true;
-        $this->mail->Username   = 'skonnect.system@gmail.com';
-        $this->mail->Password   = 'dktl mpvg fwfu hqnt';
-        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $this->mail->Port       = 587;
-        $this->mail->setFrom('skonnect.system@gmail.com', 'SKonnect - Barangay Sauyo');
+        $this->mail->Username   = $username;
+        $this->mail->Password   = $password;
+        $this->mail->SMTPSecure = AIConfig::get('SMTP_ENCRYPTION', PHPMailer::ENCRYPTION_STARTTLS);
+        $this->mail->Port       = (int) AIConfig::get('SMTP_PORT', '587');
+        $this->mail->Timeout    = 15;
+        $this->mail->SMTPKeepAlive = false;
+        $this->mail->setFrom(AIConfig::get('SMTP_FROM_EMAIL', $username), AIConfig::get('SMTP_FROM_NAME', 'SKonnect - Barangay Sauyo'));
     }
 
     private function sendNotification(
@@ -137,8 +146,8 @@ class EmailService
 
             $this->mail->send();
             return true;
-        } catch (Exception $e) {
-            error_log("EmailService error [{$subject}] for {$email}: " . $this->mail->ErrorInfo);
+        } catch (Throwable $e) {
+            error_log("EmailService error [{$subject}] for {$email}: " . ($this->mail->ErrorInfo ?: $e->getMessage()));
             return false;
         }
     }
@@ -155,8 +164,8 @@ class EmailService
             $this->mail->AltBody = "Your SKonnect verification OTP is: {$otp}\n\nThis code will expire in 10 minutes.";
             $this->mail->send();
             return true;
-        } catch (Exception $e) {
-            error_log("PHPMailer Error: " . $this->mail->ErrorInfo);
+        } catch (Throwable $e) {
+            error_log("PHPMailer Error: " . ($this->mail->ErrorInfo ?: $e->getMessage()));
             return false;
         }
     }

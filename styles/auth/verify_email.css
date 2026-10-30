@@ -421,3 +421,9 @@
 .sk-toast__msg  { line-height: 1.4; }
 
 .otp-message { display: none !important; }
+
+.verify-btn.is-loading,
+.resend-btn.is-loading {
+  opacity: 0.65;
+  cursor: wait;
+}

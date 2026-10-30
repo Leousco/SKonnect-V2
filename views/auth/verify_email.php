@@ -52,6 +52,10 @@ if (!isset($_SESSION['verify_email'])) {
             <span class="email-highlight">your email address</span>
         </p>
 
+        <?php if (isset($_GET['email_error'])): ?>
+            <p class="otp-message" style="display:block!important;color:#ffd166">We couldn't send your code. Check your email settings or use Resend Code to try again.</p>
+        <?php endif; ?>
+
         
         <form id="otpForm" autocomplete="off">
 

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../services/EmailService.php';
 
 class LoginController {
 
@@ -58,16 +59,6 @@ class LoginController {
             exit;
         }
 
-        if ($user->is_verified != 1) {
-            $_SESSION['verify_email'] = $user->email;
-            echo json_encode([
-                'status'   => 'unverified',
-                'message'  => 'Your account is not verified. Redirecting to verification...',
-                'redirect' => '../../views/auth/verify_email.php',
-            ]);
-            exit;
-        }
-
         if (!password_verify($password, $user->password)) {
             $this->handleFailedAttempt($user);
             exit;
@@ -77,6 +68,27 @@ class LoginController {
         $user->lockout_until  = null;
         $user->lockout_level  = 0;
         $user->updateLockoutState();
+
+        if (!$user->is_verified) {
+            $_SESSION['verify_email'] = $user->email;
+            $otp = (string) random_int(100000, 999999);
+            $user->otp_code = $otp;
+            $user->otp_expires = date('Y-m-d H:i:s', strtotime('+10 minutes'));
+
+            $sent = $user->updateOTP()
+                && (new EmailService())->sendOTP($user->email, $otp, (string) $user->first_name);
+
+            echo json_encode([
+                'status'   => 'unverified',
+                'message'  => $sent
+                    ? 'A new verification code was sent to your email.'
+                    : 'Your account is not verified, and we could not send a new code. Please use Resend Code or check your email settings.',
+                'redirect' => $sent
+                    ? '../../views/auth/verify_email.php'
+                    : '../../views/auth/verify_email.php?email_error=1',
+            ]);
+            exit;
+        }
 
         $_SESSION['user_id']    = $user->id;
         $_SESSION['user_name']  = $user->first_name . ' ' . $user->last_name;

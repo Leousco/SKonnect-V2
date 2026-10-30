@@ -1280,10 +1280,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .event-item-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 13.5px;
   font-weight: 600;
   font-family: "Poppins", sans-serif;
@@ -1291,6 +1296,7 @@
 }
 
 .event-badge {
+  margin-left: auto;
   font-size: 9.5px;
   font-weight: 700;
   font-family: "Poppins", sans-serif;
@@ -1324,9 +1330,18 @@
 }
 
 .event-item-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 11.5px;
   color: var(--text-muted);
   font-weight: 500;
+}
+
+.event-item-location svg {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
 }
 
 .event-item-countdown {

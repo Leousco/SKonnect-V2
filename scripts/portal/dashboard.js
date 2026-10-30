@@ -454,7 +454,7 @@
                     </div>
                     <div class="event-item-meta">
                         <span class="event-item-date">${formatDate(dateStr)}${timeStr ? ' · ' + timeStr : ''}</span>
-                        ${ev.location ? `<span class="event-item-location">📍 ${escapeHtml(ev.location)}</span>` : ''}
+                        ${ev.location ? `<span class="event-item-location"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg>${escapeHtml(ev.location)}</span>` : ''}
                         <span class="event-item-countdown" style="color:${ev.color.dot}">${daysUntil(dateStr)}</span>
                     </div>
                 </div>`;

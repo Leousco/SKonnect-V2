@@ -8,7 +8,7 @@ A community portal that connects residents with their SK officers: announcements
 
 Deploy the project as a Docker web service using the included `Dockerfile`. The app is served from the domain root, and its PHP pages are under `views/`.
 
-The container grants Apache write access to the upload directories. Render's container filesystem is otherwise ephemeral, so configure persistent storage for uploaded files if announcement banners or other uploads must survive a restart or redeploy. Set the database and Gemini credentials as Render environment variables; do not commit them.
+The container grants Apache write access to the upload directories. Render's container filesystem is otherwise ephemeral, so configure persistent storage for uploaded files if announcement banners or other uploads must survive a restart or redeploy. Set the database, Gemini, and SMTP credentials as Render environment variables; do not commit them. For local development, place the SMTP settings in the ignored project-root `.env` file. Email requires `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, and `SMTP_PASSWORD`. Optional settings are `SMTP_ENCRYPTION` (`tls` by default), `SMTP_FROM_EMAIL`, and `SMTP_FROM_NAME`. For Gmail, use `smtp.gmail.com`, port `587`, encryption `tls`, and a Google App Password. The server returns a delivery error promptly if credentials are missing or SMTP does not respond.
 
 ## Table of Contents
 
@@ -140,6 +140,7 @@ Completed:
 - [x] Empty fields like threads, reports, etc. show either two "no record yet" messages or misaligned (not centered) text.
 - [x] Inconsistent toast design across all user views.
 - [x] Make the notifications on admin users (officer, moderator, admin) a modal.
+- [ ] Update public panel footer
 - [ ] Make a 404 page (optional)
 
 ### [ PUBLIC SIDE ]
@@ -150,6 +151,10 @@ Completed:
 
 #### Registration
 - [ ] No password restrictions
+- [ ] No loading visualization on the 'register' button
+
+#### OTP Verification
+- [ ] No loading visualization on the 'verify' button
 
 #### Services
 - [ ] Bug with modal appearing and the navbar
@@ -234,7 +239,7 @@ Completed:
 #### Officer
 - [ ] Announcement preview in announcement page doesn't show the image banner
 - [ ] Requests in requests page cannot be reviewed (Same with admin)
-- [ ] Analytics does not show most of the data
+- [ ] Analytics does not show any of the data
 
 #### Admin
 - [ ] Bug when activating or deactivating a service (also no confirmation modal)

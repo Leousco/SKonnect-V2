@@ -133,3 +133,13 @@ watchedFields.forEach((id) => {
   }
 });
 privacyCheckbox.addEventListener("change", checkFormReady);
+
+document.getElementById("registerForm").addEventListener("submit", (event) => {
+  if (!document.getElementById("registerForm").reportValidity()) {
+    event.preventDefault();
+    return;
+  }
+  submitBtn.disabled = true;
+  submitBtn.classList.add("is-loading");
+  submitBtn.textContent = "Sending code...";
+});

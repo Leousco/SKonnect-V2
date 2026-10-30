@@ -38,7 +38,11 @@ class AuthController {
         $user->gender      = $_POST['gender'];
         $user->birth_date  = $_POST['birth_date'];
 
-        $birth = new DateTime($user->birth_date);
+        try {
+            $birth = new DateTime($user->birth_date);
+        } catch (Throwable $e) {
+            die("Invalid birth date.");
+        }
         $today = new DateTime();
         $user->age = $today->diff($birth)->y;
 
@@ -50,18 +54,26 @@ class AuthController {
             die("Email already registered and verified.");
         }
 
-        $otp = rand(100000, 999999);
+        $otp = random_int(100000, 999999);
         $user->otp_code = $otp;
         $user->otp_expires = date("Y-m-d H:i:s", strtotime("+10 minutes"));
 
         if ($emailCheck['exists'] && $emailCheck['is_verified'] == 0) {
-            $user->updateOTP();
+            if (!$user->updateOTP()) {
+                die("Unable to prepare email verification. Please try again.");
+            }
         } else {
-            $user->create();
+            if (!$user->create()) {
+                die("Unable to create your account. Please try again.");
+            }
         }
 
         $emailService = new EmailService();
-        $emailService->sendOTP($user->email, $otp, $user->first_name);
+        if (!$emailService->sendOTP($user->email, (string)$otp, (string)$user->first_name)) {
+            $_SESSION['verify_email'] = $user->email;
+            header("Location: ../../views/auth/verify_email.php?email_error=1");
+            exit();
+        }
 
         $_SESSION['verify_email'] = $user->email;
 
@@ -98,6 +110,10 @@ class AuthController {
 
         $user = new User();
         $user->email = $email;
+        if (!$user->getUserByEmail() || $user->is_verified) {
+            echo json_encode(["status" => "error", "message" => "This verification request is no longer valid. Please register again."]);
+            exit();
+        }
         $user->otp_code = $otp;
 
         if ($user->verifyUser()) {
@@ -138,13 +154,24 @@ class AuthController {
         $user = new User();
         $user->email = $email;
 
-        $otp = rand(100000, 999999);
+        if (!$user->getUserByEmail() || $user->is_verified) {
+            echo json_encode(["status" => "error", "message" => "This verification request is no longer valid. Please register again."]);
+            exit();
+        }
+
+        $otp = random_int(100000, 999999);
         $user->otp_code = $otp;
         $user->otp_expires = date("Y-m-d H:i:s", strtotime("+10 minutes"));
-        $user->updateOTP();
+        if (!$user->updateOTP()) {
+            echo json_encode(["status" => "error", "message" => "Could not generate a new code. Please try again."]);
+            exit();
+        }
 
         $emailService = new EmailService();
-        $emailService->sendOTP($user->email, $otp, $user->first_name);
+        if (!$emailService->sendOTP($user->email, (string)$otp, (string)$user->first_name)) {
+            echo json_encode(["status" => "error", "message" => "Email delivery failed. Check the mail settings and try again."]);
+            exit();
+        }
 
         echo json_encode([
             "status" => "success",

@@ -33,7 +33,13 @@ class EmailService
         $this->mail->SMTPAuth   = true;
         $this->mail->Username   = $username;
         $this->mail->Password   = $password;
-        $this->mail->SMTPSecure = AIConfig::get('SMTP_ENCRYPTION', PHPMailer::ENCRYPTION_STARTTLS);
+        $encryption = strtolower(trim((string) AIConfig::get('SMTP_ENCRYPTION', PHPMailer::ENCRYPTION_STARTTLS)));
+        $this->mail->SMTPSecure = match ($encryption) {
+            'tls', 'starttls', 'smtp::encryption_starttls' => PHPMailer::ENCRYPTION_STARTTLS,
+            'ssl', 'smtps', 'smtps://' => PHPMailer::ENCRYPTION_SMTPS,
+            'none', 'off', '' => '',
+            default => throw new RuntimeException('SMTP_ENCRYPTION must be tls, ssl, or none.'),
+        };
         $this->mail->Port       = (int) AIConfig::get('SMTP_PORT', '587');
         $this->mail->Timeout    = 15;
         $this->mail->SMTPKeepAlive = false;

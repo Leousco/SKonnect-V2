@@ -48,8 +48,16 @@ function publicAssetUrl(?string $path): string
         return $path;
     }
 
+    // Paths written by older uploads may be absolute filesystem paths. Keep
+    // only their public assets/uploads suffix before building the URL.
     if (preg_match('#(?:^|/)(assets|uploads)/(.+)$#i', $path, $matches)) {
         return appUrl($matches[1] . '/' . $matches[2]);
+    }
+
+    // Relative paths in the database must be rooted at the application, not
+    // relative to whichever nested management page rendered them.
+    if (!preg_match('#^[a-z][a-z0-9+.-]*://#i', $path) && $path[0] !== '/') {
+        return appUrl($path);
     }
 
     return $path;

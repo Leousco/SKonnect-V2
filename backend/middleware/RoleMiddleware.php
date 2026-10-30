@@ -58,13 +58,33 @@ class RoleMiddleware {
     }
 
     private static function redirectToLogin(): void {
+        if (self::isJsonRequest()) {
+            http_response_code(401);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['success' => false, 'message' => 'Your session has expired. Please sign in again.']);
+            exit;
+        }
         header('Location: ' . appUrl('views/auth/login.php'));
         exit;
     }
 
     private static function redirectToDenied(): void {
+        if (self::isJsonRequest()) {
+            http_response_code(403);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['success' => false, 'message' => 'You are not authorized to access this resource.']);
+            exit;
+        }
         header('Location: ' . appUrl('views/public/unauthorized.php'));
         exit;
+    }
+
+    private static function isJsonRequest(): bool {
+        $accept = strtolower($_SERVER['HTTP_ACCEPT'] ?? '');
+        $requestedWith = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '');
+        return strpos($accept, 'application/json') !== false
+            || $requestedWith === 'xmlhttprequest'
+            || strpos($_SERVER['SCRIPT_NAME'] ?? '', '/backend/routes/') !== false;
     }
 }
 ?>

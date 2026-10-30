@@ -774,7 +774,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (a.banner_img) {
         existingBannerPath = a.banner_img;
-        loadBannerFromUrl(a.banner_img);
+        loadBannerFromUrl(assetUrl(a.banner_img));
       }
 
       savedAttachments = (json.files || []).map((f) => {
@@ -1049,7 +1049,7 @@ document.addEventListener("DOMContentLoaded", function () {
                            a.banner_img
                              ? `
                          <div class="apm-banner">
-                             <img src="${escHtml(a.banner_img)}" alt="${escHtml(
+                             <img src="${escHtml(assetUrl(a.banner_img))}" alt="${escHtml(
                                  a.title
                                )}">
                              ${
@@ -1605,6 +1605,15 @@ document.addEventListener("DOMContentLoaded", function () {
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
+  }
+
+  function assetUrl(path) {
+    if (!path) return '';
+    const value = String(path).replace(/\\/g, '/');
+    if (/^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(value)) return value;
+    const publicPath = value.match(/(?:^|\/)(assets|uploads)\/(.+)$/i);
+    const rooted = publicPath ? `/${publicPath[1]}/${publicPath[2]}` : (value.startsWith('/') ? value : `/${value}`);
+    return `${window.location.origin}${rooted}`;
   }
 
   function formatDate(dateStr) {

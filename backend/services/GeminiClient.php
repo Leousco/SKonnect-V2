@@ -4,7 +4,7 @@ require_once __DIR__ . '/AIConfig.php';
 
 class GeminiClient
 {
-    private const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/interactions';
+    private const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
     private $apiKey;
     private $model;
@@ -12,7 +12,7 @@ class GeminiClient
     public function __construct()
     {
         $this->apiKey = (string) AIConfig::get('GEMINI_API_KEY', '');
-        $this->model = (string) AIConfig::get('GEMINI_MODEL', 'gemini-3.8-flash');
+        $this->model = (string) AIConfig::get('GEMINI_MODEL', 'gemini-3.5-flash-lite');
     }
 
     /**
@@ -28,17 +28,22 @@ class GeminiClient
         }
 
         $body = json_encode([
-            'model' => $this->model,
-            'system_instruction' => $systemInstruction,
-            'input' => $input,
-            'store' => false, 
-            'generation_config' => [
-                'temperature' => 0.2, // low = sticks to the supplied data
-                'max_output_tokens' => 1024,
+            'systemInstruction' => ['parts' => [['text' => $systemInstruction]]],
+            'contents' => [[
+                'role' => 'user',
+                'parts' => [['text' => $input]],
+            ]],
+            'generationConfig' => [
+                'temperature' => 0.2,
+                'maxOutputTokens' => 1024,
             ],
         ], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
 
-        $ch = curl_init(self::ENDPOINT);
+        $ch = curl_init(self::ENDPOINT . rawurlencode($this->model) . ':generateContent');
+        if ($ch === false) {
+            error_log('Gemini request could not be initialized.');
+            return $this->fail('transport');
+        }
         curl_setopt_array($ch, [
             CURLOPT_POST => true,
             CURLOPT_RETURNTRANSFER => true,
@@ -53,14 +58,15 @@ class GeminiClient
 
         $response = curl_exec($ch);
         $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlErrno = curl_errno($ch);
         if (PHP_VERSION_ID < 80000) {
             curl_close($ch);
         }
 
         if ($response === false) {
             // Do not log cURL details; keep provider diagnostics free of request or credential data.
-            error_log('Gemini transport failure.');
-            return $this->fail('transport');
+            error_log('Gemini transport failure (cURL ' . $curlErrno . ').');
+            return $this->fail($curlErrno === CURLE_OPERATION_TIMEDOUT ? 'timeout' : 'transport');
         }
 
         if ($status === 429) {
@@ -74,7 +80,12 @@ class GeminiClient
         }
 
         if ($status < 200 || $status >= 300) {
-            error_log('Gemini returned HTTP ' . $status . '.');
+            $errorData = json_decode((string) $response, true);
+            $providerStatus = is_array($errorData) ? ($errorData['error']['status'] ?? '') : '';
+            $providerMessage = is_array($errorData) ? ($errorData['error']['message'] ?? '') : '';
+            $providerStatus = is_string($providerStatus) ? preg_replace('/[^A-Z0-9_]/', '', $providerStatus) : '';
+            $providerMessage = is_string($providerMessage) ? substr(preg_replace('/[\r\n\t]+/', ' ', $providerMessage), 0, 240) : '';
+            error_log('Gemini returned HTTP ' . $status . ($providerStatus !== '' ? ' (' . $providerStatus . ')' : '') . ($providerMessage !== '' ? ': ' . $providerMessage : '') . '.');
             if ($status >= 500) {
                 return $this->fail('server_error');
             }
@@ -98,22 +109,10 @@ class GeminiClient
     private function extractText(array $data): string
     {
         $text = '';
-        $steps = isset($data['steps']) && is_array($data['steps']) ? $data['steps'] : [];
-
-        foreach ($steps as $step) {
-            if (!is_array($step) || ($step['type'] ?? '') !== 'model_output') {
-                continue;
-            }
-            $parts = isset($step['content']) && is_array($step['content']) ? $step['content'] : [];
-            foreach ($parts as $part) {
-                if (
-                    is_array($part) &&
-                    ($part['type'] ?? '') === 'text' &&
-                    isset($part['text']) &&
-                    is_string($part['text'])
-                ) {
-                    $text .= $part['text'];
-                }
+        $parts = $data['candidates'][0]['content']['parts'] ?? [];
+        foreach ($parts as $part) {
+            if (is_array($part) && isset($part['text']) && is_string($part['text'])) {
+                $text .= $part['text'];
             }
         }
 

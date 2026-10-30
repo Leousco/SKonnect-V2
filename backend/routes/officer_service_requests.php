@@ -1,6 +1,7 @@
 <?php
 
-
+// Ensure incidental output from included files can be removed before JSON.
+ob_start();
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../controllers/ServiceRequestController.php';
@@ -8,7 +9,9 @@ require_once __DIR__ . '/../controllers/ServiceRequestController.php';
 RoleMiddleware::requireRole('sk_officer');
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
+if (ob_get_level() > 0) {
+    ob_clean();
+}
 
 $action     = $_GET['action'] ?? ($_POST['action'] ?? '');
 $controller = new ServiceRequestController();

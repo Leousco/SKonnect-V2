@@ -1,6 +1,9 @@
 <?php
 
-
+// This endpoint clears incidental output from includes before returning JSON.
+// Start a buffer explicitly because Render's PHP configuration may not have
+// output_buffering enabled (ob_clean() without a buffer emits an HTML warning).
+ob_start();
 
 
 
@@ -11,7 +14,9 @@ RoleMiddleware::requireRole('sk_officer');
 require_once __DIR__ . '/../config/database.php';
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
+if (ob_get_level() > 0) {
+    ob_clean();
+}
 
 try {
     $period = $_GET['period'] ?? 'month';

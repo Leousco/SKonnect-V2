@@ -238,11 +238,11 @@ Completed:
 
 #### Officer
 - [x] Announcement preview in announcement page doesn't show the image banner
-- [ ] Requests in requests page cannot be reviewed (Same with admin)
-- [ ] Analytics does not show any of the data
+- [x] Requests in requests page cannot be reviewed (Same with admin)
+- [x] Analytics does not show any of the data
 
 #### Admin
-- [ ] Bug when activating or deactivating a service (also no confirmation modal)
+- [x] Bug when activating or deactivating a service
 
 ### Features Backlog
 

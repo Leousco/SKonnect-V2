@@ -46,6 +46,81 @@ class EmailService
         $this->mail->setFrom(AIConfig::get('SMTP_FROM_EMAIL', $username), AIConfig::get('SMTP_FROM_NAME', 'SKonnect - Barangay Sauyo'));
     }
 
+    private function config(string $key, string $default = ''): string
+    {
+        $value = (string) AIConfig::get($key, '');
+        if ($value === '') {
+            $env = getenv($key);
+            $value = ($env !== false) ? (string) $env : $default;
+        }
+        return $value;
+    }
+
+    private function sendMail(string $email, string $name, string $subject, string $htmlBody, string $plainBody): void
+    {
+        $provider = strtolower(trim($this->config('EMAIL_PROVIDER', 'smtp')));
+
+        if ($provider === 'brevo') {
+            $this->sendViaBrevo($email, $name, $subject, $htmlBody, $plainBody);
+            return;
+        }
+
+        $this->configureSMTP();
+        $this->mail->addAddress($email, $name);
+        $this->mail->isHTML(true);
+        $this->mail->Subject = $subject;
+        $this->mail->Body    = $htmlBody;
+        $this->mail->AltBody = $plainBody;
+        $this->mail->send();
+    }
+
+    private function sendViaBrevo(string $email, string $name, string $subject, string $htmlBody, string $plainBody): void
+    {
+        $apiKey = $this->config('BREVO_API_KEY');
+        $from   = $this->config('EMAIL_FROM', $this->config('SMTP_FROM_EMAIL'));
+        if ($apiKey === '' || $from === '') {
+            throw new RuntimeException('Brevo is not configured. Set BREVO_API_KEY and EMAIL_FROM.');
+        }
+
+        $recipient = ['email' => $email];
+        if ($name !== '') {
+            $recipient['name'] = $name;
+        }
+
+        $payload = [
+            'sender'      => ['name' => $this->config('SMTP_FROM_NAME', 'SKonnect - Barangay Sauyo'), 'email' => $from],
+            'to'          => [$recipient],
+            'subject'     => $subject,
+            'htmlContent' => $htmlBody,
+            'textContent' => $plainBody,
+        ];
+
+        $ch = curl_init('https://api.brevo.com/v3/smtp/email');
+        curl_setopt_array($ch, [
+            CURLOPT_POST           => true,
+            CURLOPT_HTTPHEADER     => [
+                'accept: application/json',
+                'content-type: application/json',
+                'api-key: ' . $apiKey,
+            ],
+            CURLOPT_POSTFIELDS     => json_encode($payload),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 15,
+        ]);
+
+        $response = curl_exec($ch);
+        $status   = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error    = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false) {
+            throw new RuntimeException("Brevo request failed: {$error}");
+        }
+        if ($status < 200 || $status >= 300) {
+            throw new RuntimeException("Brevo API error (HTTP {$status}): {$response}");
+        }
+    }
+
     private function sendNotification(
         string $email,
         string $name,
@@ -109,11 +184,6 @@ class EmailService
         }
 
         try {
-            $this->configureSMTP();
-            $this->mail->addAddress($email, $name);
-            $this->mail->isHTML(true);
-            $this->mail->Subject = $subject;
-
             $ctaButton = $ctaLabel
                 ? "<a href='{$ctaUrl}'
                       style='display:inline-block;background:#facc15;color:#0f2545;font-weight:700;
@@ -123,7 +193,7 @@ class EmailService
                    </a>"
                 : '';
 
-            $this->mail->Body = "
+            $htmlBody = "
                 <div style='font-family:Segoe UI,sans-serif;max-width:600px;margin:auto;
                             background:#f4f6f9;padding:24px;border-radius:12px;'>
                     <div style='background:linear-gradient(135deg,#0f2545,#1e5fa8);border-radius:10px;
@@ -148,9 +218,9 @@ class EmailService
                     </p>
                 </div>
             ";
-            $this->mail->AltBody = "{$subject}\n\n{$bodyPlain}\n\nVisit: {$ctaUrl}";
+            $plainBody = "{$subject}\n\n{$bodyPlain}\n\nVisit: {$ctaUrl}";
 
-            $this->mail->send();
+            $this->sendMail($email, $name, $subject, $htmlBody, $plainBody);
             return true;
         } catch (Throwable $e) {
             error_log("EmailService error [{$subject}] for {$email}: " . ($this->mail->ErrorInfo ?: $e->getMessage()));
@@ -162,13 +232,13 @@ class EmailService
     public function sendOTP(string $email, string $otp, string $name): bool
     {
         try {
-            $this->configureSMTP();
-            $this->mail->addAddress($email, $name);
-            $this->mail->isHTML(true);
-            $this->mail->Subject = 'SKonnect - Email Verification OTP';
-            $this->mail->Body    = "Your SKonnect verification OTP is: <strong>{$otp}</strong><br><br>This code will expire in 10 minutes.";
-            $this->mail->AltBody = "Your SKonnect verification OTP is: {$otp}\n\nThis code will expire in 10 minutes.";
-            $this->mail->send();
+            $this->sendMail(
+                $email,
+                $name,
+                'SKonnect - Email Verification OTP',
+                "Your SKonnect verification OTP is: <strong>{$otp}</strong><br><br>This code will expire in 10 minutes.",
+                "Your SKonnect verification OTP is: {$otp}\n\nThis code will expire in 10 minutes."
+            );
             return true;
         } catch (Throwable $e) {
             error_log("PHPMailer Error: " . ($this->mail->ErrorInfo ?: $e->getMessage()));

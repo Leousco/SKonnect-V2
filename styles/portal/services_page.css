@@ -785,11 +785,27 @@
 
 .res-card-actions {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 8px;
   flex-wrap: wrap;
   margin-top: auto;
   justify-content: space-between;
+}
+
+/* "View Details" + "Apply / Request Service": equal 50/50 split, slightly shorter */
+.res-card-actions .btn-ghost-portal,
+.res-card-actions .res-action-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 7.5px 14px;
+  white-space: normal;
+  text-align: center;
+  justify-content: center;
+}
+
+/* Single-button cards (info-only services) keep their natural width */
+.res-card-actions > :only-child {
+  flex: 0 0 auto;
 }
 
 
@@ -1872,6 +1888,11 @@
   .res-card-actions {
     flex-direction: column;
     align-items: stretch;
+  }
+  .res-card-actions .btn-ghost-portal,
+  .res-card-actions .res-action-btn {
+    flex: 0 0 auto;
+    width: 100%;
   }
   .res-card-actions .svc-category-tag {
     margin-left: 0;

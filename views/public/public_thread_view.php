@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../backend/config/paths.php';
 require_once __DIR__ . '/../../backend/config/database.php';
 require_once __DIR__ . '/../../backend/models/ThreadModel.php';
 require_once __DIR__ . '/../../backend/models/CommentModel.php';
@@ -120,8 +121,9 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
                 <?php if (!empty($images)) : ?>
                     <div class="thread-images-grid">
                         <?php foreach ($images as $img) : ?>
-                            <div class="thread-image-item" data-src="../../<?= htmlspecialchars($img['file_path']) ?>">
-                                <img src="../../<?= htmlspecialchars($img['file_path']) ?>" alt="<?= htmlspecialchars($img['file_name']) ?>" loading="lazy">
+                            <?php $image_url = publicAssetUrl($img['file_path']); ?>
+                            <div class="thread-image-item" data-src="<?= htmlspecialchars($image_url, ENT_QUOTES, 'UTF-8') ?>">
+                                <img src="<?= htmlspecialchars($image_url, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($img['file_name'], ENT_QUOTES, 'UTF-8') ?>" loading="lazy">
                             </div>
                         <?php endforeach; ?>
                     </div>

@@ -4,14 +4,9 @@ A community portal that connects residents with their SK officers: announcements
 
 > **Last Update:** 10/29/26
 
-## Render Deployment
-
-Deploy the project as a Docker web service using the included `Dockerfile`. The app is served from the domain root, and its PHP pages are under `views/`.
-
-The container grants Apache write access to the upload directories. Render's container filesystem is otherwise ephemeral, so configure persistent storage for uploaded files if announcement banners or other uploads must survive a restart or redeploy. Set the database, Gemini, and SMTP credentials as Render environment variables; do not commit them. For local development, place the SMTP settings in the ignored project-root `.env` file. Email requires `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, and `SMTP_PASSWORD`. Optional settings are `SMTP_ENCRYPTION` (`tls` by default), `SMTP_FROM_EMAIL`, and `SMTP_FROM_NAME`. For Gmail, use `smtp.gmail.com`, port `587`, encryption `tls`, and a Google App Password. The server returns a delivery error promptly if credentials are missing or SMTP does not respond.
-
 ## Table of Contents
 
+- [Setup](#setup)
 - [System Users](#system-users)
 - [Login Credentials](#login-credentials)
 - [Features](#features)
@@ -21,6 +16,13 @@ The container grants Apache write access to the upload directories. Render's con
 - [Known Issues](#known-issues)
 - [Deployment](#deployment-issues-render)
 - [Features Backlog](#features-backlog)
+
+## Setup
+- Clone the project from the Repo
+- Paste the .env file on the project root
+- Install composer
+- Configure the Apache's php.ini then restart Apache
+- Test
 
 ## System Users
 
@@ -151,7 +153,7 @@ Completed:
 
 #### Registration
 - [ ] No password restrictions
-- [ ] No loading visualization on the 'register' button
+- [x] No loading visualization on the 'register' button
 
 #### OTP Verification
 - [x] No loading visualization on the 'verify' button
@@ -172,6 +174,7 @@ Completed:
 - [x] Change the support icon to a simple heart instead of whatever that is
 - [x] In the bookmarks section fix the border colors
 - [x] Maybe fix the pill colors, some pills have the same colors despite meaning differently
+- [ ] The pictures are not showing when posted by users
 
 #### Notifications
 - [x] Color and icon of "action require" service requests
@@ -235,6 +238,15 @@ Completed:
 ### Deployment Issues (Render)
 
 - [ ] Complete and fix deployment before presentation
+
+#### Community thread images
+
+Thread image files are stored in the app's `uploads` directory; their database rows contain paths relative to the app root. On Render, attach a persistent disk to the web service at `/var/www/html/uploads` so uploaded images remain available after deploys and restarts. The app's Docker image creates this directory and grants the web server access to it.
+
+Uploads are not committed to the repository, so a separate local clone cannot access files uploaded to another machine's local filesystem. A Render disk is also tied to one service instance; deployments that need multiple instances should use shared object storage instead.
+
+#### Public
+- [x] Registration email verification workaround
 
 #### Officer
 - [x] Announcement preview in announcement page doesn't show the image banner

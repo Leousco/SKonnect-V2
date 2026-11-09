@@ -272,7 +272,7 @@ RoleMiddleware::requireAuth();
                             
                             $btnLabel = match ($svc['service_type']) {
                                 'document'    => 'Apply',
-                                'appointment' => 'Request Service',
+                                'appointment' => 'Request',
                                 default       => 'View Details',
                             };
                             $isInfoOnly = $svc['service_type'] === 'info';
@@ -376,7 +376,7 @@ RoleMiddleware::requireAuth();
                                         <?php if (!$isInfoOnly) : ?>
                                             <?php if ($alreadyApplied) : ?>
                                                 <button class="btn-primary-portal res-action-btn" disabled>
-                                                    ✓ Already Applied
+                                                    ✓ Applied
                                                 </button>
                                             <?php elseif ($isOpen) : ?>
                                                 <button class="btn-primary-portal res-action-btn svc-apply-btn" data-id="<?= $svc['id'] ?>" data-service="<?= htmlspecialchars($svc['name']) ?>" data-icon="<?= htmlspecialchars($icon) ?>" data-category-key="<?= htmlspecialchars($svc['category']) ?>" data-type="<?= htmlspecialchars($svc['service_type']) ?>" data-eligibility="<?= htmlspecialchars($svc['eligibility'] ?? '—') ?>" data-processing="<?= htmlspecialchars($svc['processing_time'] ?? '—') ?>" data-requirements="<?= htmlspecialchars($svc['requirements'] ?? '') ?>">
@@ -384,7 +384,7 @@ RoleMiddleware::requireAuth();
                                                 </button>
                                             <?php else : ?>
                                                 <button class="btn-primary-portal res-action-btn" disabled>
-                                                    <?= $capacityFull ? 'Slots Full' : 'Currently Closed' ?>
+                                                    <?= $capacityFull ? 'Slots Full' : 'Closed' ?>
                                                 </button>
                                             <?php endif; ?>
                                         <?php endif; ?>

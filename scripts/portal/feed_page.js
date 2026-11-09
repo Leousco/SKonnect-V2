@@ -321,7 +321,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (data.status === "success") {
         closeModal();
-        showToast("Thread posted!", "success");
+        const uploadErrors = Array.isArray(data.upload_errors)
+          ? data.upload_errors
+          : [];
+        showToast(
+          uploadErrors.length
+            ? `Thread posted, but some images could not be uploaded: ${uploadErrors.join(" ")}`
+            : "Thread posted!",
+          uploadErrors.length ? "error" : "success"
+        );
         setTimeout(() => window.location.reload(), 1200);
       } else {
         showToast(data.message || "Something went wrong.", "error");

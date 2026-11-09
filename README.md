@@ -174,7 +174,7 @@ Completed:
 - [x] Change the support icon to a simple heart instead of whatever that is
 - [x] In the bookmarks section fix the border colors
 - [x] Maybe fix the pill colors, some pills have the same colors despite meaning differently
-- [ ] The pictures are not showing when posted by users
+- [x] The pictures are not showing when posted by users
 
 #### Notifications
 - [x] Color and icon of "action require" service requests

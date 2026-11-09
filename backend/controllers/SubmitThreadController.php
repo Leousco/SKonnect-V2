@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
+require_once __DIR__ . '/../services/StorageService.php';
 RoleMiddleware::requireAuth();
 
 header('Content-Type: application/json');
@@ -44,9 +45,6 @@ if (!empty($errors)) {
 $thread_id = $model->createThread((int)$author_id, $category, $subject, $message);
 
 
-$upload_dir = __DIR__ . '/../../uploads/threads/';
-if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
-
 $allowed_mime  = ['image/jpeg', 'image/png'];
 $max_size      = 5 * 1024 * 1024;
 $upload_errors = [];
@@ -62,7 +60,6 @@ if (!empty($_FILES['images']['name'][0])) {
         $size = $files['size'][$i];
         $mime = mime_content_type($tmp);
         $orig = basename($files['name'][$i]);
-        $ext  = strtolower(pathinfo($orig, PATHINFO_EXTENSION));
 
         if (!in_array($mime, $allowed_mime)) {
             $upload_errors[] = "$orig: only JPEG and PNG allowed.";
@@ -73,11 +70,12 @@ if (!empty($_FILES['images']['name'][0])) {
             continue;
         }
 
-        $safe_name = $thread_id . '_' . uniqid() . '.' . $ext;
-        $dest      = $upload_dir . $safe_name;
-
-        if (move_uploaded_file($tmp, $dest)) {
-            $model->addThreadImage($thread_id, $orig, 'uploads/threads/' . $safe_name);
+        try {
+            $url = StorageService::uploadImage($tmp, $mime, $thread_id . '_');
+            $model->addThreadImage($thread_id, $orig, $url);
+        } catch (Throwable $e) {
+            error_log("Thread image upload failed: " . $e->getMessage());
+            $upload_errors[] = "$orig: upload failed.";
         }
     }
 }

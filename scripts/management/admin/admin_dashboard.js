@@ -3,12 +3,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const API_URL = '../../../backend/routes/dashboard_stats.php';
 
     const CATEGORY_LABELS = {
-        medical:     'Medical Assist.',
+        medical:     'Medical',
         education:   'Education',
         scholarship: 'Scholarship',
         livelihood:  'Livelihood',
         assistance:  'Assistance',
-        legal:       'Legal Aid',
+        legal:       'Legal',
         other:       'Others',
     };
 
@@ -27,19 +27,67 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     fetch(API_URL)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error(`Dashboard API returned HTTP ${res.status}`);
+            return res.json();
+        })
         .then(json => {
             if (json.status !== 'success') {
-                console.error('Dashboard API error:', json.message);
-                return;
+                throw new Error(json.message || 'Dashboard data could not be loaded.');
             }
             const d = json.data;
             populateWidgets(d);
             populatePendingTable(d.pendingList);
-            populateBarChart(d.byCategory);
+            populateBarChart(d.requestsByServiceType);
             populateSparkline(d.registrations, d);
+            finishLoading();
         })
-        .catch(err => console.error('Dashboard fetch failed:', err));
+        .catch(err => {
+            console.error('Dashboard fetch failed:', err);
+            showLoadingError();
+        });
+
+    function finishLoading() {
+        document.querySelectorAll('.admin-widgets, .sparkline-wrap').forEach(section => {
+            section.classList.remove('is-loading');
+            section.setAttribute('aria-busy', 'false');
+            section.querySelector('.admin-dashboard-skeleton')?.remove();
+        });
+
+        document.querySelectorAll('.requests-table-wrap, .bar-chart-wrap').forEach(section => {
+            section.setAttribute('aria-busy', 'false');
+        });
+    }
+
+    function showLoadingError() {
+        finishLoading();
+
+        document.querySelectorAll('.widget-number').forEach(el => {
+            el.textContent = '—';
+        });
+        document.querySelectorAll('.widget-trend').forEach(el => {
+            el.textContent = 'Unavailable';
+        });
+
+        const pendingBody = document.querySelector('.requests-table tbody');
+        if (pendingBody) {
+            pendingBody.innerHTML = '<tr><td colspan="5" class="dashboard-load-error">Unable to load service requests.</td></tr>';
+        }
+
+        const chart = document.querySelector('.bar-chart-wrap');
+        if (chart) chart.innerHTML = '<p class="dashboard-load-error">Unable to load chart data.</p>';
+
+        const registrations = document.querySelector('.sparkline-wrap');
+        if (registrations) {
+            const svg = registrations.querySelector('.sparkline-svg');
+            const labels = registrations.querySelector('.sparkline-labels');
+            if (svg) svg.hidden = true;
+            if (labels) labels.hidden = true;
+            registrations.querySelectorAll('.spark-val').forEach(el => {
+                el.textContent = '—';
+            });
+        }
+    }
 
     function populateWidgets(d) {
         setWidget(
@@ -128,26 +176,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }).join('');
     }
 
-    function populateBarChart(byCategory) {
+    function populateBarChart(requestsByType) {
         const wrap = document.querySelector('.bar-chart-wrap');
         if (!wrap) return;
 
-        if (!byCategory || byCategory.length === 0) {
-            wrap.innerHTML = `<p style="text-align:center;color:var(--admin-text-muted);font-size:13px;">No data for this month.</p>`;
+        if (!requestsByType || requestsByType.length === 0) {
+            wrap.innerHTML = `<p style="text-align:center;color:var(--admin-text-muted);font-size:13px;">No service requests yet.</p>`;
             return;
         }
 
-        const max = Math.max(...byCategory.map(c => c.count));
+        const max = Math.max(...requestsByType.map(type => Number(type.count) || 0), 1);
 
-        wrap.innerHTML = byCategory.map((cat, i) => {
-            const pct        = max > 0 ? Math.round((cat.count / max) * 100) : 0;
+        wrap.innerHTML = requestsByType.map((type, i) => {
+            const count      = Number(type.count) || 0;
+            const pct        = Math.round((count / max) * 100);
             const colorClass = BAR_COLOR_CLASS[i] || 'bar-muted';
-            const label      = CATEGORY_LABELS[cat.category] || cat.category;
+            const label      = escapeHtml(CATEGORY_LABELS[type.category] || type.category);
             return `
                 <div class="bar-row">
                     <span class="bar-label">${label}</span>
                     <div class="bar-track"><div class="bar-fill ${colorClass}" style="width:0%" data-target="${pct}%"></div></div>
-                    <span class="bar-count">${cat.count}</span>
+                    <span class="bar-count">${count}</span>
                 </div>
             `;
         }).join('');

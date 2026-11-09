@@ -75,6 +75,18 @@ $recentAnnouncementsStmt = $dashboardDb->query("
 ");
 $recentAnnouncements = $recentAnnouncementsStmt->fetchAll(PDO::FETCH_ASSOC);
 
+$recentActivityStmt = $dashboardDb->query("
+    SELECT
+        al.description,
+        al.created_at,
+        COALESCE(NULLIF(TRIM(CONCAT(u.first_name, ' ', u.last_name)), ''), 'System') AS user_name
+    FROM activity_logs al
+    LEFT JOIN users u ON u.id = al.user_id
+    ORDER BY al.created_at DESC, al.id DESC
+    LIMIT 20
+");
+$recentActivity = $recentActivityStmt->fetchAll(PDO::FETCH_ASSOC);
+
 $feedCategoryLabels = [
     'inquiry' => 'Inquiry',
     'complaint' => 'Complaint',
@@ -113,7 +125,19 @@ $feedCategoryLabels = [
     ?>
 
         
-        <section class="admin-widgets">
+        <section class="admin-widgets is-loading" aria-busy="true">
+            <div class="admin-dashboard-skeleton admin-widgets-skeleton" aria-hidden="true">
+                <?php for ($i = 0; $i < 4; $i++): ?>
+                    <span class="admin-skeleton-widget">
+                        <span class="admin-skeleton-block admin-skeleton-icon"></span>
+                        <span class="admin-skeleton-lines">
+                            <span class="admin-skeleton-block admin-skeleton-label"></span>
+                            <span class="admin-skeleton-block admin-skeleton-number"></span>
+                            <span class="admin-skeleton-block admin-skeleton-caption"></span>
+                        </span>
+                    </span>
+                <?php endfor; ?>
+            </div>
 
             <div class="admin-widget-card widget-violet">
                 <div class="widget-icon-wrap">
@@ -171,7 +195,7 @@ $feedCategoryLabels = [
                         <h2 class="section-label">Pending Service Requests</h2>
                         <a href="admin_service_requests.php" class="btn-admin-sm">View All &rsaquo;</a>
                     </div>
-                    <div class="requests-table-wrap">
+                    <div class="requests-table-wrap" aria-busy="true">
                         <table class="requests-table">
                             <thead>
                                 <tr>
@@ -182,7 +206,17 @@ $feedCategoryLabels = [
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                <?php for ($i = 0; $i < 3; $i++): ?>
+                                    <tr class="admin-table-skeleton" aria-hidden="true">
+                                        <td><span class="admin-skeleton-block admin-skeleton-cell admin-skeleton-cell--wide"></span></td>
+                                        <td><span class="admin-skeleton-block admin-skeleton-cell"></span></td>
+                                        <td><span class="admin-skeleton-block admin-skeleton-cell admin-skeleton-cell--short"></span></td>
+                                        <td><span class="admin-skeleton-block admin-skeleton-cell"></span></td>
+                                        <td><span class="admin-skeleton-block admin-skeleton-cell admin-skeleton-cell--short"></span></td>
+                                    </tr>
+                                <?php endfor; ?>
+                            </tbody>
                         </table>
                     </div>
                 </section>
@@ -191,9 +225,16 @@ $feedCategoryLabels = [
                     <section class="chart-panel">
                         <div class="panel-header">
                             <h2 class="section-label">Requests by Service Type</h2>
-                            <span class="chart-period" id="bar-chart-period"></span>
                         </div>
-                        <div class="bar-chart-wrap"></div>
+                        <div class="bar-chart-wrap" aria-busy="true">
+                            <?php for ($i = 0; $i < 4; $i++): ?>
+                                <span class="admin-chart-skeleton" aria-hidden="true">
+                                    <span class="admin-skeleton-block admin-skeleton-bar-label"></span>
+                                    <span class="admin-skeleton-block admin-skeleton-bar"></span>
+                                    <span class="admin-skeleton-block admin-skeleton-bar-count"></span>
+                                </span>
+                            <?php endfor; ?>
+                        </div>
                     </section>
 
                     <section class="chart-panel admin-module-panel">
@@ -259,47 +300,51 @@ $feedCategoryLabels = [
                 <section class="admin-activity-panel">
                     <h2 class="section-label">Admin Activity Log</h2>
                     <div class="activity-feed">
-
-                        <div class="activity-entry">
-                            <div class="activity-icon icon-green">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
-                            </div>
-                            <div class="activity-info">
-                                <p>Approved scholarship for <strong>Maria Reyes</strong></p>
-                                <span>Mar 1, 2026 · 10:42 AM</span>
-                            </div>
-                        </div>
-
-                        <div class="activity-entry">
-                            <div class="activity-icon icon-violet">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 1 8.835-2.535m0 0A23.74 23.74 0 0 1 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46"/></svg>
-                            </div>
-                            <div class="activity-info">
-                                <p>Published announcement: <strong>Scholarship Program 2026</strong></p>
-                                <span>Feb 28, 2026 · 2:15 PM</span>
-                            </div>
-                        </div>
-
-                        <div class="activity-entry">
-                            <div class="activity-icon icon-amber">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
-                            </div>
-                            <div class="activity-info">
-                                <p>Flagged community post for review</p>
-                                <span>Feb 27, 2026 · 9:00 AM</span>
-                            </div>
-                        </div>
-
-                        <div class="activity-entry">
-                            <div class="activity-icon icon-red">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
-                            </div>
-                            <div class="activity-info">
-                                <p>Declined medical request for <strong>Pedro Santos</strong></p>
-                                <span>Feb 26, 2026 · 4:30 PM</span>
-                            </div>
-                        </div>
-
+                        <?php if (empty($recentActivity)): ?>
+                            <p class="dashboard-module-empty">No recent activity recorded.</p>
+                        <?php else: ?>
+                            <?php foreach ($recentActivity as $entry):
+                                $description = trim((string)$entry['description']);
+                                $metadata = json_decode($description, true);
+                                if (is_array($metadata)) {
+                                    $parts = [];
+                                    if (!empty($metadata['target_type']) && !empty($metadata['target_name'])) {
+                                        $parts[] = ucfirst(str_replace('_', ' ', $metadata['target_type'])) . ': "' . $metadata['target_name'] . '"';
+                                    } elseif (!empty($metadata['target_name'])) {
+                                        $parts[] = '"' . $metadata['target_name'] . '"';
+                                    }
+                                    if (!empty($metadata['target_user'])) {
+                                        $parts[] = 'by ' . $metadata['target_user'];
+                                    }
+                                    if (!empty($metadata['notes'])) {
+                                        $parts[] = $metadata['notes'];
+                                    }
+                                    if (!$parts) {
+                                        foreach ($metadata as $key => $value) {
+                                            if ($key === 'target_id' || !is_scalar($value)) {
+                                                continue;
+                                            }
+                                            $parts[] = ucfirst(str_replace('_', ' ', (string)$key)) . ': ' . $value;
+                                        }
+                                    }
+                                    $description = implode(' — ', $parts) ?: 'Activity recorded.';
+                                }
+                                $description = strip_tags($description);
+                                $actorParts = preg_split('/\s+/', trim((string)$entry['user_name']), -1, PREG_SPLIT_NO_EMPTY);
+                                $actorInitials = strtoupper(substr($actorParts[0] ?? 'S', 0, 1));
+                                if (count($actorParts) > 1) {
+                                    $actorInitials .= strtoupper(substr($actorParts[count($actorParts) - 1], 0, 1));
+                                }
+                            ?>
+                                <div class="activity-entry">
+                                    <div class="activity-avatar" aria-hidden="true"><?= htmlspecialchars($actorInitials, ENT_QUOTES, 'UTF-8') ?></div>
+                                    <div class="activity-info">
+                                        <p><?= htmlspecialchars($description, ENT_QUOTES, 'UTF-8') ?></p>
+                                        <span><?= date('M j, Y · g:i A', strtotime($entry['created_at'])) ?></span>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </section>
 
@@ -398,7 +443,19 @@ $feedCategoryLabels = [
                     <h2 class="section-label">Member Registrations</h2>
                     <span class="chart-period">Last 6 months</span>
                 </div>
-                <div class="sparkline-wrap sparkline-wrap--grow">
+                <div class="sparkline-wrap sparkline-wrap--grow is-loading" aria-busy="true">
+                    <div class="admin-dashboard-skeleton admin-registration-skeleton" aria-hidden="true">
+                        <span class="admin-skeleton-block admin-skeleton-graph"></span>
+                        <span class="admin-skeleton-block admin-skeleton-legend"></span>
+                        <span class="admin-skeleton-stats">
+                            <?php for ($i = 0; $i < 4; $i++): ?>
+                                <span class="admin-skeleton-stat">
+                                    <span class="admin-skeleton-block admin-skeleton-stat-value"></span>
+                                    <span class="admin-skeleton-block admin-skeleton-stat-label"></span>
+                                </span>
+                            <?php endfor; ?>
+                        </span>
+                    </div>
                     <svg class="sparkline-svg sparkline-svg--tall" viewBox="0 0 560 120" preserveAspectRatio="none"></svg>
                     <div class="sparkline-labels"></div>
                     <div class="sparkline-stats sparkline-stats--quad">

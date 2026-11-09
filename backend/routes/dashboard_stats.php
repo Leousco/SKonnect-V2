@@ -94,15 +94,13 @@ try {
     $stmt = $conn->query("
         SELECT
             s.category,
-            COUNT(*) AS count
+            COUNT(*)::int AS count
         FROM service_applications sa
         JOIN services s ON sa.service_id = s.id
-        WHERE EXTRACT(MONTH FROM sa.submitted_at) = EXTRACT(MONTH FROM CURRENT_DATE)
-          AND EXTRACT(YEAR FROM sa.submitted_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
         GROUP BY s.category
-        ORDER BY count DESC
+        ORDER BY count DESC, s.category ASC
     ");
-    $byCategory = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $requestsByServiceType = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     
     $stmt = $conn->query("
@@ -153,7 +151,7 @@ try {
             'expiringSoon'     => $expiringSoon,
             'flaggedReports'   => $flaggedReports,
             'pendingList'      => $pendingList,
-            'byCategory'       => $byCategory,
+            'requestsByServiceType' => $requestsByServiceType,
             'registrations'    => $registrations,
             'membersSince6'    => $membersSince6,
             'activeRate'       => $activeRate,

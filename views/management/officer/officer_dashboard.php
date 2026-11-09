@@ -39,20 +39,6 @@ function dashStatusPill(string $status): string {
     return '<span class="status-pill ' . $cls . '">' . htmlspecialchars($lbl) . '</span>';
 }
 
-function dashCategoryBadge(string $category): string {
-    $map = [
-        'medical'     => ['badge-indigency', 'Medical'],
-        'education'   => ['badge-residency', 'Education'],
-        'scholarship' => ['badge-residency', 'Scholarship'],
-        'livelihood'  => ['badge-business',  'Livelihood'],
-        'assistance'  => ['badge-clearance', 'Assistance'],
-        'legal'       => ['badge-business',  'Legal'],
-        'other'       => ['badge-business',  'Other'],
-    ];
-    [$cls, $lbl] = $map[$category] ?? ['badge-business', ucfirst($category)];
-    return '<span class="req-badge ' . $cls . '">' . htmlspecialchars($lbl) . '</span>';
-}
-
 function dashTimeAgo(string $datetime): string {
     $ts = strtotime($datetime);
     if (!$ts) return '—';
@@ -65,49 +51,48 @@ function dashTimeAgo(string $datetime): string {
 }
 
 function dashActivityMeta(array $entry): array {
-    $type = $entry['type'];
-    $note = $entry['description'] ?? '';
-    $subj = htmlspecialchars($entry['subject'] ?? '');
+    $action = (string)($entry['action'] ?? '');
+    $details = json_decode((string)($entry['description'] ?? ''), true);
+    $details = is_array($details) ? $details : [];
+    $targetName = htmlspecialchars((string)($details['target_name'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $targetUser = htmlspecialchars((string)($details['target_user'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $actions = [
+        'service_request_approved' => ['Approved service request', 'icon-green'],
+        'service_request_rejected' => ['Declined service request', 'icon-amber'],
+        'service_request_cancelled' => ['Cancelled service request', 'icon-amber'],
+        'service_request_note_added' => ['Added a note to', 'icon-cyan'],
+        'service_created' => ['Created service', 'icon-cyan'],
+        'service_updated' => ['Updated service', 'icon-cyan'],
+        'service_deleted' => ['Deleted service', 'icon-amber'],
+        'service_status_updated' => ['Updated service status', 'icon-cyan'],
+        'announcement_created' => ['Created announcement', 'icon-cyan'],
+        'announcement_updated' => ['Updated announcement', 'icon-cyan'],
+        'announcement_archived' => ['Archived announcement', 'icon-amber'],
+        'announcement_restored' => ['Restored announcement', 'icon-green'],
+        'announcement_attachment_removed' => ['Removed an attachment from announcement', 'icon-amber'],
+        'announcement_deleted' => ['Deleted announcement', 'icon-amber'],
+        'event_created' => ['Created event', 'icon-indigo'],
+        'event_updated' => ['Updated event', 'icon-indigo'],
+        'event_deleted' => ['Deleted event', 'icon-amber'],
+    ];
+    [$label, $iconClass] = $actions[$action] ?? [
+        htmlspecialchars(ucwords(str_replace('_', ' ', $action ?: 'Officer action')), ENT_QUOTES, 'UTF-8'),
+        'icon-cyan',
+    ];
+    $targetType = htmlspecialchars((string)($details['target_type'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $targetLabel = $targetName !== '' ? $targetName : ($targetType !== '' ? $targetType : 'item');
+    if ($action === 'service_request_note_added' && $targetUser !== '') {
+        $text = "{$label} <strong>{$targetLabel}</strong> request for <strong>{$targetUser}</strong>";
+    } elseif (str_starts_with($action, 'service_request_') && $targetUser !== '') {
+        $text = "{$label} <strong>{$targetLabel}</strong> for <strong>{$targetUser}</strong>";
+    } else {
+        $text = "{$label}: <strong>{$targetLabel}</strong>";
+    }
 
-    if ($type === 'announcement') {
-        return [
-            'icon_class' => 'icon-cyan',
-            'svg'        => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>',
-            'text'       => "Published announcement: <strong>{$subj}</strong>",
-        ];
-    }
-    if ($type === 'event') {
-        return [
-            'icon_class' => 'icon-indigo',
-            'svg'        => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5"/></svg>',
-            'text'       => "Scheduled event: <strong>{$subj}</strong>",
-        ];
-    }
-    if (stripos($note, 'Request Approved') === 0) {
-        return [
-            'icon_class' => 'icon-green',
-            'svg'        => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>',
-            'text'       => "Approved request for <strong>{$subj}</strong>",
-        ];
-    }
-    if (stripos($note, 'Request Declined') === 0) {
-        return [
-            'icon_class' => 'icon-amber',
-            'svg'        => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>',
-            'text'       => "Declined request from <strong>{$subj}</strong>",
-        ];
-    }
-    if (stripos($note, 'Request Cancelled') === 0) {
-        return [
-            'icon_class' => 'icon-amber',
-            'svg'        => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>',
-            'text'       => "Cancelled request for <strong>{$subj}</strong>",
-        ];
-    }
     return [
-        'icon_class' => 'icon-cyan',
+        'icon_class' => $iconClass,
         'svg'        => '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/></svg>',
-        'text'       => "Officer note added for <strong>{$subj}</strong>",
+        'text'       => $text,
     ];
 }
 
@@ -147,8 +132,7 @@ $stmtReq = $db->prepare("
         sa.full_name,
         sa.status,
         sa.submitted_at,
-        sv.name     AS service_name,
-        sv.category AS service_category
+        sv.name AS service_name
     FROM service_applications sa
     INNER JOIN services sv ON sv.id = sa.service_id
     WHERE sa.status IN ('pending', 'action_required')
@@ -160,13 +144,11 @@ $recentRequests = $stmtReq->fetchAll(PDO::FETCH_ASSOC);
 
 
 $stmtBar = $db->prepare("
-    SELECT sv.name AS service_name, COUNT(*) AS cnt
+    SELECT sv.category AS service_category, COUNT(*) AS cnt
     FROM service_applications sa
     INNER JOIN services sv ON sv.id = sa.service_id
-    WHERE EXTRACT(MONTH FROM sa.submitted_at) = EXTRACT(MONTH FROM CURRENT_DATE)
-      AND EXTRACT(YEAR FROM sa.submitted_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
-    GROUP BY sv.id, sv.name
-    ORDER BY cnt DESC
+    GROUP BY sv.category
+    ORDER BY cnt DESC, sv.category ASC
     LIMIT 5
 ");
 $stmtBar->execute();
@@ -196,20 +178,25 @@ for ($i = 5; $i >= 0; $i--) {
 }
 
 
-$svgW   = 560; $svgH = 120; $padT = 10; $padB = 10;
+// Points sit at the centre of equal columns so they line up with the
+// month labels underneath, and nothing is clipped at the edges.
+$svgW   = 560; $svgH = 120; $padT = 12; $padB = 12;
 $maxVal = max(array_merge($sparkValues, [1]));
 $n      = count($sparkValues);
-$xStep  = $n > 1 ? $svgW / ($n - 1) : $svgW;
+$xStep  = $svgW / max($n, 1);
 $pts    = [];
+$dots   = [];
 foreach ($sparkValues as $i => $v) {
-    $x    = (int)round($i * $xStep);
+    $x    = (int)round(($i + 0.5) * $xStep);
     $y    = (int)round($svgH - $padB - ($v / $maxVal) * ($svgH - $padT - $padB));
-    $pts[] = "{$x},{$y}";
+    $pts[]  = "{$x},{$y}";
+    $dots[] = [$x, $y];
 }
 $sparkPath     = 'M' . implode(' L', $pts);
-$lastParts     = explode(',', end($pts));
-$lastX         = $lastParts[0];
-$sparkAreaPath = $sparkPath . " L{$lastX},{$svgH} L0,{$svgH} Z";
+$firstX        = $dots[0][0];
+$lastX         = $dots[count($dots) - 1][0];
+$sparkAreaPath = $sparkPath . " L{$lastX},{$svgH} L{$firstX},{$svgH} Z";
+$hasSparkData  = max($sparkValues) > 0;
 
 
 $thisMonthCount = $sparkValues[count($sparkValues) - 1] ?? 0;
@@ -229,44 +216,16 @@ $approvalRate = $decidedMonth > 0 ? round(($resolvedMonth / $decidedMonth) * 100
 
 
 $stmtActivity = $db->query("
-    (
-        SELECT
-            'request'                                           AS type,
-            an.note                                             AS description,
-            sa.full_name                                        AS subject,
-            sa.status                                           AS status,
-            an.created_at                                       AS activity_time
-        FROM application_notes an
-        INNER JOIN service_applications sa ON sa.id = an.application_id
-        ORDER BY an.created_at DESC
-        LIMIT 6
-    )
-    UNION ALL
-    (
-        SELECT
-            'announcement'                                      AS type,
-            a.title                                             AS description,
-            a.title                                             AS subject,
-            a.status                                            AS status,
-            a.published_at                                      AS activity_time
-        FROM announcements a
-        ORDER BY a.published_at DESC
-        LIMIT 3
-    )
-    UNION ALL
-    (
-        SELECT
-            'event'                                             AS type,
-            e.title                                             AS description,
-            e.title                                             AS subject,
-            'active'                                            AS status,
-            CAST(e.event_date AS TIMESTAMP)                     AS activity_time
-        FROM events e
-        ORDER BY e.event_date DESC
-        LIMIT 3
-    )
-    ORDER BY activity_time DESC
-    LIMIT 6
+    SELECT
+        al.action,
+        al.description,
+        al.created_at AS activity_time,
+        COALESCE(NULLIF(TRIM(CONCAT(u.first_name, ' ', u.last_name)), ''), 'Officer') AS actor_name
+    FROM activity_logs al
+    INNER JOIN users u ON u.id = al.user_id
+    WHERE u.role = 'sk_officer'
+    ORDER BY al.created_at DESC, al.id DESC
+    LIMIT 100
 ");
 $recentActivity = $stmtActivity->fetchAll(PDO::FETCH_ASSOC);
 
@@ -280,7 +239,7 @@ if (empty($recentAnn)) {
 $jsData = json_encode([
     'sparkline' => ['labels' => $sparkLabels, 'values' => $sparkValues],
     'barChart'  => array_map(fn($r) => [
-        'label' => $r['service_name'],
+        'label' => $r['service_category'],
         'count' => (int)$r['cnt'],
     ], $barData),
     'widgets'   => [
@@ -333,7 +292,7 @@ $jsData = json_encode([
                     </svg>
                 </div>
                 <div class="widget-body">
-                    <span class="widget-label">Pending Requests</span>
+                    <span class="widget-label">Pending requests</span>
                     <p class="widget-number" data-widget="pending_requests">
                         <?= $pendingCount ?>
                     </p>
@@ -384,7 +343,7 @@ $jsData = json_encode([
                     </svg>
                 </div>
                 <div class="widget-body">
-                    <span class="widget-label">Available Services</span>
+                    <span class="widget-label">Available services</span>
                     <p class="widget-number" data-widget="active_services">
                         <?= $activeServicesCount ?>
                     </p>
@@ -406,7 +365,7 @@ $jsData = json_encode([
                     </svg>
                 </div>
                 <div class="widget-body">
-                    <span class="widget-label">Total Residents</span>
+                    <span class="widget-label">Total residents</span>
                     <p class="widget-number" data-widget="total_residents">
                         <?= number_format($totalResidents) ?>
                     </p>
@@ -439,39 +398,36 @@ $jsData = json_encode([
                 
                 <section class="off-requests-panel">
                     <div class="panel-header">
-                        <h2 class="section-label">Pending Service Requests</h2>
-                        <a href="officer_requests.php" class="btn-off-sm">View All &rsaquo;</a>
+                        <h2 class="section-label">Pending service requests</h2>
+                        <a href="officer_requests.php" class="btn-off-sm">View all &rsaquo;</a>
                     </div>
+                    <?php if (empty($recentRequests)): ?>
+                        <div class="panel-empty">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                            <strong>No pending requests</strong>
+                            New requests from residents will show up here.
+                        </div>
+                    <?php else: ?>
                     <div class="requests-table-wrap">
                         <table class="requests-table">
                             <colgroup>
                                 <col class="requests-col-resident">
                                 <col class="requests-col-service">
                                 <col class="requests-col-submitted">
-                                <col class="requests-col-type">
                                 <col class="requests-col-status">
                                 <col class="requests-col-action">
                             </colgroup>
                             <thead>
                                 <tr>
                                     <th>Resident</th>
-                                    <th>Service Name</th>
+                                    <th>Service name</th>
                                     <th>Submitted</th>
-                                    <th>Type</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($recentRequests)): ?>
-                                    <tr>
-                                        <td colspan="6" style="text-align:center; padding:28px 12px;
-                                            color:var(--off-text-muted); font-size:13px;">
-                                            &#10003;&nbsp; No pending requests — you're all caught up!
-                                        </td>
-                                    </tr>
-                                <?php else: ?>
-                                    <?php foreach ($recentRequests as $req): ?>
+                                <?php foreach ($recentRequests as $req): ?>
                                         <tr>
                                             <td class="requests-resident">
                                                 <div class="req-name">
@@ -487,34 +443,31 @@ $jsData = json_encode([
                                             <td class="requests-submitted">
                                                 <?= date('M j, Y', strtotime($req['submitted_at'])) ?>
                                             </td>
-                                            <td class="requests-type">
-                                                <?= dashCategoryBadge($req['service_category']) ?>
-                                            </td>
                                             <td class="requests-status"><?= dashStatusPill($req['status']) ?></td>
                                             <td class="requests-action">
                                                 <a href="officer_requests.php?id=<?= (int)$req['id'] ?>"
                                                    class="action-link">Review</a>
                                             </td>
                                         </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
+                    <?php endif; ?>
                 </section>
 
                 
                 <section class="chart-panel">
                     <div class="panel-header">
-                        <h2 class="section-label">Requests by Service Type</h2>
-                        <span class="chart-period"><?= date('M Y') ?></span>
+                        <h2 class="section-label">Requests by service category</h2>
+                        <span class="chart-period">All time</span>
                     </div>
                     <div class="bar-chart-wrap">
                         <?php if (empty($barData)): ?>
-                            <p style="font-size:13px; color:var(--off-text-muted);
-                                padding:18px 0; text-align:center;">
-                                No service requests this month yet.
-                            </p>
+                            <div class="panel-empty">
+                                <strong>No requests yet</strong>
+                                Service categories will be ranked here once residents apply.
+                            </div>
                         <?php else: ?>
                             <?php foreach ($barData as $i => $bar):
                                 $pct = $barMax > 0 ? round(($bar['cnt'] / $barMax) * 100) : 0;
@@ -522,11 +475,11 @@ $jsData = json_encode([
                             ?>
                                 <div class="bar-row">
                                     <span class="bar-label"
-                                          title="<?= htmlspecialchars($bar['service_name']) ?>">
+                                      title="<?= htmlspecialchars($bar['service_category']) ?>">
                                         <?= htmlspecialchars(
-                                            mb_strlen($bar['service_name']) > 22
-                                                ? mb_substr($bar['service_name'], 0, 22) . '…'
-                                                : $bar['service_name']
+                                        mb_strlen($bar['service_category']) > 22
+                                            ? mb_substr($bar['service_category'], 0, 22) . '…'
+                                            : $bar['service_category']
                                         ) ?>
                                     </span>
                                     <div class="bar-track">
@@ -544,45 +497,39 @@ $jsData = json_encode([
                 
                 <section class="chart-panel">
                     <div class="panel-header">
-                        <h2 class="section-label">Request Volume</h2>
+                        <h2 class="section-label">Request volume</h2>
                         <span class="chart-period">Last 6 months</span>
                     </div>
                     <div class="sparkline-wrap">
-                        <svg class="sparkline-svg"
-                             viewBox="0 0 560 120" preserveAspectRatio="none"
-                             aria-label="Request volume over last 6 months">
-                            <defs>
-                                <linearGradient id="offSparkGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%"   stop-color="#2d7d9a" stop-opacity="0.25"/>
-                                    <stop offset="100%" stop-color="#2d7d9a" stop-opacity="0"/>
-                                </linearGradient>
-                            </defs>
-                            <?php if (max($sparkValues) > 0): ?>
+                        <?php if ($hasSparkData): ?>
+                            <svg class="sparkline-svg"
+                                 viewBox="0 0 560 120" preserveAspectRatio="none"
+                                 aria-label="Request volume over last 6 months">
+                                <defs>
+                                    <linearGradient id="offSparkGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%"   stop-color="#2d7d9a" stop-opacity="0.25"/>
+                                        <stop offset="100%" stop-color="#2d7d9a" stop-opacity="0"/>
+                                    </linearGradient>
+                                </defs>
                                 <path d="<?= htmlspecialchars($sparkAreaPath) ?>"
                                       fill="url(#offSparkGrad)"/>
                                 <path d="<?= htmlspecialchars($sparkPath) ?>"
                                       fill="none" stroke="#2d7d9a" stroke-width="2.5"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                                <?php
-                                $n2     = count($sparkValues);
-                                $xStep2 = $n2 > 1 ? 560 / ($n2 - 1) : 560;
-                                foreach ($sparkValues as $pi => $pv):
-                                    $px = (int)round($pi * $xStep2);
-                                    $py = (int)round(120 - 10 - ($pv / max(max($sparkValues), 1)) * 100);
-                                ?>
-                                    <circle cx="<?= $px ?>" cy="<?= $py ?>"
-                                            r="3.5" fill="#2d7d9a" opacity="0.8"/>
+                                      stroke-linecap="round" stroke-linejoin="round"
+                                      vector-effect="non-scaling-stroke"/>
+                                <?php foreach ($dots as [$dx, $dy]): ?>
+                                    <?php /* zero-length round-capped path = a dot that stays circular when the svg stretches */ ?>
+                                    <path d="M<?= $dx ?>,<?= $dy ?> h0" stroke="#2d7d9a" stroke-width="7"
+                                          stroke-linecap="round" vector-effect="non-scaling-stroke"/>
                                 <?php endforeach; ?>
-                            <?php else: ?>
-                                <path d="M0,60 L560,60" fill="none" stroke="var(--off-border)"
-                                      stroke-width="2" stroke-dasharray="6,4"/>
-                                <text x="280" y="64" text-anchor="middle" fill="var(--off-text-muted)"
-                                      font-size="11" font-family="Poppins,sans-serif">
-                                    No data yet
-                                </text>
-                            <?php endif; ?>
-                        </svg>
-                        <div class="sparkline-labels">
+                            </svg>
+                        <?php else: ?>
+                            <div class="panel-empty">
+                                <strong>No requests in the last 6 months</strong>
+                                Monthly volume will be charted here.
+                            </div>
+                        <?php endif; ?>
+                        <div class="sparkline-labels" style="--cols: <?= count($sparkLabels) ?>">
                             <?php foreach ($sparkLabels as $lbl): ?>
                                 <span><?= htmlspecialchars($lbl) ?></span>
                             <?php endforeach; ?>
@@ -617,7 +564,7 @@ $jsData = json_encode([
 
                 
                 <section class="quick-actions-panel">
-                    <h2 class="section-label">Quick Actions</h2>
+                    <h2 class="section-label">Quick actions</h2>
                     <div class="quick-actions-grid">
                         <a href="officer_announcements.php" class="quick-action-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -625,14 +572,14 @@ $jsData = json_encode([
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                             </svg>
-                            New Announcement
+                            New announcement
                         </a>
                         <a href="officer_requests.php" class="quick-action-btn">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
                             </svg>
-                            Manage Requests
+                            Manage requests
                         </a>
                         <a href="officer_services.php" class="quick-action-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -640,7 +587,7 @@ $jsData = json_encode([
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                             </svg>
-                            Add Service
+                            Add service
                         </a>
                         <a href="officer_events.php" class="quick-action-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -648,7 +595,7 @@ $jsData = json_encode([
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5"/>
                             </svg>
-                            Create Event
+                            Create event
                         </a>
                     </div>
                 </section>
@@ -656,14 +603,14 @@ $jsData = json_encode([
                 
                 <section class="chart-panel">
                     <div class="panel-header">
-                        <h2 class="section-label">Recent Announcements</h2>
+                        <h2 class="section-label">Recent announcements</h2>
                         <a href="officer_announcements.php" class="btn-off-sm">Manage &rsaquo;</a>
                     </div>
                     <ul class="off-ann-list">
                         <?php if (empty($recentAnn)): ?>
-                            <li style="padding:20px 0; text-align:center;
-                                font-size:13px; color:var(--off-text-muted);">
-                                No announcements published yet.
+                            <li class="panel-empty">
+                                <strong>No announcements yet</strong>
+                                Published announcements will appear here.
                             </li>
                         <?php else: ?>
                             <?php foreach ($recentAnn as $ann):
@@ -697,13 +644,13 @@ $jsData = json_encode([
 
                 
                 <section class="off-activity-panel">
-                    <h2 class="section-label">Recent Activity</h2>
+                    <h2 class="section-label">Recent activity</h2>
                     <div class="activity-feed">
                         <?php if (empty($recentActivity)): ?>
-                            <p style="font-size:13px; color:var(--off-text-muted);
-                                padding:18px 0; text-align:center;">
-                                No recent activity to display.
-                            </p>
+                            <div class="panel-empty">
+                                <strong>No recent activity</strong>
+                                Actions performed by officers will show up here.
+                            </div>
                         <?php else: ?>
                             <?php foreach ($recentActivity as $entry):
                                 $meta = dashActivityMeta($entry);
@@ -715,7 +662,7 @@ $jsData = json_encode([
                                     </div>
                                     <div class="activity-info">
                                         <p><?= $meta['text'] ?></p>
-                                        <span><?= htmlspecialchars($time) ?></span>
+                                        <span><?= htmlspecialchars((string)$entry['actor_name'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($time, ENT_QUOTES, 'UTF-8') ?></span>
                                     </div>
                                 </div>
                             <?php endforeach; ?>

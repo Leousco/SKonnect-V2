@@ -291,6 +291,9 @@ RoleMiddleware::requireAdmin();
                             <div class="svc-capacity-fill <?= $capacityPct >= 100 ? 'full' : ($capacityPct >= 80 ? 'warning' : '') ?>"
                                 style="width: <?= $capacityPct ?>%"></div>
                         </div>
+                        <span class="svc-capacity-remaining">
+                            <?= max(0, (int)$svc['max_capacity'] - (int)$svc['current_count']) ?> slots left
+                        </span>
                     </div>
                     <?php endif; ?>
 

@@ -430,6 +430,14 @@ body::-webkit-scrollbar {
     min-height: 0;
 }
 
+.pub-svc-card--capacity .pub-details-list--slots {
+    margin-top: auto;
+}
+
+.pub-svc-card--capacity .pub-card-actions {
+    margin-top: 0;
+}
+
 .pub-details-list li {
     font-size: 12px;
     color: var(--text-body, #334155);

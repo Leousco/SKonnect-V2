@@ -200,7 +200,7 @@ if (!empty($_SESSION['user_id'])) {
                         $attNames     = $svc['attachment_name'] ? array_filter(array_map('trim', explode(',', $svc['attachment_name']))) : [];
                         $attPaths     = $svc['attachment_path'] ? array_values(array_filter(array_map('trim', explode(',', $svc['attachment_path'])))) : [];
                     ?>
-                        <article class="pub-svc-card" data-category="<?= htmlspecialchars($svc['category']) ?>" data-type="<?= htmlspecialchars($svc['service_type']) ?>" data-status="<?= $displayStatus ?>">
+                        <article class="pub-svc-card <?= $hasCapacity ? 'pub-svc-card--capacity' : '' ?>" data-category="<?= htmlspecialchars($svc['category']) ?>" data-type="<?= htmlspecialchars($svc['service_type']) ?>" data-status="<?= $displayStatus ?>">
 
                             <div class="pub-card-body">
 

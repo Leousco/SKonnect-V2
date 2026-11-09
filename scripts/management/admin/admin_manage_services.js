@@ -1058,6 +1058,10 @@
               capPct >= 100 ? "full" : capPct >= 80 ? "warning" : ""
             }" style="width:${capPct}%"></div>
           </div>
+          <span class="svc-capacity-remaining">${Math.max(
+            0,
+            Number(d.max_capacity) - Number(d.current_count || 0)
+          )} slots left</span>
         </div>`
             : ""
         }

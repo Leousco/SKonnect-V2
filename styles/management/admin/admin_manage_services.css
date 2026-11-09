@@ -2581,3 +2581,28 @@
 .svc-capacity-bar {
   background: #d7e0e7;
 }
+
+.svc-card-body > .svc-capacity-wrap {
+  margin-top: auto;
+  padding: 12px 14px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: #eef4f7;
+}
+
+.svc-capacity-header {
+  margin-bottom: 7px;
+}
+
+.svc-capacity-label {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.svc-capacity-remaining {
+  display: block;
+  margin-top: 6px;
+  color: var(--ap-text-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}

@@ -54,8 +54,7 @@ try {
             sa.full_name,
             sa.status,
             sa.submitted_at,
-            sv.name     AS service_name,
-            sv.category AS service_category
+            sv.name AS service_name
         FROM service_applications sa
         INNER JOIN services sv ON sv.id = sa.service_id
         WHERE sa.status IN ('pending', 'action_required')
@@ -67,13 +66,11 @@ try {
 
     
     $stmtBar = $db->prepare("
-        SELECT sv.name AS service_name, COUNT(*) AS cnt
+        SELECT sv.category AS service_category, COUNT(*) AS cnt
         FROM service_applications sa
         INNER JOIN services sv ON sv.id = sa.service_id
-        WHERE MONTH(sa.submitted_at) = MONTH(CURDATE())
-          AND YEAR(sa.submitted_at)  = YEAR(CURDATE())
-        GROUP BY sv.id, sv.name
-        ORDER BY cnt DESC
+        GROUP BY sv.category
+        ORDER BY cnt DESC, sv.category ASC
         LIMIT 5
     ");
     $stmtBar->execute();
@@ -135,44 +132,16 @@ try {
     
     
     $stmtActivity = $db->query("
-        (
-            SELECT
-                'request'        AS type,
-                an.note          AS description,
-                sa.full_name     AS subject,
-                sa.status        AS status,
-                an.created_at    AS activity_time
-            FROM application_notes an
-            INNER JOIN service_applications sa ON sa.id = an.application_id
-            ORDER BY an.created_at DESC
-            LIMIT 6
-        )
-        UNION ALL
-        (
-            SELECT
-                'announcement'   AS type,
-                a.title          AS description,
-                a.title          AS subject,
-                a.status         AS status,
-                a.published_at   AS activity_time
-            FROM announcements a
-            ORDER BY a.published_at DESC
-            LIMIT 3
-        )
-        UNION ALL
-        (
-            SELECT
-                'event'          AS type,
-                e.title          AS description,
-                e.title          AS subject,
-                'active'         AS status,
-                CAST(e.event_date AS DATETIME) AS activity_time
-            FROM events e
-            ORDER BY e.event_date DESC
-            LIMIT 3
-        )
-        ORDER BY activity_time DESC
-        LIMIT 6
+        SELECT
+            al.action,
+            al.description,
+            al.created_at AS activity_time,
+            COALESCE(NULLIF(TRIM(CONCAT(u.first_name, ' ', u.last_name)), ''), 'Officer') AS actor_name
+        FROM activity_logs al
+        INNER JOIN users u ON u.id = al.user_id
+        WHERE u.role = 'sk_officer'
+        ORDER BY al.created_at DESC, al.id DESC
+        LIMIT 100
     ");
     $recentActivity = $stmtActivity->fetchAll(PDO::FETCH_ASSOC);
 
@@ -197,7 +166,7 @@ try {
         ],
         'recent_requests'  => $recentRequests,
         'bar_chart'        => $barData,
-        'bar_month_label'  => date('M Y'),
+        'bar_month_label'  => 'All time',
         'sparkline'        => [
             'labels'         => $sparkLabels,
             'values'         => $sparkValues,

@@ -1,0 +1,10 @@
+   .env
+   .env.*
+   .git
+   node_modules
+   vendor
+   uploads
+   test_*.php
+   debug_*.php
+   ai-debug.php
+   add_users.php

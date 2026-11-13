@@ -4,6 +4,8 @@ test_email.php
 .prettierrc
 package-lock.json
 package.json
+test_email.php
+add_users.php
 
 # Dependencies
 /vendor/

@@ -13,13 +13,13 @@ try {
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
     $mail->Username   = 'skonnect.system@gmail.com';              
-    $mail->Password   = 'dktl mpvg fwfu hqnt';                  
+    $mail->Password   = 'nqgr mjdg wesp crxk';                  
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
 
     
     $mail->setFrom('skonnect.system@gmail.com', 'SKonnect'); 
-    $mail->addAddress('email@gmail.com', 'Emailer Name');         
+    $mail->addAddress('lvillete778@gmail.com', 'Emailer Name');         
 
     
     $mail->isHTML(true);

@@ -209,6 +209,7 @@ if ($isCli) {
                 margin-bottom: 3px;
             }
         </style>
+        <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
     </head>
 
     <body>

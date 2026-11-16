@@ -14,6 +14,7 @@ RoleMiddleware::requireAdmin();
     <link rel="stylesheet" href="../../../styles/management/admin/admin_sidebar.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_topbar.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_manage_services.css">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
 </head>
 <body>
 

@@ -58,6 +58,7 @@ $date_fmt  = date('F j, Y · g:i A', strtotime($thread['created_at']));
     <link rel="stylesheet" href="../../styles/public/public_thread_view.css">
     <link rel="stylesheet" href="../../styles/public/header.css">
     <link rel="stylesheet" href="../../styles/public/footer.css">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 
 <body>

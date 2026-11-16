@@ -18,6 +18,7 @@ RoleMiddleware::requireAuth();
     <link rel="stylesheet" href="../../styles/portal/services_page.css">
 
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 
 <body>

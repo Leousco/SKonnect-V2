@@ -9,6 +9,7 @@ http_response_code(404);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKonnect | Page Not Found</title>
     <link rel="stylesheet" href="<?= htmlspecialchars(appUrl('styles/global.css'), ENT_QUOTES, 'UTF-8') ?>">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 <body>
     <main>

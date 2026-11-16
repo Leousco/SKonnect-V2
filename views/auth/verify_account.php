@@ -125,6 +125,7 @@ $verified = $token && $model->verifyByToken($token);
             }
         }
     </style>
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 
 <body>

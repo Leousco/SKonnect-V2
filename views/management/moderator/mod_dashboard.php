@@ -369,6 +369,7 @@ function threadCategoryClass(string $category): string
     <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_sidebar.css">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css?v=5">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
 </head>
 
 <body>

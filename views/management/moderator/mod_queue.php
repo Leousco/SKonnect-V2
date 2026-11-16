@@ -48,6 +48,7 @@ $status_badge = [
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_sidebar.css">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css?v=5">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_feed.css">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
 </head>
 
 <body>

@@ -69,6 +69,7 @@ function fileLabel(string $path): string
     <link rel="stylesheet" href="../../styles/portal/sidebar.css">
     <link rel="stylesheet" href="../../styles/portal/topbar.css">
     <link rel="stylesheet" href="../../styles/portal/announcement_view.css">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 
 <body>

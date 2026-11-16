@@ -52,6 +52,7 @@ function statusCss(string $status): string {
     <link rel="stylesheet" href="../../../styles/management/officer/officer_sidebar.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/officer/officer_topbar.css">
     <link rel="stylesheet" href="../../../styles/management/officer/officer_requests.css">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
 </head>
 <body>
 

@@ -51,6 +51,7 @@ function fileIcon(string $path): string {
     <link rel="stylesheet" href="../../styles/public/header.css">
     <link rel="stylesheet" href="../../styles/public/footer.css">
     <link rel="stylesheet" href="../../styles/public/announcement_view.css">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 <body>
 

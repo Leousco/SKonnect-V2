@@ -34,6 +34,7 @@ if (!empty($_SESSION['user_id'])) {
     <link rel="stylesheet" href="../../styles/public/header.css">
     <link rel="stylesheet" href="../../styles/public/footer.css">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 
 <body class="public-services-page">

@@ -31,6 +31,7 @@
         .back { display: block; margin-top: 12px; font-size: .82rem; color: #6e7681; text-decoration: none; }
         .back:hover { color: #c9d1d9; }
     </style>
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 <body>
 <div class="card">

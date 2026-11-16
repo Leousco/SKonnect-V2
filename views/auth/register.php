@@ -29,6 +29,7 @@ if (!empty($_SESSION['user_id'])) {
     <link rel="stylesheet" href="../../styles/global.css">
     <link rel="stylesheet" href="../../styles/auth/login.css">
     <link rel="stylesheet" href="../../styles/auth/register.css">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 <body>
 

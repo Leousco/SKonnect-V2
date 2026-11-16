@@ -50,6 +50,7 @@ function getTypeCfg(array $typeMap, string $type, string $title): array {
     <link rel="stylesheet" href="../../styles/portal/sidebar.css">
     <link rel="stylesheet" href="../../styles/portal/topbar.css">
     <link rel="stylesheet" href="../../styles/portal/notifications_page.css">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 <body>
 

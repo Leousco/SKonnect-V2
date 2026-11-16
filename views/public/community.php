@@ -49,6 +49,7 @@ $cat_labels = [
     <link rel="stylesheet" href="../../styles/public/community.css">
     <link rel="stylesheet" href="../../styles/public/header.css">
     <link rel="stylesheet" href="../../styles/public/footer.css">
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
 </head>
 
 <body>

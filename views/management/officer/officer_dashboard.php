@@ -260,6 +260,7 @@ $jsData = json_encode([
     <link rel="stylesheet" href="../../../styles/management/officer_mgmt.css">
     <link rel="stylesheet" href="../../../styles/management/officer/officer_sidebar.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/officer/officer_topbar.css">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
 </head>
 <body>
 

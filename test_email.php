@@ -13,7 +13,7 @@ try {
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
     $mail->Username   = 'skonnect.system@gmail.com';              
-    $mail->Password   = 'nqgr mjdg wesp crxk';                  
+    // $mail->Password   = SMTP_PASSWORD;                  
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port       = 587;
 

@@ -2,7 +2,7 @@
 
 A community portal that connects residents with their SK officers: announcements, community discussions, youth services, and events in one place.
 
-> **Last Update:** 10/29/26
+> **Last Update:** 11/14/26
 
 ## Table of Contents
 
@@ -48,7 +48,7 @@ A community portal that connects residents with their SK officers: announcements
 
 ### Feature to be Implemented
 
-- [ ] AI Chatbot
+- [x] AI Chatbot
 
 ### Implemented Major Features
 
@@ -142,6 +142,7 @@ Completed:
 - [x] Empty fields like threads, reports, etc. show either two "no record yet" messages or misaligned (not centered) text.
 - [x] Inconsistent toast design across all user views.
 - [x] Make the notifications on admin users (officer, moderator, admin) a modal.
+- [ ] Notifications 'unread' status look on each entry
 - [ ] Update public panel footer
 - [ ] Make a 404 page (optional)
 
@@ -168,6 +169,8 @@ Completed:
 - [x] Include a services section for easy viewing
 - [x] Include latest community discussions (trending threads)
 - [x] Hide the scrollbars on each section
+- [x] AI better context and knowledge for every responses
+- [ ] Better look on the Chatbot interface
 
 #### Community Feed
 - [x] The icons are emojis, change it to SVGs
@@ -175,6 +178,7 @@ Completed:
 - [x] In the bookmarks section fix the border colors
 - [x] Maybe fix the pill colors, some pills have the same colors despite meaning differently
 - [x] The pictures are not showing when posted by users
+- [ ] Post a thread modal automatically closes when clicking outside the modal
 
 #### Notifications
 - [x] Color and icon of "action require" service requests
@@ -216,6 +220,8 @@ Completed:
 
 #### Community Feed
 - [x] Commenting or replying auto updates the status of the thread to 'responded' but it is not shown immediately because the page needs to refresh first.
+- [ ] Some icons are emojis
+- [ ] Pills should be one line, change the "Hidden" pill to just an icon to preserve space
 
 #### Notifications
 - [x] Notifications non functional
@@ -245,9 +251,6 @@ Thread image files are stored in the app's `uploads` directory; their database r
 
 Uploads are not committed to the repository, so a separate local clone cannot access files uploaded to another machine's local filesystem. A Render disk is also tied to one service instance; deployments that need multiple instances should use shared object storage instead.
 
-#### Public
-- [x] Registration email verification workaround
-
 #### Officer
 - [x] Announcement preview in announcement page doesn't show the image banner
 - [x] Requests in requests page cannot be reviewed (Same with admin)
@@ -258,5 +261,5 @@ Uploads are not committed to the repository, so a separate local clone cannot ac
 
 ### Features Backlog
 
-- [ ] Reactions system to the announcement module
+- [ ] Reactions system to the announcements
 - [ ] Portal Services page: make the request submission confirmation a modal instead of a toast notification

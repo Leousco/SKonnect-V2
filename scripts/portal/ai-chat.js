@@ -11,8 +11,11 @@
     if (!root || !button || !panel || !closeButton || !input || !form || !messagesElement || !sendButton) return;
 
     const endpoint = root.dataset.endpoint || '../../routes/ai.php';
-    const greeting = 'Hi! I’m your SK Assistant. How can I help you today?';
+    const greeting = 'Hi! I’m your SK Assistant. Ask me how to use the portal, apply for a service, or find announcements, events, and community discussions.';
     const fallbackError = 'Sorry, I couldn’t reach the assistant. Please try again.';
+    const MAX_HISTORY_TURNS = 8;
+    const MAX_HISTORY_CHARS = 1000;
+    const conversation = [];
     let pending = false;
 
     const appendInlineText = (element, content) => {
@@ -128,6 +131,16 @@
         form.setAttribute('aria-busy', String(value));
     };
 
+    const rememberTurn = (role, content) => {
+        const text = String(content || '').trim().slice(0, MAX_HISTORY_CHARS);
+        if (!text) return;
+
+        conversation.push({ role, content: text });
+        if (conversation.length > MAX_HISTORY_TURNS) {
+            conversation.splice(0, conversation.length - MAX_HISTORY_TURNS);
+        }
+    };
+
     appendMessage({ role: 'assistant', content: greeting });
 
     const setOpen = (isOpen) => {
@@ -150,7 +163,9 @@
         const content = input.value.trim();
         if (!content || pending) return;
 
+        const history = conversation.slice(-MAX_HISTORY_TURNS);
         appendMessage({ role: 'user', content });
+        rememberTurn('user', content);
         input.value = '';
         setPending(true);
         const typing = appendMessage({ role: 'assistant', content: 'Typing…', typing: true });
@@ -165,7 +180,7 @@
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-                body: JSON.stringify({ message: content }),
+                body: JSON.stringify({ message: content, history }),
                 signal: controller.signal,
             });
             const data = await response.json().catch(() => null);
@@ -177,6 +192,7 @@
 
         typing.remove();
         appendMessage({ role: 'assistant', content: reply });
+        rememberTurn('assistant', reply);
         setPending(false);
         scrollToLatest();
         input.focus();

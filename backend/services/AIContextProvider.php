@@ -7,6 +7,10 @@ require_once __DIR__ . '/AIConfig.php';
  * Reads Supabase's PostgreSQL directly with PDO, using the same DB_HOST / DB_PORT / DB_NAME /
  * DB_USER / DB_PASS values your app already uses (from .env).
  *
+ * This class supplies live database records only. Curated how-to knowledge
+ * (navigation, workflows, status meanings, policies) lives in AIKnowledgeBase.php
+ * and is combined with this data by AIController.
+ *
  * Deliberately NOT included:
  *  - users, user_profiles, user_status values   (personal data)
  *  - service_applications / documents / notes   (other residents' private applications)
@@ -46,7 +50,7 @@ class AIContextProvider
     {
         return [
             'about' => [
-                'label'     => 'ABOUT THE BARANGAY AND THIS PORTAL',
+                'label'     => 'ABOUT THE BARANGAY AND THIS PORTAL (from admin settings)',
                 'sql'       => "SELECT \"key\", \"value\" FROM settings
                                 WHERE \"key\" IN ('brgy_name','brgy_about','brgy_address','brgy_contact','brgy_email',
                                                  'brgy_municipality','brgy_province','sys_name','sys_tagline')
@@ -55,7 +59,7 @@ class AIContextProvider
                 'html'      => false,
             ],
             'announcements' => [
-                'label'      => 'ANNOUNCEMENTS (newest first; only active and not expired)',
+                'label'      => 'ANNOUNCEMENTS (Portal > Announcements; newest first; only active and not expired)',
                 'sql'        => "SELECT title, category, content, published_at, expired_at
                                  FROM announcements
                                  WHERE status = 'active'
@@ -67,7 +71,7 @@ class AIContextProvider
                 'html'       => true, 
             ],
             'events' => [
-                'label'      => 'UPCOMING EVENTS (soonest first)',
+                'label'      => 'UPCOMING EVENTS (Portal > Dashboard; soonest first)',
                 'sql'        => "SELECT title, event_date, event_time, event_time_end, location, description
                                  FROM events
                                  WHERE event_date >= CAST(:today AS date)
@@ -78,7 +82,7 @@ class AIContextProvider
                 'html'       => false,
             ],
             'services' => [
-                'label'     => 'SERVICES CURRENTLY AVAILABLE',
+                'label'     => 'SERVICES CURRENTLY AVAILABLE (Portal > Services)',
                 'sql'       => "SELECT name, category, service_type, description, eligibility, processing_time,
                                        requirements, contact_info, max_capacity, current_count
                                 FROM services
@@ -89,7 +93,7 @@ class AIContextProvider
                 'html'      => false,
             ],
             'discussions' => [
-                'label'     => 'COMMUNITY DISCUSSION THREADS (newest first)',
+                'label'     => 'COMMUNITY DISCUSSION THREADS (Portal > Community Feed; newest first)',
                 'sql'       => "SELECT t.subject, t.category, t.message, t.status, t.created_at
                                 FROM threads t
                                 WHERE t.is_removed = FALSE
@@ -172,23 +176,33 @@ class AIContextProvider
     private function describeService(array $row): array
     {
         $types = [
-            'document'    => 'apply online and upload documents',
-            'appointment' => 'request-based (submit a request)',
-            'info'        => 'information only, contact them directly',
+            'document'    => 'Online application: select Apply on the Services page, complete the request form, upload the required documents, and submit. Track it in My Requests.',
+            'appointment' => 'Request-based: select Request on the Services page and submit the form. SK staff will coordinate the schedule or next steps through the request and notifications.',
+            'info'        => 'Information only: there is no in-app application. Contact the SK office using the listed contact details.',
         ];
-        if (isset($row['service_type'])) {
-            $row['how_to_get_it'] = $types[$row['service_type']] ?? $row['service_type'];
-        }
-        unset($row['service_type']);
+
+        $serviceType = isset($row['service_type']) ? (string) $row['service_type'] : '';
+        $howToApply  = $types[$serviceType] ?? ($serviceType !== '' ? $serviceType : null);
 
         if (isset($row['max_capacity']) && $row['max_capacity'] !== null) {
-            $row['slots_left'] = max(0, (int) $row['max_capacity'] - (int) ($row['current_count'] ?? 0));
+            $slotsLeft = max(0, (int) $row['max_capacity'] - (int) ($row['current_count'] ?? 0));
         } else {
-            $row['slots_left'] = 'unlimited';
+            $slotsLeft = 'unlimited';
         }
-        unset($row['max_capacity'], $row['current_count']);
 
-        return $row;
+        return array_filter([
+            'service'         => $row['name'] ?? null,
+            'category'        => $row['category'] ?? null,
+            'about'           => $row['description'] ?? null,
+            'eligibility'     => $row['eligibility'] ?? null,
+            'processing_time' => $row['processing_time'] ?? null,
+            'requirements'    => $row['requirements'] ?? null,
+            'how_to_apply'    => $howToApply,
+            'slots_left'      => $slotsLeft,
+            'contact'         => $row['contact_info'] ?? null,
+        ], static function ($value): bool {
+            return $value !== null && $value !== '';
+        });
     }
 
     public static function clean(string $text, int $max = self::MAX_FIELD_CHARS, bool $isHtml = false): string

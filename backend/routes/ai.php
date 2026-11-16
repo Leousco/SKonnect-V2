@@ -66,6 +66,8 @@ if (!RoleMiddleware::is('resident')) {
 
 // 32 KiB accommodates a 2,000-character UTF-8 message, including JSON escaping.
 const AI_MAX_REQUEST_BODY_BYTES = 32768;
+const AI_MAX_HISTORY_TURNS = 8;
+const AI_MAX_HISTORY_CHARS = 1000;
 $bodyStream = @fopen('php://input', 'rb');
 if ($bodyStream === false) {
     aiJsonResponse(400, ['success' => false, 'message' => 'Invalid JSON request body.']);
@@ -109,11 +111,39 @@ if (mb_strlen($message, 'UTF-8') > 2000) {
     aiJsonResponse(413, ['success' => false, 'message' => 'Message must be 2,000 characters or fewer.']);
 }
 
+// Conversation history is optional. Invalid turns are ignored rather than
+// failing the request, and the list is bounded to keep prompts predictable.
+$history = [];
+if (array_key_exists('history', $request)) {
+    if (!is_array($request['history'])) {
+        aiJsonResponse(400, ['success' => false, 'message' => 'History must be an array.']);
+    }
+
+    foreach (array_slice($request['history'], -AI_MAX_HISTORY_TURNS) as $turn) {
+        if (!is_array($turn)) {
+            continue;
+        }
+
+        $role = is_string($turn['role'] ?? null) ? $turn['role'] : '';
+        $content = is_string($turn['content'] ?? null) ? trim($turn['content']) : '';
+
+        if (!in_array($role, ['user', 'assistant'], true) || $content === '') {
+            continue;
+        }
+
+        if (mb_strlen($content, 'UTF-8') > AI_MAX_HISTORY_CHARS) {
+            $content = mb_substr($content, 0, AI_MAX_HISTORY_CHARS, 'UTF-8');
+        }
+
+        $history[] = ['role' => $role, 'content' => $content];
+    }
+}
+
 require_once __DIR__ . '/../controllers/AIController.php';
 
 try {
     $controller = new AIController();
-    aiJsonResponse(200, $controller->handleMessage($message, (int) $residentId));
+    aiJsonResponse(200, $controller->handleMessage($message, (int) $residentId, $history));
 } catch (Throwable $e) {
     error_log('AI route failure; returning generic server error.');
     aiJsonResponse(500, ['success' => false, 'message' => 'Unable to process the chat request.']);

@@ -74,8 +74,21 @@
 
   let pendingAction = null;
 
+  const svgIcon = (name) => {
+    const icons = {
+      clock: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+      comment: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg>',
+      resolved: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16.5 9"/></svg>',
+      flag: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 21V4m0 1h10l-1.5 3L15 11H5"/></svg>',
+      eyeOff: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65"/></svg>',
+      pin: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M16 9V4l1-1V2H7v1l1 1v5l-2 2v1h5v9l1 1 1-1v-9h5v-1l-2-2Z"/></svg>',
+      heart: '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>',
+    };
+    return icons[name] || icons.comment;
+  };
+
   function openConfirm({ icon, title, body, okLabel, okDanger, onConfirm }) {
-    confirmIcon.textContent = icon;
+    confirmIcon.innerHTML = icon;
     confirmTitle.textContent = title;
     confirmBody.textContent = body;
     confirmOk.textContent = okLabel || "Confirm";
@@ -320,13 +333,13 @@
             ? currentBtn.dataset.status
             : "current";
           const statusIcons = {
-            pending: "🕐",
-            responded: "💬",
-            resolved: "✅",
+            pending: svgIcon("clock"),
+            responded: svgIcon("comment"),
+            resolved: svgIcon("resolved"),
           };
 
           openConfirm({
-            icon: statusIcons[newStatus] || "🔄",
+            icon: statusIcons[newStatus] || svgIcon("resolved"),
             title: "Update Thread Status",
             body: `Change Thread #${threadId} status from "${capitalize(
               currentStatus
@@ -443,7 +456,7 @@
     if (isCurrentlyFlagged) {
       
       openConfirm({
-        icon: "🏳️",
+        icon: svgIcon("flag"),
         title: "Remove Flag",
         body: `Remove the flag from Thread #${threadId}?`,
         okLabel: "Remove Flag",
@@ -474,7 +487,7 @@
   function handleRemove(threadId, isCurrentlyRemoved, onSuccess) {
     const action = isCurrentlyRemoved ? "restore" : "remove";
     openConfirm({
-      icon: isCurrentlyRemoved ? "👁️" : "🚫",
+      icon: svgIcon("eyeOff"),
       title: isCurrentlyRemoved ? "Restore Thread" : "Hide Thread",
       body: isCurrentlyRemoved
         ? `Restore Thread #${threadId} so residents can see it again?`
@@ -513,7 +526,7 @@
   function handlePin(threadId, isCurrentlyPinned, onSuccess) {
     const action = isCurrentlyPinned ? "unpin" : "pin";
     openConfirm({
-      icon: isCurrentlyPinned ? "📌" : "📍",
+      icon: svgIcon("pin"),
       title: isCurrentlyPinned ? "Unpin Thread" : "Pin Thread",
       body: isCurrentlyPinned
         ? `Unpin Thread #${threadId}? It will no longer be pinned at the top.`
@@ -579,8 +592,10 @@
     const existingBadge = card.querySelector(".mod-remove-indicator");
     if (removed && !existingBadge) {
       const badge = document.createElement("span");
-      badge.className = "mod-remove-indicator";
-      badge.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>Hidden`;
+      badge.className = "mod-remove-indicator mod-remove-indicator--hidden";
+      badge.title = "Hidden";
+      badge.setAttribute("aria-label", "Hidden");
+      badge.innerHTML = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>`;
       card.querySelector(".mod-feed-badges")?.appendChild(badge);
     } else if (!removed && existingBadge) {
       existingBadge.remove();
@@ -786,7 +801,7 @@
       }
       ${
         +thread.is_removed
-          ? `<span class="mod-remove-indicator"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>Hidden</span>`
+          ? `<span class="mod-remove-indicator mod-remove-indicator--hidden" title="Hidden" aria-label="Hidden"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg></span>`
           : ""
       }
     `;
@@ -807,10 +822,10 @@
         </div>
       </div>
       <div class="mod-panel-counts">
-        <span>💬 ${thread.comment_count} ${
+        <span>${svgIcon("comment")} ${thread.comment_count} ${
       +thread.comment_count === 1 ? "comment" : "comments"
     }</span>
-        <span>🤝 ${thread.support_count} ${
+        <span>${svgIcon("heart")} ${thread.support_count} ${
       +thread.support_count === 1 ? "support" : "supports"
     }</span>
       </div>
@@ -827,10 +842,8 @@
       imagesEl.innerHTML = images
         .map(
           (img) =>
-            `<div class="mod-panel-image-item" data-src="../../../${escHtml(
-              img.file_path
-            )}">
-          <img src="../../../${escHtml(img.file_path)}" alt="${escHtml(
+            `<div class="mod-panel-image-item" data-src="${escHtml(img.url || img.file_path)}">
+          <img src="${escHtml(img.url || img.file_path)}" alt="${escHtml(
               img.file_name
             )}" loading="lazy">
         </div>`
@@ -885,12 +898,12 @@
       function deletionTag(item, isReply = false) {
         if (!+item.is_removed) return "";
         if (+item.removed_by_mod) {
-          return `<span class="mod-deleted-tag mod-deleted-tag--mod">🚫 Removed by Mod</span>`;
+          return `<span class="mod-deleted-tag mod-deleted-tag--mod">${svgIcon("eyeOff")} Removed by Mod</span>`;
         }
         if (+item.removed_by_user) {
-          return `<span class="mod-deleted-tag mod-deleted-tag--user">🚫 Deleted by ${isReply ? "Author" : "Author"}</span>`;
+          return `<span class="mod-deleted-tag mod-deleted-tag--user">${svgIcon("eyeOff")} Deleted by Author</span>`;
         }
-        return `<span class="mod-deleted-tag mod-deleted-tag--user">🚫 Deleted</span>`;
+        return `<span class="mod-deleted-tag mod-deleted-tag--user">${svgIcon("eyeOff")} Deleted</span>`;
       }
 
       commentList.innerHTML = comments
@@ -949,7 +962,7 @@
                 : ""
             }
             <div class="mod-panel-inline-reply-wrap">
-              <button class="mod-panel-reply-toggle" data-comment-id="${c.id}">💬 Reply</button>
+              <button class="mod-panel-reply-toggle" data-comment-id="${c.id}">${svgIcon("comment")} Reply</button>
               <div class="mod-panel-inline-reply-box" id="panel-reply-box-${c.id}" style="display:none;">
                 <textarea class="mod-panel-reply-textarea mod-panel-inline-textarea" rows="2" placeholder="Reply as moderator…"></textarea>
                 <div class="mod-panel-inline-footer">
@@ -1051,8 +1064,10 @@
           ?.remove();
         if (newRemoved) {
           const b = document.createElement("span");
-          b.className = "mod-remove-indicator";
-          b.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>Hidden`;
+          b.className = "mod-remove-indicator mod-remove-indicator--hidden";
+          b.title = "Hidden";
+          b.setAttribute("aria-label", "Hidden");
+          b.innerHTML = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>`;
           document.getElementById("panel-badges").appendChild(b);
         }
         if (card) {
@@ -1137,7 +1152,7 @@
               <div class="mod-panel-inline-reply-wrap">
                 <button class="mod-panel-reply-toggle" data-comment-id="${
                   c.id
-                }">💬 Reply</button>
+                }">${svgIcon("comment")} Reply</button>
                 <div class="mod-panel-inline-reply-box" id="panel-reply-box-${
                   c.id
                 }" style="display:none;">
@@ -1188,7 +1203,7 @@
             if (cardComments) {
               const n = parseInt(card.dataset.comments || 0) + 1;
               card.dataset.comments = n;
-              cardComments.textContent = `💬 ${n}`;
+              cardComments.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" class="mod-feed-comment-icon"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg>${n}`;
             }
           }
 

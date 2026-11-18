@@ -153,11 +153,10 @@ $cat_labels = [
                                                     Deleted by User
                                                 </span>
                                             <?php else : ?>
-                                                <span class="mod-remove-indicator">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="11" height="11">
+                                                <span class="mod-remove-indicator mod-remove-indicator--hidden" title="Hidden" aria-label="Hidden">
+                                                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="13" height="13">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
                                                     </svg>
-                                                    Hidden
                                                 </span>
                                             <?php endif; ?>
                                         <?php endif; ?>
@@ -174,7 +173,18 @@ $cat_labels = [
                                             <?= htmlspecialchars($t['author_name']) ?>
                                         </span>
                                         <time datetime="<?= $t['created_at'] ?>"><?= $date_fmt ?></time>
-                                        <span class="mod-feed-comments">💬 <?= (int)$t['comment_count'] ?></span>
+                                        <span class="mod-feed-comments">
+                                            <svg aria-hidden="true" viewBox="0 0 24 24" class="mod-feed-comment-icon">
+                                                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z" />
+                                            </svg>
+                                            <?= (int)$t['comment_count'] ?>
+                                        </span>
+                                        <span class="mod-feed-supports">
+                                            <svg aria-hidden="true" viewBox="0 0 24 24" class="mod-feed-support-icon">
+                                                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z" />
+                                            </svg>
+                                            <?= (int)$t['support_count'] ?>
+                                        </span>
                                     </div>
 
                                 </div>
@@ -381,7 +391,11 @@ $cat_labels = [
     
     <div class="mod-confirm-overlay" id="mod-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
         <div class="mod-confirm-box">
-            <div class="mod-confirm-icon" id="mod-confirm-icon">⚠️</div>
+            <div class="mod-confirm-icon" id="mod-confirm-icon">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+                </svg>
+            </div>
             <h3 class="mod-confirm-title" id="mod-confirm-title">Confirm Action</h3>
             <p class="mod-confirm-body" id="mod-confirm-body">Are you sure you want to perform this action?</p>
             <div class="mod-confirm-footer">

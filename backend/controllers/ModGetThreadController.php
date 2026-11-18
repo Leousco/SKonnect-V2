@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/paths.php';
 require_once __DIR__ . '/../models/ThreadModel.php';
 require_once __DIR__ . '/../models/CommentModel.php';
 
@@ -26,7 +27,7 @@ if (!$thread_id) {
     exit;
 }
 
-$thread = $threadModel->getThreadById($thread_id, 0);
+$thread = $threadModel->getThreadByIdForMod($thread_id);
 
 if (!$thread) {
     echo json_encode(['status' => 'error', 'message' => 'Thread not found.']);
@@ -34,6 +35,10 @@ if (!$thread) {
 }
 
 $images   = $threadModel->getThreadImages($thread_id);
+foreach ($images as &$image) {
+    $image['url'] = publicAssetUrl($image['file_path']);
+}
+unset($image);
 $comments = $commentModel->getCommentsByThread($thread_id, 0);
 
 echo json_encode([

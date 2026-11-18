@@ -6,17 +6,18 @@
     const input = document.getElementById('ai-chat-input');
     const form = document.getElementById('ai-chat-form');
     const messagesElement = document.getElementById('ai-chat-messages');
+    const welcome = document.getElementById('ai-chat-welcome');
     const sendButton = form ? form.querySelector('.ai-chat-send') : null;
 
-    if (!root || !button || !panel || !closeButton || !input || !form || !messagesElement || !sendButton) return;
+    if (!root || !button || !panel || !closeButton || !input || !form || !messagesElement || !welcome || !sendButton) return;
 
     const endpoint = root.dataset.endpoint || '../../routes/ai.php';
-    const greeting = 'Hi! I’m your SK Assistant. Ask me how to use the portal, apply for a service, or find announcements, events, and community discussions.';
-    const fallbackError = 'Sorry, I couldn’t reach the assistant. Please try again.';
+    const fallbackError = 'Sorry, I couldn’t reach Kaya. Please try again.';
     const MAX_HISTORY_TURNS = 8;
     const MAX_HISTORY_CHARS = 1000;
     const conversation = [];
     let pending = false;
+    let closeTimer = null;
 
     const appendInlineText = (element, content) => {
         const pattern = /\*\*(.+?)\*\*|\*(.+?)\*|`([^`]+)`/g;
@@ -102,7 +103,10 @@
             const avatar = document.createElement('span');
             avatar.className = 'ai-chat-message-avatar';
             avatar.setAttribute('aria-hidden', 'true');
-            avatar.textContent = 'SK';
+            const image = document.createElement('img');
+            image.src = '../../assets/img/kaya-icon.svg';
+            image.alt = '';
+            avatar.append(image);
             message.append(avatar);
         }
 
@@ -141,28 +145,59 @@
         }
     };
 
-    appendMessage({ role: 'assistant', content: greeting });
-
     const setOpen = (isOpen) => {
-        panel.hidden = !isOpen;
+        if (closeTimer !== null) {
+            window.clearTimeout(closeTimer);
+            closeTimer = null;
+        }
+
         panel.setAttribute('aria-hidden', String(!isOpen));
+        root.classList.toggle('ai-chat--open', isOpen);
+        root.classList.toggle('ai-chat--closing', !isOpen);
+        button.disabled = isOpen;
         button.setAttribute('aria-expanded', String(isOpen));
         if (isOpen) {
+            panel.hidden = false;
             input.focus();
             scrollToLatest();
         } else {
+            closeTimer = window.setTimeout(finishClose, 500);
             button.focus();
         }
     };
 
-    button.addEventListener('click', () => setOpen(panel.hidden));
+    function finishClose() {
+        if (!root.classList.contains('ai-chat--closing')) return;
+        panel.hidden = true;
+        root.classList.remove('ai-chat--closing');
+        if (closeTimer !== null) {
+            window.clearTimeout(closeTimer);
+            closeTimer = null;
+        }
+    }
+
+    root.addEventListener('transitionend', (event) => {
+        if (event.target === root && event.propertyName === 'width') finishClose();
+    });
+
+    button.addEventListener('click', () => {
+        if (!root.classList.contains('ai-chat--open')) setOpen(true);
+    });
     closeButton.addEventListener('click', () => setOpen(false));
+
+    panel.querySelectorAll('.ai-chat-prompt').forEach((prompt) => {
+        prompt.addEventListener('click', () => {
+            input.value = prompt.dataset.prompt || '';
+            form.requestSubmit();
+        });
+    });
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const content = input.value.trim();
         if (!content || pending) return;
 
+        welcome.hidden = true;
         const history = conversation.slice(-MAX_HISTORY_TURNS);
         appendMessage({ role: 'user', content });
         rememberTurn('user', content);

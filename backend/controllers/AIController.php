@@ -77,7 +77,7 @@ class AIController
         if (!$result["ok"]) {
             return [
                 "success" => false,
-                "message" => "SK Assistant is unavailable right now. Please try again later.",
+                "message" => "Kaya is unavailable right now. Please try again later.",
             ];
         }
 
@@ -91,7 +91,7 @@ class AIController
         );
 
         return <<<TXT
-        You are SK Assistant, the helper inside SKonnect, a community portal for youth and residents.
+        You are Kaya, the helper inside SKonnect, a community portal for youth and residents.
         Today is {$today} (Philippine time).
 
         You receive two kinds of context:

@@ -209,6 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalCancel = document.getElementById("modal-cancel");
   const modalSubmit = document.getElementById("modal-submit");
   const submitLabel = document.getElementById("submit-label");
+  const discardOverlay = document.getElementById("thread-discard-overlay");
+  const discardCancel = document.getElementById("thread-discard-cancel");
+  const discardConfirm = document.getElementById("thread-discard-confirm");
 
   let selectedFiles = [];
 
@@ -228,17 +231,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function closeModal() {
     modalOverlay.style.display = "none";
+    discardOverlay.style.display = "none";
     document.body.style.overflow = "";
   }
 
+  function openDiscardConfirm() {
+    discardOverlay.style.display = "flex";
+  }
+
+  function closeDiscardConfirm() {
+    discardOverlay.style.display = "none";
+  }
+
+  function discardThreadDraft() {
+    closeDiscardConfirm();
+    document.getElementById("thread-form")?.reset();
+    selectedFiles = [];
+    renderPreviews();
+    clearErrors();
+    closeModal();
+  }
+
   submitBtn?.addEventListener("click", openModal);
-  modalClose?.addEventListener("click", closeModal);
-  modalCancel?.addEventListener("click", closeModal);
-  modalOverlay?.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) closeModal();
+  modalClose?.addEventListener("click", openDiscardConfirm);
+  modalCancel?.addEventListener("click", openDiscardConfirm);
+  discardCancel?.addEventListener("click", closeDiscardConfirm);
+  discardConfirm?.addEventListener("click", discardThreadDraft);
+  discardOverlay?.addEventListener("click", (e) => {
+    if (e.target === discardOverlay) closeDiscardConfirm();
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeModal();
+    if (e.key === "Escape" && discardOverlay.style.display === "flex") {
+      closeDiscardConfirm();
+    }
   });
 
   

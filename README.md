@@ -2,7 +2,7 @@
 
 A community portal that connects residents with their SK officers: announcements, community discussions, youth services, and events in one place.
 
-> **Last Update:** 11/14/26
+> **Last Update:** 11/18/26
 
 ## Table of Contents
 
@@ -178,7 +178,7 @@ Completed:
 - [x] In the bookmarks section fix the border colors
 - [x] Maybe fix the pill colors, some pills have the same colors despite meaning differently
 - [x] The pictures are not showing when posted by users
-- [ ] Post a thread modal automatically closes when clicking outside the modal
+- [x] Post a thread modal automatically closes when clicking outside the modal
 
 #### Notifications
 - [x] Color and icon of "action require" service requests
@@ -192,7 +192,6 @@ Completed:
 - [x] Make the "Submit Request" button unclickable if all fields are not complete yet
 - [x] On the request modal, make the info strip non-sticky to allow more space for viewing the form
 - [x] Bug, multiple services entries appearing on one application
-- [ ] Maybe add a confirmation modal or something when submitting an application (optional)
 
 #### Notif Badge
 - [x] Counter appears without any new notifications when opening "view" pages (`thread_view.php`, `announcement_view.php`)
@@ -220,8 +219,8 @@ Completed:
 
 #### Community Feed
 - [x] Commenting or replying auto updates the status of the thread to 'responded' but it is not shown immediately because the page needs to refresh first.
-- [ ] Some icons are emojis
-- [ ] Pills should be one line, change the "Hidden" pill to just an icon to preserve space
+- [x] Some icons are emojis
+- [x] Pills should be one line, change the "Hidden" pill to just an icon to preserve space
 
 #### Notifications
 - [x] Notifications non functional
@@ -243,7 +242,7 @@ Completed:
 
 ### Deployment Issues (Render)
 
-- [ ] Complete and fix deployment before presentation
+- [?] Complete and fix deployment before presentation
 
 #### Community thread images
 

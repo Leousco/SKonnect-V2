@@ -122,7 +122,7 @@ $cat_labels = [
                         </div>
 
                         <h3 class="thread-title"><?= htmlspecialchars($t['subject']) ?></h3>
-                        <p class="thread-snippet"><?= htmlspecialchars(mb_substr($t['message'], 0, 160)) ?><?= mb_strlen($t['message']) > 160 ? '…' : '' ?></p>
+                        <p class="thread-snippet"><span class="thread-snippet-inner"><?= htmlspecialchars(mb_substr($t['message'], 0, 800)) ?></span></p>
 
                         <div class="thread-meta">
                             <span class="thread-meta-author" title="<?= htmlspecialchars($t['author_name'], ENT_QUOTES, 'UTF-8') ?>">By: <?= htmlspecialchars($t['author_name']) ?></span>

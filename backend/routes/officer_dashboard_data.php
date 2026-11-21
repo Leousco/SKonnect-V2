@@ -1,9 +1,9 @@
 <?php
 
-
-
-
-
+// Ensure incidental output from included files can be removed before JSON.
+// Render's PHP configuration may not enable output_buffering, in which case
+// ob_clean() without a buffer emits a warning that corrupts the JSON response.
+ob_start();
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 RoleMiddleware::requireRole('sk_officer');
@@ -14,7 +14,9 @@ require_once __DIR__ . '/../models/AnnouncementModel.php';
 require_once __DIR__ . '/../models/ServiceModel.php';
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
+if (ob_get_level() > 0) {
+    ob_clean();
+}
 
 try {
     $db   = (new Database())->getConnection();
@@ -34,7 +36,7 @@ try {
         SELECT COUNT(*) FROM announcements
         WHERE status = 'active'
           AND expired_at IS NOT NULL
-          AND expired_at BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)
+          AND expired_at BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '7 days'
     ")->fetchColumn();
 
     $activeServicesCount = count($svcM->getAll(['status' => 'active']));
@@ -43,8 +45,8 @@ try {
     $newResidentsMonth = (int)$db->query("
         SELECT COUNT(*) FROM users
         WHERE role = 'resident'
-          AND MONTH(created_at) = MONTH(CURDATE())
-          AND YEAR(created_at)  = YEAR(CURDATE())
+          AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+          AND EXTRACT(YEAR FROM created_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
     ")->fetchColumn();
 
     
@@ -78,9 +80,9 @@ try {
 
     
     $stmtSpark = $db->query("
-        SELECT DATE_FORMAT(submitted_at, '%Y-%m') AS ym, COUNT(*) AS cnt
+        SELECT TO_CHAR(submitted_at, 'YYYY-MM') AS ym, COUNT(*) AS cnt
         FROM service_applications
-        WHERE submitted_at >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 5 MONTH), '%Y-%m-01')
+        WHERE submitted_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '5 months')
         GROUP BY ym
         ORDER BY ym ASC
     ");
@@ -118,14 +120,14 @@ try {
     $resolvedMonth  = (int)$db->query("
         SELECT COUNT(*) FROM service_applications
         WHERE status = 'approved'
-          AND MONTH(updated_at) = MONTH(CURDATE())
-          AND YEAR(updated_at)  = YEAR(CURDATE())
+          AND EXTRACT(MONTH FROM updated_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+          AND EXTRACT(YEAR FROM updated_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
     ")->fetchColumn();
     $decidedMonth = (int)$db->query("
         SELECT COUNT(*) FROM service_applications
         WHERE status IN ('approved','rejected')
-          AND MONTH(updated_at) = MONTH(CURDATE())
-          AND YEAR(updated_at)  = YEAR(CURDATE())
+          AND EXTRACT(MONTH FROM updated_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+          AND EXTRACT(YEAR FROM updated_at)  = EXTRACT(YEAR FROM CURRENT_DATE)
     ")->fetchColumn();
     $approvalRate = $decidedMonth > 0 ? round(($resolvedMonth / $decidedMonth) * 100) . '%' : 'N/A';
 

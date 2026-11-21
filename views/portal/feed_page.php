@@ -183,7 +183,7 @@ $cat_labels = [
                                     </div>
 
                                     <h3 class="ann-card-title"><?= htmlspecialchars($t['subject']) ?></h3>
-                                    <p class="ann-card-excerpt"><?= htmlspecialchars(mb_substr($t['message'], 0, 160)) ?><?= mb_strlen($t['message']) > 160 ? '…' : '' ?></p>
+                                    <p class="ann-card-excerpt"><span class="ann-card-excerpt-inner"><?= htmlspecialchars(mb_substr($t['message'], 0, 800)) ?></span></p>
 
                                     <div class="ann-card-meta">
                                         <span>By: <?= htmlspecialchars($t['author_name']) ?></span>

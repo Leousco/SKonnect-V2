@@ -65,7 +65,7 @@
   let pendingAction = null;
 
   function openConfirm({ icon, title, body, okLabel, okDanger, onConfirm }) {
-    confirmIcon.textContent = icon;
+    confirmIcon.innerHTML = icon;
     confirmTitle.textContent = title;
     confirmBody.textContent = body;
     confirmOk.textContent = okLabel || "Confirm";
@@ -277,13 +277,13 @@
             ? currentBtn.dataset.status
             : "current";
           const statusIcons = {
-            pending: "🕐",
-            responded: "💬",
-            resolved: "✅",
+            pending: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>`,
+            responded: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 .9-.506 48.667 48.667 0 0 0 3.878-.512c1.585-.233 2.846-1.627 2.846-3.228V6.741c0-1.602-1.26-2.996-2.846-3.229a48.394 48.394 0 0 0-7.108 0c-1.585.233-2.846 1.627-2.846 3.229v4.019Z"/></svg>`,
+            resolved: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>`,
           };
 
           openConfirm({
-            icon: statusIcons[newStatus] || "🔄",
+            icon: statusIcons[newStatus] || `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>`,
             title: "Update Thread Status",
             body: `Change Thread #${threadId} status from "${capitalize(
               currentStatus
@@ -441,7 +441,7 @@
     if (isCurrentlyFlagged) {
       
       openConfirm({
-        icon: "🏳️",
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5"/></svg>`,
         title: "Remove Flag",
         body: `Remove the flag from Thread #${threadId}?`,
         okLabel: "Remove Flag",
@@ -472,7 +472,9 @@
   function handleRemove(threadId, isCurrentlyRemoved, onSuccess) {
     const action = isCurrentlyRemoved ? "restore" : "remove";
     openConfirm({
-      icon: isCurrentlyRemoved ? "👁️" : "🚫",
+      icon: isCurrentlyRemoved
+        ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>`,
       title: isCurrentlyRemoved ? "Restore Thread" : "Hide Thread",
       body: isCurrentlyRemoved
         ? `Restore Thread #${threadId} so residents can see it again?`
@@ -511,7 +513,9 @@
   function handlePin(threadId, isCurrentlyPinned, onSuccess) {
     const action = isCurrentlyPinned ? "unpin" : "pin";
     openConfirm({
-      icon: isCurrentlyPinned ? "📌" : "📍",
+      icon: isCurrentlyPinned
+        ? `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>`,
       title: isCurrentlyPinned ? "Unpin Thread" : "Pin Thread",
       body: isCurrentlyPinned
         ? `Unpin Thread #${threadId}? It will no longer be pinned at the top.`
@@ -577,8 +581,10 @@
     const existingBadge = card.querySelector(".adm-remove-indicator");
     if (removed && !existingBadge) {
       const badge = document.createElement("span");
-      badge.className = "adm-remove-indicator";
-      badge.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>Hidden`;
+      badge.className = "adm-remove-indicator adm-remove-indicator--hidden";
+      badge.title = "Hidden";
+      badge.setAttribute("aria-label", "Hidden");
+      badge.innerHTML = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>`;
       card.querySelector(".adm-feed-badges")?.appendChild(badge);
     } else if (!removed && existingBadge) {
       existingBadge.remove();
@@ -776,7 +782,7 @@
       }
       ${
         +thread.is_removed
-          ? `<span class="adm-remove-indicator"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>Hidden</span>`
+          ? `<span class="adm-remove-indicator adm-remove-indicator--hidden" title="Hidden" aria-label="Hidden"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg></span>`
           : ""
       }
     `;
@@ -797,10 +803,10 @@
         </div>
       </div>
       <div class="adm-panel-counts">
-        <span>💬 ${thread.comment_count} ${
+        <span><svg aria-hidden="true" viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;vertical-align:middle;margin-right:3px"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg>${thread.comment_count} ${
       +thread.comment_count === 1 ? "comment" : "comments"
     }</span>
-        <span>🤝 ${thread.support_count} ${
+        <span><svg aria-hidden="true" viewBox="0 0 24 24" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;vertical-align:middle;margin-right:3px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg>${thread.support_count} ${
       +thread.support_count === 1 ? "support" : "supports"
     }</span>
       </div>
@@ -817,10 +823,10 @@
       imagesEl.innerHTML = images
         .map(
           (img) =>
-            `<div class="adm-panel-image-item" data-src="../../../${escHtml(
-              img.file_path
+            `<div class="adm-panel-image-item" data-src="${escHtml(
+              img.url || img.file_path
             )}">
-          <img src="../../../${escHtml(img.file_path)}" alt="${escHtml(
+          <img src="${escHtml(img.url || img.file_path)}" alt="${escHtml(
               img.file_name
             )}" loading="lazy">
         </div>`
@@ -874,13 +880,14 @@
       
       function deletionTag(item, isReply = false) {
         if (!+item.is_removed) return "";
+        const icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:11px;height:11px;vertical-align:middle;margin-right:2px"><path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>`;
         if (+item.removed_by_mod) {
-          return `<span class="adm-deleted-tag adm-deleted-tag--mod">🚫 Removed by Mod</span>`;
+          return `<span class="adm-deleted-tag adm-deleted-tag--mod">${icon}Removed by Mod</span>`;
         }
         if (+item.removed_by_user) {
-          return `<span class="adm-deleted-tag adm-deleted-tag--user">🚫 Deleted by ${isReply ? "Author" : "Author"}</span>`;
+          return `<span class="adm-deleted-tag adm-deleted-tag--user">${icon}Deleted by ${isReply ? "Author" : "Author"}</span>`;
         }
-        return `<span class="adm-deleted-tag adm-deleted-tag--user">🚫 Deleted</span>`;
+        return `<span class="adm-deleted-tag adm-deleted-tag--user">${icon}Deleted</span>`;
       }
 
       commentList.innerHTML = comments
@@ -939,7 +946,7 @@
                 : ""
             }
             <div class="adm-panel-inline-reply-wrap">
-              <button class="adm-panel-reply-toggle" data-comment-id="${c.id}">💬 Reply</button>
+              <button class="adm-panel-reply-toggle" data-comment-id="${c.id}"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:12px;height:12px;vertical-align:middle;margin-right:3px"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 .9-.506 48.667 48.667 0 0 0 3.878-.512c1.585-.233 2.846-1.627 2.846-3.228V6.741c0-1.602-1.26-2.996-2.846-3.229a48.394 48.394 0 0 0-7.108 0c-1.585.233-2.846 1.627-2.846 3.229v4.019Z"/></svg>Reply</button>
               <div class="adm-panel-inline-reply-box" id="panel-reply-box-${c.id}" style="display:none;">
                 <textarea class="adm-panel-reply-textarea adm-panel-inline-textarea" rows="2" placeholder="Reply as admin…"></textarea>
                 <div class="adm-panel-inline-footer">
@@ -1041,8 +1048,10 @@
           ?.remove();
         if (newRemoved) {
           const b = document.createElement("span");
-          b.className = "adm-remove-indicator";
-          b.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="11" height="11"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>Hidden`;
+          b.className = "adm-remove-indicator adm-remove-indicator--hidden";
+          b.title = "Hidden";
+          b.setAttribute("aria-label", "Hidden");
+          b.innerHTML = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>`;
           document.getElementById("panel-badges").appendChild(b);
         }
         if (card) {
@@ -1124,7 +1133,7 @@
               <div class="adm-panel-inline-reply-wrap">
                 <button class="adm-panel-reply-toggle" data-comment-id="${
                   c.id
-                }">💬 Reply</button>
+                }"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="width:12px;height:12px;vertical-align:middle;margin-right:3px"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 .9-.506 48.667 48.667 0 0 0 3.878-.512c1.585-.233 2.846-1.627 2.846-3.228V6.741c0-1.602-1.26-2.996-2.846-3.229a48.394 48.394 0 0 0-7.108 0c-1.585.233-2.846 1.627-2.846 3.229v4.019Z"/></svg>Reply</button>
                 <div class="adm-panel-inline-reply-box" id="panel-reply-box-${
                   c.id
                 }" style="display:none;">
@@ -1175,7 +1184,7 @@
             if (cardComments) {
               const n = parseInt(card.dataset.comments || 0) + 1;
               card.dataset.comments = n;
-              cardComments.textContent = `💬 ${n}`;
+              cardComments.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" class="adm-feed-comment-icon"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z"/></svg>${n}`;
             }
           }
 
@@ -1378,6 +1387,35 @@
   }
 
   
+
+  function updateTitleState(card) {
+    const titleEl = card.querySelector(".adm-feed-title");
+    if (!titleEl) return;
+
+    // Cards hidden by filters or pagination report zero height. Keep their
+    // last known state until they are visible again.
+    if (titleEl.clientHeight === 0) return;
+
+    const lineHeight = parseFloat(getComputedStyle(titleEl).lineHeight) || 20;
+    const lines = Math.round(titleEl.clientHeight / lineHeight);
+    card.classList.toggle("adm-title-two-lines", lines >= 2);
+  }
+
+  function initTitleStates() {
+    getCards().forEach((card) => {
+      const titleEl = card.querySelector(".adm-feed-title");
+      if (!titleEl) return;
+
+      updateTitleState(card);
+
+      if (typeof ResizeObserver === "function") {
+        new ResizeObserver(() => updateTitleState(card)).observe(titleEl);
+      }
+    });
+  }
+
+  initTitleStates();
+  document.fonts?.ready.then(() => getCards().forEach(updateTitleState));
 
   getCards().forEach((c) => (c.dataset.filterVisible = "1"));
   applyFilters();

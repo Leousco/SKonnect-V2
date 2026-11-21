@@ -1,17 +1,12 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-set_error_handler(function($errno, $errstr, $errfile, $errline) {
+// Keep uncaught failures as JSON for the client, but log the details serverside
+// instead of exposing errors, file paths, or stack traces in the response.
+set_exception_handler(function (Throwable $e) {
+    error_log('auth.php uncaught exception: ' . $e->getMessage());
+    http_response_code(500);
     header('Content-Type: application/json');
-    echo json_encode(['status' => 'error', 'message' => "PHP ERROR [$errno]: $errstr in $errfile on line $errline"]);
-    exit();
-});
-
-set_exception_handler(function($e) {
-    header('Content-Type: application/json');
-    echo json_encode(['status' => 'error', 'message' => 'PHP EXCEPTION: ' . $e->getMessage()]);
+    echo json_encode(['status' => 'error', 'message' => 'Something went wrong. Please try again.']);
     exit();
 });
 

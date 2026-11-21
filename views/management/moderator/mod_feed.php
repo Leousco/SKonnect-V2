@@ -29,7 +29,7 @@ $cat_labels = [
     <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_sidebar.css">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css?v=5">
-    <link rel="stylesheet" href="../../../styles/management/moderator/mod_feed.css">
+    <link rel="stylesheet" href="../../../styles/management/moderator/mod_feed.css?v=<?= time() ?>">
     <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
 </head>
 
@@ -164,13 +164,13 @@ $cat_labels = [
 
                                     
                                     <h3 class="mod-feed-title"><?= htmlspecialchars($t['subject']) ?></h3>
-                                    <p class="mod-feed-excerpt"><?= htmlspecialchars(mb_substr($t['message'], 0, 140)) ?><?= mb_strlen($t['message']) > 140 ? '…' : '' ?></p>
+                                    <p class="mod-feed-excerpt"><?= htmlspecialchars(mb_substr($t['message'], 0, 800)) ?></p>
 
                                     
                                     <div class="mod-feed-meta">
-                                        <span class="mod-feed-author">
+                                        <span class="mod-feed-author" title="<?= htmlspecialchars($t['author_name'], ENT_QUOTES, 'UTF-8') ?>">
                                             <span class="mod-feed-avatar"><?= $initials ?></span>
-                                            <?= htmlspecialchars($t['author_name']) ?>
+                                            <span class="mod-feed-author-name"><?= htmlspecialchars($t['author_name']) ?></span>
                                         </span>
                                         <time datetime="<?= $t['created_at'] ?>"><?= $date_fmt ?></time>
                                         <span class="mod-feed-comments">
@@ -480,7 +480,7 @@ $cat_labels = [
         const MOD_NAME = <?= json_encode($_SESSION['user_name'] ?? 'Moderator') ?>;
     </script>
     <script src="../../../scripts/pagination.js"></script>
-    <script src="../../../scripts/management/moderator/mod_feed.js?v=2"></script>
+    <script src="../../../scripts/management/moderator/mod_feed.js?v=<?= time() ?>"></script>
 
 </body>
 

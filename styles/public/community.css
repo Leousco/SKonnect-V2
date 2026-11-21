@@ -260,6 +260,10 @@ body {
   line-height: 1.35;
   letter-spacing: -0.01em;
   overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .thread-snippet {
@@ -268,10 +272,19 @@ body {
   margin: 0;
   line-height: 1.55;
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.thread-snippet-inner {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.thread-title-two-lines .thread-snippet-inner {
+  -webkit-line-clamp: 3;
 }
 
 .thread-meta {

@@ -242,13 +242,11 @@ Completed:
 
 ### Deployment Issues (Render)
 
-- [?] Complete and fix deployment before presentation
-
-#### Community thread images
-
-Thread image files are stored in the app's `uploads` directory; their database rows contain paths relative to the app root. On Render, attach a persistent disk to the web service at `/var/www/html/uploads` so uploaded images remain available after deploys and restarts. The app's Docker image creates this directory and grants the web server access to it.
-
-Uploads are not committed to the repository, so a separate local clone cannot access files uploaded to another machine's local filesystem. A Render disk is also tied to one service instance; deployments that need multiple instances should use shared object storage instead.
+- [ ] Complete and fix deployment before presentation
+- [x] officer_services.php - cannot deactivate/activate a service
+- [x] mod_feed.php - meta data for each card are two-lines (truncate the author name)
+- [x] admin_threads.php - thread images (similar issue from mod panel) 
+- [x] mod_feed.php and admin_threads.php - the title-description design rule
 
 #### Officer
 - [x] Announcement preview in announcement page doesn't show the image banner

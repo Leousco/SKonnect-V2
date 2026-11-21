@@ -1420,6 +1420,35 @@
 
   
 
+  function updateTitleState(card) {
+    const titleEl = card.querySelector(".mod-feed-title");
+    if (!titleEl) return;
+
+    // Cards hidden by filters or pagination report zero height. Keep their
+    // last known state until they are visible again.
+    if (titleEl.clientHeight === 0) return;
+
+    const lineHeight = parseFloat(getComputedStyle(titleEl).lineHeight) || 20;
+    const lines = Math.round(titleEl.clientHeight / lineHeight);
+    card.classList.toggle("mod-title-two-lines", lines >= 2);
+  }
+
+  function initTitleStates() {
+    getCards().forEach((card) => {
+      const titleEl = card.querySelector(".mod-feed-title");
+      if (!titleEl) return;
+
+      updateTitleState(card);
+
+      if (typeof ResizeObserver === "function") {
+        new ResizeObserver(() => updateTitleState(card)).observe(titleEl);
+      }
+    });
+  }
+
+  initTitleStates();
+  document.fonts?.ready.then(() => getCards().forEach(updateTitleState));
+
   getCards().forEach((c) => (c.dataset.filterVisible = "1"));
   applyFilters();
 });

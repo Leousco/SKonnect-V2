@@ -1,5 +1,9 @@
 <?php
 
+// Ensure incidental output from included files can be removed before JSON.
+// Render's PHP configuration may not enable output_buffering, in which case
+// ob_clean() without a buffer emits a warning that corrupts the JSON response.
+ob_start();
 
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../controllers/ServiceController.php';
@@ -7,7 +11,9 @@ require_once __DIR__ . '/../controllers/ServiceController.php';
 RoleMiddleware::requireOfficerOrAbove();
 
 header('Content-Type: application/json; charset=utf-8');
-ob_clean();
+if (ob_get_level() > 0) {
+    ob_clean();
+}
 
 $action     = $_GET['action'] ?? ($_POST['action'] ?? '');
 $controller = new ServiceController();

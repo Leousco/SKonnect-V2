@@ -2,91 +2,6 @@
 require_once __DIR__ . '/../../../backend/middleware/RoleMiddleware.php';
 RoleMiddleware::requireAdmin();
 
-require_once __DIR__ . '/../../../backend/models/EventModel.php';
-require_once __DIR__ . '/../../../backend/config/database.php';
-$dashboardDb  = (new Database())->getConnection();
-$eventModel    = new EventModel();
-$allEvents     = $eventModel->getAll();
-$today         = date('Y-m-d');
-$upcomingEvents = array_values(array_filter($allEvents, fn($e) => $e['event_date'] >= $today));
-usort($upcomingEvents, static function ($a, $b) {
-    $dateOrder = strcmp($b['event_date'], $a['event_date']);
-    if ($dateOrder !== 0) {
-        return $dateOrder;
-    }
-
-    return strcmp($b['event_time'] ?? '', $a['event_time'] ?? '');
-});
-$upcomingEvents = array_slice($upcomingEvents, 0, 4);
-
-$recentThreadsStmt = $dashboardDb->query("
-    SELECT t.id, t.subject, t.category, t.status, t.created_at,
-           CONCAT(u.first_name, ' ', u.last_name) AS author_name,
-           (SELECT COUNT(*) FROM thread_comments tc
-            WHERE tc.thread_id = t.id AND tc.is_removed = FALSE) AS comment_count
-    FROM threads t
-    JOIN users u ON u.id = t.author_id
-    WHERE t.is_removed = FALSE
-    ORDER BY t.created_at DESC, t.id DESC
-    LIMIT 12
-");
-$recentThreads = $recentThreadsStmt->fetchAll(PDO::FETCH_ASSOC);
-
-$pendingReportsStmt = $dashboardDb->query("
-    SELECT *
-    FROM (
-        SELECT tr.id, 'thread' AS type, t.subject AS content,
-               tr.category AS reason, tr.created_at,
-               CONCAT(u.first_name, ' ', u.last_name) AS reporter_name
-        FROM thread_reports tr
-        JOIN threads t ON t.id = tr.thread_id
-        JOIN users u ON u.id = tr.reporter_id
-        WHERE tr.status = 'pending'
-
-        UNION ALL
-
-        SELECT cr.id, cr.target_type AS type,
-               COALESCE(th.subject, LEFT(COALESCE(tc.message, rep.message, '(deleted content)'), 70)) AS content,
-               cr.category AS reason, cr.created_at,
-               CONCAT(u.first_name, ' ', u.last_name) AS reporter_name
-        FROM comment_reports cr
-        JOIN users u ON u.id = cr.reporter_id
-        LEFT JOIN thread_comments tc
-            ON cr.target_type = 'comment' AND tc.id = cr.target_id
-        LEFT JOIN comment_replies rep
-            ON cr.target_type = 'reply' AND rep.id = cr.target_id
-        LEFT JOIN thread_comments parent_comment
-            ON cr.target_type = 'reply' AND parent_comment.id = rep.comment_id
-        LEFT JOIN threads th
-            ON th.id = COALESCE(tc.thread_id, parent_comment.thread_id)
-        WHERE cr.status = 'pending'
-    ) reports
-    ORDER BY created_at DESC
-    LIMIT 12
-");
-$pendingReports = $pendingReportsStmt->fetchAll(PDO::FETCH_ASSOC);
-
-$recentAnnouncementsStmt = $dashboardDb->query("
-    SELECT id, title, category, status, published_at
-    FROM announcements
-    WHERE status <> 'deleted'
-    ORDER BY published_at DESC, id DESC
-    LIMIT 12
-");
-$recentAnnouncements = $recentAnnouncementsStmt->fetchAll(PDO::FETCH_ASSOC);
-
-$recentActivityStmt = $dashboardDb->query("
-    SELECT
-        al.description,
-        al.created_at,
-        COALESCE(NULLIF(TRIM(CONCAT(u.first_name, ' ', u.last_name)), ''), 'System') AS user_name
-    FROM activity_logs al
-    LEFT JOIN users u ON u.id = al.user_id
-    ORDER BY al.created_at DESC, al.id DESC
-    LIMIT 20
-");
-$recentActivity = $recentActivityStmt->fetchAll(PDO::FETCH_ASSOC);
-
 $feedCategoryLabels = [
     'inquiry' => 'Inquiry',
     'complaint' => 'Complaint',
@@ -238,36 +153,21 @@ $feedCategoryLabels = [
                         </div>
                     </section>
 
-                    <section class="chart-panel admin-module-panel">
+                    <section class="chart-panel admin-module-panel admin-module-panel--scrollable">
                         <div class="panel-header">
                             <h2 class="section-label">Announcements</h2>
                             <a href="admin_announcements.php" class="btn-admin-sm">Manage &rsaquo;</a>
                         </div>
-                        <div class="dashboard-module-list">
-                            <?php if (empty($recentAnnouncements)): ?>
-                                <p class="dashboard-module-empty">No announcements yet.</p>
-                            <?php else: ?>
-                                <?php foreach ($recentAnnouncements as $announcement): ?>
-                                    <a class="dashboard-module-item" href="admin_announcements.php">
-                                        <span class="dashboard-module-item-icon module-icon-announcement" aria-hidden="true">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M10.3 15.8c-.7-.1-1.4-.1-2.1-.1H7.5a4.5 4.5 0 1 1 0-9h.8c.7 0 1.4 0 2.1-.1m-.1 9.2c.3 1 .6 1.9 1 2.8.3.6.1 1.2-.4 1.5l-.7.4c-.6.3-1.3.1-1.5-.5a21 21 0 0 1-1.4-4.3m3.1.1a18 18 0 0 1-.6-4.6c0-1.6.2-3.1.6-4.6m0 9.2a23.8 23.8 0 0 1 8.8 2.5m-8.8-11.7a23.8 23.8 0 0 1 8.8-2.5m0 0a24 24 0 0 0-.4-1.1m.4 1.1a24 24 0 0 1 1 5.4m-1 8.9a24 24 0 0 0-.4 1.1m.4-1.1a24 24 0 0 0 1-5.4m0-3.5a2.2 2.2 0 0 1 0 3.5" />
-                                            </svg>
-                                        </span>
-                                        <span class="dashboard-module-item-content">
-                                            <span class="dashboard-module-item-title"><?= htmlspecialchars($announcement['title'], ENT_QUOTES) ?></span>
-                                            <span class="dashboard-module-item-meta">
-                                                <?= htmlspecialchars(ucfirst($announcement['category']), ENT_QUOTES) ?>
-                                                <span aria-hidden="true">&middot;</span>
-                                                <?= date('M j, Y', strtotime($announcement['published_at'])) ?>
-                                            </span>
-                                        </span>
-                                        <span class="dashboard-module-badge announcement-status status-<?= htmlspecialchars($announcement['status'], ENT_QUOTES) ?>">
-                                            <?= htmlspecialchars(ucfirst($announcement['status']), ENT_QUOTES) ?>
-                                        </span>
-                                    </a>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                        <div class="dashboard-module-list dashboard-module-list--scrollable" data-module="announcements">
+                            <?php for ($i = 0; $i < 4; $i++): ?>
+                                <span class="admin-dashboard-skeleton admin-module-skeleton--simple" aria-hidden="true">
+                                    <span class="admin-skeleton-block admin-skeleton-module-icon"></span>
+                                    <span class="admin-skeleton-lines">
+                                        <span class="admin-skeleton-block admin-skeleton-module-line"></span>
+                                        <span class="admin-skeleton-block admin-skeleton-module-line admin-skeleton-module-line--short"></span>
+                                    </span>
+                                </span>
+                            <?php endfor; ?>
                         </div>
                     </section>
                 </div>
@@ -300,52 +200,16 @@ $feedCategoryLabels = [
 
                 <section class="admin-activity-panel">
                     <h2 class="section-label">Admin Activity Log</h2>
-                    <div class="activity-feed">
-                        <?php if (empty($recentActivity)): ?>
-                            <p class="dashboard-module-empty">No recent activity recorded.</p>
-                        <?php else: ?>
-                            <?php foreach ($recentActivity as $entry):
-                                $description = trim((string)$entry['description']);
-                                $metadata = json_decode($description, true);
-                                if (is_array($metadata)) {
-                                    $parts = [];
-                                    if (!empty($metadata['target_type']) && !empty($metadata['target_name'])) {
-                                        $parts[] = ucfirst(str_replace('_', ' ', $metadata['target_type'])) . ': "' . $metadata['target_name'] . '"';
-                                    } elseif (!empty($metadata['target_name'])) {
-                                        $parts[] = '"' . $metadata['target_name'] . '"';
-                                    }
-                                    if (!empty($metadata['target_user'])) {
-                                        $parts[] = 'by ' . $metadata['target_user'];
-                                    }
-                                    if (!empty($metadata['notes'])) {
-                                        $parts[] = $metadata['notes'];
-                                    }
-                                    if (!$parts) {
-                                        foreach ($metadata as $key => $value) {
-                                            if ($key === 'target_id' || !is_scalar($value)) {
-                                                continue;
-                                            }
-                                            $parts[] = ucfirst(str_replace('_', ' ', (string)$key)) . ': ' . $value;
-                                        }
-                                    }
-                                    $description = implode(' — ', $parts) ?: 'Activity recorded.';
-                                }
-                                $description = strip_tags($description);
-                                $actorParts = preg_split('/\s+/', trim((string)$entry['user_name']), -1, PREG_SPLIT_NO_EMPTY);
-                                $actorInitials = strtoupper(substr($actorParts[0] ?? 'S', 0, 1));
-                                if (count($actorParts) > 1) {
-                                    $actorInitials .= strtoupper(substr($actorParts[count($actorParts) - 1], 0, 1));
-                                }
-                            ?>
-                                <div class="activity-entry">
-                                    <div class="activity-avatar" aria-hidden="true"><?= htmlspecialchars($actorInitials, ENT_QUOTES, 'UTF-8') ?></div>
-                                    <div class="activity-info">
-                                        <p><?= htmlspecialchars($description, ENT_QUOTES, 'UTF-8') ?></p>
-                                        <span><?= date('M j, Y · g:i A', strtotime($entry['created_at'])) ?></span>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                    <div class="activity-feed" data-module="activity">
+                        <?php for ($i = 0; $i < 4; $i++): ?>
+                            <span class="admin-dashboard-skeleton admin-activity-skeleton" aria-hidden="true">
+                                <span class="admin-skeleton-block admin-skeleton-avatar"></span>
+                                <span class="admin-skeleton-lines">
+                                    <span class="admin-skeleton-block admin-skeleton-activity-line"></span>
+                                    <span class="admin-skeleton-block admin-skeleton-activity-date"></span>
+                                </span>
+                            </span>
+                        <?php endfor; ?>
                     </div>
                 </section>
 
@@ -358,45 +222,13 @@ $feedCategoryLabels = [
                     <h2 class="section-label">Community Feed</h2>
                     <a href="admin_threads.php" class="btn-admin-sm">View All &rsaquo;</a>
                 </div>
-                <div class="dashboard-module-list">
-                    <?php if (empty($recentThreads)): ?>
-                        <p class="dashboard-module-empty">No community threads yet.</p>
-                    <?php else: ?>
-                        <?php foreach ($recentThreads as $thread):
-                            $category = $feedCategoryLabels[$thread['category']] ?? 'Other';
-                            $categoryClass = array_key_exists($thread['category'], $feedCategoryLabels)
-                                ? $thread['category']
-                                : 'other';
-                            $authorNameParts = preg_split('/\s+/', trim($thread['author_name']));
-                            $authorInitials = strtoupper(substr($authorNameParts[0] ?? '', 0, 1));
-                            if (count($authorNameParts) > 1) {
-                                $authorInitials .= strtoupper(substr($authorNameParts[count($authorNameParts) - 1], 0, 1));
-                            }
-                        ?>
-                            <a class="dashboard-module-item dashboard-community-item" href="admin_threads.php">
-                                <span class="dashboard-community-avatar" aria-hidden="true">
-                                    <?= htmlspecialchars($authorInitials, ENT_QUOTES) ?>
-                                </span>
-                                <span class="dashboard-module-item-content">
-                                    <span class="dashboard-community-heading">
-                                        <span class="dashboard-module-item-title"><?= htmlspecialchars($thread['subject'], ENT_QUOTES) ?></span>
-                                        <span class="dashboard-module-badge dashboard-community-category category-<?= htmlspecialchars($categoryClass, ENT_QUOTES) ?>"><?= htmlspecialchars($category, ENT_QUOTES) ?></span>
-                                    </span>
-                                    <span class="dashboard-module-item-meta dashboard-community-meta">
-                                        Posted by <?= htmlspecialchars($thread['author_name'], ENT_QUOTES) ?>
-                                        <span aria-hidden="true">&middot;</span>
-                                        <?= date('M j, Y', strtotime($thread['created_at'])) ?>
-                                    </span>
-                                </span>
-                                <span class="dashboard-community-count" aria-label="<?= (int)$thread['comment_count'] ?> comments">
-                                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8Z" />
-                                    </svg>
-                                    <?= (int)$thread['comment_count'] ?>
-                                </span>
-                            </a>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                <div class="dashboard-module-list" data-module="threads">
+                    <?php for ($i = 0; $i < 5; $i++): ?>
+                        <span class="admin-dashboard-skeleton admin-module-skeleton" aria-hidden="true">
+                            <span class="admin-skeleton-block admin-skeleton-module-line"></span>
+                            <span class="admin-skeleton-block admin-skeleton-module-line admin-skeleton-module-line--short"></span>
+                        </span>
+                    <?php endfor; ?>
                 </div>
             </section>
 
@@ -405,32 +237,13 @@ $feedCategoryLabels = [
                     <h2 class="section-label">Pending Reports</h2>
                     <a href="admin_reports.php" class="btn-admin-sm">Review Reports &rsaquo;</a>
                 </div>
-                <div class="dashboard-module-list">
-                    <?php if (empty($pendingReports)): ?>
-                        <p class="dashboard-module-empty">No pending reports to review.</p>
-                    <?php else: ?>
-                        <?php foreach ($pendingReports as $report): ?>
-                            <a class="dashboard-module-item" href="admin_reports.php">
-                                <span class="dashboard-module-item-icon module-icon-report" aria-hidden="true">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 9v3.75m-9.3 3.4c-.9 1.5.2 3.4 1.9 3.4h14.8c1.7 0 2.8-1.9 1.9-3.4L13.9 3.4c-.9-1.5-3-1.5-3.9 0L2.7 16.1ZM12 15.8h.01v.01H12Z" />
-                                    </svg>
-                                </span>
-                                <span class="dashboard-module-item-content">
-                                    <span class="dashboard-module-item-title"><?= htmlspecialchars($report['content'] ?: '(deleted content)', ENT_QUOTES) ?></span>
-                                    <span class="dashboard-module-item-meta">
-                                        <?= htmlspecialchars($report['reporter_name'], ENT_QUOTES) ?>
-                                        <span aria-hidden="true">&middot;</span>
-                                        <?= date('M j, Y', strtotime($report['created_at'])) ?>
-                                    </span>
-                                    <span class="dashboard-module-badges">
-                                        <span class="dashboard-module-badge report-type"><?= htmlspecialchars(ucfirst($report['type']), ENT_QUOTES) ?></span>
-                                        <span class="dashboard-module-badge reason-<?= htmlspecialchars($report['reason'], ENT_QUOTES) ?>"><?= htmlspecialchars(ucfirst($report['reason']), ENT_QUOTES) ?></span>
-                                    </span>
-                                </span>
-                            </a>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                <div class="dashboard-module-list" data-module="reports">
+                    <?php for ($i = 0; $i < 5; $i++): ?>
+                        <span class="admin-dashboard-skeleton admin-module-skeleton" aria-hidden="true">
+                            <span class="admin-skeleton-block admin-skeleton-module-line"></span>
+                            <span class="admin-skeleton-block admin-skeleton-module-line admin-skeleton-module-line--short"></span>
+                        </span>
+                    <?php endfor; ?>
                 </div>
             </section>
 
@@ -486,34 +299,16 @@ $feedCategoryLabels = [
                     <h2 class="section-label">Upcoming Events</h2>
                     
                 </div>
-                <ul class="admin-events-list admin-events-list--grow">
-                    <?php if (empty($upcomingEvents)): ?>
-                        <li class="admin-event-item" style="justify-content:center;color:var(--admin-text-muted);font-size:13px;">
-                            No upcoming events.
+                <ul class="admin-events-list admin-events-list--grow" data-module="events">
+                    <?php for ($i = 0; $i < 3; $i++): ?>
+                        <li class="admin-dashboard-skeleton admin-event-skeleton" aria-hidden="true">
+                            <span class="admin-skeleton-block admin-skeleton-event-date"></span>
+                            <span class="admin-skeleton-lines">
+                                <span class="admin-skeleton-block admin-skeleton-event-title"></span>
+                                <span class="admin-skeleton-block admin-skeleton-event-meta"></span>
+                            </span>
                         </li>
-                    <?php else: ?>
-                        <?php foreach ($upcomingEvents as $event):
-                            $dt  = new DateTime($event['event_date']);
-                            $day = $dt->format('j');
-                            $mon = strtoupper($dt->format('M'));
-                            $meta = htmlspecialchars($event['location'] ?? '', ENT_QUOTES);
-                            if (!empty($event['event_time'])) {
-                                $timeFmt = date('g:i A', strtotime($event['event_time']));
-                                $meta    = $meta ? "$meta · $timeFmt" : $timeFmt;
-                            }
-                        ?>
-                        <li class="admin-event-item">
-                            <div class="event-date-badge">
-                                <span class="event-day"><?= $day ?></span>
-                                <span class="event-mon"><?= $mon ?></span>
-                            </div>
-                            <div class="event-info">
-                                <strong><?= htmlspecialchars($event['title'], ENT_QUOTES) ?></strong>
-                                <?php if ($meta): ?><span><?= $meta ?></span><?php endif; ?>
-                            </div>
-                        </li>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                    <?php endfor; ?>
                 </ul>
             </section>
 

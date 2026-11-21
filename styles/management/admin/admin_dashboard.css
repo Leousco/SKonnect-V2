@@ -1061,3 +1061,161 @@
 @media (prefers-reduced-motion: reduce) {
     .admin-skeleton-block { animation: none; }
 }
+
+
+/* ============================================================
+   Module Skeleton Loaders
+   ============================================================ */
+
+.admin-module-skeleton {
+    display: block;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--admin-surface-alt);
+    border: 1px solid var(--admin-border);
+}
+
+.admin-module-skeleton .admin-skeleton-module-line {
+    width: 100%;
+    height: 14px;
+    margin-bottom: 8px;
+}
+
+.admin-module-skeleton .admin-skeleton-module-line--short {
+    width: 70%;
+    height: 11px;
+    margin-bottom: 0;
+}
+
+.admin-activity-skeleton {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+}
+
+.admin-activity-skeleton .admin-skeleton-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    flex: 0 0 34px;
+}
+
+.admin-activity-skeleton .admin-skeleton-lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-activity-skeleton .admin-skeleton-activity-line {
+    width: 100%;
+    height: 13px;
+}
+
+.admin-activity-skeleton .admin-skeleton-activity-date {
+    width: 45%;
+    height: 10px;
+}
+
+.admin-event-skeleton {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+}
+
+.admin-event-skeleton .admin-skeleton-event-date {
+    width: 52px;
+    height: 52px;
+    border-radius: 8px;
+    flex: 0 0 52px;
+}
+
+.admin-event-skeleton .admin-skeleton-lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-event-skeleton .admin-skeleton-event-title {
+    width: 70%;
+    height: 14px;
+}
+
+.admin-event-skeleton .admin-skeleton-event-meta {
+    width: 50%;
+    height: 11px;
+}
+
+/* ============================================================
+   Scrollable Module Lists
+   ============================================================ */
+
+.admin-module-panel--scrollable .dashboard-module-list {
+    max-height: 340px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+}
+
+.dashboard-module-list--scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.dashboard-module-list--scrollable::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dashboard-module-list--scrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dashboard-module-list--scrollable::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.dashboard-module-list--scrollable::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* ============================================================
+   Simplified Module Skeleton (no border)
+   ============================================================ */
+
+.admin-module-skeleton--simple {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+}
+
+.admin-module-skeleton--simple .admin-skeleton-module-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex: 0 0 36px;
+}
+
+.admin-module-skeleton--simple .admin-skeleton-lines {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-module-skeleton--simple .admin-skeleton-module-line {
+    width: 100%;
+    height: 14px;
+    margin-bottom: 0;
+}
+
+.admin-module-skeleton--simple .admin-skeleton-module-line--short {
+    width: 65%;
+    height: 11px;
+}

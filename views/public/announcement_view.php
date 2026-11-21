@@ -67,7 +67,7 @@ function fileIcon(string $path): string {
             
             <?php if ($ann['banner_img']): ?>
             <div class="pub-av-banner">
-                <img src="<?= htmlspecialchars(publicAssetUrl($ann['banner_img'])) ?>" alt="<?= htmlspecialchars($ann['title']) ?>">
+                <img src="<?= htmlspecialchars($ann['banner_img']) ?>" alt="<?= htmlspecialchars($ann['title']) ?>">
 
                 
                 

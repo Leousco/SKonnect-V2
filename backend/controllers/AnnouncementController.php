@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../models/AnnouncementModel.php';
 require_once __DIR__ . '/../middleware/RoleMiddleware.php';
 require_once __DIR__ . '/../services/EmailService.php';
+require_once __DIR__ . '/../services/StorageService.php';
 require_once __DIR__ . '/../config/paths.php';
 require_once __DIR__ . '/../models/ActivityLogModel.php';
 
@@ -12,7 +13,6 @@ class AnnouncementController
     private AnnouncementModel $model;
     private ActivityLogModel $activityLog;
 
-    private string $bannerDir  = 'assets/uploads/banners/';
     private string $attachDir  = 'assets/uploads/attachments/';
 
     public function __construct()
@@ -51,9 +51,11 @@ class AnnouncementController
 
         $bannerPath = null;
         if (!empty($_FILES['banner']['tmp_name'])) {
-            $bannerPath = $this->uploadFile($_FILES['banner'], $this->bannerDir, ['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
-            if (!$bannerPath) {
-                $this->json(['status' => 'error', 'message' => 'Invalid banner image.'], 422);
+            try {
+                $bannerPath = $this->uploadBannerToSupabase($_FILES['banner']);
+            } catch (Throwable $e) {
+                error_log('Banner upload failed: ' . $e->getMessage());
+                $this->json(['status' => 'error', 'message' => 'Failed to upload banner image.'], 422);
             }
         }
 
@@ -137,12 +139,25 @@ class AnnouncementController
         }
 
         if (!empty($_FILES['banner']['tmp_name'])) {
-            $bannerPath = $this->uploadFile($_FILES['banner'], $this->bannerDir, ['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
-            if ($bannerPath) {
-                if ($existing['banner_img'] && file_exists($existing['banner_img'])) {
-                    @unlink($existing['banner_img']);
+            try {
+                $bannerPath = $this->uploadBannerToSupabase($_FILES['banner']);
+                if ($bannerPath) {
+                    // Delete old banner from Supabase if it exists
+                    if ($existing['banner_img'] && $this->isSupabaseUrl($existing['banner_img'])) {
+                        try {
+                            StorageService::deleteFile($existing['banner_img']);
+                        } catch (Throwable $e) {
+                            error_log('Failed to delete old banner: ' . $e->getMessage());
+                        }
+                    } elseif ($existing['banner_img'] && file_exists($existing['banner_img'])) {
+                        // Legacy local file cleanup
+                        @unlink($existing['banner_img']);
+                    }
+                    $data['banner_img'] = $bannerPath;
                 }
-                $data['banner_img'] = $bannerPath;
+            } catch (Throwable $e) {
+                error_log('Banner upload failed: ' . $e->getMessage());
+                $this->json(['status' => 'error', 'message' => 'Failed to upload banner image.'], 422);
             }
         }
 
@@ -254,8 +269,18 @@ class AnnouncementController
             if (file_exists($f['file_path'])) @unlink($f['file_path']);
         }
 
-        if ($existing['banner_img'] && file_exists($existing['banner_img'])) {
-            @unlink($existing['banner_img']);
+        // Delete banner from Supabase if it exists
+        if ($existing['banner_img']) {
+            if ($this->isSupabaseUrl($existing['banner_img'])) {
+                try {
+                    StorageService::deleteFile($existing['banner_img']);
+                } catch (Throwable $e) {
+                    error_log('Failed to delete banner from Supabase: ' . $e->getMessage());
+                }
+            } elseif (file_exists($existing['banner_img'])) {
+                // Legacy local file cleanup
+                @unlink($existing['banner_img']);
+            }
         }
 
         if (!$this->model->delete($id)) {
@@ -362,6 +387,43 @@ class AnnouncementController
         if ($_SERVER['REQUEST_METHOD'] !== strtoupper($method)) {
             $this->json(['status' => 'error', 'message' => 'Method not allowed.'], 405);
         }
+    }
+
+    /**
+     * Upload banner image to Supabase storage.
+     * Returns the public URL or throws an exception.
+     */
+    private function uploadBannerToSupabase(array $file): string
+    {
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        $maxBytes = 5 * 1024 * 1024; // 5MB
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            throw new RuntimeException('File upload error.');
+        }
+        
+        if ($file['size'] > $maxBytes) {
+            throw new RuntimeException('File size exceeds 5MB limit.');
+        }
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        if (!in_array($mimeType, $allowedMimes, true)) {
+            throw new RuntimeException('Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.');
+        }
+
+        // Upload to Supabase
+        return StorageService::uploadAnnouncementBanner($file['tmp_name'], $mimeType, 'banner_');
+    }
+
+    /**
+     * Check if URL is a Supabase storage URL.
+     */
+    private function isSupabaseUrl(string $url): bool
+    {
+        return str_contains($url, 'supabase.co/storage/v1/object/public/');
     }
 
     private function uploadFile(array $file, string $dir, ?array $allowedMimes = null, int $maxBytes = 5 * 1024 * 1024): string|false

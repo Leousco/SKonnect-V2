@@ -247,6 +247,8 @@ Completed:
 - [x] mod_feed.php - meta data for each card are two-lines (truncate the author name)
 - [x] admin_threads.php - thread images (similar issue from mod panel) 
 - [x] mod_feed.php and admin_threads.php - the title-description design rule
+- [ ] Banned status of a user is error in portal community page
+- [ ] The dashboard on moderator view, the review button for reports lead to nothing
 
 #### Officer
 - [x] Announcement preview in announcement page doesn't show the image banner

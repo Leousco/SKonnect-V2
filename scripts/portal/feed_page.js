@@ -34,11 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
   
 
   if (typeof USER_IS_BANNED !== "undefined" && USER_IS_BANNED) {
-    const BAN_SHOWN_KEY = "banShown_feed";
-    if (!sessionStorage.getItem(BAN_SHOWN_KEY)) {
-      showBanModal();
-      sessionStorage.setItem(BAN_SHOWN_KEY, "1");
-    }
+    // Show the ban notice on every feed page visit (not just once per session).
+    showBanModal();
 
     const submitConcernBtn = document.getElementById("submit-concern-btn");
     if (submitConcernBtn) {

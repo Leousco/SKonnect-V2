@@ -23,7 +23,7 @@ if ($level >= 2) {
     $stmt = $conn->prepare(
         "SELECT reason, expires_at, created_at
          FROM user_sanctions
-         WHERE user_id = :uid AND is_active = 1 AND level = :lvl
+         WHERE user_id = :uid AND is_active = TRUE AND level = :lvl
          ORDER BY created_at DESC
          LIMIT 1"
     );

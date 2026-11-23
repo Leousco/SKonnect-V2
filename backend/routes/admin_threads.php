@@ -50,8 +50,8 @@ if ($method === 'GET' && $action === 'list') {
         FROM threads t
         JOIN users u ON u.id = t.author_id
         LEFT JOIN thread_comments tc
-            ON tc.thread_id = t.id AND tc.is_removed = 0
-        WHERE t.is_removed = 0
+            ON tc.thread_id = t.id AND tc.is_removed = FALSE
+        WHERE t.is_removed = FALSE
     ";
 
     $params = [];
@@ -128,7 +128,7 @@ if ($method === 'POST' && $action === 'delete') {
     if (!$check->fetch()) jsonError('Thread not found.', 404);
 
     
-    $stmt = $db->prepare('UPDATE threads SET is_removed = 1 WHERE id = :id');
+    $stmt = $db->prepare('UPDATE threads SET is_removed = TRUE WHERE id = :id');
     $stmt->execute([':id' => $id]);
     if ($stmt->rowCount() > 0) {
         $thread = $db->prepare('SELECT subject FROM threads WHERE id = :id');

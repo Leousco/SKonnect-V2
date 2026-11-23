@@ -36,7 +36,7 @@ switch ($type) {
         $model = new ThreadModel($conn);
 
         $stmt = $conn->prepare(
-            "SELECT author_id FROM threads WHERE id = :id AND is_removed = 0 LIMIT 1"
+            "SELECT author_id FROM threads WHERE id = :id AND is_removed = FALSE LIMIT 1"
         );
         $stmt->execute([':id' => $target_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -52,8 +52,8 @@ switch ($type) {
 
         $stmt = $conn->prepare(
             "UPDATE threads
-             SET is_removed = 1, removed_by_user = 1
-             WHERE id = :id AND author_id = :uid AND is_removed = 0"
+             SET is_removed = TRUE, removed_by_user = TRUE
+             WHERE id = :id AND author_id = :uid AND is_removed = FALSE"
         );
         $ok = $stmt->execute([':id' => $target_id, ':uid' => $user_id]);
 
@@ -71,7 +71,7 @@ switch ($type) {
 
         $stmt = $conn->prepare(
             "SELECT author_id FROM thread_comments
-             WHERE id = :id AND is_removed = 0 LIMIT 1"
+             WHERE id = :id AND is_removed = FALSE LIMIT 1"
         );
         $stmt->execute([':id' => $target_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -99,7 +99,7 @@ switch ($type) {
 
         $stmt = $conn->prepare(
             "SELECT author_id FROM comment_replies
-             WHERE id = :id AND is_removed = 0 LIMIT 1"
+             WHERE id = :id AND is_removed = FALSE LIMIT 1"
         );
         $stmt->execute([':id' => $target_id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

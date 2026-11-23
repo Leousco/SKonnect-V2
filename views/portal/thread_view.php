@@ -30,7 +30,7 @@ if ($is_banned) {
     $s_stmt = $conn->prepare(
         "SELECT reason, expires_at, created_at AS issued_at
          FROM user_sanctions
-         WHERE user_id = :uid AND is_active = 1 AND level = :lvl
+         WHERE user_id = :uid AND is_active = TRUE AND level = :lvl
          ORDER BY created_at DESC LIMIT 1"
     );
     $s_stmt->execute([':uid' => $user_id, ':lvl' => $sanction_level]);

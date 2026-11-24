@@ -940,6 +940,14 @@
   font-size: 36px;
   line-height: 1;
   margin-bottom: 12px;
+  color: var(--mod-primary);
+}
+
+.mq-confirm-icon svg {
+  width: 36px;
+  height: 36px;
+  display: block;
+  margin: 0 auto;
 }
 
 .mq-confirm-title {
@@ -1077,11 +1085,20 @@
 }
 
 .mq-panel-report-banner-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: #92400e;
+}
+
+.mq-panel-report-banner-label svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
 }
 
 .mq-panel-report-cat {

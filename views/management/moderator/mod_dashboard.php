@@ -493,7 +493,7 @@ function threadCategoryClass(string $category): string
                                                 <?php if ($row['content_type'] === 'thread') : ?>
                                                     <a href="mod_queue.php?id=<?= $row['report_id'] ?>" class="action-link">Review</a>
                                                 <?php else : ?>
-                                                    <a href="mod_reports.php?id=<?= $row['report_id'] ?>" class="action-link">Review</a>
+                                                    <a href="mod_sanctions.php" class="action-link">Review</a>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>

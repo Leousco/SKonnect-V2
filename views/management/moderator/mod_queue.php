@@ -43,11 +43,11 @@ $status_badge = [
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKonnect | Moderation Queue</title>
-    <link rel="stylesheet" href="../../../styles/management/moderator/mod_queue.css?v=3">
+    <link rel="stylesheet" href="../../../styles/management/moderator/mod_queue.css?v=4">
     <link rel="stylesheet" href="../../../styles/management/mod_mgmt.css?v=2">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_sidebar.css">
     <link rel="stylesheet" href="../../../styles/management/moderator/mod_topbar.css?v=5">
-    <link rel="stylesheet" href="../../../styles/management/moderator/mod_feed.css">
+    <link rel="stylesheet" href="../../../styles/management/moderator/mod_feed.css?v=<?= time() ?>">
     <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
 </head>
 
@@ -307,7 +307,11 @@ $status_badge = [
     
     <div class="mq-confirm-overlay" id="mq-confirm-overlay" style="display:none;" aria-modal="true" role="dialog">
         <div class="mq-confirm-box">
-            <div class="mq-confirm-icon" id="mq-confirm-icon">⚠️</div>
+            <div class="mq-confirm-icon" id="mq-confirm-icon">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                </svg>
+            </div>
             <h3 class="mq-confirm-title" id="mq-confirm-title">Confirm Action</h3>
             <p class="mq-confirm-body" id="mq-confirm-body">Are you sure you want to perform this action?</p>
             <div class="mq-confirm-footer">
@@ -404,7 +408,7 @@ $status_badge = [
     </div>
 
     <script src="../../../scripts/pagination.js"></script>
-    <script src="../../../scripts/management/moderator/mod_queue.js"></script>
+    <script src="../../../scripts/management/moderator/mod_queue.js?v=<?= time() ?>"></script>
 
 </body>
 

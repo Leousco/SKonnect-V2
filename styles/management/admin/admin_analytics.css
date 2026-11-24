@@ -47,7 +47,7 @@
 
 .an-report-head {
     flex: 0 0 auto;
-    min-width: 170px;
+    min-width: 132px;
     max-width: 240px;
 }
 
@@ -114,14 +114,14 @@
 .an-date-fields {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: center;
     gap: 8px;
 }
 
 .an-date-field {
     display: flex;
-    flex-direction: column;
-    gap: 3px;
+    align-items: center;
+    gap: 6px;
 }
 
 .an-date-field[hidden],
@@ -130,10 +130,11 @@
 }
 
 .an-date-field > span {
-    font-size: 10px;
+    font-size: 11.5px;
     font-weight: 500;
-    line-height: 1;
+    line-height: 1.2;
     color: var(--admin-text-muted);
+    white-space: nowrap;
 }
 
 .an-date-field input {
@@ -692,7 +693,7 @@
 }
 
 .an-service-table-panel {
-    height: 436px;
+    height: 470px;
 }
 
 .an-status-panel {

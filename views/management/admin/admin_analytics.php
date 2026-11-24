@@ -12,7 +12,7 @@ RoleMiddleware::requireAdmin();
     <link rel="stylesheet" href="../../../styles/management/mgmt.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_sidebar.css">
     <link rel="stylesheet" href="../../../styles/management/admin/admin_topbar.css">
-    <link rel="stylesheet" href="../../../styles/management/admin/admin_analytics.css?v=2">
+    <link rel="stylesheet" href="../../../styles/management/admin/admin_analytics.css?v=3">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="icon" type="image/svg+xml" href="../../../assets/img/favicon.svg">
 </head>

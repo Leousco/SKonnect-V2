@@ -170,7 +170,7 @@ Completed:
 - [x] Include latest community discussions (trending threads)
 - [x] Hide the scrollbars on each section
 - [x] AI better context and knowledge for every responses
-- [ ] Better look on the Chatbot interface
+- [x] Better look on the Chatbot interface
 
 #### Community Feed
 - [x] The icons are emojis, change it to SVGs
@@ -247,8 +247,10 @@ Completed:
 - [x] mod_feed.php - meta data for each card are two-lines (truncate the author name)
 - [x] admin_threads.php - thread images (similar issue from mod panel) 
 - [x] mod_feed.php and admin_threads.php - the title-description design rule
-- [ ] Banned status of a user is error in portal community page
-- [ ] The dashboard on moderator view, the review button for reports lead to nothing
+- [x] Banned status of a user is error in portal community page
+- [x] The dashboard on moderator view, the review button for reports lead to nothing
+- [x] mod_queue.php icons are emojis for threads
+- [x] mod_feed.php keep the meta data for each card stick below
 
 #### Officer
 - [x] Announcement preview in announcement page doesn't show the image banner

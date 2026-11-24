@@ -19,36 +19,55 @@ if (ob_get_level() > 0) {
 }
 
 try {
-    $period = $_GET['period'] ?? 'month';
-    if (!is_string($period) || !in_array($period, ['month', 'quarter', 'year'], true)) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Invalid analytics period.']);
-        exit;
-    }
-    $db  = (new Database())->getConnection();
-    $now    = new DateTime();
+    $period    = $_GET['period']     ?? 'month';
+    $customFrom = isset($_GET['from']) ? trim($_GET['from']) : '';
+    $customTo   = isset($_GET['to'])   ? trim($_GET['to'])   : '';
 
-    
-    switch ($period) {
-        case 'quarter':
-            $q          = (int)ceil((int)$now->format('n') / 3);
-            $qStartMonth = (($q - 1) * 3) + 1;
-            $qStart     = new DateTime($now->format('Y') . '-' . str_pad($qStartMonth, 2, '0', STR_PAD_LEFT) . '-01');
-            $qEnd       = (clone $qStart)->modify('+3 months -1 day');
-            $dateStart  = $qStart->format('Y-m-d');
-            $dateEnd    = $qEnd->format('Y-m-d');
-            $periodLabel = 'Q' . $q . ' ' . $now->format('Y');
-            break;
-        case 'year':
-            $dateStart   = $now->format('Y') . '-01-01';
-            $dateEnd     = $now->format('Y') . '-12-31';
-            $periodLabel = 'CY ' . $now->format('Y');
-            break;
-        default:
-            $dateStart   = $now->format('Y-m-01');
-            $dateEnd     = $now->format('Y-m-t');
-            $periodLabel = $now->format('M Y');
-            break;
+    $db  = (new Database())->getConnection();
+    $now = new DateTime();
+
+    // Custom date-range takes priority over preset period
+    if ($customFrom !== '' && $customTo !== '') {
+        // Validate date format YYYY-MM-DD
+        $dtFrom = DateTime::createFromFormat('Y-m-d', $customFrom);
+        $dtTo   = DateTime::createFromFormat('Y-m-d', $customTo);
+        if (!$dtFrom || !$dtTo || $dtFrom > $dtTo) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid date range.']);
+            exit;
+        }
+        $dateStart   = $customFrom;
+        $dateEnd     = $customTo;
+        $periodLabel = $dtFrom->format('M j, Y') . ' – ' . $dtTo->format('M j, Y');
+        $period      = 'custom';
+    } else {
+        if (!is_string($period) || !in_array($period, ['month', 'quarter', 'year'], true)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Invalid analytics period.']);
+            exit;
+        }
+
+        switch ($period) {
+            case 'quarter':
+                $q           = (int)ceil((int)$now->format('n') / 3);
+                $qStartMonth = (($q - 1) * 3) + 1;
+                $qStart      = new DateTime($now->format('Y') . '-' . str_pad($qStartMonth, 2, '0', STR_PAD_LEFT) . '-01');
+                $qEnd        = (clone $qStart)->modify('+3 months -1 day');
+                $dateStart   = $qStart->format('Y-m-d');
+                $dateEnd     = $qEnd->format('Y-m-d');
+                $periodLabel = 'Q' . $q . ' ' . $now->format('Y');
+                break;
+            case 'year':
+                $dateStart   = $now->format('Y') . '-01-01';
+                $dateEnd     = $now->format('Y') . '-12-31';
+                $periodLabel = 'CY ' . $now->format('Y');
+                break;
+            default: // month
+                $dateStart   = $now->format('Y-m-01');
+                $dateEnd     = $now->format('Y-m-t');
+                $periodLabel = $now->format('M Y');
+                break;
+        }
     }
 
     
@@ -100,10 +119,16 @@ try {
 
     $volLabels = $volApproved = $volDeclined = $volPending = [];
 
-    if ($period === 'month') {
-        $cursor = new DateTime($dateStart);
-        $today  = new DateTime($now->format('Y-m-d'));
-        while ($cursor <= $today) {
+    // Decide granularity: daily for ≤35 day spans, monthly for longer
+    $spanDays = (int)(new DateTime($dateStart))->diff(new DateTime($dateEnd))->days + 1;
+    $useDaily = ($period === 'month' || ($period === 'custom' && $spanDays <= 35));
+
+    if ($useDaily) {
+        $cursor  = new DateTime($dateStart);
+        $endDt   = new DateTime($dateEnd);
+        $today   = new DateTime($now->format('Y-m-d'));
+        $limitDt = $endDt < $today ? $endDt : $today;
+        while ($cursor <= $limitDt) {
             $key           = $cursor->format('Y-m-d');
             $volLabels[]   = $cursor->format('M j');
             $volApproved[] = (int)($volRows[$key]['approved'] ?? 0);
@@ -112,7 +137,6 @@ try {
             $cursor->modify('+1 day');
         }
     } else {
-        
         $monthMap = [];
         foreach ($volRows as $key => $r) {
             $mo = substr($key, 0, 7);
@@ -121,12 +145,20 @@ try {
             $monthMap[$mo]['pending']  = ($monthMap[$mo]['pending']  ?? 0) + (int)$r['pending'];
         }
 
-        $months = $period === 'quarter' ? 3 : 12;
+        if ($period === 'quarter') {
+            $months = 3;
+        } elseif ($period === 'year') {
+            $months = 12;
+        } else {
+            // custom range: enumerate months in span
+            $months = (int)ceil($spanDays / 28);
+        }
+
         $mStart = new DateTime($dateStart);
         for ($i = 0; $i < $months; $i++) {
             $mo            = (clone $mStart)->modify("+{$i} months");
             $key           = $mo->format('Y-m');
-            $volLabels[]   = $mo->format('M');
+            $volLabels[]   = $mo->format('M Y');
             $volApproved[] = $monthMap[$key]['approved'] ?? 0;
             $volDeclined[] = $monthMap[$key]['declined'] ?? 0;
             $volPending[]  = $monthMap[$key]['pending']  ?? 0;
@@ -177,10 +209,19 @@ try {
             $evLabels[] = $mo->format('M');
             $evCounts[] = $evtMoMap[(int)$mo->format('n')] ?? 0;
         }
-    } else {
+    } elseif ($period === 'year') {
         for ($m = 1; $m <= 12; $m++) {
             $evLabels[] = date('M', mktime(0, 0, 0, $m, 1));
             $evCounts[] = $evtMoMap[$m] ?? 0;
+        }
+    } else {
+        // custom: enumerate unique months between start and end
+        $moCursor = new DateTime(substr($dateStart, 0, 7) . '-01');
+        $moEnd    = new DateTime(substr($dateEnd,   0, 7) . '-01');
+        while ($moCursor <= $moEnd) {
+            $evLabels[] = $moCursor->format('M Y');
+            $evCounts[] = $evtMoMap[(int)$moCursor->format('n')] ?? 0;
+            $moCursor->modify('+1 month');
         }
     }
 
@@ -298,8 +339,11 @@ try {
 
     
     echo json_encode([
-        'success' => true,
-        'period'  => $periodLabel,
+        'success'    => true,
+        'period'     => $periodLabel,
+        'periodKey'  => $period,
+        'dateStart'  => $dateStart,
+        'dateEnd'    => $dateEnd,
         'kpi' => [
             'totalRequests' => $totalRequests,
             'approvalRate'  => $approvalRate,

@@ -3,11 +3,10 @@
 
 
 
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
 
     const DATA_API = '../../../backend/routes/officer_analytics_data.php';
 
-    
     const C = {
         primary  : '#2d7d9a', primaryLt : '#d6edf5',
         green    : '#16a34a', greenLt   : '#dcfce7',
@@ -21,12 +20,13 @@
         dark     : '#1a2e3b',
     };
 
-    
-    let activePeriod = 'month';
-    let chartVolume  = null;
-    let chartEvents  = null;
-    let chartAnn     = null;
-    let lastData     = null;
+    let activePeriod  = 'month';
+    let activeFrom    = '';
+    let activeTo      = '';
+    let chartVolume   = null;
+    let chartEvents   = null;
+    let chartAnn      = null;
+    let lastData      = null;
     let latestRequest = 0;
 
     
@@ -36,12 +36,18 @@
     Chart.defaults.plugins.legend.display = false;
 
     
-    function loadPeriod(period) {
+    function loadPeriod(period, from, to) {
         const requestId = ++latestRequest;
         setLoading(true);
         document.getElementById('an-error').hidden = true;
         document.getElementById('an-export-btn').disabled = true;
-        fetch(`${DATA_API}?period=${period}`, { credentials: 'same-origin' })
+
+        let url = `${DATA_API}?period=${period}`;
+        if (from && to) {
+            url += `&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+        }
+
+        fetch(url, { credentials: 'same-origin' })
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 return res.json();
@@ -54,6 +60,9 @@
                 setLoading(false);
                 document.getElementById('an-export-btn').disabled = false;
                 updateTimestamp();
+                // Wire scroll-fade on the two list panels
+                wireScrollFade(document.querySelector('#an-services-list')?.closest('.an-panel-body'));
+                wireScrollFade(document.querySelector('#an-activity-feed')?.closest('.an-panel-body'));
             })
             .catch(err => {
                 if (requestId !== latestRequest) return;
@@ -63,10 +72,36 @@
     }
 
     function setLoading(on) {
-        document.querySelectorAll('.an-panel, .off-widget-card').forEach(el => {
-            el.style.opacity = on ? '0.5' : '';
-            el.style.pointerEvents = on ? 'none' : '';
-        });
+        // On first load, show skeleton layers instead of fading real panels
+        const isFirstLoad = lastData === null;
+        const skels = document.querySelectorAll('.an-skeleton-layer');
+        const realWidgets = document.getElementById('an-widgets-real');
+        const realRows = ['an-row-1', 'an-row-2', 'an-row-3'].map(id => document.getElementById(id));
+
+        if (on) {
+            if (isFirstLoad) {
+                // Show skeletons, hide real content
+                skels.forEach(el => el.style.display = '');
+                if (realWidgets) realWidgets.style.display = 'none';
+                realRows.forEach(el => { if (el) el.style.display = 'none'; });
+            } else {
+                // Subsequent loads: gentle opacity fade on real panels only
+                document.querySelectorAll('.an-panel, .off-widget-card').forEach(el => {
+                    el.style.opacity    = '0.55';
+                    el.style.pointerEvents = 'none';
+                });
+            }
+        } else {
+            // Hide skeletons, show real content
+            skels.forEach(el => el.style.display = 'none');
+            if (realWidgets) realWidgets.style.display = '';
+            realRows.forEach(el => { if (el) el.style.display = ''; });
+            // Restore opacity
+            document.querySelectorAll('.an-panel, .off-widget-card').forEach(el => {
+                el.style.opacity    = '';
+                el.style.pointerEvents = '';
+            });
+        }
     }
 
     function showError(msg) {
@@ -81,7 +116,7 @@
         if (el) {
             const now = new Date();
             el.textContent = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                + ' — ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                + ' ' + now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
         }
     }
 
@@ -371,14 +406,72 @@
             </li>`).join('');
     }
 
-    
+    // Period tab clicks
     document.querySelectorAll('.an-period-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.an-period-tab').forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             activePeriod = tab.dataset.period;
+            activeFrom   = '';
+            activeTo     = '';
+            // Clear date fields when switching to preset
+            document.getElementById('an-date-from').value = '';
+            document.getElementById('an-date-to').value   = '';
+            document.getElementById('an-reset-range').hidden = true;
+            document.getElementById('an-error').hidden = true;
             loadPeriod(activePeriod);
         });
+    });
+
+    // Date range Apply
+    document.getElementById('an-apply-range').addEventListener('click', () => {
+        const from = document.getElementById('an-date-from').value;
+        const to   = document.getElementById('an-date-to').value;
+
+        if (!from) {
+            showError('Pick at least a start date.');
+            return;
+        }
+
+        // If only one date given, treat it as a single-day range
+        const effectiveTo = to || from;
+
+        if (from > effectiveTo) {
+            showError('Start date must be before or equal to end date.');
+            return;
+        }
+
+        // Show "single day" hint in To field if left blank
+        if (!to) {
+            document.getElementById('an-date-to').value = from;
+        }
+
+        document.querySelectorAll('.an-period-tab').forEach(t => t.classList.remove('active'));
+        activePeriod = 'custom';
+        activeFrom   = from;
+        activeTo     = effectiveTo;
+
+        // Show reset button
+        document.getElementById('an-reset-range').hidden = false;
+
+        loadPeriod('month', from, effectiveTo);
+    });
+
+    // Reset date range
+    document.getElementById('an-reset-range').addEventListener('click', () => {
+        document.getElementById('an-date-from').value = '';
+        document.getElementById('an-date-to').value   = '';
+        document.getElementById('an-reset-range').hidden = true;
+        document.getElementById('an-error').hidden = true;
+
+        // Restore "This Month" as default
+        activePeriod = 'month';
+        activeFrom   = '';
+        activeTo     = '';
+        document.querySelectorAll('.an-period-tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.period === 'month');
+        });
+        loadPeriod('month');
     });
 
     
@@ -388,7 +481,7 @@
 
         const btn = document.getElementById('an-export-btn');
         btn.disabled = true;
-        btn.textContent = 'Generating PDF…';
+        btn.textContent = 'Generating…';
 
         try {
             const { jsPDF } = window.jspdf;
@@ -494,7 +587,7 @@
             pdf.text(`Period: ${d.period}  ·  Exported: ${dateStr}, ${timeStr}`, ML, 39);
 
             
-            const periodLabel = { month: 'Monthly', quarter: 'Quarterly', year: 'Annual' }[activePeriod] || 'Report';
+            const periodLabel = { month: 'Monthly', quarter: 'Quarterly', year: 'Annual', custom: 'Custom' }[activePeriod] || 'Report';
             pdf.setFillColor(255, 255, 255, 0.2);
             pdf.setFillColor(60, 150, 175);
             pdf.roundedRect(PW - ML - 32, 12, 32, 12, 3, 3, 'F');
@@ -780,10 +873,24 @@
             alert('PDF export failed. Please try again.');
         } finally {
             btn.disabled = false;
-            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg> Export Report`;
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg> Export PDF`;
         }
     });
 
-    
+    // Scroll-fade cutoff: toggle .at-bottom on the wrap when scrolled to end
+    function wireScrollFade(bodyEl) {
+        if (!bodyEl) return;
+        const wrap = bodyEl.closest('.an-panel-scroll-wrap');
+        if (!wrap) return;
+        const check = () => {
+            const atBottom = bodyEl.scrollHeight - bodyEl.scrollTop - bodyEl.clientHeight < 4;
+            wrap.classList.toggle('at-bottom', atBottom);
+        };
+        bodyEl.addEventListener('scroll', check, { passive: true });
+        // Run once to set initial state after content is populated
+        check();
+    }
+
+    // Initial load
     loadPeriod(activePeriod);
 });

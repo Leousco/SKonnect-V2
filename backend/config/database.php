@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+date_default_timezone_set('Asia/Manila');
+
 if (!isset($_ENV['DB_HOST']) && getenv('DB_HOST') === false) {
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../..');
     $dotenv->load();
@@ -31,6 +33,7 @@ class Database {
                 $this->password
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->exec("SET TIME ZONE 'Asia/Manila'");
         } catch(PDOException $exception) {
             header('Content-Type: application/json');
             echo json_encode([

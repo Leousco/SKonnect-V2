@@ -65,12 +65,12 @@ if ($method === 'GET' && $action === 'list') {
         $params[':status'] = $status;
     }
     if ($search !== '') {
-        $sql .= ' AND (t.subject LIKE :search OR CONCAT(u.first_name, \' \', u.last_name) LIKE :search2)';
+        $sql .= ' AND (t.subject ILIKE :search OR CONCAT(u.first_name, \' \', u.last_name) ILIKE :search2)';
         $params[':search']  = '%' . $search . '%';
         $params[':search2'] = '%' . $search . '%';
     }
 
-    $sql .= ' GROUP BY t.id ORDER BY t.is_pinned DESC, t.created_at DESC';
+    $sql .= ' GROUP BY t.id, u.id ORDER BY t.is_pinned DESC, t.created_at DESC';
 
     $stmt = $db->prepare($sql);
     $stmt->execute($params);

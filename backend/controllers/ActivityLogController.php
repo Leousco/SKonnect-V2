@@ -62,7 +62,7 @@ if (basename($_SERVER['SCRIPT_FILENAME']) === basename(__FILE__)) {
         $params = [];
 
         if ($search !== '') {
-            $where[]  = "(al.description LIKE ? OR u.first_name LIKE ? OR u.last_name LIKE ? OR al.action LIKE ?)";
+            $where[]  = "(al.description ILIKE ? OR u.first_name ILIKE ? OR u.last_name ILIKE ? OR al.action ILIKE ?)";
             $like     = "%{$search}%";
             $params   = array_merge($params, [$like, $like, $like, $like]);
         }

@@ -44,7 +44,7 @@ class ServiceModel
             $params[':status'] = $filters['status'];
         }
         if (!empty($filters['search'])) {
-            $sql .= " AND s.name LIKE :search";
+            $sql .= " AND s.name ILIKE :search";
             $params[':search'] = '%' . $filters['search'] . '%';
         }
 

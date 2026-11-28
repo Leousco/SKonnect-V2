@@ -12,6 +12,7 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/paths.php';
 require_once __DIR__ . '/../services/OfficerNotificationService.php';
 require_once __DIR__ . '/../services/AdminNotificationService.php';
+require_once __DIR__ . '/../services/StorageService.php';
 
 RoleMiddleware::requireAdmin();
 
@@ -66,13 +67,24 @@ if ($action === 'create') {
     
     $bannerPath = null;
     if (!empty($_FILES['banner']['name'])) {
-        $uploadDir = __DIR__ . '/../../assets/uploads/banners/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-        $ext        = pathinfo($_FILES['banner']['name'], PATHINFO_EXTENSION);
-        $filename   = uniqid('', true) . '.' . $ext;
-        $destPath   = $uploadDir . $filename;
-        if (move_uploaded_file($_FILES['banner']['tmp_name'], $destPath)) {
-            $bannerPath = resolveWebPath($destPath);
+        $banner = $_FILES['banner'];
+        if ($banner['error'] !== UPLOAD_ERR_OK || $banner['size'] > 5 * 1024 * 1024) {
+            http_response_code(422);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to upload banner image.']);
+            exit;
+        }
+        $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $banner['tmp_name']);
+        if (!in_array($mime, ['image/jpeg', 'image/png', 'image/webp', 'image/gif'], true)) {
+            http_response_code(422);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to upload banner image.']);
+            exit;
+        }
+        try {
+            $bannerPath = StorageService::uploadAnnouncementBanner($banner['tmp_name'], $mime, 'banner_');
+        } catch (Throwable $e) {
+            http_response_code(422);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to upload banner image.']);
+            exit;
         }
     }
 
@@ -99,21 +111,28 @@ if ($action === 'create') {
 
         
         if (!empty($_FILES['attachments']['name'][0])) {
-            $attDir = __DIR__ . '/../../assets/uploads/attachments/';
-            if (!is_dir($attDir)) mkdir($attDir, 0755, true);
             foreach ($_FILES['attachments']['name'] as $i => $fname) {
                 if ($_FILES['attachments']['error'][$i] !== UPLOAD_ERR_OK) continue;
-                $ext2  = pathinfo($fname, PATHINFO_EXTENSION);
-                $fname2 = uniqid('', true) . '.' . $ext2;
-                $dest2  = $attDir . $fname2;
-                if (move_uploaded_file($_FILES['attachments']['tmp_name'][$i], $dest2)) {
+                if ($_FILES['attachments']['size'][$i] > 10 * 1024 * 1024) continue;
+                $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $_FILES['attachments']['tmp_name'][$i]);
+                try {
+                    $path = StorageService::uploadFile(
+                        $_FILES['attachments']['tmp_name'][$i],
+                        $mime,
+                        $fname,
+                        'announcement-attachments',
+                        'attachment_',
+                        StorageService::ANNOUNCEMENT_ATTACHMENT_MIMES
+                    );
                     $conn->prepare("
                         INSERT INTO announcement_files (announcement_id, file_path)
                         VALUES (:aid, :path)
                     ")->execute([
                         ':aid'  => $newId,
-                        ':path' => resolveWebPath($dest2),
+                        ':path' => $path,
                     ]);
+                } catch (Throwable $e) {
+                    error_log('Announcement attachment upload failed.');
                 }
             }
         }
@@ -184,13 +203,30 @@ if ($action === 'update') {
     $bannerPath = $existing['banner_img'];
 
     if (!empty($_FILES['banner']['name'])) {
-        $uploadDir = __DIR__ . '/../../assets/uploads/banners/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-        $ext      = pathinfo($_FILES['banner']['name'], PATHINFO_EXTENSION);
-        $filename = uniqid('', true) . '.' . $ext;
-        $destPath = $uploadDir . $filename;
-        if (move_uploaded_file($_FILES['banner']['tmp_name'], $destPath)) {
-            $bannerPath = resolveWebPath($destPath);
+        $banner = $_FILES['banner'];
+        if ($banner['error'] !== UPLOAD_ERR_OK || $banner['size'] > 5 * 1024 * 1024) {
+            http_response_code(422);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to upload banner image.']);
+            exit;
+        }
+        $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $banner['tmp_name']);
+        if (!in_array($mime, ['image/jpeg', 'image/png', 'image/webp', 'image/gif'], true)) {
+            http_response_code(422);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to upload banner image.']);
+            exit;
+        }
+        try {
+            $newBannerPath = StorageService::uploadAnnouncementBanner($banner['tmp_name'], $mime, 'banner_');
+            if ($existing['banner_img'] && str_contains($existing['banner_img'], 'supabase.co/storage/v1/object/public/')) {
+                try { StorageService::deleteFile($existing['banner_img']); } catch (Throwable $e) {}
+            } elseif ($existing['banner_img'] && file_exists($existing['banner_img'])) {
+                @unlink($existing['banner_img']);
+            }
+            $bannerPath = $newBannerPath;
+        } catch (Throwable $e) {
+            http_response_code(422);
+            echo json_encode(['status' => 'error', 'message' => 'Failed to upload banner image.']);
+            exit;
         }
     }
 
@@ -217,18 +253,25 @@ if ($action === 'update') {
         ]);
 
         if (!empty($_FILES['attachments']['name'][0])) {
-            $attDir = __DIR__ . '/../../assets/uploads/attachments/';
-            if (!is_dir($attDir)) mkdir($attDir, 0755, true);
             foreach ($_FILES['attachments']['name'] as $i => $fname) {
                 if ($_FILES['attachments']['error'][$i] !== UPLOAD_ERR_OK) continue;
-                $ext2   = pathinfo($fname, PATHINFO_EXTENSION);
-                $fname2 = uniqid('', true) . '.' . $ext2;
-                $dest2  = $attDir . $fname2;
-                if (move_uploaded_file($_FILES['attachments']['tmp_name'][$i], $dest2)) {
+                if ($_FILES['attachments']['size'][$i] > 10 * 1024 * 1024) continue;
+                $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $_FILES['attachments']['tmp_name'][$i]);
+                try {
+                    $path = StorageService::uploadFile(
+                        $_FILES['attachments']['tmp_name'][$i],
+                        $mime,
+                        $fname,
+                        'announcement-attachments',
+                        'attachment_',
+                        StorageService::ANNOUNCEMENT_ATTACHMENT_MIMES
+                    );
                     $conn->prepare("
                         INSERT INTO announcement_files (announcement_id, file_path)
                         VALUES (:aid, :path)
-                    ")->execute([':aid' => $id, ':path' => resolveWebPath($dest2)]);
+                    ")->execute([':aid' => $id, ':path' => $path]);
+                } catch (Throwable $e) {
+                    error_log('Announcement attachment upload failed.');
                 }
             }
         }
@@ -305,18 +348,28 @@ try {
             $stmt = $conn->prepare("SELECT banner_img, title, author_id FROM announcements WHERE id = :id");
             $stmt->execute([':id' => $id]);
             $ann = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($ann && $ann['banner_img']) {
-                $localPath = $_SERVER['DOCUMENT_ROOT'] . $ann['banner_img'];
-                if (file_exists($localPath)) @unlink($localPath);
-            }
-            
             $attStmt = $conn->prepare("SELECT file_path FROM announcement_files WHERE announcement_id = :id");
             $attStmt->execute([':id' => $id]);
-            foreach ($attStmt->fetchAll(PDO::FETCH_COLUMN) as $path) {
-                $localPath = $_SERVER['DOCUMENT_ROOT'] . $path;
-                if (file_exists($localPath)) @unlink($localPath);
-            }
+            $attachmentPaths = $attStmt->fetchAll(PDO::FETCH_COLUMN);
             $conn->prepare("DELETE FROM announcements WHERE id = :id")->execute([':id' => $id]);
+
+            if ($ann && $ann['banner_img']) {
+                if (str_contains($ann['banner_img'], 'supabase.co/storage/v1/object/public/')) {
+                    try { StorageService::deleteFile($ann['banner_img']); } catch (Throwable $e) {}
+                } else {
+                    $localPath = $_SERVER['DOCUMENT_ROOT'] . $ann['banner_img'];
+                    if (file_exists($localPath)) @unlink($localPath);
+                }
+            }
+            
+            foreach ($attachmentPaths as $path) {
+                if (str_contains($path, 'supabase.co/storage/v1/object/public/')) {
+                    try { StorageService::deleteFile($path); } catch (Throwable $e) {}
+                } else {
+                    $localPath = $_SERVER['DOCUMENT_ROOT'] . $path;
+                    if (file_exists($localPath)) @unlink($localPath);
+                }
+            }
             if ($ann) {
                 notifyAdminsOfAnnouncementChange($conn, 'deleted', $id, (string)$ann['title']);
                 try {

@@ -28,7 +28,8 @@ class UserProfileModel
         $stmt->execute([':uid' => $userId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            $row['is_registered_voter'] = $row['is_registered_voter'] === 't';
+            $row['is_registered_voter'] = $row['is_registered_voter'] === true
+                || in_array(strtolower((string) $row['is_registered_voter']), ['1', 't', 'true'], true);
         }
         return $row;
     }

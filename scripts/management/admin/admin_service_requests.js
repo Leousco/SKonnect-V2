@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderNotesThread(app.notes || [], finalized);
     renderDocuments(app.documents || []);
-    renderFulfillmentFile(app.fulfillment_file || null, app.status);
+    renderFulfillmentFile(app.fulfillment_file || null, app.status, app.id);
 
     drawerNoteInput.style.display = finalized ? "none" : "";
     drawerResponse.value = "";
@@ -343,7 +343,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const titleAttr = escapeHtml(fullName);
       const size      = formatSize(doc.file_size);
       const metaParts = [formatDate(doc.uploaded_at), size].filter(Boolean);
-      const basePath  = window.SKONNECT_ASSETS.url(doc.file_path);
+      const basePath = String(doc.file_path || "").startsWith("sb-private:")
+        ? window.SKONNECT_ASSETS.url(`/backend/routes/private_file.php?type=application_document&id=${encodeURIComponent(doc.id)}`)
+        : window.SKONNECT_ASSETS.url(doc.file_path);
       const isImage   = doc.mime_type && doc.mime_type.startsWith("image/");
       const isPdf     = doc.mime_type === "application/pdf";
 
@@ -366,7 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
     drawerFiles.innerHTML = `<div class="drawer-files-list">${items}</div>`;
   }
 
-  function renderFulfillmentFile(filePath, status) {
+  function renderFulfillmentFile(filePath, status, applicationId) {
     if (status !== "approved" || !filePath) {
       drawerFulfillmentSection.style.display = "none";
       drawerFulfillmentFile.innerHTML = "—";
@@ -375,7 +377,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     drawerFulfillmentSection.style.display = "";
 
-    const basePath = window.SKONNECT_ASSETS.url(filePath);
+    const basePath = String(filePath || "").startsWith("sb-private:")
+      ? window.SKONNECT_ASSETS.url(`/backend/routes/private_file.php?type=fulfillment&id=${encodeURIComponent(applicationId)}`)
+      : window.SKONNECT_ASSETS.url(filePath);
     const fileName = filePath.split("/").pop() || "fulfillment_file";
     const ext = fileName.split(".").pop().toLowerCase();
 

@@ -60,7 +60,7 @@ class ServiceRequestModel
             $params[':category'] = $filters['category'];
         }
         if (!empty($filters['search'])) {
-            $sql .= " AND (sa.full_name LIKE :search OR sv.name LIKE :search OR u.first_name LIKE :search OR u.last_name LIKE :search)";
+            $sql .= " AND (sa.full_name ILIKE :search OR sv.name ILIKE :search OR u.first_name ILIKE :search OR u.last_name ILIKE :search)";
             $params[':search'] = '%' . $filters['search'] . '%';
         }
 

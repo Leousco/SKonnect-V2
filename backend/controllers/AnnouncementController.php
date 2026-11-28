@@ -13,8 +13,6 @@ class AnnouncementController
     private AnnouncementModel $model;
     private ActivityLogModel $activityLog;
 
-    private string $attachDir  = 'assets/uploads/attachments/';
-
     public function __construct()
     {
         $this->model = new AnnouncementModel();
@@ -81,7 +79,7 @@ class AnnouncementController
         if (!empty($_FILES['attachments']['tmp_name'])) {
             $files = $this->normaliseFileArray($_FILES['attachments']);
             foreach ($files as $file) {
-                $path = $this->uploadFile($file, $this->attachDir, null, 10 * 1024 * 1024);
+                $path = $this->uploadFile($file, StorageService::ANNOUNCEMENT_ATTACHMENT_MIMES, 10 * 1024 * 1024);
                 if ($path) {
                     $this->model->addFile($id, $path);
                 }
@@ -172,7 +170,7 @@ class AnnouncementController
         if (!empty($_FILES['attachments']['tmp_name'])) {
             $files = $this->normaliseFileArray($_FILES['attachments']);
             foreach ($files as $file) {
-                $path = $this->uploadFile($file, $this->attachDir, null, 10 * 1024 * 1024);
+                $path = $this->uploadFile($file, StorageService::ANNOUNCEMENT_ATTACHMENT_MIMES, 10 * 1024 * 1024);
                 if ($path) {
                     $this->model->addFile($id, $path);
                 }
@@ -239,8 +237,16 @@ class AnnouncementController
             $this->json(['status' => 'error', 'message' => 'File not found.'], 404);
         }
 
-        $absPath = str_replace('\\', '/', dirname(__DIR__, 2)) . $target['file_path'];
-        if (file_exists($absPath)) @unlink($absPath);
+        if ($this->isSupabaseUrl($target['file_path'])) {
+            try {
+                StorageService::deleteFile($target['file_path']);
+            } catch (Throwable $e) {
+                error_log('Failed to delete announcement attachment: ' . $e->getMessage());
+            }
+        } else {
+            $absPath = str_replace('\\', '/', dirname(__DIR__, 2)) . $target['file_path'];
+            if (file_exists($absPath)) @unlink($absPath);
+        }
 
         if (!$this->model->deleteFileById($fileId)) {
             $this->json(['status' => 'error', 'message' => 'Failed to remove attachment.'], 500);
@@ -265,8 +271,19 @@ class AnnouncementController
         if (!$existing) $this->json(['status' => 'error', 'message' => 'Not found.'], 404);
 
         $files = $this->model->deleteFiles($id);
+        if (!$this->model->delete($id)) {
+            $this->json(['status' => 'error', 'message' => 'Delete failed.'], 500);
+        }
         foreach ($files as $f) {
-            if (file_exists($f['file_path'])) @unlink($f['file_path']);
+            if ($this->isSupabaseUrl($f['file_path'])) {
+                try {
+                    StorageService::deleteFile($f['file_path']);
+                } catch (Throwable $e) {
+                    error_log('Failed to delete announcement attachment: ' . $e->getMessage());
+                }
+            } elseif (file_exists($f['file_path'])) {
+                @unlink($f['file_path']);
+            }
         }
 
         // Delete banner from Supabase if it exists
@@ -283,9 +300,6 @@ class AnnouncementController
             }
         }
 
-        if (!$this->model->delete($id)) {
-            $this->json(['status' => 'error', 'message' => 'Delete failed.'], 500);
-        }
         $this->logOfficerAction('announcement_deleted', $id, $existing['title']);
         $this->json(['status' => 'success', 'message' => 'Announcement deleted.']);
     }
@@ -426,30 +440,30 @@ class AnnouncementController
         return str_contains($url, 'supabase.co/storage/v1/object/public/');
     }
 
-    private function uploadFile(array $file, string $dir, ?array $allowedMimes = null, int $maxBytes = 5 * 1024 * 1024): string|false
+    private function uploadFile(array $file, ?array $allowedMimes = null, int $maxBytes = 5 * 1024 * 1024): string|false
     {
         if ($file['error'] !== UPLOAD_ERR_OK) return false;
         if ($file['size'] > $maxBytes)        return false;
 
-        if ($allowedMimes !== null) {
-            $finfo    = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = finfo_file($finfo, $file['tmp_name']);
-            finfo_close($finfo);
-            if (!in_array($mimeType, $allowedMimes, true)) return false;
+        if ($allowedMimes === null || $allowedMimes === []) return false;
+
+        $finfo    = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        if ($mimeType === false) return false;
+        try {
+            return StorageService::uploadFile(
+                $file['tmp_name'],
+                $mimeType,
+                $file['name'],
+                'announcement-attachments',
+                'attachment_',
+                $allowedMimes
+            );
+        } catch (Throwable $e) {
+            error_log('Announcement attachment upload failed: ' . $e->getMessage());
+            return false;
         }
-
-        $projectRoot = str_replace('\\', '/', dirname(__DIR__, 2)) . '/';
-        $absDir      = $projectRoot . $dir;
-
-        if (!is_dir($absDir)) mkdir($absDir, 0755, true);
-
-        $ext      = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = uniqid('', true) . '.' . strtolower($ext);
-        $destAbs  = str_replace('\\', '/', $absDir . $filename);
-
-        if (!move_uploaded_file($file['tmp_name'], $destAbs)) return false;
-
-        return publicAssetUrl($destAbs);
     }
 
     private function normaliseFileArray(array $files): array

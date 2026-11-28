@@ -20,6 +20,37 @@
     const cards        = Array.from(document.querySelectorAll('.res-svc-card'));
     const noResults    = document.getElementById('no-results');
     const svcCount     = document.getElementById('svc-count');
+    const viewTable    = document.getElementById('svc-list-table');
+    const viewGrid     = document.getElementById('svc-grid');
+    const viewButtons  = Array.from(document.querySelectorAll('.svc-view-button'));
+    const mobileViewQuery = window.matchMedia('(max-width: 600px)');
+    const viewPreferenceKey = 'skonnect-services-view';
+
+    function getSavedView() {
+        const savedView = window.localStorage.getItem(viewPreferenceKey);
+        return savedView === 'list' ? 'list' : 'cards';
+    }
+
+    function setServiceView(view, savePreference = false) {
+        const selectedView = mobileViewQuery.matches ? 'cards' : view;
+        viewGrid?.setAttribute('data-view', selectedView);
+        viewTable?.classList.toggle('is-list-view', selectedView === 'list');
+        viewButtons.forEach(button => {
+            button.setAttribute('aria-pressed', String(button.dataset.view === selectedView));
+        });
+
+        if (savePreference) window.localStorage.setItem(viewPreferenceKey, view);
+    }
+
+    setServiceView(getSavedView());
+    viewButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const view = button.dataset.view;
+            if (view !== 'cards' && view !== 'list' || mobileViewQuery.matches) return;
+            setServiceView(view, true);
+        });
+    });
+    mobileViewQuery.addEventListener('change', () => setServiceView(getSavedView()));
 
     function getRequirementLines(requirements) {
         return requirements
@@ -249,6 +280,23 @@
     }
 
     document.querySelectorAll('.res-view-btn').forEach(btn => btn.addEventListener('click', () => openDetailsModal(btn)));
+    document.querySelectorAll('.svc-list-row').forEach(row => {
+        function openRowDetails() {
+            const card = cards.find(serviceCard => serviceCard.dataset.id === row.dataset.id);
+            const detailsButton = card?.querySelector('.res-view-btn');
+            if (detailsButton) openDetailsModal(detailsButton);
+        }
+
+        row.addEventListener('click', event => {
+            if (event.target.closest('button')) return;
+            openRowDetails();
+        });
+        row.addEventListener('keydown', event => {
+            if (event.target !== row || (event.key !== 'Enter' && event.key !== ' ')) return;
+            event.preventDefault();
+            openRowDetails();
+        });
+    });
     detailsClose?.addEventListener('click',  closeDetailsModal);
     detailsCancel?.addEventListener('click', closeDetailsModal);
     detailsOverlay?.addEventListener('click', e => { if (e.target === detailsOverlay) closeDetailsModal(); });

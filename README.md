@@ -52,6 +52,10 @@ A community portal that connects residents with their SK officers: announcements
 
 ### Implemented Major Features
 
+#### Knowledge Gap Feedback Loop
+
+Kaya can forward unanswered community questions to the **SK Answer Desk**, where admins and SK officers add reviewed answers that Kaya can reuse. Retrieval uses PostgreSQL full-text search, trigram similarity, and official keywords; embeddings with pgvector may be considered as future work. Run `sql/chatbot_knowledge.sql` manually in the Supabase SQL editor to enable it.
+
 <details open>
 <summary><b>Public view</b></summary>
 

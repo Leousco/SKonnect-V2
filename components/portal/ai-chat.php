@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../../styles/portal/ai-chat.css">
 
-<div class="ai-chat" id="ai-chat" data-endpoint="../../backend/routes/ai.php">
+<div class="ai-chat" id="ai-chat" data-endpoint="../../backend/routes/ai.php" data-flag-endpoint="../../backend/routes/chatbot_answer_flag.php">
     <button class="ai-chat-button" id="ai-chat-button" type="button" aria-label="Open chat with Kaya" aria-expanded="false" aria-controls="ai-chat-panel">
         <img src="../../assets/img/kaya-icon.svg" alt="" aria-hidden="true">
         <span class="ai-chat-launch-label">Ask Kaya!</span>

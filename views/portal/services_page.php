@@ -237,14 +237,39 @@ RoleMiddleware::requireAuth();
                         <?php endfor; ?>
                     </div>
                 </div>
-                <div class="panel-header" style="margin-bottom: 16px;">
+                <div class="panel-header svc-panel-header" style="margin-bottom: 16px;">
                     <h2 class="section-label">Available Services</h2>
-                    <span class="svc-count" id="svc-count">
-                        Showing <?= count($services) ?> service<?= count($services) !== 1 ? 's' : '' ?>
-                    </span>
+                    <div class="svc-results-controls">
+                        <span class="svc-count" id="svc-count">
+                            Showing <?= count($services) ?> service<?= count($services) !== 1 ? 's' : '' ?>
+                        </span>
+                        <div class="svc-view-switch" role="group" aria-label="Service view">
+                            <button class="svc-view-button" type="button" data-view="cards" aria-label="Card view" aria-pressed="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.5h7.5v6.75h-7.5zM15 4.5h5.25v6.75H15zM3.75 15h7.5v4.5h-7.5zM15 15h5.25v4.5H15z" />
+                                </svg>
+                            </button>
+                            <button class="svc-view-button" type="button" data-view="list" aria-label="List view" aria-pressed="false">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6h12M8.25 12h12m-12 6h12M3.75 6h.008v.008H3.75V6Zm0 6h.008v.008H3.75V12Zm0 6h.008v.008H3.75V18Z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="announcements-grid" id="svc-grid">
+                <div class="svc-list-table" id="svc-list-table">
+                    <?php if (!empty($services)) : ?>
+                    <div class="svc-list-header">
+                        <span>Service</span>
+                        <span>Category</span>
+                        <span>Eligibility</span>
+                        <span>Processing</span>
+                        <span>Status</span>
+                        <span>Action</span>
+                    </div>
+                    <?php endif; ?>
+                    <div class="announcements-grid" id="svc-grid" data-view="cards">
 
                     <?php if (empty($services)) : ?>
                         <p class="no-results" style="display:block;">No services are currently listed.</p>
@@ -266,6 +291,7 @@ RoleMiddleware::requireAuth();
 
                             $typeLabel  = $serviceTypeLabels[$svc['service_type']] ?? 'Service';
                             $reqLines   = array_filter(array_map('trim', explode("\n", $svc['requirements'] ?? '')));
+                            $totalReqs  = count($reqLines);
                             $attNames   = $svc['attachment_name'] ? array_filter(array_map('trim', explode(',', $svc['attachment_name']))) : [];
                             $attPaths   = $svc['attachment_path'] ? array_values(array_filter(array_map('trim', explode(',', $svc['attachment_path'])))) : [];
                             $alreadyApplied = in_array($svc['id'], $appliedServiceIds);
@@ -280,6 +306,7 @@ RoleMiddleware::requireAuth();
                         ?>
                             <article class="ann-card svc-card res-svc-card" data-id="<?= $svc['id'] ?>" data-category="<?= htmlspecialchars($svc['category']) ?>" data-type="<?= htmlspecialchars($svc['service_type']) ?>" data-status="<?= $displayStatus ?>">
 
+                                <div class="svc-card-view">
                                 <div class="ann-card-body">
 
                                     
@@ -360,7 +387,6 @@ RoleMiddleware::requireAuth();
                                                 </svg>
                                                 <span class="svc-detail-label">Requirements:</span>
                                                 <span class="svc-detail-value">
-                                                    <?php $totalReqs = count($reqLines); ?>
                                                     <?= $totalReqs > 0 ? $totalReqs . ' Document' . ($totalReqs > 1 ? 's' : '') : 'Not specified' ?>
                                                 </span>
                                             </li>
@@ -393,10 +419,44 @@ RoleMiddleware::requireAuth();
                                     </div>
 
                                 </div>
+                                </div>
+                                <div class="svc-list-row" data-id="<?= $svc['id'] ?>" tabindex="0" aria-label="View details for <?= htmlspecialchars($svc['name']) ?>">
+                                    <div class="svc-list-service">
+                                        <span class="svc-list-icon svc-icon-<?= htmlspecialchars($svc['category']) ?>"><?= $icon ?></span>
+                                        <span class="svc-list-name"><?= htmlspecialchars($svc['name']) ?></span>
+                                    </div>
+                                    <span class="svc-list-category res-cat-tag res-cat-<?= htmlspecialchars($svc['category']) ?>"><?= htmlspecialchars($meta['label']) ?></span>
+                                    <span class="svc-list-value" title="<?= htmlspecialchars($svc['eligibility'] ?: 'Not specified') ?>"><?= htmlspecialchars($svc['eligibility'] ?: 'Not specified') ?></span>
+                                    <span class="svc-list-value" title="<?= htmlspecialchars($svc['processing_time'] ?: 'Not specified') ?>"><?= htmlspecialchars($svc['processing_time'] ?: 'Not specified') ?></span>
+                                    <div class="svc-list-status">
+                                        <?php if ($hasCapacity) : ?>
+                                            <span class="svc-list-capacity"><span class="svc-list-status-dot status-dot-open"></span><?= $svc['current_count'] ?> / <?= $svc['max_capacity'] ?> filled</span>
+                                            <span class="svc-list-capacity-bar" aria-hidden="true">
+                                                <span class="<?= $capacityFull ? 'bar-full' : ($isLimited ? 'bar-warn' : '') ?>" style="width:<?= min(100, round(($svc['current_count'] / $svc['max_capacity']) * 100)) ?>%"></span>
+                                            </span>
+                                        <?php else : ?>
+                                            <span class="svc-list-status-label <?= $displayStatus === 'closed' ? 'is-closed' : 'is-open' ?>">
+                                                <span class="svc-list-status-dot <?= $displayStatus === 'closed' ? 'status-dot-closed' : 'status-dot-open' ?>"></span><?= $displayStatus === 'closed' ? 'Closed' : 'Open' ?>
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="svc-list-action">
+                                        <?php if ($alreadyApplied) : ?>
+                                            <button class="btn-primary-portal svc-list-action-button" disabled>✓ Applied</button>
+                                        <?php elseif ($isOpen && !$isInfoOnly) : ?>
+                                            <button class="btn-primary-portal svc-list-action-button svc-apply-btn" data-id="<?= $svc['id'] ?>" data-service="<?= htmlspecialchars($svc['name']) ?>" data-icon="<?= htmlspecialchars($icon) ?>" data-category-key="<?= htmlspecialchars($svc['category']) ?>" data-type="<?= htmlspecialchars($svc['service_type']) ?>" data-eligibility="<?= htmlspecialchars($svc['eligibility'] ?? '—') ?>" data-processing="<?= htmlspecialchars($svc['processing_time'] ?? '—') ?>" data-requirements="<?= htmlspecialchars($svc['requirements'] ?? '') ?>">
+                                                <?= $btnLabel ?>
+                                            </button>
+                                        <?php elseif (!$isInfoOnly) : ?>
+                                            <button class="btn-primary-portal svc-list-action-button" disabled><?= $capacityFull ? 'Slots Full' : 'Closed' ?></button>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
                             </article>
                         <?php endforeach; ?>
                     <?php endif; ?>
 
+                    </div>
                 </div>
 
                 <div class="no-results" id="no-results" style="display:none;">

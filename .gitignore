@@ -18,3 +18,5 @@ test_ab.php
 .DS_Store
 Thumbs.db
 .vscode/
+
+/sql

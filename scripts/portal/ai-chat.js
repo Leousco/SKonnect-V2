@@ -12,6 +12,7 @@
     if (!root || !button || !panel || !closeButton || !input || !form || !messagesElement || !welcome || !sendButton) return;
 
     const endpoint = root.dataset.endpoint || '../../routes/ai.php';
+    const flagEndpoint = root.dataset.flagEndpoint || '../../routes/chatbot_answer_flag.php';
     const fallbackError = 'Sorry, I couldn’t reach Kaya. Please try again.';
     const MAX_HISTORY_TURNS = 8;
     const MAX_HISTORY_CHARS = 1000;
@@ -94,7 +95,7 @@
         flushList();
     };
 
-    const appendMessage = ({ role, content, typing = false }) => {
+    const appendMessage = ({ role, content, typing = false, faqIds = [] }) => {
         const message = document.createElement('div');
         message.className = `ai-chat-message ai-chat-message-${role}`;
         if (typing) message.classList.add('ai-chat-message-typing');
@@ -115,6 +116,35 @@
             formatted.className = 'ai-chat-content';
             appendFormattedReply(formatted, content);
             message.append(formatted);
+            const validFaqIds = Array.isArray(faqIds)
+                ? [...new Set(faqIds.filter((id) => Number.isInteger(id) && id > 0))]
+                : [];
+            if (validFaqIds.length > 0) {
+                const report = document.createElement('button');
+                report.className = 'ai-chat-report';
+                report.type = 'button';
+                report.textContent = 'Report wrong or outdated answer';
+                report.addEventListener('click', async () => {
+                    report.disabled = true;
+                    try {
+                        const response = await fetch(flagEndpoint, {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                            body: JSON.stringify({ faq_ids: validFaqIds }),
+                        });
+                        const data = await response.json();
+                        if (!response.ok || !data.success) {
+                            throw new Error(data.message || 'Unable to send feedback.');
+                        }
+                        report.textContent = 'Reported — thank you';
+                    } catch (error) {
+                        report.disabled = false;
+                        report.textContent = 'Could not report. Try again.';
+                    }
+                });
+                message.append(report);
+            }
         } else {
             const text = document.createElement('p');
             text.textContent = content;
@@ -207,6 +237,7 @@
         scrollToLatest();
 
         let reply = fallbackError;
+        let faqIds = [];
         const controller = new AbortController();
         const timer = window.setTimeout(() => controller.abort(), 40000);
 
@@ -219,14 +250,17 @@
                 signal: controller.signal,
             });
             const data = await response.json().catch(() => null);
-            if (data && typeof data.message === 'string' && data.message) reply = data.message;
+            if (data && typeof data.message === 'string' && data.message) {
+                reply = data.message;
+                faqIds = Array.isArray(data.faq_ids) ? data.faq_ids : [];
+            }
         } catch (error) {
         } finally {
             window.clearTimeout(timer);
         }
 
         typing.remove();
-        appendMessage({ role: 'assistant', content: reply });
+        appendMessage({ role: 'assistant', content: reply, faqIds });
         rememberTurn('assistant', reply);
         setPending(false);
         scrollToLatest();

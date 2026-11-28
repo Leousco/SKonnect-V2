@@ -84,8 +84,8 @@ function isGroupActive(array $pages): string
                 </li>
 
                 
-                <li class="has-submenu <?= isGroupOpen(['admin_threads.php', 'admin_reports.php']) ?> <?= isGroupActive(['admin_threads.php', 'admin_reports.php']) ?>">
-                    <button class="submenu-toggle" aria-expanded="<?= isGroupOpen(['admin_threads.php', 'admin_reports.php']) === 'open' ? 'true' : 'false' ?>">
+                <li class="has-submenu <?= isGroupOpen(['admin_threads.php', 'admin_reports.php', 'admin_answer_desk.php']) ?> <?= isGroupActive(['admin_threads.php', 'admin_reports.php', 'admin_answer_desk.php']) ?>">
+                    <button class="submenu-toggle" aria-expanded="<?= isGroupOpen(['admin_threads.php', 'admin_reports.php', 'admin_answer_desk.php']) === 'open' ? 'true' : 'false' ?>">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                         </svg>
@@ -100,6 +100,9 @@ function isGroupActive(array $pages): string
                         </li>
                         <li class="<?= isActive('admin_reports.php') ?>">
                             <a href="admin_reports.php">Reports</a>
+                        </li>
+                        <li class="<?= isActive('admin_answer_desk.php') ?>">
+                            <a href="admin_answer_desk.php">SK Answer Desk</a>
                         </li>
                     </ul>
                 </li>

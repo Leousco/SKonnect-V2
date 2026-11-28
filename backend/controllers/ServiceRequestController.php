@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../models/ServiceRequestModel.php';
 require_once __DIR__ . '/../models/ActivityLogModel.php';
 require_once __DIR__ . '/../services/EmailService.php';
+require_once __DIR__ . '/../services/StorageService.php';
 
 class ServiceRequestController
 {
@@ -9,7 +10,6 @@ class ServiceRequestController
     private EmailService $emailService;
     private ActivityLogModel $activityLog;
 
-    private string $fulfillmentDir;
     private array $allowedMimes = [
         'application/pdf',
         'application/msword',
@@ -22,22 +22,11 @@ class ServiceRequestController
     ];
     private array $allowedExts      = ['pdf', 'doc', 'docx', 'xlsx', 'jpg', 'jpeg', 'png', 'gif', 'webp'];
     private int   $maxFileSizeBytes = 5 * 1024 * 1024; 
-    private string $uploadDir;
-
     public function __construct()
     {
         $this->model        = new ServiceRequestModel();
         $this->emailService = new EmailService();
         $this->activityLog = new ActivityLogModel($this->model->getConnection());
-        $this->uploadDir = __DIR__ . '/../../uploads/applications/';
-        $this->fulfillmentDir = __DIR__ . '/../../uploads/fulfillment/';
-
-        if (!is_dir($this->uploadDir)) {
-            mkdir($this->uploadDir, 0755, true);
-        }
-        if (!is_dir($this->fulfillmentDir)) {
-            mkdir($this->fulfillmentDir, 0755, true);
-        }
     }
 
     public function getAll(array $filters = []): array
@@ -172,7 +161,15 @@ class ServiceRequestController
         foreach ($removeDocIds as $docId) {
             $docId = (int)$docId;
             if ($docId > 0) {
+                $stmt = $this->model->getConnection()->prepare(
+                    'SELECT file_path FROM application_documents WHERE id = :id AND application_id = :app_id'
+                );
+                $stmt->execute([':id' => $docId, ':app_id' => $applicationId]);
+                $oldPath = $stmt->fetchColumn();
                 $this->model->deleteDocument($docId, $applicationId);
+                if (is_string($oldPath)) {
+                    $this->deleteApplicationFile($oldPath);
+                }
             }
         }
 
@@ -278,7 +275,14 @@ class ServiceRequestController
             $fulfillmentPath = $upload['path'];
         }
 
-        $this->model->updateStatus($id, $status, $fulfillmentPath);
+        try {
+            $this->model->updateStatus($id, $status, $fulfillmentPath);
+        } catch (Throwable $e) {
+            if ($fulfillmentPath !== null) {
+                $this->deletePrivateReference($fulfillmentPath);
+            }
+            throw $e;
+        }
         $this->activityLog->log($officerId, 'service_request_' . $status, [
             'target_type' => 'service_request',
             'target_id'   => $id,
@@ -531,11 +535,16 @@ class ServiceRequestController
 
     private function storeApplicationUpload(array $file): array
     {
-        $safeName = preg_replace('/[^A-Za-z0-9._-]/', '_', basename((string) $file['name']));
-        $uniqueName = 'app_' . bin2hex(random_bytes(16)) . '_' . $safeName;
-        $destination = $this->uploadDir . $uniqueName;
-
-        if (!move_uploaded_file((string) $file['tmp_name'], $destination)) {
+        try {
+            $reference = StorageService::uploadPrivateFile(
+                (string) $file['tmp_name'],
+                (string) $file['mime_type'],
+                (string) $file['name'],
+                'application-documents',
+                'application_',
+                $this->allowedMimes
+            );
+        } catch (Throwable $e) {
             return [
                 'ok' => false,
                 'error' => "Failed to save \"{$file['name']}\". Please try again.",
@@ -546,8 +555,7 @@ class ServiceRequestController
             'ok' => true,
             'file' => [
                 'file_name' => (string) $file['name'],
-                'file_path' => '/uploads/applications/' . $uniqueName,
-                'absolute_path' => $destination,
+                'file_path' => $reference,
                 'file_size' => (int) $file['size'],
                 'mime_type' => (string) $file['mime_type'],
             ],
@@ -557,10 +565,7 @@ class ServiceRequestController
     private function removeStoredUploads(array $files): void
     {
         foreach ($files as $file) {
-            $path = $file['absolute_path'] ?? '';
-            if ($path !== '' && is_file($path) && !unlink($path)) {
-                error_log('Failed to remove an uncommitted service request upload: ' . $path);
-            }
+            $this->deleteApplicationFile($file['file_path'] ?? '');
         }
     }
 
@@ -583,15 +588,20 @@ class ServiceRequestController
             return ['ok' => false, 'error' => "Invalid file type detected for \"{$file['name']}\"."];
         }
 
-        $safeName    = preg_replace('/[^A-Za-z0-9._-]/', '_', basename($file['name']));
-        $uniqueName  = 'fulfillment_' . uniqid('', true) . '_' . $safeName;
-        $destination = $this->fulfillmentDir . $uniqueName;
-
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        try {
+            $reference = StorageService::uploadPrivateFile(
+                $file['tmp_name'],
+                $mimeType,
+                $file['name'],
+                'fulfillment-files',
+                'fulfillment_',
+                $this->allowedMimes
+            );
+        } catch (Throwable $e) {
             return ['ok' => false, 'error' => "Failed to save \"{$file['name']}\". Please try again."];
         }
 
-        return ['ok' => true, 'path' => '/uploads/fulfillment/' . $uniqueName];
+        return ['ok' => true, 'path' => $reference];
     }
 
     private function handleUpload(array $file, int $applicationId): array
@@ -613,22 +623,58 @@ class ServiceRequestController
             return ['ok' => false, 'error' => "Invalid file type detected for \"{$file['name']}\"."];
         }
 
-        $safeName    = preg_replace('/[^A-Za-z0-9._-]/', '_', basename($file['name']));
-        $uniqueName  = 'app_' . $applicationId . '_' . uniqid('', true) . '_' . $safeName;
-        $destination = $this->uploadDir . $uniqueName;
-
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        try {
+            $reference = StorageService::uploadPrivateFile(
+                $file['tmp_name'],
+                $mimeType,
+                $file['name'],
+                'application-documents',
+                'application_',
+                $this->allowedMimes
+            );
+        } catch (Throwable $e) {
             return ['ok' => false, 'error' => "Failed to save \"{$file['name']}\". Please try again."];
         }
 
-        $this->model->insertDocument(
-            $applicationId,
-            $file['name'],
-            '/uploads/applications/' . $uniqueName,
-            $file['size'],
-            $mimeType
-        );
+        try {
+            $this->model->insertDocument(
+                $applicationId,
+                $file['name'],
+                $reference,
+                $file['size'],
+                $mimeType
+            );
+        } catch (Throwable $e) {
+            $this->deletePrivateReference($reference);
+            throw $e;
+        }
 
         return ['ok' => true];
+    }
+
+    private function deleteApplicationFile(string $path): void
+    {
+        if (str_starts_with($path, 'sb-private:')) {
+            $this->deletePrivateReference($path);
+            return;
+        }
+        if ($path !== '' && is_file($path)) {
+            @unlink($path);
+        } elseif ($path !== '') {
+            $full = __DIR__ . '/../../' . ltrim($path, '/');
+            if (is_file($full)) @unlink($full);
+        }
+    }
+
+    private function deletePrivateReference(string $reference): void
+    {
+        if (!preg_match('#^sb-private:([^/]+)/(.+)$#', $reference, $matches)) {
+            return;
+        }
+        try {
+            StorageService::deleteObject($matches[1], $matches[2]);
+        } catch (Throwable $e) {
+            error_log('Failed to delete private storage object.');
+        }
     }
 }

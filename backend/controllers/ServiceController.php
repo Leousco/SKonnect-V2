@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../services/StorageService.php';
 require_once __DIR__ . '/../models/ServiceModel.php';
 require_once __DIR__ . '/../models/ActivityLogModel.php';
 
@@ -15,17 +16,10 @@ class ServiceController
     ];
     private array $allowedExts      = ['pdf', 'doc', 'docx', 'xlsx'];
     private int   $maxFileSizeBytes = 10 * 1024 * 1024;
-    private string $uploadDir;
-
     public function __construct()
     {
         $this->model     = new ServiceModel();
         $this->activityLog = new ActivityLogModel($this->model->getConnection());
-        $this->uploadDir = __DIR__ . '/../../uploads/forms/';
-
-        if (!is_dir($this->uploadDir)) {
-            mkdir($this->uploadDir, 0755, true);
-        }
     }
 
     public function getAll(array $filters = []): array
@@ -83,6 +77,7 @@ class ServiceController
 
         $keptNames = [];
         $keptPaths = [];
+        $removedPaths = [];
         if (!empty($data['existing_attachments'])) {
             $existingNames = array_filter(array_map('trim', explode(',', $existing['attachment_name'] ?? '')));
             $existingPaths = array_filter(array_map('trim', explode(',', $existing['attachment_path'] ?? '')));
@@ -93,13 +88,13 @@ class ServiceController
                     $keptNames[] = $name;
                     $keptPaths[] = $existingPaths[$i] ?? '';
                 } else {
-                    $this->deleteFile($existingPaths[$i] ?? null);
+                    $removedPaths[] = $existingPaths[$i] ?? null;
                 }
             }
         } elseif (isset($data['clear_attachment']) && $data['clear_attachment'] === '1') {
             
             foreach (array_filter(array_map('trim', explode(',', $existing['attachment_path'] ?? ''))) as $p) {
-                $this->deleteFile($p);
+                $removedPaths[] = $p;
             }
         } else {
             $keptNames = array_filter(array_map('trim', explode(',', $existing['attachment_name'] ?? '')));
@@ -121,6 +116,9 @@ class ServiceController
         $attachmentPath = $keptPaths ? implode(',', array_values($keptPaths)) : null;
 
         $this->model->update($id, $data, $attachmentName, $attachmentPath);
+        foreach ($removedPaths as $removedPath) {
+            $this->deleteFile($removedPath);
+        }
         $this->logOfficerAction($officerId, 'service_updated', $id, $data['name'], [
             'notes' => isset($data['status']) && $data['status'] !== $existing['status']
                 ? 'Service status changed to ' . $data['status'] . '.'
@@ -159,8 +157,8 @@ class ServiceController
             return ['success' => false, 'message' => 'Service not found.'];
         }
 
-        $this->deleteFile($existing['attachment_path']);
         $this->model->delete($id);
+        $this->deleteFile($existing['attachment_path']);
         $this->logOfficerAction($officerId, 'service_deleted', $id, $existing['name']);
         return ['success' => true, 'message' => "Service \"{$existing['name']}\" deleted."];
     }
@@ -253,25 +251,40 @@ class ServiceController
             return ['ok' => false, 'error' => 'Invalid file type detected.'];
         }
 
-        $safeName    = preg_replace('/[^A-Za-z0-9._-]/', '_', basename($file['name']));
-        $uniqueName  = uniqid('form_', true) . '_' . $safeName;
-        $destination = $this->uploadDir . $uniqueName;
-
-        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        try {
+            $path = StorageService::uploadFile(
+                $file['tmp_name'],
+                $mimeType,
+                $file['name'],
+                'service-forms',
+                'form_',
+                $this->allowedMimes
+            );
+        } catch (Throwable $e) {
             return ['ok' => false, 'error' => 'Failed to save uploaded file.'];
         }
 
         return [
             'ok'   => true,
             'name' => $file['name'],
-            'path' => '/uploads/forms/' . $uniqueName,
+            'path' => $path,
         ];
     }
 
     private function deleteFile(?string $path): void
     {
         if (!$path) return;
-        $full = __DIR__ . '/../../' . ltrim($path, '/');
-        if (file_exists($full)) @unlink($full);
+        foreach (array_filter(array_map('trim', explode(',', $path))) as $item) {
+            if (str_contains($item, 'supabase.co/storage/v1/object/public/')) {
+                try {
+                    StorageService::deleteFile($item);
+                } catch (Throwable $e) {
+                    error_log('Failed to delete service form: ' . $e->getMessage());
+                }
+            } else {
+                $full = __DIR__ . '/../../' . ltrim($item, '/');
+                if (file_exists($full)) @unlink($full);
+            }
+        }
     }
 }

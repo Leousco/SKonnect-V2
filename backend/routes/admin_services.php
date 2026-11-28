@@ -57,7 +57,7 @@ if ($method === 'GET' && $action === 'list') {
         $params[':status'] = $status;
     }
     if ($search !== '') {
-        $sql      .= ' AND s.name LIKE :search';
+        $sql      .= ' AND s.name ILIKE :search';
         $params[':search'] = '%' . $search . '%';
     }
 

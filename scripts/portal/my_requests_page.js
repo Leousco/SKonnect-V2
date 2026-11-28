@@ -380,7 +380,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = escapeHtml(truncateName(fullName));
         const title = escapeHtml(fullName);
         const rawPath = doc.file_path || "";
-        const basePath = window.SKONNECT_ASSETS.url(rawPath);
+        const basePath = String(rawPath || "").startsWith("sb-private:")
+          ? window.SKONNECT_ASSETS.url(`/backend/routes/private_file.php?type=application_document&id=${encodeURIComponent(doc.id)}`)
+          : window.SKONNECT_ASSETS.url(rawPath);
         const path = escapeHtml(basePath);
         const isPreviewable = doc.mime_type && (doc.mime_type.startsWith("image/") || doc.mime_type === "application/pdf");
 
@@ -460,14 +462,16 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  function renderFulfillmentFile(filePath) {
+  function renderFulfillmentFile(filePath, applicationId) {
     if (!filePath) {
       fulfillmentBlock.style.display = "none";
       fulfillmentFileWrap.innerHTML = "";
       return;
     }
 
-    const basePath = window.SKONNECT_ASSETS.url(filePath);
+    const basePath = String(filePath || "").startsWith("sb-private:")
+      ? window.SKONNECT_ASSETS.url(`/backend/routes/private_file.php?type=fulfillment&id=${encodeURIComponent(applicationId)}`)
+      : window.SKONNECT_ASSETS.url(filePath);
     const fileName = filePath.split("/").pop();
     const ext = fileName.split(".").pop().toLowerCase();
     const isImage = ["jpg", "jpeg", "png", "gif", "webp"].includes(ext);
@@ -951,6 +955,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const address = row.dataset.address || "—";
     const docs = row.dataset.docs || "—";
     const fulfillmentFile = row.dataset.fulfillmentFile || "";
+    const applicationId = row.dataset.id || "";
 
     let notes = [];
     try {
@@ -991,7 +996,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDocumentsList(documents);
 
     
-    renderFulfillmentFile(fulfillmentFile);
+    renderFulfillmentFile(fulfillmentFile, applicationId);
 
     
     buildTimeline(status, submitted, updated);

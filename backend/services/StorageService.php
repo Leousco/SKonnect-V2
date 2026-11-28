@@ -6,6 +6,19 @@ class StorageService
     private const BUCKET = 'thread-images';
     private const BANNER_BUCKET = 'announcement-banners';
 
+    public const ANNOUNCEMENT_ATTACHMENT_MIMES = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/plain',
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'image/gif',
+    ];
+
     private static function config(string $key): string
     {
         $value = (string) AIConfig::get($key, '');
@@ -36,6 +49,179 @@ class StorageService
             throw new RuntimeException('Unsupported image type. Only JPEG, PNG, WebP, and GIF are allowed.');
         }
         return self::uploadToStorage($tmpPath, $mime, $prefix, self::BANNER_BUCKET);
+    }
+
+    public static function uploadFile(
+        string $tmpPath,
+        string $mime,
+        string $originalName,
+        string $bucket,
+        string $prefix = '',
+        array $allowedMimes = []
+    ): string {
+        if ($allowedMimes === []) {
+            throw new RuntimeException('A MIME allowlist is required.');
+        }
+
+        $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        $zipDocument = in_array($mime, ['application/zip', 'application/octet-stream'], true)
+            && in_array($extension, ['docx', 'xlsx'], true);
+
+        if (!in_array($mime, $allowedMimes, true) && !$zipDocument) {
+            throw new RuntimeException('Invalid file type.');
+        }
+
+        $base = rtrim(self::config('SUPABASE_URL'), '/');
+        $key = self::config('SUPABASE_SERVICE_KEY');
+        if ($base === '' || $key === '') {
+            throw new RuntimeException('Storage is not configured.');
+        }
+
+        $extension = preg_replace('/[^a-z0-9]/', '', $extension) ?? '';
+        if ($extension === '') {
+            throw new RuntimeException('Invalid file extension.');
+        }
+
+        $name = $prefix . bin2hex(random_bytes(12)) . '.' . $extension;
+        return self::uploadObject($tmpPath, $mime, $bucket, $name, 'Unable to read the uploaded file.');
+    }
+
+    public static function uploadPrivateFile(
+        string $tmpPath,
+        string $mime,
+        string $originalName,
+        string $bucket,
+        string $prefix = '',
+        array $allowedMimes = []
+    ): string {
+        $url = self::uploadFile($tmpPath, $mime, $originalName, $bucket, $prefix, $allowedMimes);
+        $marker = '/storage/v1/object/public/' . $bucket . '/';
+        $position = strpos($url, $marker);
+        if ($position === false) {
+            throw new RuntimeException('Invalid storage upload result.');
+        }
+        $objectName = substr($url, $position + strlen($marker));
+        return 'sb-private:' . $bucket . '/' . $objectName;
+    }
+
+    public static function createSignedUrl(string $reference, int $expiresIn = 120): string
+    {
+        if (!preg_match('#^sb-private:([^/]+)/(.+)$#', $reference, $matches)) {
+            throw new RuntimeException('Invalid private file reference.');
+        }
+
+        $bucket = $matches[1];
+        $objectName = $matches[2];
+        $base = rtrim(self::config('SUPABASE_URL'), '/');
+        $key = self::config('SUPABASE_SERVICE_KEY');
+        if ($base === '' || $key === '') {
+            throw new RuntimeException('Storage is not configured.');
+        }
+
+        $ch = curl_init("{$base}/storage/v1/object/sign/{$bucket}/{$objectName}");
+        if ($ch === false) {
+            throw new RuntimeException('Unable to initialize the storage request.');
+        }
+
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode(['expiresIn' => $expiresIn]),
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer {$key}",
+                "apikey: {$key}",
+                'Content-Type: application/json',
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+        ]);
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($response === false || $status < 200 || $status >= 300) {
+            throw new RuntimeException('Unable to create private file link.');
+        }
+
+        $decoded = json_decode((string) $response, true);
+        $signedUrl = $decoded['signedURL'] ?? '';
+        if (!is_string($signedUrl) || $signedUrl === '') {
+            throw new RuntimeException('Unable to create private file link.');
+        }
+        return $base . '/storage/v1' . $signedUrl;
+    }
+
+    public static function deleteObject(string $bucket, string $objectName): bool
+    {
+        $base = rtrim(self::config('SUPABASE_URL'), '/');
+        $key = self::config('SUPABASE_SERVICE_KEY');
+        if ($base === '' || $key === '') {
+            throw new RuntimeException('Storage is not configured.');
+        }
+
+        $ch = curl_init("{$base}/storage/v1/object/{$bucket}/{$objectName}");
+        if ($ch === false) {
+            throw new RuntimeException('Unable to initialize delete request.');
+        }
+
+        curl_setopt_array($ch, [
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer {$key}",
+                "apikey: {$key}",
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+        ]);
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($response === false) {
+            throw new RuntimeException('Delete request failed.');
+        }
+        if ($status < 200 || $status >= 300) {
+            error_log("Storage delete warning (HTTP {$status})");
+        }
+        return true;
+    }
+
+    private static function uploadObject(string $tmpPath, string $mime, string $bucket, string $name, string $readError): string
+    {
+        $base = rtrim(self::config('SUPABASE_URL'), '/');
+        $key = self::config('SUPABASE_SERVICE_KEY');
+        $body = file_get_contents($tmpPath);
+        if ($body === false) {
+            throw new RuntimeException($readError);
+        }
+
+        $ch = curl_init("{$base}/storage/v1/object/{$bucket}/{$name}");
+        if ($ch === false) {
+            throw new RuntimeException('Unable to initialize the storage request.');
+        }
+
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $body,
+            CURLOPT_HTTPHEADER => [
+                "Authorization: Bearer {$key}",
+                "apikey: {$key}",
+                "Content-Type: {$mime}",
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+        ]);
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($response === false) {
+            throw new RuntimeException('Storage request failed.');
+        }
+        if ($status < 200 || $status >= 300) {
+            throw new RuntimeException("Storage upload failed (HTTP {$status}).");
+        }
+
+        return "{$base}/storage/v1/object/public/{$bucket}/{$name}";
     }
 
     /**
